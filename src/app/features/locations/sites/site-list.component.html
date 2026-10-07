@@ -51,7 +51,7 @@
           <td>{{ row.code }}</td>
           <td>{{ 'locations.types.' + row.location_type | translate }}</td>
           <td>{{ row.city | localizedName: lang() }}</td>
-          <td>{{ row.address_line1 }}</td>
+          <td dir="auto">{{ row.address_line1 }}</td>
           <td>
             @if (row.is_active) {
               <app-status-badge [value]="'common.yes' | translate" severity="success"></app-status-badge>

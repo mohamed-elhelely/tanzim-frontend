@@ -110,6 +110,30 @@ remaining pages in parallel and concatenates them. Used to fill the cascading pi
 3. `full_address` is never returned (serializer source `get_full_address` doesn't exist on the model), so
    the list shows `address_line1` + city instead.
 
+## Verification results (2026-10-07, against the backend at `0Mustafa37/Tanzim@f033209`)
+
+Checked with real requests as the seeded company admin (`setup_data.py`, plus an active subscription with the
+`location` module).
+
+| Open point | Result | What the frontend does |
+|---|---|---|
+| 1. City `timezone` | `Africa/Cairo` accepted (201). The docs' "only UTC/GMT" is out of date. | Full time-zone list, `UTC` and `GMT` first. |
+| 2. `PATCH /location/{id}/` with only `name_en` | **200**. Known issue #5 is fixed in the current backend. | Still sends the full body, which is harmless and works on older backends. |
+| 3. `full_address` | Never in the response. | List shows `address_line1` + city. |
+| Extra: region not in the chosen country | **400** `{"region": ["Region must belong to selected country"]}` | Shown under the Region picker (tested). |
+| Extra: `?dropdown=true` | Only `id`, `name_en`, `name_ar` | Cascades use `listAll()`, as designed. |
+| Extra: `DELETE /region/{id}/` while a location uses it | **204** (soft delete; the location keeps pointing at it) | Nothing; worth raising with the backend. |
+| Extra: create a region with the same name as a soft-deleted one in that country | **500** (`UNIQUE constraint failed: company_region.country_id, company_region.name_en`) | The global error toast; the user has to pick another name. |
+
+Backend issues to raise: soft-deleting a country/region/city/district that is still in use succeeds silently;
+re-using the name of a soft-deleted record returns 500 (the `unique_together` constraints ignore `is_deleted`);
+`full_address` uses a missing `get_full_address` source; API docs still list known issues #5 and #9.
+
+Browser walk (Chromium, `ng serve` + proxy): all five lists load; a location created through the cascading
+pickers saves and shows in the list; switching the country by hand clears region/city/district; editing keeps
+the saved hierarchy; Arabic is RTL with translated labels and type names; at 375 px the form stacks to one
+column. No console errors.
+
 ## Out of scope
 
 - Map / geocoding.
