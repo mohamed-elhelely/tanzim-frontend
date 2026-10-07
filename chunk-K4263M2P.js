@@ -1,1 +1,0 @@
-import{$ as r}from"./chunk-C7N6UH3M.js";function a(e){return e&&(e.full_name||`${e.first_name??""} ${e.last_name??""}`.trim()||e.email)||""}var t=class e{transform(n){return a(n)}static \u0275fac=function(i){return new(i||e)};static \u0275pipe=r({name:"userName",type:e,pure:!0,standalone:!0})};export{a,t as b};

@@ -80,8 +80,7 @@
   "validation": {
     "required": "This field is required.",
     "maxLength": "Maximum {{max}} characters.",
-    "email": "Enter a valid email address.",
-    "minLength": "At least {{min}} characters."
+    "email": "Enter a valid email address."
   },
   "company": {
     "fields": {
@@ -144,37 +143,6 @@
       "title": "Permissions",
       "new": "New permission",
       "edit": "Edit permission"
-    }
-  },
-  "locations": {
-    "title": "Locations",
-    "new": "New location",
-    "edit": "Edit location",
-    "pickParent": "Choose the level above first.",
-    "fields": {
-      "code": "Code",
-      "type": "Type",
-      "country": "Country",
-      "region": "Region",
-      "city": "City",
-      "district": "District",
-      "addressLine1": "Address line 1",
-      "addressLine2": "Address line 2",
-      "postalCode": "Postal code",
-      "address": "Address",
-      "active": "Active"
-    },
-    "types": {
-      "office": "Office",
-      "warehouse": "Warehouse",
-      "retail": "Retail",
-      "factory": "Factory",
-      "remote": "Remote"
-    },
-    "geo": {
-      "forbidden": "Your company's subscription doesn't include Locations, so a location can't be saved.",
-      "empty": "There are no countries yet. Countries, regions and cities must be added before a location can be saved.",
-      "error": "Countries, regions and cities couldn't be loaded. Reload the page to try again."
     }
   }
 }
