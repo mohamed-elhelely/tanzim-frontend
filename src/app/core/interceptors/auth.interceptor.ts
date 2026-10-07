@@ -57,6 +57,14 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
               setHeaders: { Authorization: `Bearer ${accessToken}` },
               context: req.context.set(RETRIED, true),
             }),
+          ).pipe(
+            catchError((retryError: unknown) => {
+              // A fresh token was still rejected: the session is no longer valid.
+              if (statusOf(retryError) === UNAUTHORIZED) {
+                auth.logout();
+              }
+              return throwError(() => retryError);
+            }),
           ),
         ),
       );

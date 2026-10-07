@@ -9,7 +9,6 @@ import { PasswordModule } from 'primeng/password';
 import { AuthService } from '../../../core/auth/auth.service';
 import { AppError } from '../../../core/errors/app-error';
 import { LanguageService } from '../../../core/services/language.service';
-import { NotificationService } from '../../../core/services/notification.service';
 
 @Component({
   selector: 'app-login-page',
@@ -23,11 +22,11 @@ export class LoginPageComponent {
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
-  private readonly notifications = inject(NotificationService);
   private readonly translate = inject(TranslateService);
 
   readonly language = inject(LanguageService);
   readonly submitting = signal(false);
+  readonly errorMessage = signal<string | null>(null);
 
   readonly form = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -42,6 +41,7 @@ export class LoginPageComponent {
 
     const { email, password } = this.form.getRawValue();
     this.submitting.set(true);
+    this.errorMessage.set(null);
 
     this.auth.login(email, password).subscribe({
       next: () => {
@@ -50,10 +50,28 @@ export class LoginPageComponent {
       },
       error: (error: AppError) => {
         this.submitting.set(false);
-        if (error.status === 400 || error.status === 401 || error.status === 403) {
-          this.notifications.error(this.translate.instant('auth.invalidCredentials'));
-        }
+        this.errorMessage.set(this.loginErrorMessage(error));
       },
     });
+  }
+
+  // Network errors and 5xx are already shown as a toast by the error interceptor.
+  private loginErrorMessage(error: AppError): string | null {
+    if (error.status === 429) {
+      return this.translate.instant('auth.tooManyAttempts');
+    }
+    if (error.status < 400 || error.status >= 500) {
+      return null;
+    }
+
+    const errors = error.errors ?? {};
+    const serverMessage = errors['non_field_errors']?.[0] ?? Object.values(errors).flat()[0];
+    if (serverMessage) {
+      return serverMessage;
+    }
+    if (error.message && error.message !== 'Unknown error') {
+      return error.message;
+    }
+    return this.translate.instant('auth.invalidCredentials');
   }
 }

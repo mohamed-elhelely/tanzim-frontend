@@ -19,6 +19,16 @@
       </div>
 
       <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-4" novalidate>
+        @if (errorMessage(); as message) {
+          <div
+            role="alert"
+            class="flex items-start gap-2 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300"
+          >
+            <i class="pi pi-exclamation-circle mt-0.5"></i>
+            <span>{{ message }}</span>
+          </div>
+        }
+
         <div class="flex flex-col gap-1">
           <label for="email" class="text-sm font-medium text-gray-700 dark:text-gray-200">
             {{ 'auth.email' | translate }}
