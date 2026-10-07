@@ -4,10 +4,13 @@ import { provideTranslateService } from '@ngx-translate/core';
 import { FieldErrorComponent } from './field-error.component';
 
 describe('FieldErrorComponent', () => {
-  function render(control: FormControl) {
+  function render(control: FormControl, patternKey?: string) {
     TestBed.configureTestingModule({ imports: [FieldErrorComponent], providers: [provideTranslateService()] });
     const fixture = TestBed.createComponent(FieldErrorComponent);
     fixture.componentRef.setInput('control', control);
+    if (patternKey) {
+      fixture.componentRef.setInput('patternKey', patternKey);
+    }
     fixture.detectChanges();
     return fixture;
   }
@@ -28,5 +31,17 @@ describe('FieldErrorComponent', () => {
     control.setErrors({ serverError: 'Already exists.' });
     control.markAsTouched();
     expect(render(control).nativeElement.textContent).toContain('Already exists.');
+  });
+
+  it('shows the minimum length', () => {
+    const control = new FormControl('ab', Validators.minLength(3));
+    control.markAsTouched();
+    expect(render(control).nativeElement.textContent).toContain('validation.minLength');
+  });
+
+  it('explains a pattern error with the given key', () => {
+    const control = new FormControl('x', Validators.pattern(/^[A-Z]{2}$/));
+    control.markAsTouched();
+    expect(render(control, 'locations.hints.isoCode').nativeElement.textContent).toContain('locations.hints.isoCode');
   });
 });
