@@ -1,0 +1,36 @@
+<p-toolbar styleClass="!rounded-none !border-x-0 !border-t-0 !bg-white dark:!bg-gray-800">
+  <ng-template pTemplate="start">
+    <div class="flex min-w-0 items-center gap-3">
+      <p-button
+        icon="pi pi-bars"
+        [rounded]="true"
+        [text]="true"
+        severity="secondary"
+        styleClass="lg:!hidden"
+        (onClick)="menuToggle.emit()"
+      ></p-button>
+      <span class="truncate text-base font-semibold text-gray-800 dark:text-gray-100 lg:text-lg">
+        {{ (pageTitleKey() ? pageTitleKey() : 'app.name') | translate }}
+      </span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="end">
+    <div class="flex items-center gap-2">
+      <p-button
+        [label]="language.currentLang() === 'en' ? 'العربية' : 'English'"
+        icon="pi pi-globe"
+        [text]="true"
+        severity="secondary"
+        (onClick)="language.toggle()"
+      ></p-button>
+      <button
+        type="button"
+        class="flex items-center rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+        (click)="userMenu.toggle($event)"
+      >
+        <p-avatar label="U" shape="circle" styleClass="!bg-primary-600 !text-white"></p-avatar>
+      </button>
+      <p-menu #userMenu [model]="userMenuItems" [popup]="true" appendTo="body"></p-menu>
+    </div>
+  </ng-template>
+</p-toolbar>

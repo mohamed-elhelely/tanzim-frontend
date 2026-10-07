@@ -1,0 +1,72 @@
+<div class="flex min-h-screen items-center justify-center bg-gray-100 p-4 dark:bg-gray-900">
+  <div class="w-full max-w-md">
+    <div class="mb-4 flex items-center justify-between">
+      <span class="text-lg font-semibold text-gray-800 dark:text-gray-100">{{ 'app.name' | translate }}</span>
+      <p-button
+        [label]="language.currentLang() === 'en' ? 'العربية' : 'English'"
+        icon="pi pi-globe"
+        [text]="true"
+        severity="secondary"
+        type="button"
+        (onClick)="language.toggle()"
+      ></p-button>
+    </div>
+
+    <p-card>
+      <div class="mb-6 flex flex-col gap-1 text-center">
+        <h1 class="text-xl font-semibold text-gray-900 dark:text-gray-100">{{ 'auth.login' | translate }}</h1>
+        <p class="text-sm text-gray-500 dark:text-gray-400">{{ 'auth.subtitle' | translate }}</p>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-4" novalidate>
+        <div class="flex flex-col gap-1">
+          <label for="email" class="text-sm font-medium text-gray-700 dark:text-gray-200">
+            {{ 'auth.email' | translate }}
+          </label>
+          <input
+            pInputText
+            id="email"
+            type="email"
+            formControlName="email"
+            autocomplete="username"
+            class="w-full"
+            [placeholder]="'auth.emailPlaceholder' | translate"
+          />
+          @if (form.controls.email.touched && form.controls.email.invalid) {
+            <small class="text-sm text-red-600">
+              {{ (form.controls.email.errors?.['required'] ? 'auth.emailRequired' : 'auth.emailInvalid') | translate }}
+            </small>
+          }
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="password" class="text-sm font-medium text-gray-700 dark:text-gray-200">
+            {{ 'auth.password' | translate }}
+          </label>
+          <p-password
+            inputId="password"
+            formControlName="password"
+            [feedback]="false"
+            [toggleMask]="true"
+            styleClass="w-full"
+            inputStyleClass="w-full"
+            autocomplete="current-password"
+            [placeholder]="'auth.passwordPlaceholder' | translate"
+          ></p-password>
+          @if (form.controls.password.touched && form.controls.password.invalid) {
+            <small class="text-sm text-red-600">{{ 'auth.passwordRequired' | translate }}</small>
+          }
+        </div>
+
+        <p-button
+          type="submit"
+          styleClass="w-full"
+          [loading]="submitting()"
+          [disabled]="submitting()"
+          [label]="'auth.signIn' | translate"
+          icon="pi pi-sign-in"
+        ></p-button>
+      </form>
+    </p-card>
+  </div>
+</div>

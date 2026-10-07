@@ -1,0 +1,39 @@
+<app-page-header title="nav.dashboard" subtitle="dashboard.subtitle"></app-page-header>
+
+<section class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+  @for (slot of statSlots; track slot) {
+    <p-card>
+      <div class="flex items-start justify-between">
+        <div class="flex flex-col gap-2">
+          <p-skeleton width="5rem" height="0.875rem"></p-skeleton>
+          <p-skeleton width="7rem" height="1.75rem"></p-skeleton>
+        </div>
+        <p-skeleton shape="circle" size="2.5rem"></p-skeleton>
+      </div>
+    </p-card>
+  }
+</section>
+
+<section class="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-3">
+  <p-card styleClass="xl:col-span-2">
+    <ng-template pTemplate="header">
+      <span class="block px-4 pt-4 text-sm font-semibold text-gray-700 dark:text-gray-200">
+        {{ 'dashboard.insights' | translate }}
+      </span>
+    </ng-template>
+    <p-skeleton height="16rem" borderRadius="0.5rem"></p-skeleton>
+  </p-card>
+
+  <p-card>
+    <ng-template pTemplate="header">
+      <span class="block px-4 pt-4 text-sm font-semibold text-gray-700 dark:text-gray-200">
+        {{ 'dashboard.activity' | translate }}
+      </span>
+    </ng-template>
+    <div class="flex flex-col gap-3">
+      @for (slot of activitySlots; track slot) {
+        <p-skeleton height="3rem" borderRadius="0.5rem"></p-skeleton>
+      }
+    </div>
+  </p-card>
+</section>

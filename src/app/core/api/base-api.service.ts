@@ -1,0 +1,56 @@
+import { inject, Injectable } from '@angular/core';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { Observable, catchError, throwError } from 'rxjs';
+import { API_BASE_URL } from './api.config';
+import { ApiResponse } from '../models/api-response.model';
+
+export interface RequestOptions {
+  params?: HttpParams | Record<string, string | number | boolean | ReadonlyArray<string | number | boolean>>;
+  headers?: Record<string, string>;
+}
+
+@Injectable({
+  providedIn: 'root',
+})
+export class BaseApiService {
+  private readonly http = inject(HttpClient);
+  private readonly baseUrl = inject(API_BASE_URL);
+
+  protected get<T>(path: string, options?: RequestOptions): Observable<ApiResponse<T>> {
+    return this.http
+      .get<ApiResponse<T>>(this.buildUrl(path), options)
+      .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
+  }
+
+  protected post<T>(path: string, body?: unknown, options?: RequestOptions): Observable<ApiResponse<T>> {
+    return this.http
+      .post<ApiResponse<T>>(this.buildUrl(path), body ?? {}, options)
+      .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
+  }
+
+  protected put<T>(path: string, body?: unknown, options?: RequestOptions): Observable<ApiResponse<T>> {
+    return this.http
+      .put<ApiResponse<T>>(this.buildUrl(path), body ?? {}, options)
+      .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
+  }
+
+  protected patch<T>(path: string, body?: unknown, options?: RequestOptions): Observable<ApiResponse<T>> {
+    return this.http
+      .patch<ApiResponse<T>>(this.buildUrl(path), body ?? {}, options)
+      .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
+  }
+
+  protected delete<T>(path: string, options?: RequestOptions): Observable<ApiResponse<T>> {
+    return this.http
+      .delete<ApiResponse<T>>(this.buildUrl(path), options)
+      .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
+  }
+
+  private buildUrl(path: string): string {
+    return `${this.baseUrl}${path.replace(/^\/+/, '')}`;
+  }
+
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    return throwError(() => error);
+  }
+}
