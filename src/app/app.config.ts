@@ -7,6 +7,7 @@ import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { routes } from './app.routes';
 import { GlobalErrorHandler } from './core/handlers/global-error-handler';
+import { apiHeadersInterceptor } from './core/interceptors/api-headers.interceptor';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { errorInterceptor } from './core/interceptors/error.interceptor';
 import { loadingInterceptor } from './core/interceptors/loading.interceptor';
@@ -15,7 +16,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([authInterceptor, loadingInterceptor, errorInterceptor])),
+    provideHttpClient(withInterceptors([apiHeadersInterceptor, authInterceptor, loadingInterceptor, errorInterceptor])),
     provideAnimations(),
     provideTranslateService({
       lang: 'en',
