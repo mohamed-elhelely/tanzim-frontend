@@ -47,6 +47,29 @@ describe('CrudApi', () => {
     expect(result).toEqual({ items: [{ id: 1, name_en: 'Sales' }], total: 31, page: 2, pageSize: 25 });
   });
 
+  it('fetches every page for listAll', () => {
+    let result: Thing[] = [];
+    api.listAll().subscribe((r) => (result = r));
+
+    const first = httpMock.expectOne((r) => r.url === URL && r.params.get('page') === '1');
+    expect(first.request.params.get('page_size')).toBe('100');
+    first.flush(envelope([{ id: 1, name_en: 'A' }], 201));
+
+    const rest = httpMock.match((r) => r.url === URL);
+    expect(rest.map((r) => r.request.params.get('page'))).toEqual(['2', '3']);
+    rest[1].flush(envelope([{ id: 3, name_en: 'C' }], 201));
+    rest[0].flush(envelope([{ id: 2, name_en: 'B' }], 201));
+
+    expect(result.map((t) => t.id)).toEqual([1, 2, 3]);
+  });
+
+  it('makes a single request for listAll when everything fits on one page', () => {
+    let result: Thing[] = [];
+    api.listAll().subscribe((r) => (result = r));
+    httpMock.expectOne((r) => r.url === URL).flush(envelope([{ id: 1, name_en: 'A' }], 1));
+    expect(result.length).toBe(1);
+  });
+
   it('omits empty search and ordering', () => {
     api.list({ page: 1, pageSize: 10, search: '', ordering: undefined }).subscribe();
     const req = httpMock.expectOne((r) => r.url === URL);
