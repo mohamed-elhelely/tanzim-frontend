@@ -1,14 +1,21 @@
 <div class="flex flex-col items-center justify-center py-12 gap-4 text-center">
   <i class="pi pi-exclamation-triangle text-6xl text-red-500"></i>
   <div>
-    <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">{{ title | translate }}</h3>
-    <p *ngIf="message" class="text-sm text-gray-500 dark:text-gray-400 mt-2">{{ message | translate }}</p>
+    <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+      {{ title | translate }}
+    </h3>
+    @if (message) {
+      <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">
+        {{ message | translate }}
+      </p>
+    }
   </div>
-  <p-button
-    *ngIf="showRetry"
-    [label]="'common.retry' | translate"
-    icon="pi pi-refresh"
-    severity="secondary"
-    (onClick)="retry.emit()"
-  ></p-button>
+  @if (showRetry) {
+    <p-button
+      [label]="'common.retry' | translate"
+      icon="pi pi-refresh"
+      severity="secondary"
+      (onClick)="retry.emit()"
+    ></p-button>
+  }
 </div>
