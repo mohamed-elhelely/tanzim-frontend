@@ -54,4 +54,19 @@ export const COMPANY_ROUTES: Routes = [
     loadComponent: () => import('./permissions/permission-form.component').then((m) => m.PermissionFormComponent),
     data: { titleKey: 'company.permissions.edit' },
   },
+  {
+    path: 'roles',
+    loadComponent: () => import('./roles/role-list.component').then((m) => m.RoleListComponent),
+    data: { titleKey: 'company.roles.title' },
+  },
+  {
+    path: 'roles/new',
+    loadComponent: () => import('./roles/role-form.component').then((m) => m.RoleFormComponent),
+    data: { titleKey: 'company.roles.new' },
+  },
+  {
+    path: 'roles/:id/edit',
+    loadComponent: () => import('./roles/role-form.component').then((m) => m.RoleFormComponent),
+    data: { titleKey: 'company.roles.edit' },
+  },
 ];
