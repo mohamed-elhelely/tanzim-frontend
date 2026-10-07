@@ -1,7 +1,7 @@
 /*
- * PrimeNG injects its theme at runtime (providePrimeNG in app.config.ts) inside `@layer primeng`.
- * Tailwind goes into its own layers so the order declared in src/layer-order.css applies:
- * Tailwind reset < PrimeNG theme < Tailwind utilities.
+ * Global styles. Layer order (src/layer-order.css): tailwind-base < primeng < app < tailwind-utilities.
+ * PrimeNG injects its theme at runtime (providePrimeNG in app.config.ts) into the `primeng` layer;
+ * colours and dark mode come from the preset in core/theme/tanzim-preset.ts.
  */
 
 @import "primeicons/primeicons.css";
@@ -13,4 +13,108 @@
 @layer tailwind-utilities {
   @tailwind components;
   @tailwind utilities;
+}
+
+@layer tailwind-base {
+  :root {
+    --app-font: Inter, "IBM Plex Sans Arabic", ui-sans-serif, system-ui, sans-serif;
+    --app-bg: #f4f5fa;
+  }
+
+  :root[lang="ar"] {
+    --app-font: "IBM Plex Sans Arabic", Inter, ui-sans-serif, system-ui, sans-serif;
+  }
+
+  :root.dark {
+    --app-bg: #0b1120;
+    color-scheme: dark;
+  }
+
+  /* 14px base: a denser UI for a data-heavy app (Tailwind and PrimeNG both size in rem). */
+  html {
+    font-size: 14px;
+  }
+
+  html,
+  body {
+    height: 100%;
+  }
+
+  body {
+    margin: 0;
+    font-family: var(--app-font);
+    background: var(--app-bg);
+    color: #1f2937;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  :root.dark body {
+    color: #e5e7eb;
+  }
+}
+
+/* Small adjustments on top of the Aura theme. */
+@layer app {
+  .p-component {
+    font-family: var(--app-font);
+  }
+
+  /* Tables: quiet header, single-line cells (wrappers scroll sideways on small screens). */
+  .p-datatable .p-datatable-thead > tr > th {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--p-text-muted-color);
+    white-space: nowrap;
+  }
+
+  .p-datatable .p-datatable-tbody > tr > td {
+    white-space: nowrap;
+  }
+
+  .p-datatable .p-datatable-paginator-bottom {
+    border-width: 0;
+  }
+
+  .p-paginator {
+    flex-wrap: nowrap;
+  }
+
+  /* Tags as soft pills. */
+  .p-tag {
+    border-radius: 9999px;
+    padding-inline: 0.625rem;
+  }
+
+  /* The mobile navigation drawer reuses the dark sidebar look. */
+  .p-drawer.app-nav-drawer {
+    background: var(--p-indigo-950);
+    border: 0;
+    color: var(--p-indigo-100);
+  }
+
+  .p-drawer.app-nav-drawer .p-drawer-header {
+    padding: 0 0.5rem 0 0;
+  }
+
+  .p-drawer.app-nav-drawer .p-drawer-content {
+    padding: 0;
+  }
+
+  .p-drawer.app-nav-drawer .p-drawer-header .p-button {
+    color: var(--p-indigo-200);
+  }
+}
+
+@layer app {
+  /* Cards match the bordered panels used across the layout. */
+  .p-card {
+    border: 1px solid var(--p-surface-200);
+    border-radius: 1rem;
+    box-shadow: 0 1px 2px rgb(16 24 40 / 0.04);
+  }
+
+  :root.dark .p-card {
+    border-color: var(--p-surface-800);
+    background: var(--p-surface-900);
+  }
 }

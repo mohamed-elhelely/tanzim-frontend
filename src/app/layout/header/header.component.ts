@@ -1,46 +1,63 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Output, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Output, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { MenuItem } from 'primeng/api';
-import { AvatarModule } from 'primeng/avatar';
 import { ButtonModule } from 'primeng/button';
 import { MenuModule } from 'primeng/menu';
-import { ToolbarModule } from 'primeng/toolbar';
 import { filter, map, startWith } from 'rxjs';
 import { AuthService } from '../../core/auth/auth.service';
 import { LanguageService } from '../../core/services/language.service';
+import { ThemeService } from '../../core/services/theme.service';
+import { NAV_ITEMS } from '../nav/nav-items';
+
+interface RouteInfo {
+  titleKey: string;
+  sectionKey: string;
+}
 
 @Component({
-    selector: 'app-header',
-    imports: [TranslatePipe, ButtonModule, ToolbarModule, MenuModule, AvatarModule],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    templateUrl: './header.component.html',
-    styleUrl: './header.component.scss'
+  selector: 'app-header',
+  imports: [TranslatePipe, ButtonModule, MenuModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './header.component.html',
+  styleUrl: './header.component.scss',
 })
 export class AppHeaderComponent {
   @Output() menuToggle = new EventEmitter<void>();
 
   readonly language = inject(LanguageService);
+  readonly theme = inject(ThemeService);
+  readonly auth = inject(AuthService);
 
   private readonly translate = inject(TranslateService);
   private readonly router = inject(Router);
-  private readonly auth = inject(AuthService);
 
-  readonly pageTitleKey = toSignal(
+  private readonly routeInfo = toSignal(
     this.router.events.pipe(
       filter((event): event is NavigationEnd => event instanceof NavigationEnd),
-      map(() => this.resolveTitleKey()),
-      startWith(this.resolveTitleKey()),
+      map(() => this.resolveRouteInfo()),
+      startWith(this.resolveRouteInfo()),
     ),
-    { initialValue: '' },
+    { initialValue: { titleKey: '', sectionKey: '' } },
   );
+
+  readonly pageTitleKey = computed(() => this.routeInfo().titleKey);
+  /** The sidebar group the page belongs to (e.g. "Company"), shown before the title. */
+  readonly sectionKey = computed(() => this.routeInfo().sectionKey);
+
+  readonly displayName = computed(() => this.auth.user()?.name || this.translate.instant('header.account'));
+  readonly initials = computed(() => {
+    const name = this.auth.user()?.name?.trim();
+    if (!name) {
+      return '?';
+    }
+    const parts = name.split(/[\s@._-]+/).filter(Boolean);
+    return ((parts[0]?.[0] ?? '') + (parts[1]?.[0] ?? '')).toUpperCase() || '?';
+  });
 
   get userMenuItems(): MenuItem[] {
     return [
-      { label: this.translate.instant('header.profile'), icon: 'pi pi-user' },
-      { label: this.translate.instant('header.settings'), icon: 'pi pi-cog' },
-      { separator: true },
       {
         label: this.translate.instant('auth.logout'),
         icon: 'pi pi-sign-out',
@@ -49,10 +66,9 @@ export class AppHeaderComponent {
     ];
   }
 
-  private resolveTitleKey(): string {
+  private resolveRouteInfo(): RouteInfo {
     let route = this.router.routerState.snapshot.root;
     let titleKey = '';
-
     while (route.firstChild) {
       route = route.firstChild;
       const key = route.data['titleKey'];
@@ -60,7 +76,10 @@ export class AppHeaderComponent {
         titleKey = key;
       }
     }
-
-    return titleKey;
+    const url = this.router.url;
+    const group = NAV_ITEMS.find(
+      (item) => item.children && (url === item.routerLink || url.startsWith(`${item.routerLink}/`)),
+    );
+    return { titleKey, sectionKey: group?.labelKey ?? '' };
   }
 }

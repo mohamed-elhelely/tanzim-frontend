@@ -26,8 +26,8 @@ export const appConfig: ApplicationConfig = {
         options: {
           // Dark mode follows the `dark` class on <html> (shared with Tailwind).
           darkModeSelector: '.dark',
-          // Same order as src/layer-order.css: Tailwind reset < PrimeNG < Tailwind utilities.
-          cssLayer: { name: 'primeng', order: 'tailwind-base, primeng, tailwind-utilities' },
+          // Same order as src/layer-order.css.
+          cssLayer: { name: 'primeng', order: 'tailwind-base, primeng, app, tailwind-utilities' },
         },
       },
     }),

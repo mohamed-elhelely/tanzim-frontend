@@ -1,39 +1,113 @@
-<app-page-header title="nav.dashboard" subtitle="dashboard.subtitle"></app-page-header>
+<section
+  class="relative mb-6 overflow-hidden rounded-2xl bg-gradient-to-br from-primary-600 via-primary-700 to-primary-900 px-6 py-7 text-white shadow-lg shadow-primary-900/20 md:px-8"
+>
+  <div class="pointer-events-none absolute -end-16 -top-16 h-56 w-56 rounded-full bg-white/10"></div>
+  <div class="pointer-events-none absolute -bottom-20 end-24 h-40 w-40 rounded-full bg-white/5"></div>
+  <div class="relative">
+    <h1 class="text-2xl font-bold tracking-tight md:text-3xl">
+      @if (userName) {
+        {{ 'dashboard.welcome' | translate: { name: userName } }}
+      } @else {
+        {{ 'dashboard.welcomeNoName' | translate }}
+      }
+    </h1>
+    <p class="mt-1 text-primary-100">{{ 'dashboard.welcomeText' | translate }}</p>
+  </div>
+</section>
 
 <section class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-  @for (slot of statSlots; track slot) {
-    <p-card>
-      <div class="flex items-start justify-between">
-        <div class="flex flex-col gap-2">
-          <p-skeleton width="5rem" height="0.875rem"></p-skeleton>
-          <p-skeleton width="7rem" height="1.75rem"></p-skeleton>
-        </div>
-        <p-skeleton shape="circle" size="2.5rem"></p-skeleton>
-      </div>
-    </p-card>
+  @for (stat of stats; track stat.key) {
+    <a
+      [routerLink]="stat.link"
+      class="group flex items-center gap-4 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-primary-200 hover:shadow-md dark:border-gray-800 dark:bg-gray-900 dark:hover:border-primary-800"
+    >
+      <span [class]="'flex h-12 w-12 shrink-0 items-center justify-center rounded-xl ' + stat.tone">
+        <i [class]="'pi ' + stat.icon + ' text-xl'"></i>
+      </span>
+      <span class="min-w-0 flex-1">
+        <span class="block text-sm font-medium text-gray-500 dark:text-gray-400">
+          {{ 'dashboard.stats.' + stat.key | translate }}
+        </span>
+        @switch (counts()[stat.key]) {
+          @case (undefined) {
+            <span class="mt-1 block h-7 w-12 animate-pulse rounded-md bg-gray-200 dark:bg-gray-700"></span>
+          }
+          @case (null) {
+            <span class="mt-1 block text-sm text-gray-400">{{ 'dashboard.unavailable' | translate }}</span>
+          }
+          @default {
+            <span class="block text-2xl font-bold text-gray-900 dark:text-white">{{ counts()[stat.key] }}</span>
+          }
+        }
+      </span>
+      <i class="pi pi-arrow-right text-sm text-gray-300 transition group-hover:text-primary-500 rtl:rotate-180"></i>
+    </a>
   }
 </section>
 
-<section class="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-3">
-  <p-card styleClass="xl:col-span-2">
-    <ng-template pTemplate="header">
-      <span class="block px-4 pt-4 text-sm font-semibold text-gray-700 dark:text-gray-200">
-        {{ 'dashboard.insights' | translate }}
+<section class="mt-6 grid grid-cols-1 gap-4 xl:grid-cols-5">
+  <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900 xl:col-span-3">
+    <div class="mb-4 flex items-start justify-between gap-4">
+      <div>
+        <h2 class="text-base font-semibold text-gray-900 dark:text-white">{{ 'dashboard.setup' | translate }}</h2>
+        <p class="text-sm text-gray-500 dark:text-gray-400">{{ 'dashboard.setupHint' | translate }}</p>
+      </div>
+      <span
+        class="shrink-0 rounded-full bg-primary-50 px-3 py-1 text-sm font-semibold text-primary-700 dark:bg-primary-500/15 dark:text-primary-200"
+      >
+        {{ stepsDone() }} / {{ steps().length }}
       </span>
-    </ng-template>
-    <p-skeleton height="16rem" borderRadius="0.5rem"></p-skeleton>
-  </p-card>
+    </div>
+    <div class="mb-4 h-2 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
+      <div
+        class="h-full rounded-full bg-gradient-to-r from-primary-500 to-primary-600 transition-all"
+        [style.width.%]="(stepsDone() / steps().length) * 100"
+      ></div>
+    </div>
+    <ul class="flex flex-col gap-2">
+      @for (step of steps(); track step.key) {
+        <li>
+          <a
+            [routerLink]="step.link"
+            class="flex items-center gap-3 rounded-xl border border-gray-100 px-4 py-3 transition hover:border-primary-200 hover:bg-primary-50/50 dark:border-gray-800 dark:hover:border-primary-800 dark:hover:bg-primary-500/5"
+          >
+            @if (step.done) {
+              <span class="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500 text-white">
+                <i class="pi pi-check text-xs"></i>
+              </span>
+            } @else {
+              <span class="h-6 w-6 rounded-full border-2 border-gray-300 dark:border-gray-600"></span>
+            }
+            <span
+              class="flex-1 text-sm font-medium text-gray-800 dark:text-gray-100"
+              [class.!text-gray-400]="step.done"
+              [class.line-through]="step.done"
+            >
+              {{ step.labelKey | translate }}
+            </span>
+            <i class="pi pi-angle-right text-gray-300 rtl:rotate-180"></i>
+          </a>
+        </li>
+      }
+    </ul>
+  </div>
 
-  <p-card>
-    <ng-template pTemplate="header">
-      <span class="block px-4 pt-4 text-sm font-semibold text-gray-700 dark:text-gray-200">
-        {{ 'dashboard.activity' | translate }}
-      </span>
-    </ng-template>
-    <div class="flex flex-col gap-3">
-      @for (slot of activitySlots; track slot) {
-        <p-skeleton height="3rem" borderRadius="0.5rem"></p-skeleton>
+  <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900 xl:col-span-2">
+    <h2 class="mb-4 text-base font-semibold text-gray-900 dark:text-white">{{ 'dashboard.quickActions' | translate }}</h2>
+    <div class="grid grid-cols-2 gap-3">
+      @for (action of quickActions; track action.link) {
+        <a
+          [routerLink]="action.link"
+          class="flex flex-col items-start gap-3 rounded-xl border border-gray-100 p-4 transition hover:border-primary-200 hover:bg-primary-50/50 dark:border-gray-800 dark:hover:border-primary-800 dark:hover:bg-primary-500/5"
+        >
+          <span
+            class="flex h-9 w-9 items-center justify-center rounded-lg bg-primary-600 text-white shadow-sm shadow-primary-600/30"
+          >
+            <i [class]="'pi ' + action.icon"></i>
+          </span>
+          <span class="text-sm font-medium text-gray-800 dark:text-gray-100">{{ action.labelKey | translate }}</span>
+        </a>
       }
     </div>
-  </p-card>
+  </div>
 </section>

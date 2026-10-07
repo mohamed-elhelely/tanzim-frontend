@@ -1,32 +1,36 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { TranslatePipe } from '@ngx-translate/core';
+import { PrimeTemplate } from 'primeng/api';
 import { DrawerModule } from 'primeng/drawer';
 import { ToastModule } from 'primeng/toast';
+import { LanguageService } from '../../core/services/language.service';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { LoadingBarComponent } from '../../shared/components/loading-bar/loading-bar.component';
 import { AppHeaderComponent } from '../header/header.component';
 import { NavListComponent } from '../nav/nav-list.component';
+import { BrandComponent } from '../sidebar/brand.component';
 import { AppSidebarComponent } from '../sidebar/sidebar.component';
 
 @Component({
-    selector: 'app-shell',
-    imports: [
-        RouterOutlet,
-        TranslatePipe,
-        DrawerModule,
-        ToastModule,
-        LoadingBarComponent,
-        AppHeaderComponent,
-        AppSidebarComponent,
-        NavListComponent,
-        ConfirmDialogComponent,
-    ],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    templateUrl: './shell.component.html',
-    styleUrl: './shell.component.scss'
+  selector: 'app-shell',
+  imports: [
+    RouterOutlet,
+    PrimeTemplate,
+    DrawerModule,
+    ToastModule,
+    LoadingBarComponent,
+    AppHeaderComponent,
+    AppSidebarComponent,
+    NavListComponent,
+    BrandComponent,
+    ConfirmDialogComponent,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './shell.component.html',
+  styleUrl: './shell.component.scss',
 })
 export class ShellComponent {
+  readonly language = inject(LanguageService);
   readonly mobileNavOpen = signal(false);
 
   openMobileNav(): void {

@@ -1,6 +1,7 @@
 /*
  * Cascade layer order for the whole app. Must be the first stylesheet in angular.json:
- * a layer's rank is fixed where it first appears, and Sass hoists the PrimeNG imports
- * in styles.scss above anything else in that file.
+ * a layer's rank is fixed where it first appears. PrimeNG renders its theme into `primeng`
+ * (providePrimeNG in app.config.ts uses the same order).
+ * Tailwind reset < PrimeNG < app tweaks to PrimeNG < Tailwind utilities.
  */
-@layer tailwind-base, primeng, tailwind-utilities;
+@layer tailwind-base, primeng, app, tailwind-utilities;

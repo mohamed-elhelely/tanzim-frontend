@@ -6,21 +6,22 @@ import { filter } from 'rxjs';
 import { LanguageService } from '../../core/services/language.service';
 import { NAV_ITEMS, NavItem } from './nav-items';
 
+// The navigation always sits on the dark indigo sidebar (desktop) or drawer (mobile).
 const LINK_CLASSES =
-  'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700';
-const ACTIVE_CLASSES = 'bg-primary-50 text-primary-700 dark:bg-gray-700 dark:text-white';
+  'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-primary-200 transition-colors hover:bg-white/5 hover:text-white';
+const ACTIVE_CLASSES = '!bg-primary-600 !text-white shadow-md shadow-primary-950/40';
 
 @Component({
-    selector: 'app-nav-list',
-    imports: [RouterLink, RouterLinkActive, TranslatePipe],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    template: `
-    <nav class="flex flex-col gap-1 p-3">
+  selector: 'app-nav-list',
+  imports: [RouterLink, RouterLinkActive, TranslatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `
+    <nav class="flex flex-col gap-1 px-3 pb-4 pt-2">
       @for (item of items; track item.routerLink) {
         @if (item.children) {
           <button
             type="button"
-            [class]="linkClasses + ' w-full'"
+            [class]="linkClasses + ' w-full' + (isActiveGroup(item) ? ' !text-white' : '')"
             [attr.aria-expanded]="isExpanded(item)"
             (click)="toggle(item)"
           >
@@ -34,7 +35,7 @@ const ACTIVE_CLASSES = 'bg-primary-50 text-primary-700 dark:bg-gray-700 dark:tex
             ></i>
           </button>
           @if (isExpanded(item)) {
-            <div class="flex flex-col gap-1 ps-4">
+            <div class="ms-5 flex flex-col gap-0.5 border-s border-white/10 ps-2">
               @for (child of item.children; track child.routerLink) {
                 <a
                   [routerLink]="child.routerLink"
@@ -42,7 +43,7 @@ const ACTIVE_CLASSES = 'bg-primary-50 text-primary-700 dark:bg-gray-700 dark:tex
                   [class]="linkClasses"
                   (click)="itemSelected.emit()"
                 >
-                  <i [class]="child.icon + ' text-base'"></i>
+                  <i [class]="child.icon + ' text-sm'"></i>
                   <span class="whitespace-nowrap">{{ child.labelKey | translate }}</span>
                 </a>
               }
@@ -61,7 +62,7 @@ const ACTIVE_CLASSES = 'bg-primary-50 text-primary-700 dark:bg-gray-700 dark:tex
         }
       }
     </nav>
-  `
+  `,
 })
 export class NavListComponent {
   private readonly router = inject(Router);
@@ -81,6 +82,12 @@ export class NavListComponent {
         takeUntilDestroyed(),
       )
       .subscribe((event) => this.expandActiveGroup(event.urlAfterRedirects));
+  }
+
+  /** True when the current page is inside this group, so a collapsed group still shows where you are. */
+  isActiveGroup(item: NavItem): boolean {
+    const url = this.router.url;
+    return url === item.routerLink || url.startsWith(`${item.routerLink}/`);
   }
 
   isExpanded(item: NavItem): boolean {

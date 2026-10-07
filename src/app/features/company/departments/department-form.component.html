@@ -10,7 +10,7 @@
 } @else if (loading()) {
   <app-loading-state></app-loading-state>
 } @else {
-  <p-card>
+  <p-card styleClass="max-w-5xl">
     <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-6" novalidate>
       @if (formErrors().length) {
         <div
@@ -71,7 +71,7 @@
         </div>
       </div>
 
-      <div class="flex justify-end gap-2">
+      <div class="flex justify-end gap-2 border-t border-gray-100 pt-5 dark:border-gray-800">
         <p-button
           type="button"
           [label]="'common.cancel' | translate"

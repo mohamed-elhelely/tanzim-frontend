@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { AppError } from '../../../core/errors/app-error';
@@ -25,6 +27,8 @@ import { CompanyUserService } from './company-user.service';
         TableModule,
         ButtonModule,
         InputTextModule,
+    IconFieldModule,
+    InputIconModule,
         PageHeaderComponent,
         EmptyStateComponent,
         ErrorStateComponent,
