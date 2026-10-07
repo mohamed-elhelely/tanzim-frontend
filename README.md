@@ -4,7 +4,7 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 ## Development server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+Run `ng serve` for a dev server. Navigate to `http://localhost:5173/` (the port the backend's CORS allows). The dev build calls the API at `http://localhost:8000`; production builds call the ngrok URL in `src/environments/environment.prod.ts`. The application will automatically reload if you change any of the source files.
 
 ## Code scaffolding
 

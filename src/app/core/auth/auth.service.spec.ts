@@ -2,11 +2,12 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
+import { apiBaseUrl } from '../api/api.config';
 import { environment } from '../../../environments/environment';
 import { AuthService } from './auth.service';
 import { TokenStorageService } from './token-storage.service';
 
-const BASE_URL = `${environment.apiBaseUrl.replace(/\/+$/, '')}/`;
+const BASE_URL = apiBaseUrl(environment.apiUrl);
 
 function encode(value: object): string {
   return btoa(JSON.stringify(value)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');

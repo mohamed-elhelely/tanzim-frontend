@@ -1,5 +1,6 @@
 export const environment = {
   production: true,
-  apiBaseUrl: '/api/',
-  wsBaseUrl: 'wss://your-domain.com/ws/',
+  /** Backend origin, no trailing slash. API calls go to `${apiUrl}/api/…`. */
+  apiUrl: 'https://chunk-surcharge-manhood.ngrok-free.dev',
+  wsBaseUrl: 'wss://chunk-surcharge-manhood.ngrok-free.dev/ws/',
 };

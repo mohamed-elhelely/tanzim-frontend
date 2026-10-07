@@ -5,6 +5,7 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { provideTranslateService } from '@ngx-translate/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { API_BASE_URL } from '../core/api/api.config';
 import { errorInterceptor } from '../core/interceptors/error.interceptor';
 
 /** A successful API response in the backend's envelope. */
@@ -41,6 +42,8 @@ export function provideApiTesting(): (Provider | EnvironmentProviders)[] {
     provideHttpClientTesting(),
     provideAnimations(),
     provideTranslateService(),
+    // Specs assert relative '/api/…' URLs, whatever backend the environment points at.
+    { provide: API_BASE_URL, useValue: '/api/' },
     MessageService,
     ConfirmationService,
   ];
