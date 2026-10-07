@@ -1,1 +1,0 @@
-import{d as t}from"./chunk-AXILETHZ.js";import{O as e,ia as i}from"./chunk-TFBLIGIB.js";var a=class r extends t{path="company/v1/permission-groups/";static \u0275fac=(()=>{let o;return function(s){return(o||(o=i(r)))(s||r)}})();static \u0275prov=e({token:r,factory:r.\u0275fac,providedIn:"root"})};export{a};

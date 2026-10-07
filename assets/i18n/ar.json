@@ -46,7 +46,12 @@
     "teams": "الفرق",
     "roles": "الأدوار",
     "permissionGroups": "مجموعات الصلاحيات",
-    "permissions": "الصلاحيات"
+    "permissions": "الصلاحيات",
+    "sites": "مواقع الشركة",
+    "countries": "الدول",
+    "regions": "المحافظات",
+    "cities": "المدن",
+    "districts": "الأحياء"
   },
   "auth": {
     "login": "تسجيل الدخول",
@@ -80,7 +85,9 @@
   "validation": {
     "required": "هذا الحقل مطلوب.",
     "maxLength": "الحد الأقصى {{max}} حرفًا.",
-    "email": "أدخل بريدًا إلكترونيًا صحيحًا."
+    "email": "أدخل بريدًا إلكترونيًا صحيحًا.",
+    "minLength": "الحد الأدنى {{min}} أحرف.",
+    "pattern": "الصيغة غير صحيحة."
   },
   "company": {
     "fields": {
@@ -143,6 +150,65 @@
       "title": "الصلاحيات",
       "new": "صلاحية جديدة",
       "edit": "تعديل صلاحية"
+    }
+  },
+  "locations": {
+    "fields": {
+      "isoCode": "رمز ISO",
+      "phoneCode": "كود الاتصال",
+      "isActive": "نشط",
+      "code": "الكود",
+      "country": "الدولة",
+      "region": "المحافظة",
+      "city": "المدينة",
+      "district": "الحي",
+      "timezone": "المنطقة الزمنية",
+      "postalCodePrefix": "بادئة الرمز البريدي",
+      "postalCode": "الرمز البريدي",
+      "locationType": "النوع",
+      "addressLine1": "العنوان (سطر 1)",
+      "addressLine2": "العنوان (سطر 2)"
+    },
+    "hints": {
+      "isoCode": "حرفان، مثل EG.",
+      "phoneCode": "علامة + ثم من 1 إلى 4 أرقام، مثل ‎+20.",
+      "regionCode": "حرفان أو ثلاثة، مثل CAI.",
+      "postalCodePrefix": "من 3 إلى 5 أرقام.",
+      "pickCountryFirst": "اختر الدولة أولًا.",
+      "pickRegionFirst": "اختر المحافظة أولًا.",
+      "pickCityFirst": "اختر المدينة أولًا."
+    },
+    "types": {
+      "office": "مكتب",
+      "warehouse": "مخزن",
+      "retail": "فرع بيع",
+      "factory": "مصنع",
+      "remote": "عن بُعد"
+    },
+    "sites": {
+      "title": "مواقع الشركة",
+      "new": "موقع جديد",
+      "edit": "تعديل الموقع"
+    },
+    "countries": {
+      "title": "الدول",
+      "new": "دولة جديدة",
+      "edit": "تعديل الدولة"
+    },
+    "regions": {
+      "title": "المحافظات",
+      "new": "محافظة جديدة",
+      "edit": "تعديل المحافظة"
+    },
+    "cities": {
+      "title": "المدن",
+      "new": "مدينة جديدة",
+      "edit": "تعديل المدينة"
+    },
+    "districts": {
+      "title": "الأحياء",
+      "new": "حي جديد",
+      "edit": "تعديل الحي"
     }
   }
 }
