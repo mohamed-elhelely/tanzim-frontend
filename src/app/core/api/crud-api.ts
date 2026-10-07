@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { Observable, forkJoin, map, of, switchMap } from 'rxjs';
 import { Paginated } from '../models/api-response.model';
 import { BaseApiService } from './base-api.service';
 
@@ -42,6 +42,21 @@ export abstract class CrudApi<T, TPayload, TCreated = T> extends BaseApiService 
 
   all(): Observable<T[]> {
     return this.get<T[]>(this.path).pipe(map((response) => response.data ?? []));
+  }
+
+  /** Every record of a paginated resource, fetched 100 at a time (the backend's max page size). */
+  listAll(): Observable<T[]> {
+    const pageSize = 100;
+    return this.list({ page: 1, pageSize }).pipe(
+      switchMap((first) => {
+        const pageCount = Math.ceil(first.total / pageSize);
+        if (pageCount <= 1) {
+          return of(first.items);
+        }
+        const rest = Array.from({ length: pageCount - 1 }, (_, i) => this.list({ page: i + 2, pageSize }));
+        return forkJoin(rest).pipe(map((pages) => first.items.concat(...pages.map((page) => page.items))));
+      }),
+    );
   }
 
   dropdown<D>(): Observable<D[]> {

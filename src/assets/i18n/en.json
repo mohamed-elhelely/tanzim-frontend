@@ -46,7 +46,12 @@
     "teams": "Teams",
     "roles": "Roles",
     "permissionGroups": "Permission groups",
-    "permissions": "Permissions"
+    "permissions": "Permissions",
+    "sites": "Company locations",
+    "countries": "Countries",
+    "regions": "Regions",
+    "cities": "Cities",
+    "districts": "Districts"
   },
   "auth": {
     "login": "Login",
@@ -80,7 +85,9 @@
   "validation": {
     "required": "This field is required.",
     "maxLength": "Maximum {{max}} characters.",
-    "email": "Enter a valid email address."
+    "email": "Enter a valid email address.",
+    "minLength": "Minimum {{min}} characters.",
+    "pattern": "Invalid format."
   },
   "company": {
     "fields": {
@@ -143,6 +150,65 @@
       "title": "Permissions",
       "new": "New permission",
       "edit": "Edit permission"
+    }
+  },
+  "locations": {
+    "fields": {
+      "isoCode": "ISO code",
+      "phoneCode": "Phone code",
+      "isActive": "Active",
+      "code": "Code",
+      "country": "Country",
+      "region": "Region",
+      "city": "City",
+      "district": "District",
+      "timezone": "Time zone",
+      "postalCodePrefix": "Postal code prefix",
+      "postalCode": "Postal code",
+      "locationType": "Type",
+      "addressLine1": "Address line 1",
+      "addressLine2": "Address line 2"
+    },
+    "hints": {
+      "isoCode": "Two letters, e.g. EG.",
+      "phoneCode": "A + followed by 1–4 digits, e.g. +20.",
+      "regionCode": "Two or three letters, e.g. CAI.",
+      "postalCodePrefix": "Three to five digits.",
+      "pickCountryFirst": "Choose a country first.",
+      "pickRegionFirst": "Choose a region first.",
+      "pickCityFirst": "Choose a city first."
+    },
+    "types": {
+      "office": "Office",
+      "warehouse": "Warehouse",
+      "retail": "Retail",
+      "factory": "Factory",
+      "remote": "Remote"
+    },
+    "sites": {
+      "title": "Company locations",
+      "new": "New location",
+      "edit": "Edit location"
+    },
+    "countries": {
+      "title": "Countries",
+      "new": "New country",
+      "edit": "Edit country"
+    },
+    "regions": {
+      "title": "Regions",
+      "new": "New region",
+      "edit": "Edit region"
+    },
+    "cities": {
+      "title": "Cities",
+      "new": "New city",
+      "edit": "Edit city"
+    },
+    "districts": {
+      "title": "Districts",
+      "new": "New district",
+      "edit": "Edit district"
     }
   }
 }

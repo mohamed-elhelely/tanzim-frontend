@@ -21,6 +21,10 @@ import { TranslatePipe } from '@ngx-translate/core';
           {{ 'validation.email' | translate }}
         } @else if (errors['maxlength']) {
           {{ 'validation.maxLength' | translate: { max: errors['maxlength'].requiredLength } }}
+        } @else if (errors['minlength']) {
+          {{ 'validation.minLength' | translate: { min: errors['minlength'].requiredLength } }}
+        } @else if (errors['pattern']) {
+          {{ patternKey | translate }}
         }
       </small>
     }
@@ -28,4 +32,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 })
 export class FieldErrorComponent {
   @Input({ required: true }) control!: AbstractControl;
+  /** Translation key that explains the expected format when a `Validators.pattern` fails. */
+  @Input() patternKey = 'validation.pattern';
 }
