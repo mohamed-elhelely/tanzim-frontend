@@ -69,4 +69,19 @@ export const COMPANY_ROUTES: Routes = [
     loadComponent: () => import('./roles/role-form.component').then((m) => m.RoleFormComponent),
     data: { titleKey: 'company.roles.edit' },
   },
+  {
+    path: 'teams',
+    loadComponent: () => import('./teams/team-list.component').then((m) => m.TeamListComponent),
+    data: { titleKey: 'company.teams.title' },
+  },
+  {
+    path: 'teams/new',
+    loadComponent: () => import('./teams/team-form.component').then((m) => m.TeamFormComponent),
+    data: { titleKey: 'company.teams.new' },
+  },
+  {
+    path: 'teams/:id/edit',
+    loadComponent: () => import('./teams/team-form.component').then((m) => m.TeamFormComponent),
+    data: { titleKey: 'company.teams.edit' },
+  },
 ];
