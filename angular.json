@@ -41,6 +41,7 @@
               }
             ],
             "styles": [
+              "src/layer-order.css",
               "src/styles.scss"
             ],
             "scripts": []
@@ -114,6 +115,7 @@
               }
             ],
             "styles": [
+              "src/layer-order.css",
               "src/styles.scss"
             ],
             "scripts": []

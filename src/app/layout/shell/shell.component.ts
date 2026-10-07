@@ -3,6 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { SidebarModule } from 'primeng/sidebar';
 import { ToastModule } from 'primeng/toast';
+import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { LoadingBarComponent } from '../../shared/components/loading-bar/loading-bar.component';
 import { AppHeaderComponent } from '../header/header.component';
 import { NavListComponent } from '../nav/nav-list.component';
@@ -20,6 +21,7 @@ import { AppSidebarComponent } from '../sidebar/sidebar.component';
     AppHeaderComponent,
     AppSidebarComponent,
     NavListComponent,
+    ConfirmDialogComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './shell.component.html',

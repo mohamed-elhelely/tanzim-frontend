@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 
@@ -24,4 +24,5 @@ export class PageHeaderComponent {
   @Input() showBack = false;
   @Input() backLabel = 'common.back';
   @Input() actions: PageHeaderAction[] = [];
+  @Output() back = new EventEmitter<void>();
 }
