@@ -1,0 +1,81 @@
+<app-page-header
+  [title]="isEdit ? 'locations.regions.edit' : 'locations.regions.new'"
+  [showBack]="true"
+  backLabel="common.backToList"
+  (back)="goBack()"
+></app-page-header>
+
+@if (loadError(); as err) {
+  <app-error-state [title]="errorTitleKey(err)" [showRetry]="false"></app-error-state>
+} @else if (loading()) {
+  <app-loading-state></app-loading-state>
+} @else {
+  <p-card>
+    <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-6" novalidate>
+      @if (formErrors().length) {
+        <div
+          role="alert"
+          class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300"
+        >
+          @for (message of formErrors(); track $index) {
+            <p>{{ message }}</p>
+          }
+        </div>
+      }
+
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div class="flex flex-col gap-1">
+          <label for="name_en" class="text-sm font-medium">{{ 'company.fields.nameEn' | translate }} *</label>
+          <input pInputText id="name_en" formControlName="name_en" class="w-full" />
+          <app-field-error [control]="form.controls.name_en"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="name_ar" class="text-sm font-medium">{{ 'company.fields.nameAr' | translate }}</label>
+          <input pInputText id="name_ar" formControlName="name_ar" dir="rtl" class="w-full" />
+          <app-field-error [control]="form.controls.name_ar"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="country" class="text-sm font-medium">{{ 'locations.fields.country' | translate }} *</label>
+          <p-dropdown
+            inputId="country"
+            formControlName="country"
+            [options]="countryOptions()"
+            optionLabel="label"
+            optionValue="value"
+            [filter]="true"
+            [showClear]="false"
+            [placeholder]="'common.select' | translate"
+            styleClass="w-full"
+            appendTo="body"
+          ></p-dropdown>
+          <app-field-error [control]="form.controls.country"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="code" class="text-sm font-medium">{{ 'locations.fields.code' | translate }}</label>
+          <input pInputText id="code" formControlName="code" dir="ltr" class="w-full" />
+          <app-field-error [control]="form.controls.code" patternKey="locations.hints.regionCode"></app-field-error>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2">
+        <p-button
+          type="button"
+          [label]="'common.cancel' | translate"
+          severity="secondary"
+          [outlined]="true"
+          (onClick)="goBack()"
+        ></p-button>
+        <p-button
+          type="submit"
+          [label]="'common.save' | translate"
+          icon="pi pi-check"
+          [loading]="saving()"
+          [disabled]="saving()"
+        ></p-button>
+      </div>
+    </form>
+  </p-card>
+}
