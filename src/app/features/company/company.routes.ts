@@ -84,4 +84,19 @@ export const COMPANY_ROUTES: Routes = [
     loadComponent: () => import('./teams/team-form.component').then((m) => m.TeamFormComponent),
     data: { titleKey: 'company.teams.edit' },
   },
+  {
+    path: 'users',
+    loadComponent: () => import('./users/user-list.component').then((m) => m.UserListComponent),
+    data: { titleKey: 'company.users.title' },
+  },
+  {
+    path: 'users/new',
+    loadComponent: () => import('./users/user-form.component').then((m) => m.UserFormComponent),
+    data: { titleKey: 'company.users.new' },
+  },
+  {
+    path: 'users/:id/edit',
+    loadComponent: () => import('./users/user-form.component').then((m) => m.UserFormComponent),
+    data: { titleKey: 'company.users.edit' },
+  },
 ];
