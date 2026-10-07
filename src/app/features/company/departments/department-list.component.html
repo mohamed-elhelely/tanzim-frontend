@@ -1,0 +1,76 @@
+<app-page-header title="company.departments.title" [actions]="headerActions"></app-page-header>
+
+<div class="mb-4">
+  <input
+    pInputText
+    type="search"
+    class="w-full sm:w-80"
+    [placeholder]="'common.search' | translate"
+    (input)="onSearch($any($event.target).value)"
+  />
+</div>
+
+@if (error(); as err) {
+  <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403" (retry)="load()"></app-error-state>
+} @else {
+  <div class="overflow-x-auto rounded-lg border border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800">
+    <p-table
+      [value]="rows()"
+      [lazy]="true"
+      [lazyLoadOnInit]="false"
+      (onLazyLoad)="onLazyLoad($event)"
+      [paginator]="true"
+      [first]="first()"
+      [rows]="pageSize()"
+      [totalRecords]="total()"
+      [rowsPerPageOptions]="[10, 25, 50]"
+      [loading]="loading()"
+      dataKey="id"
+      styleClass="p-datatable-sm"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th pSortableColumn="id">{{ 'company.fields.id' | translate }} <p-sortIcon field="id"></p-sortIcon></th>
+          <th pSortableColumn="name_en">
+            {{ 'company.fields.nameEn' | translate }} <p-sortIcon field="name_en"></p-sortIcon>
+          </th>
+          <th>{{ 'company.fields.nameAr' | translate }}</th>
+          <th>{{ 'company.fields.parent' | translate }}</th>
+          <th>{{ 'company.fields.manager' | translate }}</th>
+          <th class="text-end">{{ 'common.actions' | translate }}</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-row>
+        <tr>
+          <td>{{ row.id }}</td>
+          <td>{{ row.name_en }}</td>
+          <td>{{ row.name_ar }}</td>
+          <td>{{ row.parent | localizedName: lang() }}</td>
+          <td>{{ row.manager | userName }}</td>
+          <td class="whitespace-nowrap text-end">
+            <p-button
+              icon="pi pi-pencil"
+              [text]="true"
+              [rounded]="true"
+              [ariaLabel]="'common.edit' | translate"
+              (onClick)="edit(row)"
+            ></p-button>
+            <p-button
+              icon="pi pi-trash"
+              severity="danger"
+              [text]="true"
+              [rounded]="true"
+              [ariaLabel]="'common.delete' | translate"
+              (onClick)="confirmDelete(row)"
+            ></p-button>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="6"><app-empty-state icon="pi-sitemap"></app-empty-state></td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+}

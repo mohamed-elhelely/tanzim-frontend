@@ -12,6 +12,7 @@
         icon="pi pi-arrow-left"
         severity="secondary"
         [outlined]="true"
+        (onClick)="back.emit()"
       ></p-button>
     }
     @for (action of actions; track action.label) {

@@ -1,0 +1,6 @@
+/*
+ * Cascade layer order for the whole app. Must be the first stylesheet in angular.json:
+ * a layer's rank is fixed where it first appears, and Sass hoists the PrimeNG imports
+ * in styles.scss above anything else in that file.
+ */
+@layer tailwind-base, primeng, tailwind-utilities;

@@ -283,3 +283,18 @@ Each is checked with a real request during implementation; types and code are ad
 - Hiding menus/buttons by the user's permissions or role.
 - Creating/editing locations (Step 5).
 - Hiding menus by subscription module.
+
+## Verification results (2026-10-07, against the local backend)
+
+Checked with real requests as a seeded company admin (`setup_data.py`).
+
+| Open point | Result | What the frontend does |
+|---|---|---|
+| 1. Shape of `Department.parent` and `Permission.groups` | `{ id, name_en }` (and a list of them), as assumed | No change. |
+| 2. `PATCH /company-user/{id}/` with nested `user` without password | **400** `{"user":{"email":["User with this Email Address already exists."]}}`: the backend re-validates the unchanged email. PATCH **without** `user` returns 200. | The edit form sends only `role`, `department`, `team` and the three flags; login fields are shown read-only. Changing a user's name/email needs backend support for nested update. |
+| 3. Company-user create response includes `id` | **No** (`user, role, department, team, is_company_admin, is_department_manager, is_team_lead`) | `create()` is a single POST typed as `CompanyUserCreated`; no re-fetch. |
+| Extra: `GET /permissions/?search=` | **500**: the shared view searches `name_en`/`name_ar`, which permissions don't have | The Permissions list has no search box. |
+
+Backend issues to raise: nested user update on company-user PATCH; `search_fields` for permissions.
+
+Browser walk (Users, Departments, Teams, Roles, Permission groups, Permissions): every list loads; user edit saves; department create (with parent), search and delete via the confirm dialog work; Arabic is RTL with translated labels; at 375 px the drawer shows the Company group and tables scroll inside their container.

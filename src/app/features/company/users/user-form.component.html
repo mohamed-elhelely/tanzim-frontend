@@ -1,0 +1,160 @@
+<app-page-header
+  [title]="isEdit ? 'company.users.edit' : 'company.users.new'"
+  [showBack]="true"
+  backLabel="common.backToList"
+  (back)="goBack()"
+></app-page-header>
+
+@if (loadError(); as err) {
+  <app-error-state [title]="errorTitleKey(err)" [showRetry]="false"></app-error-state>
+} @else if (loading()) {
+  <app-loading-state></app-loading-state>
+} @else {
+  <p-card>
+    <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-6" novalidate>
+      @if (formErrors().length) {
+        <div
+          role="alert"
+          class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300"
+        >
+          @for (message of formErrors(); track $index) {
+            <p>{{ message }}</p>
+          }
+        </div>
+      }
+
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div class="flex flex-col gap-1">
+          <label for="email" class="text-sm font-medium">{{ 'company.fields.email' | translate }} *</label>
+          <input pInputText id="email" type="email" formControlName="email" dir="ltr" class="w-full" />
+          <app-field-error [control]="form.controls.email"></app-field-error>
+        </div>
+
+        @if (!isEdit) {
+          <div class="flex flex-col gap-1">
+            <label for="password" class="text-sm font-medium">{{ 'company.fields.password' | translate }} *</label>
+            <p-password
+              inputId="password"
+              formControlName="password"
+              [feedback]="false"
+              [toggleMask]="true"
+              autocomplete="new-password"
+              styleClass="w-full"
+              inputStyleClass="w-full"
+            ></p-password>
+            <app-field-error [control]="form.controls.password"></app-field-error>
+          </div>
+        }
+
+        <div class="flex flex-col gap-1">
+          <label for="first_name" class="text-sm font-medium">{{ 'company.fields.firstName' | translate }} *</label>
+          <input pInputText id="first_name" formControlName="first_name" class="w-full" />
+          <app-field-error [control]="form.controls.first_name"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="last_name" class="text-sm font-medium">{{ 'company.fields.lastName' | translate }} *</label>
+          <input pInputText id="last_name" formControlName="last_name" class="w-full" />
+          <app-field-error [control]="form.controls.last_name"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="preferred_name" class="text-sm font-medium">{{ 'company.fields.preferredName' | translate }}</label>
+          <input pInputText id="preferred_name" formControlName="preferred_name" class="w-full" />
+          <app-field-error [control]="form.controls.preferred_name"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="phone_number" class="text-sm font-medium">{{ 'company.fields.phone' | translate }}</label>
+          <input pInputText id="phone_number" type="tel" formControlName="phone_number" dir="ltr" class="w-full" />
+          <app-field-error [control]="form.controls.phone_number"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="role" class="text-sm font-medium">{{ 'company.fields.role' | translate }}</label>
+          <p-dropdown
+            inputId="role"
+            formControlName="role"
+            [options]="roleOptions()"
+            optionLabel="label"
+            optionValue="value"
+            [filter]="true"
+            [showClear]="true"
+            [placeholder]="'common.select' | translate"
+            styleClass="w-full"
+            appendTo="body"
+          ></p-dropdown>
+          <app-field-error [control]="form.controls.role"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="department" class="text-sm font-medium">{{ 'company.fields.department' | translate }}</label>
+          <p-dropdown
+            inputId="department"
+            formControlName="department"
+            [options]="departmentOptions()"
+            optionLabel="label"
+            optionValue="value"
+            [filter]="true"
+            [showClear]="true"
+            [placeholder]="'common.select' | translate"
+            styleClass="w-full"
+            appendTo="body"
+          ></p-dropdown>
+          <app-field-error [control]="form.controls.department"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="team" class="text-sm font-medium">{{ 'company.fields.team' | translate }}</label>
+          <p-dropdown
+            inputId="team"
+            formControlName="team"
+            [options]="teamOptions()"
+            optionLabel="label"
+            optionValue="value"
+            [filter]="true"
+            [showClear]="true"
+            [placeholder]="'common.select' | translate"
+            styleClass="w-full"
+            appendTo="body"
+          ></p-dropdown>
+          <app-field-error [control]="form.controls.team"></app-field-error>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-3 sm:flex-row sm:gap-8">
+        <div class="flex items-center gap-3">
+          <p-inputSwitch inputId="is_company_admin" formControlName="is_company_admin"></p-inputSwitch>
+          <label for="is_company_admin" class="text-sm font-medium">{{ 'company.fields.companyAdmin' | translate }}</label>
+        </div>
+        <div class="flex items-center gap-3">
+          <p-inputSwitch inputId="is_department_manager" formControlName="is_department_manager"></p-inputSwitch>
+          <label for="is_department_manager" class="text-sm font-medium">
+            {{ 'company.fields.departmentManager' | translate }}
+          </label>
+        </div>
+        <div class="flex items-center gap-3">
+          <p-inputSwitch inputId="is_team_lead" formControlName="is_team_lead"></p-inputSwitch>
+          <label for="is_team_lead" class="text-sm font-medium">{{ 'company.fields.teamLead' | translate }}</label>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2">
+        <p-button
+          type="button"
+          [label]="'common.cancel' | translate"
+          severity="secondary"
+          [outlined]="true"
+          (onClick)="goBack()"
+        ></p-button>
+        <p-button
+          type="submit"
+          [label]="'common.save' | translate"
+          icon="pi pi-check"
+          [loading]="saving()"
+          [disabled]="saving()"
+        ></p-button>
+      </div>
+    </form>
+  </p-card>
+}
