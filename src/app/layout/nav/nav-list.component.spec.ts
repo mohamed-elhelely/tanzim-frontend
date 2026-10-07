@@ -36,4 +36,11 @@ describe('NavListComponent', () => {
     expect(toggle.getAttribute('aria-expanded')).toBe('true');
     expect(links(fixture)).toContain('/company/users');
   });
+
+  it('expands the Locations group on a locations page', async () => {
+    const fixture = await render('/locations/cities/3/edit');
+    expect(links(fixture)).toContain('/locations/sites');
+    expect(links(fixture)).toContain('/locations/districts');
+    expect(links(fixture)).not.toContain('/company/users');
+  });
 });
