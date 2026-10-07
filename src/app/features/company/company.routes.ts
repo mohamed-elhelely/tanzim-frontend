@@ -39,4 +39,19 @@ export const COMPANY_ROUTES: Routes = [
       import('./permission-groups/permission-group-form.component').then((m) => m.PermissionGroupFormComponent),
     data: { titleKey: 'company.permissionGroups.edit' },
   },
+  {
+    path: 'permissions',
+    loadComponent: () => import('./permissions/permission-list.component').then((m) => m.PermissionListComponent),
+    data: { titleKey: 'company.permissions.title' },
+  },
+  {
+    path: 'permissions/new',
+    loadComponent: () => import('./permissions/permission-form.component').then((m) => m.PermissionFormComponent),
+    data: { titleKey: 'company.permissions.new' },
+  },
+  {
+    path: 'permissions/:id/edit',
+    loadComponent: () => import('./permissions/permission-form.component').then((m) => m.PermissionFormComponent),
+    data: { titleKey: 'company.permissions.edit' },
+  },
 ];
