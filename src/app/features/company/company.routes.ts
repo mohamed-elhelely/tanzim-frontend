@@ -21,4 +21,22 @@ export const COMPANY_ROUTES: Routes = [
       import('./departments/department-form.component').then((m) => m.DepartmentFormComponent),
     data: { titleKey: 'company.departments.edit' },
   },
+  {
+    path: 'permission-groups',
+    loadComponent: () =>
+      import('./permission-groups/permission-group-list.component').then((m) => m.PermissionGroupListComponent),
+    data: { titleKey: 'company.permissionGroups.title' },
+  },
+  {
+    path: 'permission-groups/new',
+    loadComponent: () =>
+      import('./permission-groups/permission-group-form.component').then((m) => m.PermissionGroupFormComponent),
+    data: { titleKey: 'company.permissionGroups.new' },
+  },
+  {
+    path: 'permission-groups/:id/edit',
+    loadComponent: () =>
+      import('./permission-groups/permission-group-form.component').then((m) => m.PermissionGroupFormComponent),
+    data: { titleKey: 'company.permissionGroups.edit' },
+  },
 ];
