@@ -1,14 +1,6 @@
 <app-page-header title="company.permissions.title" [actions]="headerActions"></app-page-header>
 
-<div class="mb-4">
-  <input
-    pInputText
-    type="search"
-    class="w-full sm:w-80"
-    [placeholder]="'common.search' | translate"
-    (input)="onSearch($any($event.target).value)"
-  />
-</div>
+<!-- No search box: the backend searches name_en/name_ar, which permissions don't have, and returns 500. -->
 
 @if (error(); as err) {
   <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403" (retry)="load()"></app-error-state>

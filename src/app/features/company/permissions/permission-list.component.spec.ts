@@ -40,6 +40,26 @@ describe('PermissionListComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('Sales access');
   });
 
+  it('has no search box, because the backend search on permissions returns 500', () => {
+    const fixture = create();
+    httpMock.expectOne((r) => r.url === URL).flush(envelope([makePermission()], 1));
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('input[type="search"]')).toBeNull();
+  });
+
+  it('cancels the older list request when a newer one starts', () => {
+    const fixture = create();
+    httpMock.expectOne((r) => r.url === URL).flush(envelope([makePermission()], 30));
+    fixture.componentInstance.onLazyLoad({ first: 10, rows: 10 });
+    fixture.componentInstance.onLazyLoad({ first: 20, rows: 10 });
+
+    const requests = httpMock.match((r) => r.url === URL);
+    expect(requests.length).toBe(2);
+    expect(requests[0].cancelled).toBeTrue();
+    expect(requests[1].request.params.get('page')).toBe('3');
+    requests[1].flush(envelope([], 30));
+  });
+
   it('opens the edit page', () => {
     const fixture = create();
     httpMock.expectOne((r) => r.url === URL).flush(envelope([makePermission()], 1));

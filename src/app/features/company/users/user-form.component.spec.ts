@@ -52,7 +52,7 @@ describe('UserFormComponent', () => {
     expect(fixture.componentInstance.form.controls.password.hasError('required')).toBeTrue();
   });
 
-  it('creates a user with a nested user object, then re-fetches it', () => {
+  it('creates a user with a nested user object and returns to the list', () => {
     const fixture = setup(null);
     fillRequired(fixture);
     fixture.componentInstance.form.patchValue({ role: 3, is_company_admin: true });
@@ -75,8 +75,7 @@ describe('UserFormComponent', () => {
       is_department_manager: false,
       is_team_lead: false,
     });
-    req.flush(envelope({ id: 20 }), { status: 201, statusText: 'Created' });
-    httpMock.expectOne(`${URL}20/`).flush(envelope(makeCompanyUser({ id: 20 })));
+    req.flush(envelope({ user: { email: 'omar@acme.example' } }), { status: 201, statusText: 'Created' });
 
     expect(router.navigate).toHaveBeenCalledWith(['/company/users']);
   });
@@ -95,7 +94,32 @@ describe('UserFormComponent', () => {
 
     fixture.componentInstance.submit();
     const req = httpMock.expectOne((r) => r.url === `${URL}12/` && r.method === 'PATCH');
-    expect('password' in req.request.body.user).toBeFalse();
+    expect('user' in req.request.body).toBeFalse();
+    req.flush(envelope(makeCompanyUser()));
+  });
+
+  it('edits only role, department, team and flags; login fields are read-only', () => {
+    // The backend re-validates a nested `user` on PATCH and rejects the unchanged email as a duplicate.
+    const fixture = setup('12');
+    httpMock.expectOne(`${URL}12/`).flush(envelope(makeCompanyUser({ role: makeRole() })));
+    fixture.detectChanges();
+
+    const controls = fixture.componentInstance.form.controls;
+    for (const name of ['email', 'first_name', 'last_name', 'preferred_name', 'phone_number'] as const) {
+      expect(controls[name].disabled).withContext(name).toBeTrue();
+    }
+
+    controls.department.setValue(5);
+    fixture.componentInstance.submit();
+    const req = httpMock.expectOne((r) => r.url === `${URL}12/` && r.method === 'PATCH');
+    expect(req.request.body).toEqual({
+      role: 3,
+      department: 5,
+      team: null,
+      is_company_admin: false,
+      is_department_manager: false,
+      is_team_lead: false,
+    });
     req.flush(envelope(makeCompanyUser()));
   });
 

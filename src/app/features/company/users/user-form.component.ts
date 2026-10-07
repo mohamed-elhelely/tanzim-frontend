@@ -8,6 +8,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
+import { Observable } from 'rxjs';
 import { AppError } from '../../../core/errors/app-error';
 import { LanguageService } from '../../../core/services/language.service';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -22,6 +23,9 @@ import { DepartmentService } from '../departments/department.service';
 import { RoleService } from '../roles/role.service';
 import { TeamService } from '../teams/team.service';
 import { CompanyUserService } from './company-user.service';
+
+/** Login-account fields. Only sent on create: the backend can't update the nested user. */
+const LOGIN_FIELDS = ['email', 'first_name', 'last_name', 'preferred_name', 'phone_number'] as const;
 
 /** Server errors arrive nested under "user"; map them to this form's flat controls. */
 const USER_FIELD_MAP: Record<string, string> = {
@@ -109,18 +113,7 @@ export class UserFormComponent implements OnInit {
       return;
     }
     const value = this.form.getRawValue();
-    const user: CompanyUserPayload['user'] = {
-      email: value.email.trim(),
-      first_name: value.first_name.trim(),
-      last_name: value.last_name.trim(),
-      preferred_name: value.preferred_name.trim(),
-      phone_number: value.phone_number.trim(),
-    };
-    if (!this.isEdit) {
-      user.password = value.password;
-    }
-    const body: CompanyUserPayload = {
-      user,
+    const assignment: Omit<CompanyUserPayload, 'user'> = {
       role: value.role,
       department: value.department,
       team: value.team,
@@ -128,9 +121,24 @@ export class UserFormComponent implements OnInit {
       is_department_manager: value.is_department_manager,
       is_team_lead: value.is_team_lead,
     };
+    // PATCH with a nested `user` is rejected by the backend (the unchanged email fails its unique check),
+    // so editing only changes the assignment; the login account is set once, on create.
+    const request: Observable<unknown> =
+      this.id !== null
+        ? this.api.update(this.id, assignment)
+        : this.api.create({
+            ...assignment,
+            user: {
+              email: value.email.trim(),
+              first_name: value.first_name.trim(),
+              last_name: value.last_name.trim(),
+              preferred_name: value.preferred_name.trim(),
+              phone_number: value.phone_number.trim(),
+              password: value.password,
+            },
+          });
     this.saving.set(true);
     this.formErrors.set([]);
-    const request = this.id !== null ? this.api.update(this.id, body) : this.api.create(body);
     request.subscribe({
       next: () => {
         this.saving.set(false);
@@ -166,6 +174,7 @@ export class UserFormComponent implements OnInit {
           is_department_manager: companyUser.is_department_manager,
           is_team_lead: companyUser.is_team_lead,
         });
+        LOGIN_FIELDS.forEach((name) => this.form.controls[name].disable());
         this.loading.set(false);
       },
       error: (error: AppError) => {

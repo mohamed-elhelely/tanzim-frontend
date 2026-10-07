@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { HttpTestingController } from '@angular/common/http/testing';
 import { envelope, provideApiTesting } from '../../../testing/api-testing';
 import { makeCompanyUser } from '../../../testing/company-fixtures';
-import { CompanyUser, CompanyUserPayload, SelectOption } from '../company.models';
+import { CompanyUserCreated, CompanyUserPayload, SelectOption } from '../company.models';
 import { CompanyUserService } from './company-user.service';
 
 const URL = '/api/company/v1/company-user/';
@@ -23,25 +23,19 @@ describe('CompanyUserService', () => {
 
   afterEach(() => httpMock.verify());
 
-  it('re-fetches the full record after create when the response has an id', () => {
-    let result: CompanyUser | undefined;
+  it('creates with a single POST and returns the short create response', () => {
+    // The backend's create response has no id; nothing needs the full record, so there is no re-fetch
+    // that could fail after the user was already created.
+    let result: CompanyUserCreated | undefined;
     service.create(body).subscribe((u) => (result = u));
 
-    httpMock.expectOne(URL).flush(envelope({ id: 12, user: body.user }), { status: 201, statusText: 'Created' });
-    httpMock.expectOne(`${URL}12/`).flush(envelope(makeCompanyUser()));
+    const created = { user: { email: body.user.email, first_name: 'Sara', last_name: 'Ali' }, role: null };
+    httpMock.expectOne((r) => r.url === URL && r.method === 'POST').flush(envelope(created), {
+      status: 201,
+      statusText: 'Created',
+    });
 
-    expect(result?.id).toBe(12);
-    expect(result?.user.timezone).toBe('Asia/Riyadh');
-  });
-
-  it('finds the new record by email when the create response has no id', () => {
-    let result: CompanyUser | undefined;
-    service.create(body).subscribe((u) => (result = u));
-
-    httpMock.expectOne((r) => r.url === URL && r.method === 'POST').flush(envelope({ user: body.user }));
-    httpMock.expectOne((r) => r.url === URL && r.method === 'GET').flush(envelope([makeCompanyUser()]));
-
-    expect(result?.id).toBe(12);
+    expect(result?.user.email).toBe(body.user.email);
   });
 
   it('builds user options keyed by the login user id', () => {

@@ -94,6 +94,17 @@ export interface CompanyUser {
   last_updated: string;
 }
 
+/** POST /company-user/ response: shorter than CompanyUser and without an id (API_REFERENCE, verified). */
+export interface CompanyUserCreated {
+  user: { email: string; first_name: string; last_name: string; preferred_name?: string; phone_number?: string };
+  role?: number | null;
+  department?: number | null;
+  team?: number | null;
+  is_company_admin?: boolean;
+  is_department_manager?: boolean;
+  is_team_lead?: boolean;
+}
+
 export interface CompanyUserPayload {
   user: {
     email: string;

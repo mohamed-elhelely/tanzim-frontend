@@ -39,6 +39,19 @@ describe('PermissionGroupListComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('Sales access');
   });
 
+  it('cancels the older list request when a newer one starts', () => {
+    const fixture = create();
+    httpMock.expectOne((r) => r.url === URL).flush(envelope([makePermissionGroup()], 30));
+    fixture.componentInstance.onLazyLoad({ first: 10, rows: 10 });
+    fixture.componentInstance.onLazyLoad({ first: 20, rows: 10 });
+
+    const requests = httpMock.match((r) => r.url === URL);
+    expect(requests.length).toBe(2);
+    expect(requests[0].cancelled).toBeTrue();
+    expect(requests[1].request.params.get('page')).toBe('3');
+    requests[1].flush(envelope([], 30));
+  });
+
   it('opens the edit page', () => {
     const fixture = create();
     httpMock.expectOne((r) => r.url === URL).flush(envelope([makePermissionGroup()], 1));

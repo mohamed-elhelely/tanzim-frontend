@@ -6,7 +6,7 @@ import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableLazyLoadEvent, TableModule } from 'primeng/table';
-import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
+import { Subject, debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
 import { AppError } from '../../../core/errors/app-error';
 import { LanguageService } from '../../../core/services/language.service';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -45,6 +45,7 @@ export class RoleListComponent implements OnInit {
   private readonly search$ = new Subject<string>();
   private searchTerm = '';
   private ordering?: string;
+  private listRequest?: Subscription;
 
   readonly rows = signal<Role[]>([]);
   readonly total = signal(0);
@@ -89,7 +90,9 @@ export class RoleListComponent implements OnInit {
   load(): void {
     this.loading.set(true);
     this.error.set(null);
-    this.api
+    // Cancel the previous request so a slower, older response can't overwrite newer results.
+    this.listRequest?.unsubscribe();
+    this.listRequest = this.api
       .list({
         page: Math.floor(this.first() / this.pageSize()) + 1,
         pageSize: this.pageSize(),

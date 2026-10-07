@@ -13,9 +13,10 @@ export interface ListQuery {
 /**
  * Standard calls for one backend resource. Subclasses only set `path`,
  * e.g. 'company/v1/departments/' (always keep the trailing slash).
+ * `TCreated` is the create response when the backend returns a different shape than `T`.
  */
 @Injectable()
-export abstract class CrudApi<T, TPayload> extends BaseApiService {
+export abstract class CrudApi<T, TPayload, TCreated = T> extends BaseApiService {
   protected abstract readonly path: string;
 
   list(query: ListQuery): Observable<Paginated<T>> {
@@ -51,8 +52,8 @@ export abstract class CrudApi<T, TPayload> extends BaseApiService {
     return this.get<T>(this.detailPath(id)).pipe(map((response) => response.data as T));
   }
 
-  create(body: TPayload): Observable<T> {
-    return this.post<T>(this.path, body).pipe(map((response) => response.data as T));
+  create(body: TPayload): Observable<TCreated> {
+    return this.post<TCreated>(this.path, body).pipe(map((response) => response.data as TCreated));
   }
 
   update(id: number, body: Partial<TPayload>): Observable<T> {

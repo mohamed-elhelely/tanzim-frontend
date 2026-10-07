@@ -1,12 +1,10 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
 import { TableLazyLoadEvent, TableModule } from 'primeng/table';
-import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { AppError } from '../../../core/errors/app-error';
 import { LanguageService } from '../../../core/services/language.service';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -25,7 +23,6 @@ import { PermissionService } from './permission.service';
     TranslatePipe,
     TableModule,
     ButtonModule,
-    InputTextModule,
     PageHeaderComponent,
     EmptyStateComponent,
     ErrorStateComponent,
@@ -40,9 +37,8 @@ export class PermissionListComponent implements OnInit {
   private readonly notifications = inject(NotificationService);
   private readonly translate = inject(TranslateService);
   private readonly lang = inject(LanguageService).currentLang;
-  private readonly search$ = new Subject<string>();
-  private searchTerm = '';
   private ordering?: string;
+  private listRequest?: Subscription;
 
   readonly rows = signal<Permission[]>([]);
   readonly total = signal(0);
@@ -60,14 +56,6 @@ export class PermissionListComponent implements OnInit {
     },
   ];
 
-  constructor() {
-    this.search$.pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed()).subscribe((term) => {
-      this.searchTerm = term;
-      this.first.set(0);
-      this.load();
-    });
-  }
-
   ngOnInit(): void {
     this.load();
   }
@@ -80,18 +68,15 @@ export class PermissionListComponent implements OnInit {
     this.load();
   }
 
-  onSearch(term: string): void {
-    this.search$.next(term.trim());
-  }
-
   load(): void {
     this.loading.set(true);
     this.error.set(null);
-    this.api
+    // Cancel the previous request so a slower, older response can't overwrite newer results.
+    this.listRequest?.unsubscribe();
+    this.listRequest = this.api
       .list({
         page: Math.floor(this.first() / this.pageSize()) + 1,
         pageSize: this.pageSize(),
-        search: this.searchTerm || undefined,
         ordering: this.ordering,
       })
       .subscribe({
