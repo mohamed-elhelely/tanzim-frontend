@@ -29,8 +29,7 @@ export const routes: Routes = [
       },
       {
         path: 'company',
-        loadComponent: () => import('./features/company/company-page.component').then((m) => m.CompanyPageComponent),
-        data: { titleKey: 'nav.company' },
+        loadChildren: () => import('./features/company/company.routes').then((m) => m.COMPANY_ROUTES),
       },
       {
         path: 'locations',
