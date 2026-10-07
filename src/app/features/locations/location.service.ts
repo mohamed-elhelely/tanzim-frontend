@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { CrudApi } from '../../core/api/crud-api';
-import { NamedRef } from '../company/company.models';
+import { Location, LocationPayload } from './location.models';
 
-/** Step 4 only uses dropdown(); Step 5 (Locations) replaces the types with the full Location model. */
 @Injectable({ providedIn: 'root' })
-export class LocationService extends CrudApi<NamedRef, Record<string, never>> {
+export class LocationService extends CrudApi<Location, LocationPayload> {
   protected readonly path = 'company/v1/location/';
 }

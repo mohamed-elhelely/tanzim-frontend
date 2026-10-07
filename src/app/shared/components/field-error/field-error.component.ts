@@ -19,6 +19,8 @@ import { TranslatePipe } from '@ngx-translate/core';
           {{ 'validation.required' | translate }}
         } @else if (errors['email']) {
           {{ 'validation.email' | translate }}
+        } @else if (errors['minlength']) {
+          {{ 'validation.minLength' | translate: { min: errors['minlength'].requiredLength } }}
         } @else if (errors['maxlength']) {
           {{ 'validation.maxLength' | translate: { max: errors['maxlength'].requiredLength } }}
         }

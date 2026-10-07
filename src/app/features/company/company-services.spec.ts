@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController } from '@angular/common/http/testing';
 import { envelope, provideApiTesting } from '../../testing/api-testing';
+import { CityService, CountryService, DistrictService, RegionService } from '../locations/geo.services';
 import { LocationService } from '../locations/location.service';
 import { DepartmentService } from './departments/department.service';
 import { PermissionGroupService } from './permission-groups/permission-group.service';
@@ -26,6 +27,10 @@ describe('company resource services', () => {
     ['/api/company/v1/permission-groups/', () => TestBed.inject(PermissionGroupService)],
     ['/api/company/v1/permissions/', () => TestBed.inject(PermissionService)],
     ['/api/company/v1/location/', () => TestBed.inject(LocationService)],
+    ['/api/company/v1/country/', () => TestBed.inject(CountryService)],
+    ['/api/company/v1/region/', () => TestBed.inject(RegionService)],
+    ['/api/company/v1/city/', () => TestBed.inject(CityService)],
+    ['/api/company/v1/district/', () => TestBed.inject(DistrictService)],
     ['/api/company/v1/company-user/', () => TestBed.inject(CompanyUserService)],
   ];
 

@@ -33,9 +33,7 @@ export const routes: Routes = [
       },
       {
         path: 'locations',
-        loadComponent: () =>
-          import('./features/locations/locations-page.component').then((m) => m.LocationsPageComponent),
-        data: { titleKey: 'nav.locations' },
+        loadChildren: () => import('./features/locations/locations.routes').then((m) => m.LOCATION_ROUTES),
       },
       {
         path: 'inventory',
