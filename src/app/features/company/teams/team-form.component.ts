@@ -25,23 +25,22 @@ import { TeamService } from './team.service';
 export type LocationState = 'loading' | 'ready' | 'forbidden' | 'empty' | 'error';
 
 @Component({
-  selector: 'app-team-form',
-  standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    TranslatePipe,
-    ButtonModule,
-    CardModule,
-    DropdownModule,
-    InputTextModule,
-    MultiSelectModule,
-    PageHeaderComponent,
-    LoadingStateComponent,
-    ErrorStateComponent,
-    FieldErrorComponent,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './team-form.component.html',
+    selector: 'app-team-form',
+    imports: [
+        ReactiveFormsModule,
+        TranslatePipe,
+        ButtonModule,
+        CardModule,
+        DropdownModule,
+        InputTextModule,
+        MultiSelectModule,
+        PageHeaderComponent,
+        LoadingStateComponent,
+        ErrorStateComponent,
+        FieldErrorComponent,
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './team-form.component.html'
 })
 export class TeamFormComponent implements OnInit {
   private readonly api = inject(TeamService);

@@ -19,20 +19,19 @@ import { Country } from '../locations.models';
 import { CountryService } from './country.service';
 
 @Component({
-  selector: 'app-country-list',
-  standalone: true,
-  imports: [
-    TranslatePipe,
-    TableModule,
-    ButtonModule,
-    InputTextModule,
-    PageHeaderComponent,
-    EmptyStateComponent,
-    ErrorStateComponent,
-    StatusBadgeComponent,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './country-list.component.html',
+    selector: 'app-country-list',
+    imports: [
+        TranslatePipe,
+        TableModule,
+        ButtonModule,
+        InputTextModule,
+        PageHeaderComponent,
+        EmptyStateComponent,
+        ErrorStateComponent,
+        StatusBadgeComponent,
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './country-list.component.html'
 })
 export class CountryListComponent implements OnInit {
   private readonly api = inject(CountryService);

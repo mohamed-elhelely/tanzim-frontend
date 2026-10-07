@@ -4,11 +4,10 @@ import { ButtonModule } from 'primeng/button';
 import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-error-state',
-  standalone: true,
-  imports: [TranslatePipe, ButtonModule, NgIf],
-  templateUrl: './error-state.component.html',
-  styleUrl: './error-state.component.scss',
+    selector: 'app-error-state',
+    imports: [TranslatePipe, ButtonModule, NgIf],
+    templateUrl: './error-state.component.html',
+    styleUrl: './error-state.component.scss'
 })
 export class ErrorStateComponent {
   @Input() title: string = 'common.error';

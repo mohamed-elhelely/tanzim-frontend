@@ -21,23 +21,22 @@ import { PermissionGroupService } from '../permission-groups/permission-group.se
 import { RoleService } from './role.service';
 
 @Component({
-  selector: 'app-role-form',
-  standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    TranslatePipe,
-    ButtonModule,
-    CardModule,
-    InputSwitchModule,
-    InputTextModule,
-    MultiSelectModule,
-    PageHeaderComponent,
-    LoadingStateComponent,
-    ErrorStateComponent,
-    FieldErrorComponent,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './role-form.component.html',
+    selector: 'app-role-form',
+    imports: [
+        ReactiveFormsModule,
+        TranslatePipe,
+        ButtonModule,
+        CardModule,
+        InputSwitchModule,
+        InputTextModule,
+        MultiSelectModule,
+        PageHeaderComponent,
+        LoadingStateComponent,
+        ErrorStateComponent,
+        FieldErrorComponent,
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './role-form.component.html'
 })
 export class RoleFormComponent implements OnInit {
   private readonly api = inject(RoleService);

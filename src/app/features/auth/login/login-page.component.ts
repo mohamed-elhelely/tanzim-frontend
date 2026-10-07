@@ -11,12 +11,11 @@ import { AppError } from '../../../core/errors/app-error';
 import { LanguageService } from '../../../core/services/language.service';
 
 @Component({
-  selector: 'app-login-page',
-  standalone: true,
-  imports: [ReactiveFormsModule, TranslatePipe, CardModule, InputTextModule, PasswordModule, ButtonModule],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './login-page.component.html',
-  styleUrl: './login-page.component.scss',
+    selector: 'app-login-page',
+    imports: [ReactiveFormsModule, TranslatePipe, CardModule, InputTextModule, PasswordModule, ButtonModule],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './login-page.component.html',
+    styleUrl: './login-page.component.scss'
 })
 export class LoginPageComponent {
   private readonly fb = inject(NonNullableFormBuilder);

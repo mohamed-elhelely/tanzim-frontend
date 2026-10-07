@@ -7,10 +7,9 @@ import { TranslatePipe } from '@ngx-translate/core';
  * Default change detection on purpose: it must react to `touched` changes made by the parent form.
  */
 @Component({
-  selector: 'app-field-error',
-  standalone: true,
-  imports: [TranslatePipe],
-  template: `
+    selector: 'app-field-error',
+    imports: [TranslatePipe],
+    template: `
     @if (control.touched && control.errors; as errors) {
       <small class="text-sm text-red-600">
         @if (errors['serverError']) {
@@ -28,7 +27,7 @@ import { TranslatePipe } from '@ngx-translate/core';
         }
       </small>
     }
-  `,
+  `
 })
 export class FieldErrorComponent {
   @Input({ required: true }) control!: AbstractControl;

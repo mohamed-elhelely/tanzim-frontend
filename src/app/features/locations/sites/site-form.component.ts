@@ -28,23 +28,22 @@ import { RegionService } from '../regions/region.service';
 
 /** A company location ("site"): an address under Country → Region → City → District. */
 @Component({
-  selector: 'app-site-form',
-  standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    TranslatePipe,
-    ButtonModule,
-    CardModule,
-    DropdownModule,
-    InputSwitchModule,
-    InputTextModule,
-    PageHeaderComponent,
-    LoadingStateComponent,
-    ErrorStateComponent,
-    FieldErrorComponent,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './site-form.component.html',
+    selector: 'app-site-form',
+    imports: [
+        ReactiveFormsModule,
+        TranslatePipe,
+        ButtonModule,
+        CardModule,
+        DropdownModule,
+        InputSwitchModule,
+        InputTextModule,
+        PageHeaderComponent,
+        LoadingStateComponent,
+        ErrorStateComponent,
+        FieldErrorComponent,
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './site-form.component.html'
 })
 export class SiteFormComponent implements OnInit {
   private readonly api = inject(LocationService);

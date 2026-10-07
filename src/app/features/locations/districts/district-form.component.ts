@@ -21,22 +21,21 @@ import { City, DistrictPayload } from '../locations.models';
 import { DistrictService } from './district.service';
 
 @Component({
-  selector: 'app-district-form',
-  standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    TranslatePipe,
-    ButtonModule,
-    CardModule,
-    DropdownModule,
-    InputTextModule,
-    PageHeaderComponent,
-    LoadingStateComponent,
-    ErrorStateComponent,
-    FieldErrorComponent,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './district-form.component.html',
+    selector: 'app-district-form',
+    imports: [
+        ReactiveFormsModule,
+        TranslatePipe,
+        ButtonModule,
+        CardModule,
+        DropdownModule,
+        InputTextModule,
+        PageHeaderComponent,
+        LoadingStateComponent,
+        ErrorStateComponent,
+        FieldErrorComponent,
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './district-form.component.html'
 })
 export class DistrictFormComponent implements OnInit {
   private readonly api = inject(DistrictService);

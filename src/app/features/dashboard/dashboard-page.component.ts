@@ -5,11 +5,10 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 
 @Component({
-  selector: 'app-dashboard-page',
-  standalone: true,
-  imports: [TranslatePipe, CardModule, SkeletonModule, PageHeaderComponent],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './dashboard-page.component.html',
+    selector: 'app-dashboard-page',
+    imports: [TranslatePipe, CardModule, SkeletonModule, PageHeaderComponent],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './dashboard-page.component.html'
 })
 export class DashboardPageComponent {
   readonly statSlots = [0, 1, 2, 3];

@@ -20,22 +20,21 @@ import { CompanyUserService } from '../users/company-user.service';
 import { DepartmentService } from './department.service';
 
 @Component({
-  selector: 'app-department-form',
-  standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    TranslatePipe,
-    ButtonModule,
-    CardModule,
-    DropdownModule,
-    InputTextModule,
-    PageHeaderComponent,
-    LoadingStateComponent,
-    ErrorStateComponent,
-    FieldErrorComponent,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './department-form.component.html',
+    selector: 'app-department-form',
+    imports: [
+        ReactiveFormsModule,
+        TranslatePipe,
+        ButtonModule,
+        CardModule,
+        DropdownModule,
+        InputTextModule,
+        PageHeaderComponent,
+        LoadingStateComponent,
+        ErrorStateComponent,
+        FieldErrorComponent,
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './department-form.component.html'
 })
 export class DepartmentFormComponent implements OnInit {
   private readonly api = inject(DepartmentService);

@@ -18,23 +18,22 @@ import { PermissionGroupPayload } from '../company.models';
 import { PermissionGroupService } from './permission-group.service';
 
 @Component({
-  selector: 'app-permission-group-form',
-  standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    TranslatePipe,
-    ButtonModule,
-    CardModule,
-    InputSwitchModule,
-    InputTextModule,
-    InputTextareaModule,
-    PageHeaderComponent,
-    LoadingStateComponent,
-    ErrorStateComponent,
-    FieldErrorComponent,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './permission-group-form.component.html',
+    selector: 'app-permission-group-form',
+    imports: [
+        ReactiveFormsModule,
+        TranslatePipe,
+        ButtonModule,
+        CardModule,
+        InputSwitchModule,
+        InputTextModule,
+        InputTextareaModule,
+        PageHeaderComponent,
+        LoadingStateComponent,
+        ErrorStateComponent,
+        FieldErrorComponent,
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './permission-group-form.component.html'
 })
 export class PermissionGroupFormComponent implements OnInit {
   private readonly api = inject(PermissionGroupService);

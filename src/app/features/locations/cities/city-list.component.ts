@@ -19,20 +19,19 @@ import { City } from '../locations.models';
 import { CityService } from './city.service';
 
 @Component({
-  selector: 'app-city-list',
-  standalone: true,
-  imports: [
-    TranslatePipe,
-    TableModule,
-    ButtonModule,
-    InputTextModule,
-    PageHeaderComponent,
-    EmptyStateComponent,
-    ErrorStateComponent,
-    LocalizedNamePipe,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './city-list.component.html',
+    selector: 'app-city-list',
+    imports: [
+        TranslatePipe,
+        TableModule,
+        ButtonModule,
+        InputTextModule,
+        PageHeaderComponent,
+        EmptyStateComponent,
+        ErrorStateComponent,
+        LocalizedNamePipe,
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './city-list.component.html'
 })
 export class CityListComponent implements OnInit {
   private readonly api = inject(CityService);

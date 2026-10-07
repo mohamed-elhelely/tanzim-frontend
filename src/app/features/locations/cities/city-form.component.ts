@@ -28,22 +28,21 @@ const TIMEZONE_OPTIONS: Array<{ value: string; label: string }> = [
 ].map((zone) => ({ value: zone, label: zone }));
 
 @Component({
-  selector: 'app-city-form',
-  standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    TranslatePipe,
-    ButtonModule,
-    CardModule,
-    DropdownModule,
-    InputTextModule,
-    PageHeaderComponent,
-    LoadingStateComponent,
-    ErrorStateComponent,
-    FieldErrorComponent,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './city-form.component.html',
+    selector: 'app-city-form',
+    imports: [
+        ReactiveFormsModule,
+        TranslatePipe,
+        ButtonModule,
+        CardModule,
+        DropdownModule,
+        InputTextModule,
+        PageHeaderComponent,
+        LoadingStateComponent,
+        ErrorStateComponent,
+        FieldErrorComponent,
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './city-form.component.html'
 })
 export class CityFormComponent implements OnInit {
   private readonly api = inject(CityService);

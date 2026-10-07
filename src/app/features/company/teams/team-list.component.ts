@@ -20,20 +20,19 @@ import { Team } from '../company.models';
 import { TeamService } from './team.service';
 
 @Component({
-  selector: 'app-team-list',
-  standalone: true,
-  imports: [
-    TranslatePipe,
-    TableModule,
-    ButtonModule,
-    InputTextModule,
-    PageHeaderComponent,
-    EmptyStateComponent,
-    ErrorStateComponent,
-    LocalizedNamePipe,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './team-list.component.html',
+    selector: 'app-team-list',
+    imports: [
+        TranslatePipe,
+        TableModule,
+        ButtonModule,
+        InputTextModule,
+        PageHeaderComponent,
+        EmptyStateComponent,
+        ErrorStateComponent,
+        LocalizedNamePipe,
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './team-list.component.html'
 })
 export class TeamListComponent implements OnInit {
   private readonly api = inject(TeamService);

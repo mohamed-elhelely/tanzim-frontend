@@ -22,24 +22,23 @@ import { PermissionGroupService } from '../permission-groups/permission-group.se
 import { PermissionService } from './permission.service';
 
 @Component({
-  selector: 'app-permission-form',
-  standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    TranslatePipe,
-    ButtonModule,
-    CardModule,
-    DropdownModule,
-    InputTextModule,
-    InputTextareaModule,
-    MultiSelectModule,
-    PageHeaderComponent,
-    LoadingStateComponent,
-    ErrorStateComponent,
-    FieldErrorComponent,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './permission-form.component.html',
+    selector: 'app-permission-form',
+    imports: [
+        ReactiveFormsModule,
+        TranslatePipe,
+        ButtonModule,
+        CardModule,
+        DropdownModule,
+        InputTextModule,
+        InputTextareaModule,
+        MultiSelectModule,
+        PageHeaderComponent,
+        LoadingStateComponent,
+        ErrorStateComponent,
+        FieldErrorComponent,
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './permission-form.component.html'
 })
 export class PermissionFormComponent implements OnInit {
   private readonly api = inject(PermissionService);

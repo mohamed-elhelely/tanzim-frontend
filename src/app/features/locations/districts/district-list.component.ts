@@ -19,20 +19,19 @@ import { District } from '../locations.models';
 import { DistrictService } from './district.service';
 
 @Component({
-  selector: 'app-district-list',
-  standalone: true,
-  imports: [
-    TranslatePipe,
-    TableModule,
-    ButtonModule,
-    InputTextModule,
-    PageHeaderComponent,
-    EmptyStateComponent,
-    ErrorStateComponent,
-    LocalizedNamePipe,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './district-list.component.html',
+    selector: 'app-district-list',
+    imports: [
+        TranslatePipe,
+        TableModule,
+        ButtonModule,
+        InputTextModule,
+        PageHeaderComponent,
+        EmptyStateComponent,
+        ErrorStateComponent,
+        LocalizedNamePipe,
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './district-list.component.html'
 })
 export class DistrictListComponent implements OnInit {
   private readonly api = inject(DistrictService);

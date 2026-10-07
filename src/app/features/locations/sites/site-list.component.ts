@@ -20,21 +20,20 @@ import { Location } from '../locations.models';
 import { LocationService } from './../location.service';
 
 @Component({
-  selector: 'app-site-list',
-  standalone: true,
-  imports: [
-    TranslatePipe,
-    TableModule,
-    ButtonModule,
-    InputTextModule,
-    PageHeaderComponent,
-    EmptyStateComponent,
-    ErrorStateComponent,
-    StatusBadgeComponent,
-    LocalizedNamePipe,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './site-list.component.html',
+    selector: 'app-site-list',
+    imports: [
+        TranslatePipe,
+        TableModule,
+        ButtonModule,
+        InputTextModule,
+        PageHeaderComponent,
+        EmptyStateComponent,
+        ErrorStateComponent,
+        StatusBadgeComponent,
+        LocalizedNamePipe,
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './site-list.component.html'
 })
 export class SiteListComponent implements OnInit {
   private readonly api = inject(LocationService);

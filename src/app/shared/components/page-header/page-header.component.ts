@@ -11,12 +11,11 @@ export interface PageHeaderAction {
 }
 
 @Component({
-  selector: 'app-page-header',
-  standalone: true,
-  imports: [TranslatePipe, ButtonModule],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './page-header.component.html',
-  styleUrl: './page-header.component.scss',
+    selector: 'app-page-header',
+    imports: [TranslatePipe, ButtonModule],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './page-header.component.html',
+    styleUrl: './page-header.component.scss'
 })
 export class PageHeaderComponent {
   @Input() title = '';

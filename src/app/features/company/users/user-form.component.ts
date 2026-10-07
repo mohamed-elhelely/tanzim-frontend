@@ -38,24 +38,23 @@ const USER_FIELD_MAP: Record<string, string> = {
 };
 
 @Component({
-  selector: 'app-user-form',
-  standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    TranslatePipe,
-    ButtonModule,
-    CardModule,
-    DropdownModule,
-    InputSwitchModule,
-    InputTextModule,
-    PasswordModule,
-    PageHeaderComponent,
-    LoadingStateComponent,
-    ErrorStateComponent,
-    FieldErrorComponent,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './user-form.component.html',
+    selector: 'app-user-form',
+    imports: [
+        ReactiveFormsModule,
+        TranslatePipe,
+        ButtonModule,
+        CardModule,
+        DropdownModule,
+        InputSwitchModule,
+        InputTextModule,
+        PasswordModule,
+        PageHeaderComponent,
+        LoadingStateComponent,
+        ErrorStateComponent,
+        FieldErrorComponent,
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './user-form.component.html'
 })
 export class UserFormComponent implements OnInit {
   private readonly api = inject(CompanyUserService);

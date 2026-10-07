@@ -12,12 +12,11 @@ import { AuthService } from '../../core/auth/auth.service';
 import { LanguageService } from '../../core/services/language.service';
 
 @Component({
-  selector: 'app-header',
-  standalone: true,
-  imports: [TranslatePipe, ButtonModule, ToolbarModule, MenuModule, AvatarModule],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './header.component.html',
-  styleUrl: './header.component.scss',
+    selector: 'app-header',
+    imports: [TranslatePipe, ButtonModule, ToolbarModule, MenuModule, AvatarModule],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './header.component.html',
+    styleUrl: './header.component.scss'
 })
 export class AppHeaderComponent {
   @Output() menuToggle = new EventEmitter<void>();

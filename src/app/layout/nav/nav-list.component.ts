@@ -11,11 +11,10 @@ const LINK_CLASSES =
 const ACTIVE_CLASSES = 'bg-primary-50 text-primary-700 dark:bg-gray-700 dark:text-white';
 
 @Component({
-  selector: 'app-nav-list',
-  standalone: true,
-  imports: [RouterLink, RouterLinkActive, TranslatePipe],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
+    selector: 'app-nav-list',
+    imports: [RouterLink, RouterLinkActive, TranslatePipe],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    template: `
     <nav class="flex flex-col gap-1 p-3">
       @for (item of items; track item.routerLink) {
         @if (item.children) {
@@ -62,7 +61,7 @@ const ACTIVE_CLASSES = 'bg-primary-50 text-primary-700 dark:bg-gray-700 dark:tex
         }
       }
     </nav>
-  `,
+  `
 })
 export class NavListComponent {
   private readonly router = inject(Router);

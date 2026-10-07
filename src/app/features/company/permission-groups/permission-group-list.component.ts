@@ -18,20 +18,19 @@ import { PermissionGroup } from '../company.models';
 import { PermissionGroupService } from './permission-group.service';
 
 @Component({
-  selector: 'app-permission-group-list',
-  standalone: true,
-  imports: [
-    TranslatePipe,
-    TableModule,
-    ButtonModule,
-    InputTextModule,
-    PageHeaderComponent,
-    EmptyStateComponent,
-    ErrorStateComponent,
-    StatusBadgeComponent,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './permission-group-list.component.html',
+    selector: 'app-permission-group-list',
+    imports: [
+        TranslatePipe,
+        TableModule,
+        ButtonModule,
+        InputTextModule,
+        PageHeaderComponent,
+        EmptyStateComponent,
+        ErrorStateComponent,
+        StatusBadgeComponent,
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './permission-group-list.component.html'
 })
 export class PermissionGroupListComponent implements OnInit {
   private readonly api = inject(PermissionGroupService);

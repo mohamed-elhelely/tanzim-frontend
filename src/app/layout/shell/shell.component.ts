@@ -10,22 +10,21 @@ import { NavListComponent } from '../nav/nav-list.component';
 import { AppSidebarComponent } from '../sidebar/sidebar.component';
 
 @Component({
-  selector: 'app-shell',
-  standalone: true,
-  imports: [
-    RouterOutlet,
-    TranslatePipe,
-    SidebarModule,
-    ToastModule,
-    LoadingBarComponent,
-    AppHeaderComponent,
-    AppSidebarComponent,
-    NavListComponent,
-    ConfirmDialogComponent,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './shell.component.html',
-  styleUrl: './shell.component.scss',
+    selector: 'app-shell',
+    imports: [
+        RouterOutlet,
+        TranslatePipe,
+        SidebarModule,
+        ToastModule,
+        LoadingBarComponent,
+        AppHeaderComponent,
+        AppSidebarComponent,
+        NavListComponent,
+        ConfirmDialogComponent,
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './shell.component.html',
+    styleUrl: './shell.component.scss'
 })
 export class ShellComponent {
   readonly mobileNavOpen = signal(false);
