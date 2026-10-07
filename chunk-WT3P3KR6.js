@@ -1,0 +1,1 @@
+import{$ as a}from"./chunk-TFBLIGIB.js";function i(n,e){return n?e==="ar"&&n.name_ar?n.name_ar:n.name_en||n.name||"":""}var t=class n{transform(e,r){return i(e,r)}static \u0275fac=function(r){return new(r||n)};static \u0275pipe=a({name:"localizedName",type:n,pure:!0,standalone:!0})};export{i as a,t as b};

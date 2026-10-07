@@ -1,0 +1,148 @@
+{
+  "app": {
+    "name": "تنظيم"
+  },
+  "common": {
+    "loading": "جارٍ التحميل...",
+    "empty": "لا توجد بيانات",
+    "error": "حدث خطأ ما",
+    "success": "تم بنجاح",
+    "warning": "تحذير",
+    "info": "معلومة",
+    "confirm": "تأكيد",
+    "cancel": "إلغاء",
+    "save": "حفظ",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "view": "عرض",
+    "search": "بحث",
+    "back": "رجوع",
+    "retry": "إعادة المحاولة",
+    "yes": "نعم",
+    "no": "لا",
+    "actions": "إجراءات",
+    "comingSoon": "هذا القسم قادم قريبًا.",
+    "new": "جديد",
+    "saved": "تم الحفظ بنجاح.",
+    "deleted": "تم الحذف بنجاح.",
+    "notFound": "السجل غير موجود.",
+    "forbidden": "ليس لديك صلاحية الوصول إلى هذا القسم.",
+    "confirmDelete": "حذف \"{{name}}\"؟ لا يمكن التراجع عن ذلك.",
+    "select": "اختر…",
+    "backToList": "العودة إلى القائمة"
+  },
+  "nav": {
+    "dashboard": "لوحة التحكم",
+    "company": "الشركة",
+    "locations": "المواقع",
+    "inventory": "المخزون",
+    "sales": "المبيعات",
+    "returns": "المرتجعات",
+    "billing": "الفواتير",
+    "notifications": "الإشعارات",
+    "importExport": "الاستيراد / التصدير",
+    "companyUsers": "المستخدمون",
+    "departments": "الأقسام",
+    "teams": "الفرق",
+    "roles": "الأدوار",
+    "permissionGroups": "مجموعات الصلاحيات",
+    "permissions": "الصلاحيات"
+  },
+  "auth": {
+    "login": "تسجيل الدخول",
+    "subtitle": "سجّل الدخول إلى حسابك",
+    "email": "البريد الإلكتروني",
+    "emailPlaceholder": "you@example.com",
+    "password": "كلمة المرور",
+    "passwordPlaceholder": "كلمة المرور",
+    "signIn": "تسجيل الدخول",
+    "logout": "تسجيل الخروج",
+    "invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+    "tooManyAttempts": "محاولات كثيرة. يرجى الانتظار دقيقة ثم المحاولة مرة أخرى.",
+    "emailRequired": "البريد الإلكتروني مطلوب.",
+    "emailInvalid": "أدخل بريدًا إلكترونيًا صالحًا.",
+    "passwordRequired": "كلمة المرور مطلوبة."
+  },
+  "header": {
+    "profile": "الملف الشخصي",
+    "settings": "الإعدادات"
+  },
+  "dashboard": {
+    "subtitle": "نظرة عامة على مؤسستك",
+    "insights": "رؤى",
+    "activity": "النشاط الأخير"
+  },
+  "errors": {
+    "network": "تعذّر الوصول إلى الخادم. تحقق من اتصالك.",
+    "server": "خطأ في الخادم. يرجى المحاولة لاحقًا.",
+    "unexpected": "حدث خطأ غير متوقع."
+  },
+  "validation": {
+    "required": "هذا الحقل مطلوب.",
+    "maxLength": "الحد الأقصى {{max}} حرفًا.",
+    "email": "أدخل بريدًا إلكترونيًا صحيحًا."
+  },
+  "company": {
+    "fields": {
+      "id": "المعرّف",
+      "nameEn": "الاسم (إنجليزي)",
+      "nameAr": "الاسم (عربي)",
+      "name": "الاسم",
+      "email": "البريد الإلكتروني",
+      "firstName": "الاسم الأول",
+      "lastName": "اسم العائلة",
+      "preferredName": "الاسم المفضل",
+      "phone": "رقم الهاتف",
+      "password": "كلمة المرور",
+      "role": "الدور",
+      "department": "القسم",
+      "team": "الفريق",
+      "parent": "القسم الرئيسي",
+      "manager": "المدير",
+      "location": "الموقع",
+      "leads": "قادة الفريق",
+      "permissionGroups": "مجموعات الصلاحيات",
+      "isAdmin": "مسؤول",
+      "description": "الوصف",
+      "isCore": "أساسية",
+      "codename": "الرمز",
+      "type": "النوع",
+      "groups": "المجموعات",
+      "companyAdmin": "مسؤول الشركة",
+      "departmentManager": "مدير قسم",
+      "teamLead": "قائد فريق"
+    },
+    "users": {
+      "title": "المستخدمون",
+      "new": "مستخدم جديد",
+      "edit": "تعديل مستخدم"
+    },
+    "departments": {
+      "title": "الأقسام",
+      "new": "قسم جديد",
+      "edit": "تعديل قسم"
+    },
+    "teams": {
+      "title": "الفرق",
+      "new": "فريق جديد",
+      "edit": "تعديل فريق",
+      "locationForbidden": "اشتراك شركتك لا يشمل المواقع، لذلك لا يمكن حفظ الفريق.",
+      "locationEmpty": "لا توجد مواقع بعد. أنشئ موقعًا أولًا (قسم المواقع)."
+    },
+    "roles": {
+      "title": "الأدوار",
+      "new": "دور جديد",
+      "edit": "تعديل دور"
+    },
+    "permissionGroups": {
+      "title": "مجموعات الصلاحيات",
+      "new": "مجموعة صلاحيات جديدة",
+      "edit": "تعديل مجموعة صلاحيات"
+    },
+    "permissions": {
+      "title": "الصلاحيات",
+      "new": "صلاحية جديدة",
+      "edit": "تعديل صلاحية"
+    }
+  }
+}

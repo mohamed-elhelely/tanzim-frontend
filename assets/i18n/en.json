@@ -1,0 +1,148 @@
+{
+  "app": {
+    "name": "Tanzim"
+  },
+  "common": {
+    "loading": "Loading...",
+    "empty": "No data available",
+    "error": "Something went wrong",
+    "success": "Success",
+    "warning": "Warning",
+    "info": "Info",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "search": "Search",
+    "back": "Back",
+    "retry": "Retry",
+    "yes": "Yes",
+    "no": "No",
+    "actions": "Actions",
+    "comingSoon": "This section is coming soon.",
+    "new": "New",
+    "saved": "Saved successfully.",
+    "deleted": "Deleted successfully.",
+    "notFound": "The record was not found.",
+    "forbidden": "You don't have access to this section.",
+    "confirmDelete": "Delete \"{{name}}\"? This cannot be undone.",
+    "select": "Select…",
+    "backToList": "Back to list"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "company": "Company",
+    "locations": "Locations",
+    "inventory": "Inventory",
+    "sales": "Sales",
+    "returns": "Returns",
+    "billing": "Billing",
+    "notifications": "Notifications",
+    "importExport": "Import / Export",
+    "companyUsers": "Users",
+    "departments": "Departments",
+    "teams": "Teams",
+    "roles": "Roles",
+    "permissionGroups": "Permission groups",
+    "permissions": "Permissions"
+  },
+  "auth": {
+    "login": "Login",
+    "subtitle": "Sign in to your account",
+    "email": "Email",
+    "emailPlaceholder": "you@example.com",
+    "password": "Password",
+    "passwordPlaceholder": "Your password",
+    "signIn": "Sign in",
+    "logout": "Logout",
+    "invalidCredentials": "Invalid email or password.",
+    "tooManyAttempts": "Too many attempts. Please wait a minute and try again.",
+    "emailRequired": "Email is required.",
+    "emailInvalid": "Enter a valid email address.",
+    "passwordRequired": "Password is required."
+  },
+  "header": {
+    "profile": "Profile",
+    "settings": "Settings"
+  },
+  "dashboard": {
+    "subtitle": "Overview of your organisation",
+    "insights": "Insights",
+    "activity": "Recent activity"
+  },
+  "errors": {
+    "network": "Unable to reach the server. Please check your connection.",
+    "server": "Server error. Please try again later.",
+    "unexpected": "An unexpected error occurred."
+  },
+  "validation": {
+    "required": "This field is required.",
+    "maxLength": "Maximum {{max}} characters.",
+    "email": "Enter a valid email address."
+  },
+  "company": {
+    "fields": {
+      "id": "ID",
+      "nameEn": "Name (English)",
+      "nameAr": "Name (Arabic)",
+      "name": "Name",
+      "email": "Email",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "preferredName": "Preferred name",
+      "phone": "Phone number",
+      "password": "Password",
+      "role": "Role",
+      "department": "Department",
+      "team": "Team",
+      "parent": "Parent department",
+      "manager": "Manager",
+      "location": "Location",
+      "leads": "Team leads",
+      "permissionGroups": "Permission groups",
+      "isAdmin": "Admin",
+      "description": "Description",
+      "isCore": "Core",
+      "codename": "Codename",
+      "type": "Type",
+      "groups": "Groups",
+      "companyAdmin": "Company admin",
+      "departmentManager": "Department manager",
+      "teamLead": "Team lead"
+    },
+    "users": {
+      "title": "Users",
+      "new": "New user",
+      "edit": "Edit user"
+    },
+    "departments": {
+      "title": "Departments",
+      "new": "New department",
+      "edit": "Edit department"
+    },
+    "teams": {
+      "title": "Teams",
+      "new": "New team",
+      "edit": "Edit team",
+      "locationForbidden": "Your company's subscription doesn't include Locations, so a team can't be saved.",
+      "locationEmpty": "There are no locations yet. Create a location first (Locations section)."
+    },
+    "roles": {
+      "title": "Roles",
+      "new": "New role",
+      "edit": "Edit role"
+    },
+    "permissionGroups": {
+      "title": "Permission groups",
+      "new": "New permission group",
+      "edit": "Edit permission group"
+    },
+    "permissions": {
+      "title": "Permissions",
+      "new": "New permission",
+      "edit": "Edit permission"
+    }
+  }
+}
