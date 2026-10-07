@@ -98,7 +98,7 @@
           "builder": "angular-cli-ghpages:deploy",
           "options": {
             "buildTarget": "tanzim-frontend:build:production",
-            "baseHref": "/"
+            "baseHref": "/tanzim-frontend/"
           }
         },
         "test": {
