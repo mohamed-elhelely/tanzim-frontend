@@ -1,6 +1,7 @@
 {
   "app": {
-    "name": "Tanzim"
+    "name": "Tanzim",
+    "tagline": "Operations suite"
   },
   "common": {
     "loading": "Loading...",
@@ -21,7 +22,7 @@
     "yes": "Yes",
     "no": "No",
     "actions": "Actions",
-    "comingSoon": "This section is coming soon.",
+    "comingSoon": "We're still building this section. It will be available in a future update.",
     "new": "New",
     "saved": "Saved successfully.",
     "deleted": "Deleted successfully.",
@@ -29,7 +30,10 @@
     "forbidden": "You don't have access to this section.",
     "confirmDelete": "Delete \"{{name}}\"? This cannot be undone.",
     "select": "Select…",
-    "backToList": "Back to list"
+    "backToList": "Back to list",
+    "comingSoonBadge": "Coming soon",
+    "backToDashboard": "Back to dashboard",
+    "viewAll": "View all"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -66,16 +70,50 @@
     "tooManyAttempts": "Too many attempts. Please wait a minute and try again.",
     "emailRequired": "Email is required.",
     "emailInvalid": "Enter a valid email address.",
-    "passwordRequired": "Password is required."
+    "passwordRequired": "Password is required.",
+    "heroTitle": "Run your whole organisation from one place.",
+    "heroText": "Users, teams, locations and stock — organised, in English and Arabic.",
+    "features": {
+      "organisation": "Departments, teams, roles and permissions",
+      "locations": "Every branch, warehouse and address",
+      "bilingual": "Fully bilingual, right-to-left ready"
+    }
   },
   "header": {
-    "profile": "Profile",
-    "settings": "Settings"
+    "menu": "Open menu",
+    "breadcrumb": "Breadcrumb",
+    "lightMode": "Light mode",
+    "darkMode": "Dark mode",
+    "account": "Account"
   },
   "dashboard": {
     "subtitle": "Overview of your organisation",
-    "insights": "Insights",
-    "activity": "Recent activity"
+    "welcome": "Welcome back, {{name}}",
+    "welcomeNoName": "Welcome back",
+    "welcomeText": "Here's a quick look at your organisation today.",
+    "stats": {
+      "users": "Users",
+      "departments": "Departments",
+      "teams": "Teams",
+      "locations": "Locations"
+    },
+    "unavailable": "Not available",
+    "quickActions": "Quick actions",
+    "actions": {
+      "newUser": "Add a user",
+      "newDepartment": "Create a department",
+      "newTeam": "Create a team",
+      "newLocation": "Add a location"
+    },
+    "setup": "Getting started",
+    "setupHint": "Finish these steps to set up your organisation.",
+    "steps": {
+      "locations": "Add your first location",
+      "departments": "Create departments",
+      "teams": "Organise people into teams",
+      "users": "Invite your colleagues"
+    },
+    "setupDone": "Your organisation is all set up."
   },
   "errors": {
     "network": "Unable to reach the server. Please check your connection.",
