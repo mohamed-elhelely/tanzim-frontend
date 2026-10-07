@@ -10,7 +10,7 @@
   </div>
 </div>
 
-<p-sidebar
+<p-drawer
   [visible]="mobileNavOpen()"
   (visibleChange)="mobileNavOpen.set($event)"
   [showCloseIcon]="true"
@@ -22,7 +22,7 @@
     <span class="text-lg font-semibold text-gray-800 dark:text-gray-100">{{ 'app.name' | translate }}</span>
   </div>
   <app-nav-list (itemSelected)="closeMobileNav()"></app-nav-list>
-</p-sidebar>
+</p-drawer>
 
 <p-toast position="top-right"></p-toast>
 <app-confirm-dialog></app-confirm-dialog>

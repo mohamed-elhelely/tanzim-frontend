@@ -10,6 +10,6 @@ import { TagModule } from 'primeng/tag';
 })
 export class StatusBadgeComponent {
   @Input() value = '';
-  @Input() severity: 'success' | 'secondary' | 'info' | 'warning' | 'danger' | 'contrast' = 'info';
+  @Input() severity: 'success' | 'secondary' | 'info' | 'warn' | 'danger' | 'contrast' = 'info';
   @Input() icon?: string;
 }

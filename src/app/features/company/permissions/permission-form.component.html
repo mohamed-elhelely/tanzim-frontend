@@ -38,7 +38,7 @@
 
         <div class="flex flex-col gap-1">
           <label for="permission_type" class="text-sm font-medium">{{ 'company.fields.type' | translate }}</label>
-          <p-dropdown
+          <p-select
             inputId="permission_type"
             formControlName="permission_type"
             [options]="typeOptions"
@@ -48,7 +48,7 @@
             [placeholder]="'common.select' | translate"
             styleClass="w-full"
             appendTo="body"
-          ></p-dropdown>
+          ></p-select>
           <app-field-error [control]="form.controls.permission_type"></app-field-error>
         </div>
 
@@ -71,7 +71,7 @@
 
         <div class="flex flex-col gap-1 md:col-span-2">
           <label for="description" class="text-sm font-medium">{{ 'company.fields.description' | translate }}</label>
-          <textarea pInputTextarea id="description" formControlName="description" rows="3" class="w-full"></textarea>
+          <textarea pTextarea id="description" formControlName="description" rows="3" class="w-full"></textarea>
           <app-field-error [control]="form.controls.description"></app-field-error>
         </div>
       </div>

@@ -4,8 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { DropdownModule } from 'primeng/dropdown';
-import { InputSwitchModule } from 'primeng/inputswitch';
+import { SelectModule } from 'primeng/select';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { Observable } from 'rxjs';
@@ -44,8 +44,8 @@ const USER_FIELD_MAP: Record<string, string> = {
         TranslatePipe,
         ButtonModule,
         CardModule,
-        DropdownModule,
-        InputSwitchModule,
+        SelectModule,
+        ToggleSwitchModule,
         InputTextModule,
         PasswordModule,
         PageHeaderComponent,

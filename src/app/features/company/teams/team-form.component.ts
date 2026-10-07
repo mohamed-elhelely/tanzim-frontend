@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { DropdownModule } from 'primeng/dropdown';
+import { SelectModule } from 'primeng/select';
 import { InputTextModule } from 'primeng/inputtext';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { AppError } from '../../../core/errors/app-error';
@@ -31,7 +31,7 @@ export type LocationState = 'loading' | 'ready' | 'forbidden' | 'empty' | 'error
         TranslatePipe,
         ButtonModule,
         CardModule,
-        DropdownModule,
+        SelectModule,
         InputTextModule,
         MultiSelectModule,
         PageHeaderComponent,

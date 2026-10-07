@@ -4,9 +4,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { DropdownModule } from 'primeng/dropdown';
+import { SelectModule } from 'primeng/select';
 import { InputTextModule } from 'primeng/inputtext';
-import { InputTextareaModule } from 'primeng/inputtextarea';
+import { TextareaModule } from 'primeng/textarea';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { AppError } from '../../../core/errors/app-error';
 import { LanguageService } from '../../../core/services/language.service';
@@ -28,9 +28,9 @@ import { PermissionService } from './permission.service';
         TranslatePipe,
         ButtonModule,
         CardModule,
-        DropdownModule,
+        SelectModule,
         InputTextModule,
-        InputTextareaModule,
+        TextareaModule,
         MultiSelectModule,
         PageHeaderComponent,
         LoadingStateComponent,

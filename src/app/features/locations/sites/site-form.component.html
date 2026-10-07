@@ -44,7 +44,7 @@
 
         <div class="flex flex-col gap-1">
           <label for="location_type" class="text-sm font-medium">{{ 'locations.fields.locationType' | translate }} *</label>
-          <p-dropdown
+          <p-select
             inputId="location_type"
             formControlName="location_type"
             [options]="typeOptions"
@@ -57,13 +57,13 @@
           >
             <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
             <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
-          </p-dropdown>
+          </p-select>
           <app-field-error [control]="form.controls.location_type"></app-field-error>
         </div>
 
         <div class="flex flex-col gap-1">
           <label for="country" class="text-sm font-medium">{{ 'locations.fields.country' | translate }} *</label>
-          <p-dropdown
+          <p-select
             inputId="country"
             formControlName="country"
             [options]="countryOptions()"
@@ -75,13 +75,13 @@
             styleClass="w-full"
             appendTo="body"
             (onChange)="onCountryChange()"
-          ></p-dropdown>
+          ></p-select>
           <app-field-error [control]="form.controls.country"></app-field-error>
         </div>
 
         <div class="flex flex-col gap-1">
           <label for="region" class="text-sm font-medium">{{ 'locations.fields.region' | translate }} *</label>
-          <p-dropdown
+          <p-select
             inputId="region"
             formControlName="region"
             [options]="regionOptions()"
@@ -93,7 +93,7 @@
             styleClass="w-full"
             appendTo="body"
             (onChange)="onRegionChange()"
-          ></p-dropdown>
+          ></p-select>
           @if (!form.controls.country.value) {
             <small class="text-sm text-gray-500 dark:text-gray-400">{{ 'locations.hints.pickCountryFirst' | translate }}</small>
           }
@@ -102,7 +102,7 @@
 
         <div class="flex flex-col gap-1">
           <label for="city" class="text-sm font-medium">{{ 'locations.fields.city' | translate }} *</label>
-          <p-dropdown
+          <p-select
             inputId="city"
             formControlName="city"
             [options]="cityOptions()"
@@ -114,7 +114,7 @@
             styleClass="w-full"
             appendTo="body"
             (onChange)="onCityChange()"
-          ></p-dropdown>
+          ></p-select>
           @if (!form.controls.region.value) {
             <small class="text-sm text-gray-500 dark:text-gray-400">{{ 'locations.hints.pickRegionFirst' | translate }}</small>
           }
@@ -123,7 +123,7 @@
 
         <div class="flex flex-col gap-1">
           <label for="district" class="text-sm font-medium">{{ 'locations.fields.district' | translate }}</label>
-          <p-dropdown
+          <p-select
             inputId="district"
             formControlName="district"
             [options]="districtOptions()"
@@ -134,7 +134,7 @@
             [placeholder]="'common.select' | translate"
             styleClass="w-full"
             appendTo="body"
-          ></p-dropdown>
+          ></p-select>
           @if (!form.controls.city.value) {
             <small class="text-sm text-gray-500 dark:text-gray-400">{{ 'locations.hints.pickCityFirst' | translate }}</small>
           }
@@ -160,7 +160,7 @@
         </div>
 
         <div class="flex items-center gap-3">
-          <p-inputSwitch inputId="is_active" formControlName="is_active"></p-inputSwitch>
+          <p-toggleswitch inputId="is_active" formControlName="is_active"></p-toggleswitch>
           <label for="is_active" class="text-sm font-medium">{{ 'locations.fields.isActive' | translate }}</label>
         </div>
       </div>

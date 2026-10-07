@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { InputSwitchModule } from 'primeng/inputswitch';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { InputTextModule } from 'primeng/inputtext';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { AppError } from '../../../core/errors/app-error';
@@ -27,7 +27,7 @@ import { RoleService } from './role.service';
         TranslatePipe,
         ButtonModule,
         CardModule,
-        InputSwitchModule,
+        ToggleSwitchModule,
         InputTextModule,
         MultiSelectModule,
         PageHeaderComponent,

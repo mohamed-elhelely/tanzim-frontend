@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { DropdownModule } from 'primeng/dropdown';
+import { SelectModule } from 'primeng/select';
 import { InputTextModule } from 'primeng/inputtext';
 import { AppError } from '../../../core/errors/app-error';
 import { LanguageService } from '../../../core/services/language.service';
@@ -27,7 +27,7 @@ import { RegionService } from './region.service';
         TranslatePipe,
         ButtonModule,
         CardModule,
-        DropdownModule,
+        SelectModule,
         InputTextModule,
         PageHeaderComponent,
         LoadingStateComponent,

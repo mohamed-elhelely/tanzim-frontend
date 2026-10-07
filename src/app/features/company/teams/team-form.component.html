@@ -47,7 +47,7 @@
 
         <div class="flex flex-col gap-1">
           <label for="department" class="text-sm font-medium">{{ 'company.fields.department' | translate }} *</label>
-          <p-dropdown
+          <p-select
             inputId="department"
             formControlName="department"
             [options]="departmentOptions()"
@@ -57,13 +57,13 @@
             [placeholder]="'common.select' | translate"
             styleClass="w-full"
             appendTo="body"
-          ></p-dropdown>
+          ></p-select>
           <app-field-error [control]="form.controls.department"></app-field-error>
         </div>
 
         <div class="flex flex-col gap-1">
           <label for="location" class="text-sm font-medium">{{ 'company.fields.location' | translate }} *</label>
-          <p-dropdown
+          <p-select
             inputId="location"
             formControlName="location"
             [options]="locationOptions()"
@@ -73,7 +73,7 @@
             [placeholder]="'common.select' | translate"
             styleClass="w-full"
             appendTo="body"
-          ></p-dropdown>
+          ></p-select>
           <app-field-error [control]="form.controls.location"></app-field-error>
         </div>
 

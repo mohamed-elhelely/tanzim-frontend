@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
-import { SidebarModule } from 'primeng/sidebar';
+import { DrawerModule } from 'primeng/drawer';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { LoadingBarComponent } from '../../shared/components/loading-bar/loading-bar.component';
@@ -14,7 +14,7 @@ import { AppSidebarComponent } from '../sidebar/sidebar.component';
     imports: [
         RouterOutlet,
         TranslatePipe,
-        SidebarModule,
+        DrawerModule,
         ToastModule,
         LoadingBarComponent,
         AppHeaderComponent,

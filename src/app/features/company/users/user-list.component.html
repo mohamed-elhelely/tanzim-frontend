@@ -23,7 +23,7 @@
       [globalFilterFields]="searchFields"
       [loading]="loading()"
       dataKey="id"
-      styleClass="p-datatable-sm"
+      size="small"
     >
       <ng-template pTemplate="header">
         <tr>
@@ -49,7 +49,7 @@
           <td>{{ row.team | localizedName: lang() }}</td>
           <td>
             @if (row.is_company_admin) {
-              <app-status-badge [value]="'common.yes' | translate" severity="warning"></app-status-badge>
+              <app-status-badge [value]="'common.yes' | translate" severity="warn"></app-status-badge>
             }
           </td>
           <td class="whitespace-nowrap text-end">

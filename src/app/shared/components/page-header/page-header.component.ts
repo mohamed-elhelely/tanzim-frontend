@@ -5,7 +5,7 @@ import { ButtonModule } from 'primeng/button';
 export interface PageHeaderAction {
   label: string;
   icon?: string;
-  severity?: 'success' | 'info' | 'warning' | 'danger' | 'help' | 'primary' | 'secondary' | 'contrast';
+  severity?: 'success' | 'info' | 'warn' | 'danger' | 'help' | 'primary' | 'secondary' | 'contrast';
   onClick: () => void;
   disabled?: boolean;
 }
