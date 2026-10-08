@@ -1,0 +1,87 @@
+@if (loadError(); as err) {
+  <app-page-header title="accounting.notes.title" [showBack]="true" backLabel="common.backToList" (back)="goBack()"></app-page-header>
+  <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403 && err.status !== 404" (retry)="load()"></app-error-state>
+} @else if (note(); as note) {
+  <app-page-header
+    [title]="note.note_number"
+    [subtitle]="note.supplier_name"
+    [showBack]="true"
+    backLabel="common.backToList"
+    [actions]="actions()"
+    (back)="goBack()"
+  ></app-page-header>
+
+  @if (note.status === 'cancelled') {
+    <div role="status" class="mb-4 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300">
+      <p class="font-medium">{{ 'accounting.hints.noteCancelled' | translate }}</p>
+      @if (note.cancel_reason) {
+        <p class="mt-1">{{ note.cancel_reason }}</p>
+      }
+    </div>
+  }
+
+  <div class="flex max-w-4xl flex-col gap-4">
+    <dl class="grid grid-cols-2 gap-3 md:grid-cols-4">
+      <div class="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+        <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'accounting.fields.status' | translate }}</dt>
+        <dd class="mt-1">
+          <app-status-badge [value]="'accounting.noteStatuses.' + note.status | translate" [severity]="statusSeverity[note.status]"></app-status-badge>
+        </dd>
+      </div>
+      <div class="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+        <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'accounting.fields.subtotal' | translate }}</dt>
+        <dd class="mt-1 text-sm font-semibold">{{ note.subtotal | number: '1.2-2' }}</dd>
+      </div>
+      <div class="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+        <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'accounting.fields.tax' | translate }}</dt>
+        <dd class="mt-1 text-sm font-semibold">{{ note.tax_amount | number: '1.2-2' }}</dd>
+      </div>
+      <div class="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+        <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'accounting.fields.total' | translate }}</dt>
+        <dd class="mt-1 text-sm font-semibold">{{ note.total_amount | number: '1.2-2' }}</dd>
+      </div>
+    </dl>
+    <p-card>
+      <dl class="grid grid-cols-2 gap-x-6 gap-y-3 text-sm md:grid-cols-4">
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'accounting.fields.date' | translate }}</dt>
+          <dd class="mt-0.5" dir="ltr">{{ note.date }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'accounting.fields.supplierReturn' | translate }}</dt>
+          <dd class="mt-0.5">
+            @if (note.supplier_return) {
+              <a [routerLink]="['/returns/supplier', note.supplier_return]" class="text-primary-600 hover:underline dark:text-primary-300">
+                {{ 'common.view' | translate }}
+              </a>
+            } @else {
+              —
+            }
+          </dd>
+        </div>
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'accounting.fields.supplierReference' | translate }}</dt>
+          <dd class="mt-0.5" dir="ltr">{{ note.supplier_reference || '—' }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'accounting.fields.issuedAt' | translate }}</dt>
+          <dd class="mt-0.5" dir="ltr">{{ note.issued_at ? (note.issued_at | date: 'yyyy-MM-dd HH:mm') : '—' }}</dd>
+        </div>
+        <div class="col-span-2 md:col-span-4">
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'accounting.fields.reason' | translate }}</dt>
+          <dd class="mt-0.5 whitespace-pre-line">{{ note.reason || '—' }}</dd>
+        </div>
+      </dl>
+    </p-card>
+  </div>
+
+  <app-reason-dialog
+    header="accounting.actions.cancelNote"
+    confirmLabel="accounting.actions.cancelNote"
+    [visible]="cancelDialogOpen()"
+    (visibleChange)="cancelDialogOpen.set($event)"
+    (confirmed)="onCancelConfirmed($event)"
+  ></app-reason-dialog>
+} @else {
+  <app-loading-state></app-loading-state>
+}

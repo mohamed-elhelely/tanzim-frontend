@@ -116,7 +116,7 @@ Things to know:
 | File | Purpose | Notes |
 |---|---|---|
 | `api/api.config.ts` | `API_BASE_URL` from `src/environments` | Prod points at the backend's ngrok URL |
-| `api/base-api.service.ts` | Typed `get/post/put/patch/delete` with the base URL | |
+| `api/base-api.service.ts` | Typed `get/post/put/patch/delete` with the base URL; `getBlob` for file downloads | |
 | `api/crud-api.ts` | Standard calls for one resource; `ListQuery.filters` and `all(filters)` for exact-match filters | 🆕 every resource service extends it |
 | `auth/auth.service.ts` | Signed-in user, login, logout, token refresh | 🧠 role restored from the JWT on reload |
 | `auth/token-storage.service.ts` | Tokens in localStorage | |
@@ -148,6 +148,7 @@ Things to know:
 | `layout/nav/nav-list.component` | Renders the menu, filters it, expands the active group | 🧠 §3 |
 | `shared/table/server-table.ts` | State for server-paged tables | 🆕 🧠 cancels stale requests; steps back a page after deleting the last row |
 | `shared/utils/server-errors.ts` | `applyServerErrors`, `handleSaveError`, `errorTitleKey` | 🆕 🧠 flattens nested backend errors to dotted keys (`user.email`) |
+| `shared/utils/save-file.ts` | Saves a downloaded Blob under a file name | Used by the Excel export |
 | `shared/utils/omit-pristine.ts` | Drops untouched fields from an edit body | 🆕 ⚠️ for read endpoints that don't return every field (BACKEND_REQUESTS 15e) |
 | `shared/components/field-error` | Message under an input (required, email, length, pattern, `greaterThan`, `max`, server) | Not OnPush on purpose (reacts to `touched`) |
 | `shared/components/page-header` | Title, back link, action buttons | |
@@ -213,6 +214,7 @@ marked "client list".
 | `zones/` | `inventory/v1/zone/` | Warehouse picker "Name (CODE)". ⚠️ code/description not returned → `omitPristine` |
 | `bins/` | `inventory/v1/bin/` | 🧠 zone picker from the full zone list, labelled "Warehouse › Zone". ⚠️ code/barcode/capacity/type not returned → `omitPristine` |
 | `suppliers/` | `inventory/v1/supplier/` | Reliability is 0–1; empty lead time/reliability → 0. ⚠️ contact/address/terms not returned → `omitPristine` |
+| `supplier-invoices/` | `inventory/v1/supplier-invoice/` | Service only (`?dropdown=true` references for payment allocations and debit notes); screens wait for BACKEND_REQUESTS 2 |
 | `supplier-products/` | `inventory/v1/supplier-product/` | The supplier price list. ⚠️ read returns only supplier, variant, preferred → list shows those; edit uses `omitPristine` for everything else |
 
 ### sales — `/sales` (no module needed)
@@ -247,6 +249,9 @@ Built from `accounting/serializers.py` (not in API_REFERENCE.md, BACKEND_REQUEST
 | `accounts/` | `accounting/v1/accounts/` | Client list as a tree (`toTree`), type + search filters; `setup()` adds missing defaults. Form: 🧠 parent = same-type groups minus itself and descendants; system accounts keep type/group |
 | `journal-entries/` | `accounting/v1/journal-entries/` | Server list (status, origin, dates; no search). 🧠 form: balanced lines in cents, one side per line, "Balance last line", draft or `post: true`; drafts only. Detail: post / delete / reverse (opens the reversal, follows the route) |
 | `fiscal-years/` | `accounting/v1/fiscal-years/`, `fiscal-periods/{id}/close|reopen/` | One page: years with period tiles; create (periods made by the backend), close/reopen year and periods, delete year |
+| `reports/` | `accounting/v1/reports/<type>/` | 🧠 one viewer for all 8 reports: `REPORT_PARAMS` decides the inputs, `columns`/`rows`/`summary` drive the table and cards; Excel via `getBlob` + `saveFile` |
+| `supplier-payments/` | `accounting/v1/supplier-payments/` | List, record form (allocations ≤ amount; ⚠️ invoice picker lists all invoices, BACKEND_REQUESTS 8), detail with void |
+| `debit-notes/` | `accounting/v1/debit-notes/` | List, form (draft only; returns of the chosen supplier), detail: issue / cancel / delete. Raised from a supplier return too (`fromSupplierReturn`) |
 
 ## 7. Cross-feature links
 

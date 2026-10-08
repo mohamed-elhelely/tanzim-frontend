@@ -1,0 +1,105 @@
+@if (loadError(); as err) {
+  <app-page-header title="accounting.payments.title" [showBack]="true" backLabel="common.backToList" (back)="goBack()"></app-page-header>
+  <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403 && err.status !== 404" (retry)="load()"></app-error-state>
+} @else if (payment(); as payment) {
+  <app-page-header
+    [title]="payment.payment_number"
+    [subtitle]="payment.supplier_name"
+    [showBack]="true"
+    backLabel="common.backToList"
+    [actions]="actions()"
+    (back)="goBack()"
+  ></app-page-header>
+
+  @if (payment.status === 'voided') {
+    <div role="status" class="mb-4 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300">
+      <p class="font-medium">{{ 'accounting.hints.paymentVoided' | translate }}</p>
+      @if (payment.void_reason) {
+        <p class="mt-1">{{ payment.void_reason }}</p>
+      }
+    </div>
+  }
+
+  <div class="flex max-w-4xl flex-col gap-4">
+    <dl class="grid grid-cols-2 gap-3 md:grid-cols-4">
+      <div class="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+        <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'accounting.fields.status' | translate }}</dt>
+        <dd class="mt-1">
+          <app-status-badge
+            [value]="'accounting.paymentStatuses.' + payment.status | translate"
+            [severity]="payment.status === 'completed' ? 'success' : 'secondary'"
+          ></app-status-badge>
+        </dd>
+      </div>
+      <div class="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+        <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'accounting.fields.amount' | translate }}</dt>
+        <dd class="mt-1 text-sm font-semibold">{{ payment.amount | number: '1.2-2' }}</dd>
+      </div>
+      <div class="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+        <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'accounting.fields.allocated' | translate }}</dt>
+        <dd class="mt-1 text-sm font-semibold">{{ payment.allocated_amount | number: '1.2-2' }}</dd>
+      </div>
+      <div class="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+        <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'accounting.fields.unallocated' | translate }}</dt>
+        <dd class="mt-1 text-sm font-semibold">{{ payment.unallocated_amount | number: '1.2-2' }}</dd>
+      </div>
+    </dl>
+
+    <p-card>
+      <dl class="grid grid-cols-2 gap-x-6 gap-y-3 text-sm md:grid-cols-4">
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'accounting.fields.date' | translate }}</dt>
+          <dd class="mt-0.5" dir="ltr">{{ payment.payment_date }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'accounting.fields.paymentMethod' | translate }}</dt>
+          <dd class="mt-0.5">{{ 'sales.paymentMethods.' + payment.payment_method | translate }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'accounting.fields.reference' | translate }}</dt>
+          <dd class="mt-0.5" dir="ltr">{{ payment.reference || '—' }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'accounting.fields.voidedAt' | translate }}</dt>
+          <dd class="mt-0.5" dir="ltr">{{ payment.voided_at ? (payment.voided_at | date: 'yyyy-MM-dd HH:mm') : '—' }}</dd>
+        </div>
+        <div class="col-span-2 md:col-span-4">
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'accounting.fields.notes' | translate }}</dt>
+          <dd class="mt-0.5 whitespace-pre-line">{{ payment.notes || '—' }}</dd>
+        </div>
+      </dl>
+    </p-card>
+
+    <p-card>
+      <h3 class="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'accounting.sections.allocations' | translate }}</h3>
+      @if (payment.allocations.length) {
+        <p-table [value]="payment.allocations" dataKey="id" size="small">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>{{ 'accounting.fields.supplierInvoice' | translate }}</th>
+              <th class="text-end">{{ 'accounting.fields.amount' | translate }}</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-row>
+            <tr>
+              <td class="font-mono text-xs" dir="ltr">{{ row.invoice_number }}</td>
+              <td class="text-end">{{ row.amount | number: '1.2-2' }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      } @else {
+        <p class="text-sm text-gray-500 dark:text-gray-400">{{ 'accounting.hints.noAllocations' | translate }}</p>
+      }
+    </p-card>
+  </div>
+
+  <app-reason-dialog
+    header="accounting.actions.void"
+    confirmLabel="accounting.actions.void"
+    [visible]="voidDialogOpen()"
+    (visibleChange)="voidDialogOpen.set($event)"
+    (confirmed)="onVoidConfirmed($event)"
+  ></app-reason-dialog>
+} @else {
+  <app-loading-state></app-loading-state>
+}

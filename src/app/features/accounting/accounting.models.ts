@@ -125,3 +125,121 @@ export const ACCOUNT_TYPE_SEVERITY: Record<AccountType, Severity> = {
   cost_of_sales: 'danger',
   expense: 'danger',
 };
+
+// Reports (GET reports/<type>/): every report answers { columns, rows, summary }.
+
+export const REPORT_TYPES = [
+  'trial_balance',
+  'income_statement',
+  'balance_sheet',
+  'general_ledger',
+  'customer_statement',
+  'supplier_statement',
+  'receivables_aging',
+  'payables_aging',
+] as const;
+export type ReportType = (typeof REPORT_TYPES)[number];
+
+export type ReportParam = 'start_date' | 'end_date' | 'as_of_date' | 'account' | 'customer' | 'supplier';
+
+/** Mirrors REPORT_PARAMS in accounting/services/reports.py. account / customer / supplier are required there. */
+export const REPORT_PARAMS: Record<ReportType, ReportParam[]> = {
+  trial_balance: ['start_date', 'end_date'],
+  income_statement: ['start_date', 'end_date'],
+  balance_sheet: ['as_of_date'],
+  general_ledger: ['account', 'start_date', 'end_date'],
+  customer_statement: ['customer', 'start_date', 'end_date'],
+  supplier_statement: ['supplier', 'start_date', 'end_date'],
+  receivables_aging: ['as_of_date'],
+  payables_aging: ['as_of_date'],
+};
+
+export type ReportValue = string | number | boolean | null;
+
+export interface ReportResult {
+  report_type: ReportType;
+  columns: string[];
+  rows: Record<string, ReportValue>[];
+  summary: Record<string, ReportValue>;
+}
+
+// Payables: supplier payments and debit notes.
+
+export const SUPPLIER_PAYMENT_METHODS = ['bank_transfer', 'cash', 'check', 'credit_card', 'other'] as const;
+export type SupplierPaymentMethod = (typeof SUPPLIER_PAYMENT_METHODS)[number];
+
+export interface SupplierPaymentAllocation {
+  id: number;
+  invoice: number;
+  invoice_number: string;
+  amount: string;
+}
+
+export interface SupplierPayment {
+  id: number;
+  payment_number: string;
+  supplier: number;
+  supplier_name: string;
+  payment_date: string;
+  amount: string;
+  payment_method: SupplierPaymentMethod;
+  reference: string;
+  notes: string;
+  status: 'completed' | 'voided';
+  allocations: SupplierPaymentAllocation[];
+  allocated_amount: string;
+  unallocated_amount: string;
+  voided_at: string | null;
+  void_reason: string;
+  created_at: string;
+}
+
+/** Payments are never edited: they're recorded once and voided if wrong. */
+export interface SupplierPaymentPayload {
+  supplier: number;
+  payment_date: string;
+  amount: string;
+  payment_method: SupplierPaymentMethod;
+  reference: string;
+  notes: string;
+  allocations: { invoice: number; amount: string }[];
+}
+
+export type DebitNoteStatus = 'draft' | 'issued' | 'cancelled';
+
+export interface DebitNote {
+  id: number;
+  note_number: string;
+  supplier: number;
+  supplier_name: string;
+  supplier_invoice: number | null;
+  supplier_return: number | null;
+  date: string;
+  subtotal: string;
+  tax_amount: string;
+  total_amount: string;
+  supplier_reference: string;
+  reason: string;
+  status: DebitNoteStatus;
+  issued_at: string | null;
+  cancelled_at: string | null;
+  cancel_reason: string;
+  created_at: string;
+}
+
+export interface DebitNotePayload {
+  supplier: number;
+  supplier_invoice: number | null;
+  supplier_return: number | null;
+  date: string;
+  subtotal: string;
+  tax_amount: string;
+  supplier_reference: string;
+  reason: string;
+}
+
+export const DEBIT_NOTE_SEVERITY: Record<DebitNoteStatus, Severity> = {
+  draft: 'secondary',
+  issued: 'success',
+  cancelled: 'danger',
+};

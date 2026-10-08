@@ -1,0 +1,89 @@
+<app-page-header title="accounting.payments.title" [actions]="headerActions"></app-page-header>
+
+@if (table.error(); as err) {
+  <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403" (retry)="table.load()"></app-error-state>
+} @else {
+  <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
+    <div class="flex flex-col gap-3 border-b border-gray-100 p-4 sm:flex-row sm:items-center dark:border-gray-800">
+      <p-select
+        [(ngModel)]="status"
+        (ngModelChange)="onFilterChange()"
+        [options]="statusOptions"
+        optionLabel="label"
+        optionValue="value"
+        [showClear]="true"
+        [placeholder]="'accounting.fields.status' | translate"
+        [ariaLabel]="'accounting.fields.status' | translate"
+        styleClass="w-full sm:w-44"
+        appendTo="body"
+      >
+        <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
+        <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
+      </p-select>
+      <p-select
+        [(ngModel)]="method"
+        (ngModelChange)="onFilterChange()"
+        [options]="methodOptions"
+        optionLabel="label"
+        optionValue="value"
+        [showClear]="true"
+        [placeholder]="'accounting.fields.paymentMethod' | translate"
+        [ariaLabel]="'accounting.fields.paymentMethod' | translate"
+        styleClass="w-full sm:w-52"
+        appendTo="body"
+      >
+        <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
+        <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
+      </p-select>
+    </div>
+    <div class="overflow-x-auto">
+      <p-table
+        [value]="table.rows()"
+        [lazy]="true"
+        [lazyLoadOnInit]="false"
+        (onLazyLoad)="table.onLazyLoad($event)"
+        [paginator]="true"
+        [first]="table.first()"
+        [rows]="table.pageSize()"
+        [totalRecords]="table.total()"
+        [rowsPerPageOptions]="[10, 25, 50]"
+        [loading]="table.loading()"
+        dataKey="id"
+        size="small"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th>{{ 'accounting.fields.paymentNumber' | translate }}</th>
+            <th>{{ 'accounting.fields.supplier' | translate }}</th>
+            <th>{{ 'accounting.fields.date' | translate }}</th>
+            <th>{{ 'accounting.fields.paymentMethod' | translate }}</th>
+            <th>{{ 'accounting.fields.status' | translate }}</th>
+            <th class="text-end">{{ 'accounting.fields.amount' | translate }}</th>
+            <th class="text-end">{{ 'accounting.fields.unallocated' | translate }}</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-row>
+          <tr class="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50" (click)="open(row)" (keydown.enter)="open(row)" tabindex="0">
+            <td class="whitespace-nowrap font-mono text-xs font-semibold" dir="ltr">{{ row.payment_number }}</td>
+            <td class="font-medium">{{ row.supplier_name }}</td>
+            <td class="whitespace-nowrap" dir="ltr">{{ row.payment_date }}</td>
+            <td>{{ 'sales.paymentMethods.' + row.payment_method | translate }}</td>
+            <td>
+              <app-status-badge
+                [value]="'accounting.paymentStatuses.' + row.status | translate"
+                [severity]="row.status === 'completed' ? 'success' : 'secondary'"
+              ></app-status-badge>
+            </td>
+            <td class="whitespace-nowrap text-end font-medium">{{ row.amount | number: '1.2-2' }}</td>
+            <td class="whitespace-nowrap text-end">{{ row.unallocated_amount | number: '1.2-2' }}</td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="7"><app-empty-state icon="pi-wallet"></app-empty-state></td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+}

@@ -77,7 +77,10 @@
     "accounting": "المحاسبة",
     "journalEntries": "القيود اليومية",
     "accounts": "دليل الحسابات",
-    "fiscalYears": "السنوات المالية"
+    "fiscalYears": "السنوات المالية",
+    "accountingReports": "التقارير",
+    "supplierPayments": "مدفوعات الموردين",
+    "debitNotes": "الإشعارات المدينة"
   },
   "auth": {
     "login": "تسجيل الدخول",
@@ -864,14 +867,16 @@
       "close": "إغلاق واسترداد",
       "createReplacement": "إنشاء أمر استبدال",
       "markShipped": "تعيين كمشحون",
-      "confirmReceipt": "أكّد المورد"
+      "confirmReceipt": "أكّد المورد",
+      "raiseDebitNote": "إنشاء إشعار مدين"
     },
     "confirm": {
       "approve": "اعتماد هذا المرتجع؟ يمكن للعميل بعدها إرسال الأصناف.",
       "approveSupplier": "اعتماد مرتجع المورد هذا؟ ستخرج الأصناف من مخزون المستودع.",
       "createReplacement": "إنشاء أمر بيع جديد للأصناف المقبولة؟",
       "markShipped": "تعيين هذا المرتجع كمشحون إلى المورد؟",
-      "confirmReceipt": "هل أكّد المورد استلام الأصناف؟"
+      "confirmReceipt": "هل أكّد المورد استلام الأصناف؟",
+      "raiseDebitNote": "إنشاء إشعار مدين مسودة لمطالبة المورد بقيمة هذا المرتجع؟"
     },
     "toasts": {
       "approved": "تم اعتماد المرتجع.",
@@ -880,7 +885,8 @@
       "closed": "تم إغلاق المرتجع.",
       "replacementCreated": "تم إنشاء أمر الاستبدال.",
       "shipped": "تم التعيين كمشحون.",
-      "receiptConfirmed": "تم تأكيد الاستلام."
+      "receiptConfirmed": "تم تأكيد الاستلام.",
+      "debitNoteCreated": "تم إنشاء إشعار مدين مسودة."
     },
     "hints": {
       "searchCustomer": "ابحث برقم المرتجع أو العميل أو الأمر",
@@ -963,10 +969,26 @@
       "to": "إلى",
       "startDate": "تاريخ البداية",
       "endDate": "تاريخ النهاية",
-      "closedAt": "أُغلقت في"
+      "closedAt": "أُغلقت في",
+      "paymentNumber": "رقم الدفعة",
+      "noteNumber": "رقم الإشعار",
+      "supplier": "المورد",
+      "paymentMethod": "طريقة الدفع",
+      "notes": "ملاحظات",
+      "allocated": "المخصص",
+      "unallocated": "غير المخصص",
+      "voidedAt": "تاريخ الإلغاء",
+      "supplierInvoice": "فاتورة المورد",
+      "supplierReturn": "مرتجع المورد",
+      "supplierReference": "مرجع المورد",
+      "subtotal": "المجموع الفرعي",
+      "tax": "الضريبة",
+      "reason": "السبب",
+      "issuedAt": "تاريخ الإصدار"
     },
     "sections": {
-      "lines": "البنود"
+      "lines": "البنود",
+      "allocations": "التخصيص على الفواتير"
     },
     "actions": {
       "post": "ترحيل",
@@ -978,7 +1000,12 @@
       "saveAndPost": "حفظ وترحيل",
       "closeYear": "إغلاق السنة",
       "closePeriod": "إغلاق الفترة",
-      "reopen": "إعادة فتح"
+      "reopen": "إعادة فتح",
+      "addAllocation": "إضافة فاتورة",
+      "recordPayment": "تسجيل الدفعة",
+      "void": "إلغاء الدفعة",
+      "issue": "إصدار",
+      "cancelNote": "إلغاء الإشعار"
     },
     "confirm": {
       "addDefaults": "إضافة أي حساب افتراضي ناقص من الدليل؟ لن تتغير الحسابات الموجودة.",
@@ -986,7 +1013,8 @@
       "closeYear": "إغلاق {{name}}؟ ستُغلق كل فتراتها وتنتقل النتيجة إلى الأرباح المحتجزة.",
       "reopenYear": "إعادة فتح {{name}}؟ سيتم عكس قيد الإغلاق.",
       "closePeriod": "إغلاق {{name}}؟ لن يمكن الترحيل إليها بعد ذلك.",
-      "reopenPeriod": "إعادة فتح {{name}}؟"
+      "reopenPeriod": "إعادة فتح {{name}}؟",
+      "issueNote": "إصدار هذا الإشعار المدين؟ سيتم ترحيله ولا يمكن بعدها إلا إلغاؤه."
     },
     "toasts": {
       "defaultsChecked": "تم فحص الحسابات الافتراضية.",
@@ -995,7 +1023,11 @@
       "yearCreated": "تم إنشاء السنة المالية وفتراتها.",
       "yearClosed": "تم إغلاق السنة المالية.",
       "periodClosed": "تم إغلاق الفترة.",
-      "reopened": "تمت إعادة الفتح."
+      "reopened": "تمت إعادة الفتح.",
+      "paymentRecorded": "تم تسجيل الدفعة.",
+      "paymentVoided": "تم إلغاء الدفعة.",
+      "noteIssued": "تم إصدار الإشعار المدين.",
+      "noteCancelled": "تم إلغاء الإشعار المدين."
     },
     "hints": {
       "searchAccounts": "ابحث بالرمز أو الاسم",
@@ -1017,7 +1049,112 @@
       "reverse": "يُنشئ قيدًا مرحّلًا جديدًا مع تبديل المدين والدائن.",
       "reverseDate": "اتركه فارغًا لاستخدام تاريخ اليوم.",
       "newYear": "تُنشأ الفترات الشهرية تلقائيًا. لا يمكن تغيير التواريخ لاحقًا.",
-      "yearDates": "اختر تاريخ بداية وتاريخ نهاية بعده."
+      "yearDates": "اختر تاريخ بداية وتاريخ نهاية بعده.",
+      "notBalanced": "غير متوازن",
+      "allocations": "اختياري: فواتير المورد التي تسددها هذه الدفعة.",
+      "noAllocations": "غير مخصصة على فواتير.",
+      "noSupplierInvoices": "لا توجد فواتير موردين بعد.",
+      "overAllocated": "أكثر من مبلغ الدفعة",
+      "paymentVoided": "تم إلغاء هذه الدفعة.",
+      "noteCancelled": "تم إلغاء هذا الإشعار المدين.",
+      "onlyDraftNote": "لا يمكن تعديل إلا الإشعارات المسودة.",
+      "optional": "اختياري"
+    },
+    "reports": {
+      "trial_balance": "ميزان المراجعة",
+      "income_statement": "قائمة الدخل",
+      "balance_sheet": "الميزانية العمومية",
+      "general_ledger": "دفتر الأستاذ العام",
+      "customer_statement": "كشف حساب عميل",
+      "supplier_statement": "كشف حساب مورد",
+      "receivables_aging": "أعمار الذمم المدينة",
+      "payables_aging": "أعمار الذمم الدائنة",
+      "title": "التقارير المحاسبية",
+      "subtitle": "من القيود المرحّلة. يمكن تنزيل أي تقرير بصيغة Excel.",
+      "report": "التقرير",
+      "run": "تشغيل",
+      "exportXlsx": "Excel",
+      "pick": "اختر {{field}} أولًا."
+    },
+    "reportParams": {
+      "start_date": "من",
+      "end_date": "إلى",
+      "as_of_date": "حتى تاريخ",
+      "account": "الحساب",
+      "customer": "العميل",
+      "supplier": "المورد"
+    },
+    "reportColumns": {
+      "code": "الرمز",
+      "name": "الحساب",
+      "account_type": "النوع",
+      "opening_debit": "مدين افتتاحي",
+      "opening_credit": "دائن افتتاحي",
+      "debit": "مدين",
+      "credit": "دائن",
+      "closing_debit": "مدين ختامي",
+      "closing_credit": "دائن ختامي",
+      "section": "القسم",
+      "amount": "المبلغ",
+      "date": "التاريخ",
+      "entry_number": "القيد",
+      "description": "الوصف",
+      "reference": "المرجع",
+      "balance": "الرصيد",
+      "customer": "العميل",
+      "supplier": "المورد",
+      "current": "جاري",
+      "days_1_30": "1–30 يومًا",
+      "days_31_60": "31–60 يومًا",
+      "days_61_90": "61–90 يومًا",
+      "over_90": "أكثر من 90 يومًا",
+      "total": "الإجمالي",
+      "credits": "أرصدة دائنة",
+      "net": "الصافي",
+      "start_date": "من",
+      "end_date": "إلى",
+      "total_opening_debit": "مدين افتتاحي",
+      "total_opening_credit": "دائن افتتاحي",
+      "total_debit": "إجمالي المدين",
+      "total_credit": "إجمالي الدائن",
+      "total_closing_debit": "مدين ختامي",
+      "total_closing_credit": "دائن ختامي",
+      "is_balanced": "متوازن",
+      "total_revenue": "الإيرادات",
+      "total_cost_of_sales": "تكلفة المبيعات",
+      "gross_profit": "مجمل الربح",
+      "total_expenses": "المصروفات",
+      "net_income": "صافي الدخل",
+      "as_of_date": "حتى تاريخ",
+      "total_assets": "الأصول",
+      "total_liabilities": "الخصوم",
+      "total_equity": "حقوق الملكية",
+      "total_liabilities_and_equity": "الخصوم وحقوق الملكية",
+      "account": "الحساب",
+      "opening_balance": "الرصيد الافتتاحي",
+      "closing_balance": "الرصيد الختامي"
+    },
+    "payments": {
+      "title": "مدفوعات الموردين",
+      "new": "دفعة مورد جديدة",
+      "detail": "دفعة مورد"
+    },
+    "notes": {
+      "title": "الإشعارات المدينة",
+      "subtitle": "مطالبات على الموردين (مرتجعات، زيادات في الفواتير). الإصدار يرحّلها.",
+      "new": "إشعار مدين جديد",
+      "edit": "تعديل الإشعار المدين",
+      "detail": "إشعار مدين",
+      "backToNote": "العودة إلى الإشعار"
+    },
+    "paymentStatuses": {
+      "completed": "مكتملة",
+      "voided": "ملغاة"
+    },
+    "noteStatuses": {
+      "draft": "مسودة",
+      "issued": "صادر",
+      "cancelled": "ملغى"
     }
   }
 }
