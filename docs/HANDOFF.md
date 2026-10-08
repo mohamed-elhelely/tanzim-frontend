@@ -48,7 +48,7 @@ You are continuing work on Tanzim, a bilingual (English/Arabic, RTL) ERP. Two re
 - Before calling UI work done: screenshot the changed screens in English, Arabic (RTL), dark mode and 390px mobile, and check the console has no errors.
 
 ## Next steps (the owner asked to work through them in order, one branch + PR per step, merging each)
-1. Inventory stock and movements, then procurement, then sales, returns and accounting.
+1. Sales and returns, then inventory stock/movements and procurement (blocked on BACKEND_REQUESTS 2), then accounting.
 
 Reply to the owner in Egyptian Arabic; keep code, commits and PR text in English.
 ```

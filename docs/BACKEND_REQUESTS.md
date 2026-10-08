@@ -53,6 +53,32 @@ Company admin: admin@testcompany.com / testpass123.
    Return every model field (keep the nested objects as they are). The frontend currently shows those fields empty
    and only sends them when the user changes them (shared/utils/omit-pristine.ts).
 
+   **Blocks the stock, movement and procurement screens:** the same problem is worse there, the read serializers
+   drop the document number, quantities and dates, so a list has nothing to show:
+   - BatchRead: batch_number, location, manufacturing_date, expiry_date, received_date, initial_quantity,
+     remaining_quantity, notes
+   - SerialNumberRead: serial_number, bin, received_at, sold_at, last_movement
+   - StockLedgerRead: quantity, unit_cost, total_cost, reference_type, reference_id, notes, metadata
+   - StockSnapshotRead: snapshot_date, quantity_on_hand, quantity_reserved, quantity_available, average_cost
+   - StockReservationRead: quantity, reference_type, reference_id, reserved_at, expires_at, released_at
+   - StockTransferRead: transfer_number, requested_date, expected_delivery_date, shipped_date, received_date,
+     carrier, tracking_number, current_approval_stage, notes; StockTransferLineRead: quantity_requested,
+     quantity_shipped, quantity_received, notes
+   - StockAdjustmentRead: adjustment_number, adjustment_date, notes; StockAdjustmentLineRead: current_quantity,
+     new_quantity, difference, unit_cost, total_cost, notes
+   - CycleCountRead: count_number, scheduled_date, notes; CycleCountLineRead: system_quantity, counted_quantity,
+     variance, notes
+   - PurchaseRequisitionRead: requisition_number, date_requested, required_date, estimated_total, currency,
+     current_approval_stage, custom_fields, notes; PurchaseRequisitionLineRead: quantity, estimated_unit_cost,
+     estimated_total, notes
+   - PurchaseOrderRead: po_number, order_date, expected_date, currency, payment_terms, shipping_method, terms,
+     supplier_reference, subtotal, tax_amount, total_amount, version, current_approval_stage, custom_fields, notes;
+     PurchaseOrderLineRead: quantity_ordered, quantity_received, unit_cost, discount_percent, tax_rate, tax_amount,
+     total, expected_date, notes
+   - GoodsReceiptRead: received_date, delivery_note, notes; GoodsReceiptLineRead: quantity_received, notes
+   - SupplierInvoiceRead: invoice_number, invoice_date, due_date, amount, currency, payment_reference, notes
+   The frontend builds sales and returns first and comes back to these screens once they are fixed.
+
 3. POST/PATCH /api/inventory/v1/warehouse/ with `manager` returns 500 ("Cannot resolve keyword 'company_id'"):
    WarehouseSerializer.manager is a CompanyRelatedField over User, which has no company. Restrict managers to users
    of the current company through CompanyUser. The frontend hides the manager field until then.

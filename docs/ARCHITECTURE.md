@@ -187,8 +187,8 @@ backend problems added to `docs/BACKEND_REQUESTS.md`; [CODE_MAP.md](CODE_MAP.md)
 
 ### Next — features (in order)
 
-1. **Inventory stock and movements** (batches, serials, stock ledger, transfers, adjustments, cycle counts) and **procurement** (requisitions, purchase orders, goods receipts, supplier invoices, approvals).
-2. **Sales and returns.**
+1. **Sales and returns** (customers, sales orders, delivery notes, invoices and payments; customer and supplier returns).
+2. **Inventory stock and movements** (batches, serials, stock ledger, transfers, adjustments, cycle counts) and **procurement** (requisitions, purchase orders, goods receipts, supplier invoices, approvals). Blocked until the backend returns full read serializers (BACKEND_REQUESTS 2).
 3. **Accounting** (new backend app; its API isn't in API_REFERENCE.md yet).
 
 ### Next — code health (small, do alongside features)
