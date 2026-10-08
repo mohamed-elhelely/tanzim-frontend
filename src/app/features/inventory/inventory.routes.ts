@@ -48,4 +48,64 @@ export const INVENTORY_ROUTES: Routes = [
     loadComponent: () => import('./brands/brand-form.component').then((m) => m.BrandFormComponent),
     data: { titleKey: 'inventory.brands.edit' },
   },
+  {
+    path: 'warehouses',
+    loadComponent: () => import('./warehouses/warehouse-list.component').then((m) => m.WarehouseListComponent),
+    data: { titleKey: 'inventory.warehouses.title' },
+  },
+  {
+    path: 'warehouses/new',
+    loadComponent: () => import('./warehouses/warehouse-form.component').then((m) => m.WarehouseFormComponent),
+    data: { titleKey: 'inventory.warehouses.new' },
+  },
+  {
+    path: 'warehouses/:id/edit',
+    loadComponent: () => import('./warehouses/warehouse-form.component').then((m) => m.WarehouseFormComponent),
+    data: { titleKey: 'inventory.warehouses.edit' },
+  },
+  {
+    path: 'zones',
+    loadComponent: () => import('./zones/zone-list.component').then((m) => m.ZoneListComponent),
+    data: { titleKey: 'inventory.zones.title' },
+  },
+  {
+    path: 'zones/new',
+    loadComponent: () => import('./zones/zone-form.component').then((m) => m.ZoneFormComponent),
+    data: { titleKey: 'inventory.zones.new' },
+  },
+  {
+    path: 'zones/:id/edit',
+    loadComponent: () => import('./zones/zone-form.component').then((m) => m.ZoneFormComponent),
+    data: { titleKey: 'inventory.zones.edit' },
+  },
+  {
+    path: 'bins',
+    loadComponent: () => import('./bins/bin-list.component').then((m) => m.BinListComponent),
+    data: { titleKey: 'inventory.bins.title' },
+  },
+  {
+    path: 'bins/new',
+    loadComponent: () => import('./bins/bin-form.component').then((m) => m.BinFormComponent),
+    data: { titleKey: 'inventory.bins.new' },
+  },
+  {
+    path: 'bins/:id/edit',
+    loadComponent: () => import('./bins/bin-form.component').then((m) => m.BinFormComponent),
+    data: { titleKey: 'inventory.bins.edit' },
+  },
+  {
+    path: 'suppliers',
+    loadComponent: () => import('./suppliers/supplier-list.component').then((m) => m.SupplierListComponent),
+    data: { titleKey: 'inventory.suppliers.title' },
+  },
+  {
+    path: 'suppliers/new',
+    loadComponent: () => import('./suppliers/supplier-form.component').then((m) => m.SupplierFormComponent),
+    data: { titleKey: 'inventory.suppliers.new' },
+  },
+  {
+    path: 'suppliers/:id/edit',
+    loadComponent: () => import('./suppliers/supplier-form.component').then((m) => m.SupplierFormComponent),
+    data: { titleKey: 'inventory.suppliers.edit' },
+  },
 ];

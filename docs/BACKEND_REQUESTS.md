@@ -98,12 +98,25 @@ is_staff=True and no CompanyUser in `manage.py shell`. With no EMAIL_HOST_PASSWO
      category, and child categories at a deleted parent. Return 400 while it is in use (same as item 9).
 15c. Category parent: nothing stops a category from becoming its own ancestor (cycles). Validate on the server.
 
+## Priority 3c — found while building the warehouse and supplier screens
+
+15d. POST/PATCH /api/inventory/v1/warehouse/ with `manager` returns 500 ("Cannot resolve keyword 'company_id'"):
+     WarehouseSerializer.manager is a CompanyRelatedField over User, which has no company. Filter managers through
+     CompanyUser (users of the current company) instead. The frontend hides the manager field until then.
+15e. The read serializers for warehouse, zone, bin and supplier return only a few fields (no code, contact, address,
+     barcode, capacity, terms, notes…), so an edit screen can't show what is saved. Return every model field in the
+     read serializers (WarehouseReadSerializer, ZoneReadSerializer, BinReadSerializer, SupplierReadSerializer). The
+     frontend shows those fields empty and only sends them when changed (shared/utils/omit-pristine.ts) until then.
+15f. Warehouse.code is `unique=True` across ALL companies: one company can't use a code another company has, and the
+     400 message reveals that the code exists elsewhere. Make it unique per company (unique_together company + code).
+
 ## Priority 4 — blocks the Inventory screens (see "Known issues" #1–#3 in docs/API_REFERENCE.md)
 
 16. Workflow actions return 405: POST /api/inventory/v1/{stock-transfer, stock-adjustment, cycle-count, purchase-requisition,
     purchase-order, supplier-invoice}/{id}/action/ and POST /api/inventory/v1/approval-request/{id}/process/. Route them to
     the existing approve/ship/post/… methods, and filter the lookups by company.
-17. No CRUD API for ProductVariant, while stock, batches, serials, PO lines and transfers all require product_variant.
+17. No CRUD API for ProductVariant, while stock, batches, serials, PO lines, transfers and supplier products all require
+    product_variant (the frontend can't build the Supplier products screen without it).
     Add list/create/retrieve/update/delete under /api/inventory/v1/product-variant/ (company-scoped, with dropdown=true).
 18. Import fails on every row: validate_name() missing 1 required positional argument: 'field_name'
     (confirmed on POST /api/inventory/v1/category/import/).

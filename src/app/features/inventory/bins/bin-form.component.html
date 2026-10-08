@@ -1,0 +1,117 @@
+<app-page-header
+  [title]="isEdit ? 'inventory.bins.edit' : 'inventory.bins.new'"
+  [showBack]="true"
+  backLabel="common.backToList"
+  (back)="goBack()"
+></app-page-header>
+
+@if (loadError(); as err) {
+  <app-error-state [title]="errorTitleKey(err)" [showRetry]="false"></app-error-state>
+} @else if (loading()) {
+  <app-loading-state></app-loading-state>
+} @else {
+  <p-card styleClass="max-w-5xl">
+    <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-6" novalidate>
+      @if (isEdit) {
+        <!-- ⚠️ Some fields aren't returned by the API; see omitPristine(). -->
+        <div
+          class="rounded-md border border-sky-200 bg-sky-50 p-3 text-sm text-sky-800 dark:border-sky-900 dark:bg-sky-950 dark:text-sky-200"
+        >
+          {{ 'inventory.hints.partialData' | translate }}
+        </div>
+      }
+
+      @if (formErrors().length) {
+        <div
+          role="alert"
+          class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300"
+        >
+          @for (message of formErrors(); track $index) {
+            <p>{{ message }}</p>
+          }
+        </div>
+      }
+
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div class="flex flex-col gap-1">
+          <label for="zone" class="text-sm font-medium">{{ 'inventory.fields.zone' | translate }} *</label>
+          <p-select
+            inputId="zone"
+            formControlName="zone"
+            [options]="zoneOptions()"
+            optionLabel="label"
+            optionValue="value"
+            [filter]="true"
+            [showClear]="true"
+            [placeholder]="'common.select' | translate"
+            styleClass="w-full"
+            appendTo="body"
+          ></p-select>
+          <small class="text-xs text-gray-500 dark:text-gray-400">{{ 'inventory.hints.noBinTracking' | translate }}</small>
+          <app-field-error [control]="form.controls.zone"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="name" class="text-sm font-medium">{{ 'inventory.fields.name' | translate }} *</label>
+          <input pInputText id="name" formControlName="name" class="w-full" />
+          <app-field-error [control]="form.controls.name"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="code" class="text-sm font-medium">{{ 'inventory.fields.code' | translate }}</label>
+          <input pInputText id="code" formControlName="code" dir="ltr" class="w-full" />
+          <app-field-error [control]="form.controls.code"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="barcode" class="text-sm font-medium">{{ 'inventory.fields.barcode' | translate }}</label>
+          <input pInputText id="barcode" formControlName="barcode" dir="ltr" class="w-full" />
+          <app-field-error [control]="form.controls.barcode"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="max_capacity" class="text-sm font-medium">{{ 'inventory.fields.maxCapacity' | translate }}</label>
+          <input pInputText id="max_capacity" formControlName="max_capacity" dir="ltr" inputmode="decimal" class="w-full" />
+          <app-field-error [control]="form.controls.max_capacity" patternKey="inventory.hints.decimal"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="bin_type" class="text-sm font-medium">{{ 'inventory.fields.binType' | translate }}</label>
+          <input pInputText id="bin_type" formControlName="bin_type" class="w-full" />
+          <app-field-error [control]="form.controls.bin_type"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-3 md:col-span-2">
+          <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'inventory.sections.settings' | translate }}</h3>
+          <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <div class="flex items-center gap-3">
+              <p-toggleswitch inputId="is_active" formControlName="is_active"></p-toggleswitch>
+              <label for="is_active" class="text-sm font-medium">{{ 'inventory.fields.isActive' | translate }}</label>
+            </div>
+            <div class="flex items-center gap-3">
+              <p-toggleswitch inputId="allow_mixed_products" formControlName="allow_mixed_products"></p-toggleswitch>
+              <label for="allow_mixed_products" class="text-sm font-medium">{{ 'inventory.fields.allowMixedProducts' | translate }}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 border-t border-gray-100 pt-5 dark:border-gray-800">
+        <p-button
+          type="button"
+          [label]="'common.cancel' | translate"
+          severity="secondary"
+          [outlined]="true"
+          (onClick)="goBack()"
+        ></p-button>
+        <p-button
+          type="submit"
+          [label]="'common.save' | translate"
+          icon="pi pi-check"
+          [loading]="saving()"
+          [disabled]="saving()"
+        ></p-button>
+      </div>
+    </form>
+  </p-card>
+}

@@ -138,6 +138,7 @@ Things to know:
 | `layout/nav/nav-list.component` | Renders the menu, filters it, expands the active group | 🧠 §3 |
 | `shared/table/server-table.ts` | State for server-paged tables | 🆕 🧠 cancels stale requests; steps back a page after deleting the last row |
 | `shared/utils/server-errors.ts` | `applyServerErrors`, `handleSaveError`, `errorTitleKey` | 🆕 🧠 flattens nested backend errors to dotted keys (`user.email`) |
+| `shared/utils/omit-pristine.ts` | Drops untouched fields from an edit body | 🆕 ⚠️ for read endpoints that don't return every field (BACKEND_REQUESTS 15e) |
 | `shared/components/field-error` | Message under an input | Not OnPush on purpose (reacts to `touched`) |
 | `shared/components/page-header` | Title, back link, action buttons | |
 | `shared/components/confirm-dialog` | The one PrimeNG confirm dialog | Opened only through `ConfirmService` |
@@ -192,6 +193,10 @@ marked "client list".
 | `products/` | `inventory/v1/product/` | Enum selects (type, valuation); shelf life only with an expiry date |
 | `categories/` | `inventory/v1/category/` | 🧠 parent picker shows the full path and excludes itself and its descendants. ⚠️ edit sends name/parent only when changed (15a) |
 | `brands/` | `inventory/v1/brand/` | Smallest resource: copy it for new ones |
+| `warehouses/` | `inventory/v1/warehouse/` | ⚠️ code shown from the dropdown (list + edit); contact/address not returned → `omitPristine`; no manager field (backend 500) |
+| `zones/` | `inventory/v1/zone/` | Warehouse picker "Name (CODE)". ⚠️ code/description not returned → `omitPristine` |
+| `bins/` | `inventory/v1/bin/` | 🧠 zone picker from the full zone list, labelled "Warehouse › Zone". ⚠️ code/barcode/capacity/type not returned → `omitPristine` |
+| `suppliers/` | `inventory/v1/supplier/` | Reliability is 0–1; empty lead time/reliability → 0. ⚠️ contact/address/terms not returned → `omitPristine`. Supplier products not built (needs variants) |
 
 ## 7. Cross-feature links
 
@@ -205,6 +210,9 @@ flowchart LR
     dash --> tenants["admin/companies"]
     products["inventory/products form"] --> cats["inventory/categories"]
     products --> brands["inventory/brands"]
+    whform["inventory/warehouses form"] -->|LocationService| sites
+    zoneform["inventory/zones form"] --> wh["inventory/warehouses"]
+    binform["inventory/bins form"] --> zones["inventory/zones"]
 ```
 
 Only services and models cross feature boundaries; components never do.
@@ -219,7 +227,9 @@ The places most likely to hide a bug, in the order to check them:
 4. 🧠 `shared/utils/server-errors.ts` — every form depends on it.
 5. 🧠 `features/locations/sites/site-form.component.ts` — cascading pickers that must not clear on load.
 6. 🧠 ⚠️ `features/inventory/categories/category-form.component.ts` — tree rules and the duplicate workaround.
-7. ⚠️ Every other workaround marked above: re-check when the backend fixes the matching item.
+7. ⚠️ `shared/utils/omit-pristine.ts` and its four users (warehouse, zone, bin, supplier forms) — an edit must never
+   send an untouched field the API didn't return.
+8. ⚠️ Every other workaround marked above: re-check when the backend fixes the matching item.
 
 ## 9. Keeping this map up to date
 

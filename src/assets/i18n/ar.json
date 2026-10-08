@@ -59,7 +59,11 @@
     "companies": "الشركات",
     "products": "المنتجات",
     "categories": "التصنيفات",
-    "brands": "العلامات التجارية"
+    "brands": "العلامات التجارية",
+    "warehouses": "المخازن",
+    "zones": "المناطق",
+    "bins": "الأرفف",
+    "suppliers": "الموردون"
   },
   "auth": {
     "login": "تسجيل الدخول",
@@ -316,11 +320,46 @@
       "hasExpiry": "له تاريخ صلاحية",
       "shelfLifeDays": "مدة الصلاحية (بالأيام)",
       "purchasable": "قابل للشراء",
-      "sellable": "قابل للبيع"
+      "sellable": "قابل للبيع",
+      "code": "الكود",
+      "warehouseType": "النوع",
+      "location": "موقع الشركة",
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف",
+      "mobile": "الجوال",
+      "addressLine1": "العنوان (السطر 1)",
+      "addressLine2": "العنوان (السطر 2)",
+      "city": "المدينة",
+      "state": "المحافظة / الولاية",
+      "postalCode": "الرمز البريدي",
+      "country": "الدولة",
+      "allowNegativeStock": "السماح بالرصيد السالب",
+      "useBinLocations": "تتبّع المخزون بالرف",
+      "warehouse": "المخزن",
+      "zone": "المنطقة",
+      "barcode": "الباركود",
+      "maxCapacity": "السعة القصوى",
+      "binType": "نوع الرف",
+      "allowMixedProducts": "السماح بمنتجات مختلفة",
+      "supplierType": "النوع",
+      "taxId": "الرقم الضريبي",
+      "contactPerson": "مسؤول التواصل",
+      "website": "الموقع الإلكتروني",
+      "paymentTerms": "شروط الدفع",
+      "currency": "العملة",
+      "creditLimit": "حد الائتمان",
+      "leadTimeDays": "مدة التوريد (بالأيام)",
+      "reliabilityScore": "الموثوقية (0–1)",
+      "isPreferred": "مفضّل",
+      "notes": "ملاحظات"
     },
     "sections": {
       "tracking": "التتبّع",
-      "availability": "الإتاحة"
+      "availability": "الإتاحة",
+      "contact": "التواصل",
+      "address": "العنوان",
+      "settings": "الإعدادات",
+      "terms": "الشروط"
     },
     "productTypes": {
       "simple": "بسيط",
@@ -334,7 +373,49 @@
       "lifo": "الوارد أخيرًا يصرف أولًا (LIFO)"
     },
     "hints": {
-      "shelfLifeDays": "عدد صحيح من الأيام، 1 أو أكثر."
+      "shelfLifeDays": "عدد صحيح من الأيام، 1 أو أكثر.",
+      "partialData": "الخادم لا يُرجع بعض بيانات هذا السجل بعد (مثل التواصل والعنوان)، لذلك تظهر فارغة. اترك الحقل فارغًا للإبقاء على قيمته المحفوظة، أو اكتب قيمة جديدة لاستبدالها.",
+      "decimal": "رقم، مثل 100 أو 12.5.",
+      "whole": "عدد صحيح، 0 أو أكثر.",
+      "reliability": "رقم من 0 إلى 1، مثل 0.8.",
+      "currency": "ثلاثة أحرف، مثل SAR.",
+      "website": "عنوان كامل يبدأ بـ http:// أو https://.",
+      "noBinTracking": "تُستخدم الأرفف فقط في المخازن المفعّل بها «تتبّع المخزون بالرف»."
+    },
+    "warehouses": {
+      "title": "المخازن",
+      "new": "مخزن جديد",
+      "edit": "تعديل المخزن"
+    },
+    "zones": {
+      "title": "المناطق",
+      "new": "منطقة جديدة",
+      "edit": "تعديل المنطقة"
+    },
+    "bins": {
+      "title": "الأرفف",
+      "new": "رف جديد",
+      "edit": "تعديل الرف"
+    },
+    "suppliers": {
+      "title": "الموردون",
+      "new": "مورد جديد",
+      "edit": "تعديل المورد"
+    },
+    "warehouseTypes": {
+      "central": "رئيسي",
+      "regional": "إقليمي",
+      "retail": "متجر تجزئة",
+      "transit": "عبور / تحويل",
+      "returns": "مركز مرتجعات",
+      "quarantine": "حجر"
+    },
+    "supplierTypes": {
+      "manufacturer": "مصنّع",
+      "distributor": "موزّع",
+      "wholesaler": "تاجر جملة",
+      "retailer": "تاجر تجزئة",
+      "service": "مزوّد خدمة"
     }
   }
 }

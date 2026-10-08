@@ -172,18 +172,17 @@ backend problems added to `docs/BACKEND_REQUESTS.md`; [CODE_MAP.md](CODE_MAP.md)
 | — | Menu visibility by role and subscription module |
 | 7 | Inventory catalogue (products, categories, brands) — PR #8 |
 | — | Code structure: one convention, shared ServerTable / ConfirmService / handleSaveError, this document |
+| 8 | Inventory warehouses, zones, bins and suppliers |
 
 ### Next — features (in order)
 
-1. **Inventory phase 1, part 2:** warehouses (with zones and bins) and suppliers (with supplier products).
-   Follow the recipes above; nothing new is needed.
-2. **Notifications** (header bell + page, polling until the backend accepts a WebSocket token) and **Billing**
+1. **Notifications** (header bell + page, polling until the backend accepts a WebSocket token) and **Billing**
    (the company's own subscription and platform invoices, read-only).
-3. **Fine-grained permissions:** hide buttons per permission codename once the backend ships a current-user
+2. **Fine-grained permissions:** hide buttons per permission codename once the backend ships a current-user
    endpoint (BACKEND_REQUESTS.md Priority 1). Plan: a `PermissionService` in `core/auth` and a small
    `*appCan="'inventory.add_product'"` structural directive in `shared/`, used next to the role checks.
-4. **Inventory phase 2** (stock, variants, procurement workflows) once backend items 16–18 are fixed.
-5. **Sales and returns.**
+3. **Inventory phase 2** (variants, supplier products, stock, procurement workflows) once backend items 16–18 are fixed.
+4. **Sales and returns.**
 
 ### Next — code health (small, do alongside features)
 
@@ -203,3 +202,4 @@ backend problems added to `docs/BACKEND_REQUESTS.md`; [CODE_MAP.md](CODE_MAP.md)
 | One placeholder page for unbuilt sections, driven by route data | Five identical components carried no information |
 | Subscription loading fails open | The backend still answers 403; hiding everything on a network blip would be worse |
 | Category edit omits unchanged name/parent | Backend duplicate check doesn't exclude the record itself (BACKEND_REQUESTS 15a) |
+| Edit forms skip untouched fields the API didn't return (`omitPristine`) | Sending them would blank stored values (BACKEND_REQUESTS 15e) |
