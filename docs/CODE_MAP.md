@@ -33,7 +33,7 @@ flowchart TD
     subgraph core["core/ (singletons, no UI)"]
         api["api: BaseApiService, CrudApi"]
         auth["auth: AuthService, guards"]
-        sub["subscription: SubscriptionService"]
+        sub["auth: AccessService (/me)"]
         svc["services: notification, confirm, language, theme, loading"]
         int["interceptors"]
     end
@@ -80,27 +80,33 @@ sequenceDiagram
 ```mermaid
 flowchart LR
     login["POST /api/login/"] --> authsvc["AuthService.user()<br/>role = ADMIN · COMPANY · EMPLOYEE"]
-    authsvc --> guards["route guards<br/>platformAdmin · companyMember · companyAdmin"]
-    authsvc --> nav["nav-list: hides items by NavItem.roles"]
-    shellinit["ShellComponent constructor"] --> subsvc["SubscriptionService.load()<br/>GET subscriptions/subscriptions/current/"]
-    subsvc --> nav2["nav-list: hides items by NavItem.module"]
-    subsvc --> dash["dashboard: hides Locations card/step/request"]
-    authsvc --> users["user-list: New/Edit/Delete only for COMPANY"]
+    me["GET /api/company/v1/me/"] --> access["AccessService<br/>can(codename) · hasModule(code) · isStaff()"]
+    shellinit["ShellComponent / guards"] -->|load()| access
+    access --> guards["guards: platformAdmin · companyMember · permission (route data.permission)"]
+    access --> nav["nav-list: hides items by permission, module, staffOnly; drops empty groups"]
+    access --> lists["company lists: New / edit / delete by add_ / change_ / delete_"]
+    access --> dash["dashboard: cards, setup steps, quick actions"]
+    authsvc --> guards
 ```
 
-| Role | Meaning | Sees |
+| Who | How it's known | Sees |
 |---|---|---|
-| `ADMIN` | Platform admin: a user with **no company** | Dashboard (company counts) and Companies |
-| `COMPANY` | Company admin | Every company section their subscription allows; manages users |
-| `EMPLOYEE` | Any other company user | Same sections, read-only Users list, no setup checklist |
+| Platform staff | `/me.is_staff` (token `is_staff` until /me answers) | Dashboard (company counts) and Companies |
+| User without a company, not staff | login `role: ADMIN` | Dashboard welcome only |
+| Company user | login `role: COMPANY`/`EMPLOYEE` | Sections their subscription has (`/me.modules`); company screens and buttons by `/me.permissions` (`has_full_access` = everything) |
 
 Things to know:
-- The backend only checks permissions in a few places (BACKEND_REQUESTS Priority 1). Hiding in the UI is
-  convenience, not security.
-- `SubscriptionService.allows()` 🧠 returns **false while loading** (no flicker) and **true after an error**
-  (fail open: the backend still answers 403). A 404 means "no subscription" → nothing allowed.
-- `layout/nav/nav-list.component.ts` 🧠 expands the active group by looking at **all** `NAV_ITEMS`, because a
-  module-gated group only appears after the subscription has loaded.
+- Only the six company resources are permission-gated by the backend (`view_/add_/change_/delete_` +
+  `companyuser`, `department`, `team`, `role`, `permissiongroup`, `permission`). Locations and inventory are gated
+  by subscription module only. `?dropdown=true` needs no permission, so pickers always work.
+- `AccessService.can()` / `hasModule()` 🧠 return **false while /me loads** (no flicker) and **true if /me fails**
+  (fail open: the backend still answers 403).
+- `AccessService` 🧠 resets itself when the signed-in user changes (an `effect` on `AuthService.user()`), so the next
+  user never inherits the previous user's permissions.
+- Guards call `access.load()` themselves (child routes are checked before the shell exists); `load()` shares one
+  request.
+- `layout/nav/nav-list.component.ts` 🧠 expands the active group by looking at **all** `NAV_ITEMS`, because a gated
+  group only appears after /me has loaded.
 
 ## 4. core/
 
@@ -111,7 +117,8 @@ Things to know:
 | `api/crud-api.ts` | Standard calls for one resource | 🆕 every resource service extends it |
 | `auth/auth.service.ts` | Signed-in user, login, logout, token refresh | 🧠 role restored from the JWT on reload |
 | `auth/token-storage.service.ts` | Tokens in localStorage | |
-| `auth/auth.guard.ts` | `authGuard`, `guestGuard`, `platformAdminGuard`, `companyMemberGuard`, `companyAdminGuard` | 🔒 |
+| `auth/access.service.ts` | Permissions, modules and staff flag from GET /me | 🆕 🧠 🔒 see §3 |
+| `auth/auth.guard.ts` | `authGuard`, `guestGuard`, `platformAdminGuard`, `companyMemberGuard`, `permissionGuard` | 🔒 `permissionGuard` reads `route.data.permission` |
 | `errors/app-error.ts` | `AppError` + `toAppError()` | The only error shape in the app |
 | `errors/global-error-handler.ts` | Toast for uncaught non-HTTP errors | |
 | `interceptors/api-headers.interceptor.ts` | `ngrok-skip-browser-warning` for ngrok hosts | ⚠️ ngrok free tier, not a backend bug |
@@ -124,14 +131,13 @@ Things to know:
 | `services/language.service.ts` | en/ar, sets `<html lang dir>` | |
 | `services/theme.service.ts` | Light/dark via `.dark` on `<html>` | 🧠 `index.html` applies it before Angular starts |
 | `services/loading.service.ts` | Requests in flight | |
-| `subscription/subscription.service.ts` | Enabled subscription modules | 🧠 🔒 see §3 |
 | `theme/tanzim-preset.ts` | PrimeNG Aura preset (indigo) | 🧠 CSS layer order in `src/layer-order.css` |
 
 ## 5. layout/ and shared/
 
 | File | Purpose | Notes |
 |---|---|---|
-| `layout/shell/` | Frame for signed-in pages; loads the subscription | Hosts the toast and the confirm dialog once |
+| `layout/shell/` | Frame for signed-in pages; starts loading /me | Hosts the toast and the confirm dialog once |
 | `layout/header/` | Breadcrumb (route `data.titleKey` + nav group), language/theme toggles, user menu | |
 | `layout/sidebar/` + `brand.component` | Desktop sidebar | Mobile uses a PrimeNG drawer in the shell |
 | `layout/nav/nav-items.ts` | The menu: label, icon, link, `module`, `roles`, children | 🔒 the single place to add a menu entry |
@@ -156,7 +162,7 @@ marked "client list".
 | Path | Notes |
 |---|---|
 | `auth/login/` | Split-screen login, language/theme toggles |
-| `dashboard/` | 🧠 🔒 three versions: platform counts (ADMIN), stats + setup + quick actions (COMPANY), stats only (EMPLOYEE). Counts locations only once the `location` module is known to be on (`effect`). Reads services from company, locations and admin |
+| `dashboard/` | 🧠 🔒 platform counts for staff; for company users every card, setup step and quick action is gated by a permission or module (`Gate`). Counts are requested after /me answers, only for the visible cards. Reads services from company, locations and admin |
 | `coming-soon/` | 🆕 one placeholder page for every unbuilt section, title and icon from route data |
 
 ### admin — `/admin` (platform admins only) 🔒
@@ -169,8 +175,8 @@ marked "client list".
 
 | Resource | Endpoint | Notes |
 |---|---|---|
-| `users/` (`CompanyUserService`) | `company/v1/company-user/` | Client list. 🔒 New/Edit/Delete for COMPANY only (+ `companyAdminGuard`). ⚠️ edit sends only role/department/team/flags (nested user update fails). 🧠 `USER_FIELD_MAP` maps `user.email` errors to flat controls |
-| `departments/` | `company/v1/departments/` | Parent picker excludes itself |
+| `users/` (`CompanyUserService`) | `company/v1/company-user/` | Client list. 🔒 New/Edit/Delete by `*_companyuser` permissions (+ `permissionGuard` on the form routes). `userOptions()` uses the dropdown, so pickers work without `view_companyuser`. ⚠️ edit sends only role/department/team/flags (nested user update fails). 🧠 `USER_FIELD_MAP` maps `user.email` errors to flat controls |
+| `departments/` | `company/v1/departments/` | Parent picker excludes itself. 🔒 every company list shows New/edit/delete by permission |
 | `teams/` | `company/v1/teams/` | Uses `LocationService.dropdown()` for the location picker |
 | `roles/` | `company/v1/roles/` | |
 | `permission-groups/` | `company/v1/permission-groups/` | |
@@ -222,7 +228,7 @@ Only services and models cross feature boundaries; components never do.
 The places most likely to hide a bug, in the order to check them:
 
 1. 🧠 `core/interceptors/auth.interceptor.ts` + `AuthService.refreshAccessToken` — token refresh and logout.
-2. 🧠 🔒 `core/subscription/subscription.service.ts`, `layout/nav/nav-list.component.ts` — what the menu shows.
+2. 🧠 🔒 `core/auth/access.service.ts`, `layout/nav/nav-list.component.ts`, `core/auth/auth.guard.ts` — what each user may see and open.
 3. 🧠 `shared/table/server-table.ts` — every list depends on it.
 4. 🧠 `shared/utils/server-errors.ts` — every form depends on it.
 5. 🧠 `features/locations/sites/site-form.component.ts` — cascading pickers that must not clear on load.
