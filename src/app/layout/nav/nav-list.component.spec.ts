@@ -2,16 +2,18 @@ import { TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
 import { provideTranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../core/auth/auth.service';
+import { SubscriptionService } from '../../core/subscription/subscription.service';
 import { NavListComponent } from './nav-list.component';
 
 describe('NavListComponent', () => {
-  async function render(url: string, role = 'COMPANY') {
+  async function render(url: string, role = 'COMPANY', modules: string[] = ['location', 'inventory']) {
     TestBed.configureTestingModule({
       imports: [NavListComponent],
       providers: [
         provideRouter([{ path: '**', children: [] }]),
         provideTranslateService(),
         { provide: AuthService, useValue: { role: () => role } },
+        { provide: SubscriptionService, useValue: { allows: (code: string) => modules.includes(code) } },
       ],
     });
     await TestBed.inject(Router).navigateByUrl(url);
@@ -53,5 +55,21 @@ describe('NavListComponent', () => {
     expect(links(await render('/dashboard', 'COMPANY'))).not.toContain('/admin/companies');
     TestBed.resetTestingModule();
     expect(links(await render('/dashboard', 'ADMIN'))).toContain('/admin/companies');
+  });
+
+  it('shows platform admins only the dashboard and Companies', async () => {
+    const fixture = await render('/dashboard', 'ADMIN');
+    expect(links(fixture)).toEqual(['/dashboard', '/admin/companies']);
+    expect(fixture.nativeElement.querySelector('button[aria-expanded]')).toBeNull();
+  });
+
+  it('hides sections whose subscription module is off', async () => {
+    const fixture = await render('/dashboard', 'EMPLOYEE', ['location']);
+    expect(links(fixture)).not.toContain('/inventory');
+    expect(fixture.nativeElement.textContent).toContain('nav.locations');
+    TestBed.resetTestingModule();
+    const without = await render('/dashboard', 'EMPLOYEE', []);
+    expect(without.nativeElement.textContent).not.toContain('nav.locations');
+    expect(links(without)).toContain('/sales');
   });
 });

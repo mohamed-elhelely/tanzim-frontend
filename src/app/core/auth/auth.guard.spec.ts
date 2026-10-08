@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree, provideRouter } from '@angular/router';
 import { AuthService } from './auth.service';
-import { authGuard, guestGuard, platformAdminGuard } from './auth.guard';
+import { authGuard, companyAdminGuard, companyMemberGuard, guestGuard, platformAdminGuard } from './auth.guard';
 
 function configure(isAuthenticated: boolean): void {
   TestBed.configureTestingModule({
@@ -46,13 +46,13 @@ describe('guestGuard', () => {
   });
 });
 
-describe('platformAdminGuard', () => {
-  function configureRole(role: string | null): void {
-    TestBed.configureTestingModule({
-      providers: [provideRouter([]), { provide: AuthService, useValue: { role: () => role } }],
-    });
-  }
+function configureRole(role: string | null): void {
+  TestBed.configureTestingModule({
+    providers: [provideRouter([]), { provide: AuthService, useValue: { role: () => role } }],
+  });
+}
 
+describe('platformAdminGuard', () => {
   it('allows platform admins', () => {
     configureRole('ADMIN');
     expect(TestBed.runInInjectionContext(() => platformAdminGuard(route, state))).toBeTrue();
@@ -63,5 +63,31 @@ describe('platformAdminGuard', () => {
     const result = TestBed.runInInjectionContext(() => platformAdminGuard(route, state));
     expect(result instanceof UrlTree).toBeTrue();
     expect((result as UrlTree).toString()).toBe('/dashboard');
+  });
+});
+
+describe('companyMemberGuard', () => {
+  it('allows company users', () => {
+    configureRole('EMPLOYEE');
+    expect(TestBed.runInInjectionContext(() => companyMemberGuard(route, state))).toBeTrue();
+  });
+
+  it('sends platform admins to the Companies screen', () => {
+    configureRole('ADMIN');
+    const result = TestBed.runInInjectionContext(() => companyMemberGuard(route, state));
+    expect((result as UrlTree).toString()).toBe('/admin/companies');
+  });
+});
+
+describe('companyAdminGuard', () => {
+  it('allows company admins', () => {
+    configureRole('COMPANY');
+    expect(TestBed.runInInjectionContext(() => companyAdminGuard(route, state))).toBeTrue();
+  });
+
+  it('sends employees back to the user list', () => {
+    configureRole('EMPLOYEE');
+    const result = TestBed.runInInjectionContext(() => companyAdminGuard(route, state));
+    expect((result as UrlTree).toString()).toBe('/company/users');
   });
 });
