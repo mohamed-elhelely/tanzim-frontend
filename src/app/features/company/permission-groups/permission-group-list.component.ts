@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
@@ -6,6 +6,7 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
+import { AccessService } from '../../../core/auth/access.service';
 import { ConfirmService } from '../../../core/services/confirm.service';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
@@ -37,17 +38,19 @@ export class PermissionGroupListComponent implements OnInit {
   private readonly api = inject(PermissionGroupService);
   private readonly router = inject(Router);
   private readonly confirm = inject(ConfirmService);
+  private readonly access = inject(AccessService);
 
   readonly table = new ServerTable<PermissionGroup>((query) => this.api.list(query));
   readonly errorTitleKey = errorTitleKey;
 
-  readonly headerActions: PageHeaderAction[] = [
-    {
-      label: 'company.permissionGroups.new',
-      icon: 'pi pi-plus',
-      onClick: () => void this.router.navigate(['/company/permission-groups/new']),
-    },
-  ];
+  /** Buttons follow the user's permissions; the backend refuses the rest with 403. */
+  readonly canAdd = computed(() => this.access.can('add_permissiongroup'));
+  readonly canEdit = computed(() => this.access.can('change_permissiongroup'));
+  readonly canDelete = computed(() => this.access.can('delete_permissiongroup'));
+
+  readonly headerActions = computed<PageHeaderAction[]>(() =>
+    this.canAdd() ? [{ label: 'company.permissionGroups.new', icon: 'pi pi-plus', onClick: () => void this.router.navigate(['/company/permission-groups/new']) }] : [],
+  );
 
   ngOnInit(): void {
     this.table.load();

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
@@ -6,7 +6,7 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
-import { AuthService } from '../../../core/auth/auth.service';
+import { AccessService } from '../../../core/auth/access.service';
 import { AppError } from '../../../core/errors/app-error';
 import { ConfirmService } from '../../../core/services/confirm.service';
 import { LanguageService } from '../../../core/services/language.service';
@@ -42,25 +42,25 @@ export class UserListComponent implements OnInit {
   private readonly api = inject(CompanyUserService);
   private readonly router = inject(Router);
   private readonly confirm = inject(ConfirmService);
+  private readonly access = inject(AccessService);
 
   readonly lang = inject(LanguageService).currentLang;
-  /** Only company admins may add, edit or delete users (enforced by the backend). */
-  readonly canManage = inject(AuthService).role() === 'COMPANY';
   readonly users = signal<CompanyUser[]>([]);
   readonly loading = signal(false);
   readonly error = signal<AppError | null>(null);
   readonly errorTitleKey = errorTitleKey;
   readonly searchFields = ['user.first_name', 'user.last_name', 'user.email'];
 
-  readonly headerActions: PageHeaderAction[] = this.canManage
-    ? [
-        {
-          label: 'company.users.new',
-          icon: 'pi pi-plus',
-          onClick: () => void this.router.navigate(['/company/users/new']),
-        },
-      ]
-    : [];
+  /** Buttons follow the user's permissions; the backend refuses the rest with 403. */
+  readonly canAdd = computed(() => this.access.can('add_companyuser'));
+  readonly canEdit = computed(() => this.access.can('change_companyuser'));
+  readonly canDelete = computed(() => this.access.can('delete_companyuser'));
+
+  readonly headerActions = computed<PageHeaderAction[]>(() =>
+    this.canAdd()
+      ? [{ label: 'company.users.new', icon: 'pi pi-plus', onClick: () => void this.router.navigate(['/company/users/new']) }]
+      : [],
+  );
 
   ngOnInit(): void {
     this.load();

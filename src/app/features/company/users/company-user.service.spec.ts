@@ -38,10 +38,10 @@ describe('CompanyUserService', () => {
     expect(result?.user.email).toBe(body.user.email);
   });
 
-  it('builds user options keyed by the login user id', () => {
+  it('builds user options from the dropdown (no view permission needed), keyed by the login user id', () => {
     let options: SelectOption[] = [];
     service.userOptions().subscribe((o) => (options = o));
-    httpMock.expectOne(URL).flush(envelope([makeCompanyUser()]));
+    httpMock.expectOne((r) => r.url === URL && r.params.get('dropdown') === 'true').flush(envelope([makeCompanyUser()]));
     expect(options).toEqual([{ value: 9, label: 'Sara Ali (sara@acme.example)' }]);
   });
 });

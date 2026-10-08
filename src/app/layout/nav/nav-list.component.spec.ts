@@ -3,18 +3,33 @@ import { TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
 import { provideTranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../core/auth/auth.service';
-import { SubscriptionService } from '../../core/subscription/subscription.service';
+import { AccessService } from '../../core/auth/access.service';
 import { NavListComponent } from './nav-list.component';
 
 describe('NavListComponent', () => {
-  async function render(url: string, role = 'COMPANY', modules: string[] = ['location', 'inventory'], subscription?: object) {
+  const ALL_COMPANY = ['view_companyuser', 'view_department', 'view_team', 'view_role', 'view_permissiongroup', 'view_permission'];
+
+  async function render(
+    url: string,
+    role = 'COMPANY',
+    modules: string[] = ['location', 'inventory'],
+    access?: object,
+    permissions: string[] = ALL_COMPANY,
+  ) {
     TestBed.configureTestingModule({
       imports: [NavListComponent],
       providers: [
         provideRouter([{ path: '**', children: [] }]),
         provideTranslateService(),
         { provide: AuthService, useValue: { role: () => role } },
-        { provide: SubscriptionService, useValue: subscription ?? { allows: (code: string) => modules.includes(code) } },
+        {
+          provide: AccessService,
+          useValue: access ?? {
+            hasModule: (code: string) => modules.includes(code),
+            can: (codename: string) => permissions.includes(codename),
+            isStaff: () => role === 'ADMIN',
+          },
+        },
       ],
     });
     await TestBed.inject(Router).navigateByUrl(url);
@@ -76,10 +91,23 @@ describe('NavListComponent', () => {
 
   it('expands a module group opened by URL once the subscription loads', async () => {
     const loaded = signal(false);
-    const fixture = await render('/inventory/products', 'COMPANY', [], { allows: () => loaded() });
+    const fixture = await render('/inventory/products', 'COMPANY', [], { hasModule: () => loaded(), can: () => true, isStaff: () => false });
     expect(links(fixture)).not.toContain('/inventory/products');
     loaded.set(true);
     fixture.detectChanges();
     expect(links(fixture)).toContain('/inventory/products');
+  });
+
+  it('shows only the company screens the user may view, and drops an empty group', async () => {
+    const fixture = await render('/company/teams', 'EMPLOYEE', [], undefined, ['view_team']);
+    expect(links(fixture).filter((href) => href.startsWith('/company'))).toEqual(['/company/teams']);
+    TestBed.resetTestingModule();
+    const none = await render('/dashboard', 'EMPLOYEE', [], undefined, []);
+    expect(none.nativeElement.textContent).not.toContain('nav.company');
+  });
+
+  it('shows Companies to platform staff only, not to every user without a company', async () => {
+    const fixture = await render('/dashboard', 'ADMIN', [], { hasModule: () => false, can: () => false, isStaff: () => false });
+    expect(links(fixture)).toEqual(['/dashboard']);
   });
 });

@@ -23,12 +23,11 @@ src/app/
 ├── app.routes.ts          top-level routes and guards; features are lazy-loaded
 ├── core/                  singletons with no UI, used everywhere
 │   ├── api/               BaseApiService, CrudApi, API_BASE_URL
-│   ├── auth/              AuthService, TokenStorageService, guards, auth models
+│   ├── auth/              AuthService, AccessService (/me), TokenStorageService, guards, auth models
 │   ├── errors/            AppError + toAppError, GlobalErrorHandler
 │   ├── interceptors/      api-headers → auth → loading → error
 │   ├── models/            the backend response envelope
 │   ├── services/          app-wide services (notifications, confirm, language, theme, loading)
-│   ├── subscription/      which subscription modules the company has
 │   └── theme/             PrimeNG preset
 ├── layout/                the signed-in frame: shell, header, sidebar, nav
 ├── shared/                reusable UI and helpers with no business knowledge
@@ -111,6 +110,13 @@ load everything with `api.all()` and let `p-table` page and filter in the browse
 - Add a shared service only when the **same logic** appears in several features (that is how `ConfirmService`,
   `ServerTable` and `handleSaveError` came about). Two similar screens are not a reason; three copies are.
 
+### Access control
+
+- Menu entries: add `permission`, `module`, `roles` or `staffOnly` to the item in `layout/nav/nav-items.ts`.
+- Routes: `canActivate: [permissionGuard]` + `data: { permission: 'add_department' }`.
+- Buttons: `readonly canAdd = computed(() => this.access.can('add_department'))` and `@if (canAdd())` in the template.
+- Only company resources have permission codenames; everything else is gated by subscription module.
+
 ### Errors — who shows what
 
 | Error | Shown by |
@@ -173,16 +179,15 @@ backend problems added to `docs/BACKEND_REQUESTS.md`; [CODE_MAP.md](CODE_MAP.md)
 | 7 | Inventory catalogue (products, categories, brands) — PR #8 |
 | — | Code structure: one convention, shared ServerTable / ConfirmService / handleSaveError, this document |
 | 8 | Inventory warehouses, zones, bins and suppliers |
+| 9 | Access control from `/me`: permissions, modules and staff flag drive the menu, guards, buttons and dashboard |
 
 ### Next — features (in order)
 
 1. **Notifications** (header bell + page, polling until the backend accepts a WebSocket token) and **Billing**
    (the company's own subscription and platform invoices, read-only).
-2. **Fine-grained permissions:** hide buttons per permission codename once the backend ships a current-user
-   endpoint (BACKEND_REQUESTS.md Priority 1). Plan: a `PermissionService` in `core/auth` and a small
-   `*appCan="'inventory.add_product'"` structural directive in `shared/`, used next to the role checks.
-3. **Inventory phase 2** (variants, supplier products, stock, procurement workflows) once backend items 16–18 are fixed.
-4. **Sales and returns.**
+2. **Inventory phase 2** (variants, supplier products, stock, procurement workflows) once backend items 16–18 are fixed.
+3. **Sales and returns.**
+4. **Accounting** (new backend app; its API isn't in API_REFERENCE.md yet).
 
 ### Next — code health (small, do alongside features)
 

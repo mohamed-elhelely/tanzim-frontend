@@ -1,5 +1,7 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
+import { map } from 'rxjs';
+import { AccessService } from './access.service';
 import { AuthService } from './auth.service';
 
 export const authGuard: CanActivateFn = () => {
@@ -14,23 +16,34 @@ export const guestGuard: CanActivateFn = () => {
   return auth.isAuthenticated() ? router.createUrlTree(['/dashboard']) : true;
 };
 
-/** Platform admins (users without a company). Everyone else goes back to the dashboard. */
+/** Platform staff (Companies screens). Everyone else goes back to the dashboard. */
 export const platformAdminGuard: CanActivateFn = () => {
-  const auth = inject(AuthService);
+  const access = inject(AccessService);
   const router = inject(Router);
-  return auth.role() === 'ADMIN' ? true : router.createUrlTree(['/dashboard']);
+  return access.load().pipe(map(() => (access.isStaff() ? true : router.createUrlTree(['/dashboard']))));
 };
 
-/** Users who belong to a company. Platform admins have none, so they go to their Companies screen. */
+/** Users who belong to a company. Users without one go to the Companies screen (staff) or the dashboard. */
 export const companyMemberGuard: CanActivateFn = () => {
   const auth = inject(AuthService);
+  if (auth.role() !== 'ADMIN') {
+    return true;
+  }
+  const access = inject(AccessService);
   const router = inject(Router);
-  return auth.role() === 'ADMIN' ? router.createUrlTree(['/admin/companies']) : true;
+  return access.load().pipe(map(() => router.createUrlTree([access.isStaff() ? '/admin/companies' : '/dashboard'])));
 };
 
-/** Company admins only (the backend allows only them to add, edit or delete company users). */
-export const companyAdminGuard: CanActivateFn = () => {
-  const auth = inject(AuthService);
+/**
+ * Routes with `data: { permission: 'add_department' }`: waits for /me, then lets the user in or sends them
+ * to the dashboard. Routes without a permission pass.
+ */
+export const permissionGuard: CanActivateFn = (route) => {
+  const permission = route.data['permission'] as string | undefined;
+  if (!permission) {
+    return true;
+  }
+  const access = inject(AccessService);
   const router = inject(Router);
-  return auth.role() === 'COMPANY' ? true : router.createUrlTree(['/company/users']);
+  return access.load().pipe(map(() => (access.can(permission) ? true : router.createUrlTree(['/dashboard']))));
 };

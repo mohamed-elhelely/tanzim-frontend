@@ -1,7 +1,9 @@
+import { signal } from '@angular/core';
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { HttpTestingController } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
 import { Confirmation, ConfirmationService } from 'primeng/api';
+import { AccessService } from '../../../core/auth/access.service';
 import { envelope, errorEnvelope, provideApiTesting } from '../../../testing/api-testing';
 import { makeDepartment } from '../../../testing/company-fixtures';
 import { DepartmentListComponent } from './department-list.component';
@@ -12,10 +14,14 @@ describe('DepartmentListComponent', () => {
   let httpMock: HttpTestingController;
   let router: Router;
 
+  // A signal, like the real AccessService, so computed button flags follow changes.
+  const permissions = signal<string[]>([]);
+
   beforeEach(async () => {
+    permissions.set(['view_department', 'add_department', 'change_department', 'delete_department']);
     await TestBed.configureTestingModule({
       imports: [DepartmentListComponent],
-      providers: provideApiTesting(),
+      providers: [...provideApiTesting(), { provide: AccessService, useValue: { can: (c: string) => permissions().includes(c) } }],
     }).compileComponents();
     httpMock = TestBed.inject(HttpTestingController);
     router = TestBed.inject(Router);
@@ -127,5 +133,22 @@ describe('DepartmentListComponent', () => {
     httpMock.expectOne(`${URL}15/`).flush(null, { status: 204, statusText: 'No Content' });
 
     expectList({ page: '1' }, [makeDepartment()], 10);
+  });
+
+  it('shows New, edit and delete only with the matching permissions', () => {
+    const fixture = create();
+    expectList({}, [makeDepartment()]);
+    fixture.detectChanges();
+    expect(fixture.componentInstance.headerActions().length).toBe(1);
+    expect(fixture.nativeElement.querySelector('.pi-pencil')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('.pi-trash')).not.toBeNull();
+
+    permissions.set(['view_department', 'change_department']);
+    fixture.componentInstance.table.load();
+    expectList({}, [makeDepartment()]);
+    fixture.detectChanges();
+    expect(fixture.componentInstance.headerActions()).toEqual([]);
+    expect(fixture.nativeElement.querySelector('.pi-pencil')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('.pi-trash')).toBeNull();
   });
 });

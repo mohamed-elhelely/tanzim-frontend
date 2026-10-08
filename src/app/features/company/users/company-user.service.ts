@@ -9,8 +9,9 @@ export class CompanyUserService extends CrudApi<CompanyUser, CompanyUserPayload,
   protected readonly path = 'company/v1/company-user/';
 
   /** Options for "user" pickers. Department manager and team leads take the login user id. */
+  /** For pickers (department manager, team leads). Uses `?dropdown=true`, which needs no view_companyuser permission. */
   userOptions(): Observable<SelectOption[]> {
-    return this.all().pipe(
+    return this.dropdown<CompanyUser>().pipe(
       map((users) =>
         users.map((u) => ({ value: u.user.id, label: `${u.user.first_name} ${u.user.last_name} (${u.user.email})` })),
       ),
