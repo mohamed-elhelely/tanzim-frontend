@@ -94,7 +94,8 @@
     "breadcrumb": "مسار التنقل",
     "lightMode": "الوضع الفاتح",
     "darkMode": "الوضع الداكن",
-    "account": "الحساب"
+    "account": "الحساب",
+    "notifications": "الإشعارات"
   },
   "dashboard": {
     "subtitle": "نظرة عامة على مؤسستك",
@@ -459,6 +460,56 @@
       "title": "قائمة أسعار الموردين",
       "new": "سعر جديد",
       "edit": "تعديل السعر"
+    }
+  },
+  "notifications": {
+    "all": "الكل",
+    "unread": "غير المقروءة",
+    "markAllRead": "تعليم الكل كمقروء",
+    "empty": "لا توجد إشعارات بعد."
+  },
+  "billing": {
+    "subscription": "الاشتراك",
+    "autoRenew": "تجديد تلقائي",
+    "period": "المدة",
+    "daysRemaining": "الأيام المتبقية",
+    "nextBilling": "تاريخ الفاتورة القادمة",
+    "licensedUsers": "عدد المستخدمين المرخّصين",
+    "billingEmail": "بريد الفواتير",
+    "modules": "الوحدات",
+    "noSubscription": "لا يوجد اشتراك نشط لشركتك.",
+    "invoices": "الفواتير",
+    "noInvoices": "لا توجد فواتير بعد.",
+    "history": "السجل",
+    "subscriptionStatus": {
+      "trial": "تجريبي",
+      "active": "نشط",
+      "past_due": "متأخر السداد",
+      "canceled": "ملغى",
+      "expired": "منتهي"
+    },
+    "invoiceStatus": {
+      "draft": "مسودة",
+      "issued": "صادرة",
+      "partially_paid": "مدفوعة جزئيًا",
+      "paid": "مدفوعة",
+      "overdue": "متأخرة",
+      "cancelled": "ملغاة"
+    },
+    "fields": {
+      "number": "الفاتورة",
+      "status": "الحالة",
+      "issueDate": "تاريخ الإصدار",
+      "dueDate": "تاريخ الاستحقاق",
+      "total": "الإجمالي",
+      "amountDue": "المستحق",
+      "amountPaid": "المدفوع",
+      "subtotal": "المجموع الفرعي",
+      "tax": "الضريبة",
+      "description": "الوصف",
+      "quantity": "الكمية",
+      "unitPrice": "سعر الوحدة",
+      "amount": "المبلغ"
     }
   }
 }

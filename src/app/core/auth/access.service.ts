@@ -28,10 +28,15 @@ export class AccessService extends BaseApiService {
 
   constructor() {
     super();
-    // A different user (or none, after logout) must not inherit the previous user's access.
+    // A different user (or none, after logout) must not inherit the previous user's access. Only a real
+    // change resets: the first run must not wipe a load a guard has already started.
+    let previous: string | null | undefined;
     effect(() => {
-      this.auth.user()?.id;
-      untracked(() => this.reset());
+      const id = this.auth.user()?.id ?? null;
+      if (previous !== undefined && id !== previous) {
+        untracked(() => this.reset());
+      }
+      previous = id;
     });
   }
 

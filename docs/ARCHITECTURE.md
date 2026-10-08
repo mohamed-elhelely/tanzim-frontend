@@ -27,6 +27,7 @@ src/app/
 │   ├── errors/            AppError + toAppError, GlobalErrorHandler
 │   ├── interceptors/      api-headers → auth → loading → error
 │   ├── models/            the backend response envelope
+│   ├── notifications/     NotificationCenterService (list, unread count, live WebSocket)
 │   ├── services/          app-wide services (notifications, confirm, language, theme, loading)
 │   └── theme/             PrimeNG preset
 ├── layout/                the signed-in frame: shell, header, sidebar, nav
@@ -182,14 +183,13 @@ backend problems added to `docs/BACKEND_REQUESTS.md`; [CODE_MAP.md](CODE_MAP.md)
 | 9 | Access control from `/me`: permissions, modules and staff flag drive the menu, guards, buttons and dashboard |
 | 10 | Dropped the workarounds the backend fixed |
 | 11 | Product variants and the supplier price list |
+| 12 | Notifications (bell, page, live WebSocket) and Billing (subscription + invoices, read-only) |
 
 ### Next — features (in order)
 
-1. **Notifications** (header bell + page; live over the WebSocket, which now accepts `?token=`) and **Billing**
-   (the company's own subscription and platform invoices, read-only).
-2. **Inventory stock and movements** (batches, serials, stock ledger, transfers, adjustments, cycle counts) and **procurement** (requisitions, purchase orders, goods receipts, supplier invoices, approvals).
-3. **Sales and returns.**
-4. **Accounting** (new backend app; its API isn't in API_REFERENCE.md yet).
+1. **Inventory stock and movements** (batches, serials, stock ledger, transfers, adjustments, cycle counts) and **procurement** (requisitions, purchase orders, goods receipts, supplier invoices, approvals).
+2. **Sales and returns.**
+3. **Accounting** (new backend app; its API isn't in API_REFERENCE.md yet).
 
 ### Next — code health (small, do alongside features)
 

@@ -1,0 +1,179 @@
+<app-page-header title="nav.billing"></app-page-header>
+
+<section class="mb-6 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+  <h2 class="mb-4 text-base font-semibold text-gray-900 dark:text-white">{{ 'billing.subscription' | translate }}</h2>
+  @if (subscriptionError(); as err) {
+    <app-error-state [title]="errorTitleKey(err)" [showRetry]="false"></app-error-state>
+  } @else if (subscription() === undefined) {
+    <app-loading-state></app-loading-state>
+  } @else if (subscription(); as sub) {
+    <div class="flex flex-wrap items-center gap-3">
+      <span class="text-2xl font-bold text-gray-900 dark:text-white">{{ sub.plan_name }}</span>
+      <app-status-badge [value]="'billing.subscriptionStatus.' + sub.status | translate" [severity]="subscriptionSeverity(sub.status)"></app-status-badge>
+      @if (sub.auto_renew) {
+        <app-status-badge [value]="'billing.autoRenew' | translate" severity="info" icon="pi pi-refresh"></app-status-badge>
+      }
+    </div>
+    <dl class="mt-4 grid grid-cols-2 gap-4 text-sm md:grid-cols-4">
+      <div>
+        <dt class="text-gray-500 dark:text-gray-400">{{ 'billing.period' | translate }}</dt>
+        <dd class="font-medium text-gray-900 dark:text-gray-100" dir="ltr">{{ sub.start_date }} → {{ sub.end_date }}</dd>
+      </div>
+      <div>
+        <dt class="text-gray-500 dark:text-gray-400">{{ 'billing.daysRemaining' | translate }}</dt>
+        <dd class="font-medium text-gray-900 dark:text-gray-100">{{ sub.days_remaining }}</dd>
+      </div>
+      <div>
+        <dt class="text-gray-500 dark:text-gray-400">{{ 'billing.nextBilling' | translate }}</dt>
+        <dd class="font-medium text-gray-900 dark:text-gray-100" dir="ltr">{{ sub.next_billing_date }}</dd>
+      </div>
+      <div>
+        <dt class="text-gray-500 dark:text-gray-400">{{ 'billing.licensedUsers' | translate }}</dt>
+        <dd class="font-medium text-gray-900 dark:text-gray-100">{{ sub.licensed_users }}</dd>
+      </div>
+      <div class="col-span-2">
+        <dt class="text-gray-500 dark:text-gray-400">{{ 'billing.billingEmail' | translate }}</dt>
+        <dd class="font-medium text-gray-900 dark:text-gray-100" dir="ltr">{{ sub.billing_email }}</dd>
+      </div>
+      <div class="col-span-2">
+        <dt class="text-gray-500 dark:text-gray-400">{{ 'billing.modules' | translate }}</dt>
+        <dd class="mt-1 flex flex-wrap gap-2">
+          @for (item of sub.modules; track item.id) {
+            <app-status-badge [value]="item.module.name" [severity]="item.is_active ? 'success' : 'secondary'"></app-status-badge>
+          } @empty {
+            <span class="text-gray-400">—</span>
+          }
+        </dd>
+      </div>
+    </dl>
+  } @else {
+    <app-empty-state icon="pi-credit-card" title="billing.noSubscription"></app-empty-state>
+  }
+</section>
+
+<section class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
+  <h2 class="border-b border-gray-100 p-4 text-base font-semibold text-gray-900 dark:border-gray-800 dark:text-white">
+    {{ 'billing.invoices' | translate }}
+  </h2>
+  @if (invoicesError(); as err) {
+    <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403" (retry)="loadInvoices()"></app-error-state>
+  } @else {
+    <div class="overflow-x-auto">
+      <p-table [value]="invoices()" [loading]="invoicesLoading()" [paginator]="invoices().length > 10" [rows]="10" dataKey="id" size="small">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>{{ 'billing.fields.number' | translate }}</th>
+            <th>{{ 'billing.fields.status' | translate }}</th>
+            <th>{{ 'billing.fields.issueDate' | translate }}</th>
+            <th>{{ 'billing.fields.dueDate' | translate }}</th>
+            <th class="text-end">{{ 'billing.fields.total' | translate }}</th>
+            <th class="text-end">{{ 'billing.fields.amountDue' | translate }}</th>
+            <th class="text-end">{{ 'common.actions' | translate }}</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-row>
+          <tr>
+            <td class="font-mono text-sm">{{ row.invoice_number }}</td>
+            <td>
+              <app-status-badge [value]="'billing.invoiceStatus.' + row.status | translate" [severity]="invoiceSeverity(row.status)"></app-status-badge>
+            </td>
+            <td dir="ltr" class="text-start">{{ row.issue_date }}</td>
+            <td dir="ltr" class="text-start">{{ row.due_date }}</td>
+            <td class="text-end font-medium">{{ row.total }}</td>
+            <td class="text-end">{{ row.amount_due }}</td>
+            <td class="whitespace-nowrap text-end">
+              <p-button
+                icon="pi pi-eye"
+                [text]="true"
+                [rounded]="true"
+                [ariaLabel]="'common.view' | translate"
+                (onClick)="selected.set(row)"
+              ></p-button>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="7"><app-empty-state icon="pi-file" title="billing.noInvoices"></app-empty-state></td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  }
+</section>
+
+<p-dialog
+  [visible]="selected() !== null"
+  (visibleChange)="!$event && selected.set(null)"
+  [modal]="true"
+  [dismissableMask]="true"
+  [draggable]="false"
+  [header]="selected()?.invoice_number ?? ''"
+  styleClass="w-[40rem] max-w-[calc(100vw-2rem)]"
+>
+  @if (selected(); as invoice) {
+    <div class="flex flex-col gap-4 text-sm">
+      <div class="flex flex-wrap items-center gap-3">
+        <app-status-badge [value]="'billing.invoiceStatus.' + invoice.status | translate" [severity]="invoiceSeverity(invoice.status)"></app-status-badge>
+        <span class="text-gray-500 dark:text-gray-400" dir="ltr">{{ invoice.issue_date }} → {{ invoice.due_date }}</span>
+      </div>
+
+      <table class="w-full">
+        <thead>
+          <tr class="border-b border-gray-100 text-gray-500 dark:border-gray-800 dark:text-gray-400">
+            <th class="py-2 text-start font-medium">{{ 'billing.fields.description' | translate }}</th>
+            <th class="py-2 text-end font-medium">{{ 'billing.fields.quantity' | translate }}</th>
+            <th class="py-2 text-end font-medium">{{ 'billing.fields.unitPrice' | translate }}</th>
+            <th class="py-2 text-end font-medium">{{ 'billing.fields.amount' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of invoice.items; track item.id) {
+            <tr class="border-b border-gray-50 dark:border-gray-800/60">
+              <td class="py-2" dir="auto">{{ item.description }}</td>
+              <td class="py-2 text-end">{{ item.quantity }}</td>
+              <td class="py-2 text-end">{{ item.unit_price }}</td>
+              <td class="py-2 text-end">{{ item.amount }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+      <dl class="ms-auto grid w-full max-w-xs grid-cols-2 gap-x-4 gap-y-1">
+        <dt class="text-gray-500 dark:text-gray-400">{{ 'billing.fields.subtotal' | translate }}</dt>
+        <dd class="text-end">{{ invoice.subtotal }}</dd>
+        <dt class="text-gray-500 dark:text-gray-400">{{ 'billing.fields.tax' | translate }}</dt>
+        <dd class="text-end">{{ invoice.tax_amount }}</dd>
+        <dt class="font-semibold">{{ 'billing.fields.total' | translate }}</dt>
+        <dd class="text-end font-semibold">{{ invoice.total }}</dd>
+        <dt class="text-gray-500 dark:text-gray-400">{{ 'billing.fields.amountPaid' | translate }}</dt>
+        <dd class="text-end">{{ invoice.amount_paid }}</dd>
+        <dt class="font-semibold">{{ 'billing.fields.amountDue' | translate }}</dt>
+        <dd class="text-end font-semibold">{{ invoice.amount_due }}</dd>
+      </dl>
+
+      @if (invoice.notes) {
+        <p class="rounded-lg bg-gray-50 p-3 text-gray-600 dark:bg-gray-800 dark:text-gray-300" dir="auto">{{ invoice.notes }}</p>
+      }
+
+      @if (invoice.status_history.length) {
+        <div>
+          <h3 class="mb-2 font-semibold text-gray-900 dark:text-gray-100">{{ 'billing.history' | translate }}</h3>
+          <ul class="flex flex-col gap-2">
+            @for (change of invoice.status_history; track change.id) {
+              <li class="flex items-start justify-between gap-3">
+                <span>
+                  {{ 'billing.invoiceStatus.' + change.to_status | translate }}
+                  @if (change.reason) {
+                    <span class="text-gray-500 dark:text-gray-400" dir="auto"> · {{ change.reason }}</span>
+                  }
+                </span>
+                <span class="shrink-0 text-xs text-gray-400">{{ change.created_at | timeAgo: lang() }}</span>
+              </li>
+            }
+          </ul>
+        </div>
+      }
+    </div>
+  }
+</p-dialog>

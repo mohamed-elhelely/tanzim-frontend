@@ -21,7 +21,8 @@ You are continuing work on Tanzim, a bilingual (English/Arabic, RTL) ERP. Two re
 - main also has Step 7 (Inventory catalogue; spec 2026-10-08-inventory-catalogue-design.md).
 - main also has the code-structure cleanup (#9) and Step 8 (warehouses, zones, bins, suppliers; #10).
 - main also has Step 9 (access control from /me), Step 10 (fixed workarounds dropped).
-- Step 11 (variants + supplier price list) is on branch claude/variants; spec: docs/superpowers/specs/2026-10-09-variants-supplier-products-design.md.
+- main also has Step 11 (variants + supplier price list).
+- Step 12 (notifications + billing) is on branch claude/notifications-billing; spec: docs/superpowers/specs/2026-10-09-notifications-billing-design.md.
 - Open PR 0Mustafa37/Tanzim#11 (claude/cors-frontend-origins → master): CORS allows http://localhost:4200, https://mohamed-elhelely.github.io and the ngrok header; CORS_EXTRA_ORIGINS env var for more.
 - GitHub Pages (https://mohamed-elhelely.github.io/tanzim-frontend/) was deployed from claude/redesign-ui, which now equals main; redeploy from main from now on (`npm run deploy`, angular-cli-ghpages, baseHref /tanzim-frontend/).
 - Stale branches (delete only if the owner agrees): claude/awesome-hawking-7uf16d, step-4-company-organisation, master (frontend), claude/awesome-lovelace-2bdsqn, claude/redesign-ui, claude/menu-visibility (merged).
@@ -42,13 +43,12 @@ You are continuing work on Tanzim, a bilingual (English/Arabic, RTL) ERP. Two re
 - The backend's own list is "Known issues" at the end of docs/API_REFERENCE.md.
 
 ## Running and verifying locally
-- Backend: python venv + `pip install -r requirements.txt`, `SECRET_KEY=... DEBUG=True python manage.py migrate && python manage.py setup_plans && python manage.py seed_permissions && python setup_data.py`; give "Test Company" an active Subscription with the `location` and `inventory` SubscriptionModules; `redis-server` + `python manage.py runserver 8000`. Login: admin@testcompany.com / testpass123. For platform-staff screens, create a user with is_staff=True and no CompanyUser (`manage.py shell`).
+- Backend: python venv + `pip install -r requirements.txt`, `SECRET_KEY=... DEBUG=True python manage.py migrate && python manage.py setup_plans && python manage.py seed_permissions && python setup_data.py`; give "Test Company" an active Subscription with the `location` and `inventory` SubscriptionModules; `redis-server` + `uvicorn Tanzim.asgi:application --port 8000` (ASGI so the notifications WebSocket works; `runserver` serves HTTP only). Login: admin@testcompany.com / testpass123. For platform-staff screens, create a user with is_staff=True and no CompanyUser (`manage.py shell`).
 - Frontend: `npm ci`, `npx ng serve --proxy-config proxy.conf.json` (proxies /api to :8000), `npm run build`, `npx ng test --watch=false` (in a container, run ChromeHeadless with --no-sandbox).
 - Before calling UI work done: screenshot the changed screens in English, Arabic (RTL), dark mode and 390px mobile, and check the console has no errors.
 
 ## Next steps (the owner asked to work through them in order, one branch + PR per step, merging each)
-1. Notifications (bell + page, live over the WebSocket with ?token=) and Billing (the company's own subscription and invoices).
-2. Inventory stock and movements, then procurement, then sales, returns and accounting.
+1. Inventory stock and movements, then procurement, then sales, returns and accounting.
 
 Reply to the owner in Egyptian Arabic; keep code, commits and PR text in English.
 ```

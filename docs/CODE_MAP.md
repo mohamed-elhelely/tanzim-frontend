@@ -28,13 +28,16 @@ flowchart TD
     shell -->|"/company (companyMemberGuard) 🔒"| company["features/company"]
     shell -->|"/locations 🔒"| locations["features/locations"]
     shell -->|"/inventory 🔒"| inventory["features/inventory"]
-    shell -->|"/sales /returns /billing /notifications /import-export"| soon["features/coming-soon"]
+    shell -->|"/sales /returns /import-export"| soon["features/coming-soon"]
+    shell -->|"/notifications"| notif["features/notifications"]
+    shell -->|"/billing 🔒"| billing["features/billing"]
 
     subgraph core["core/ (singletons, no UI)"]
         api["api: BaseApiService, CrudApi"]
         auth["auth: AuthService, guards"]
         sub["auth: AccessService (/me)"]
         svc["services: notification, confirm, language, theme, loading"]
+        ncenter["notifications: NotificationCenterService (WebSocket)"]
         int["interceptors"]
     end
     subgraph shared["shared/ (reusable, no business knowledge)"]
@@ -126,6 +129,7 @@ Things to know:
 | `interceptors/loading.interceptor.ts` | Counts requests for the loading bar | |
 | `interceptors/error.interceptor.ts` | → `AppError`, toast for network/5xx | |
 | `models/api-response.model.ts` | Envelope types, `Paginated<T>` | |
+| `notifications/notification-center.service.ts` | Notifications list, unread count, live WebSocket | 🆕 🧠 reconnects with backoff, stops on sign-out; ⚠️ socket field names differ (`toAppNotification`) |
 | `services/confirm.service.ts` | `confirmDelete(name, remove, onDeleted)` | 🆕 used by every list that deletes |
 | `services/notification.service.ts` | Toasts | |
 | `services/language.service.ts` | en/ar, sets `<html lang dir>` | |
@@ -138,7 +142,7 @@ Things to know:
 | File | Purpose | Notes |
 |---|---|---|
 | `layout/shell/` | Frame for signed-in pages; starts loading /me | Hosts the toast and the confirm dialog once |
-| `layout/header/` | Breadcrumb (route `data.titleKey` + nav group), language/theme toggles, user menu | |
+| `layout/header/` | Breadcrumb (route `data.titleKey` + nav group), notifications bell, language/theme toggles, user menu | Bell: unread badge + popover with the latest 6 |
 | `layout/sidebar/` + `brand.component` | Desktop sidebar | Mobile uses a PrimeNG drawer in the shell |
 | `layout/nav/nav-items.ts` | The menu: label, icon, link, `module`, `roles`, children | 🔒 the single place to add a menu entry |
 | `layout/nav/nav-list.component` | Renders the menu, filters it, expands the active group | 🧠 §3 |
@@ -147,6 +151,8 @@ Things to know:
 | `shared/utils/omit-pristine.ts` | Drops untouched fields from an edit body | 🆕 ⚠️ for read endpoints that don't return every field (BACKEND_REQUESTS 15e) |
 | `shared/components/field-error` | Message under an input | Not OnPush on purpose (reacts to `touched`) |
 | `shared/components/page-header` | Title, back link, action buttons | |
+| `shared/components/notification-item` | One notification row (bell + page) | Icon/colour by type, unread dot |
+| `shared/pipes/time-ago.pipe.ts` | "3 hours ago" in the current language | `Intl.RelativeTimeFormat`; not live |
 | `shared/components/confirm-dialog` | The one PrimeNG confirm dialog | Opened only through `ConfirmService` |
 | `shared/components/empty-state`, `error-state`, `loading-state`, `status-badge`, `loading-bar` | Visual states | |
 | `shared/pipes/localized-name.pipe.ts` | Arabic name in Arabic, else English | |
@@ -164,6 +170,8 @@ marked "client list".
 | `auth/login/` | Split-screen login, language/theme toggles |
 | `dashboard/` | 🧠 🔒 platform counts for staff; for company users every card, setup step and quick action is gated by a permission or module (`Gate`). Counts are requested after /me answers, only for the visible cards. Reads services from company, locations and admin |
 | `coming-soon/` | 🆕 one placeholder page for every unbuilt section, title and icon from route data |
+| `notifications/` | `/notifications` for every signed-in user: All/Unread, mark all read (one request each) |
+| `billing/` | `/billing` (company admins in the menu): subscription card + read-only invoices with a details dialog. `BillingService` reads `subscriptions/current/` and `subscriptions/invoices/` |
 
 ### admin — `/admin` (platform admins only) 🔒
 
