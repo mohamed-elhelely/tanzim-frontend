@@ -73,7 +73,11 @@
     "salesInvoices": "Invoices",
     "payments": "Payments",
     "customerReturns": "Customer returns",
-    "supplierReturns": "Supplier returns"
+    "supplierReturns": "Supplier returns",
+    "accounting": "Accounting",
+    "journalEntries": "Journal entries",
+    "accounts": "Chart of accounts",
+    "fiscalYears": "Fiscal years"
   },
   "auth": {
     "login": "Login",
@@ -894,6 +898,126 @@
       "refundDefault": "Defaults to the accepted value. Leave empty to use it.",
       "refundAmount": "Enter a valid amount.",
       "freeLine": "Each item needs a product and a quantity greater than 0."
+    }
+  },
+  "accounting": {
+    "accounts": {
+      "title": "Chart of accounts",
+      "new": "New account",
+      "edit": "Edit account",
+      "addDefaults": "Add missing defaults"
+    },
+    "entries": {
+      "title": "Journal entries",
+      "new": "New journal entry",
+      "edit": "Edit journal entry",
+      "detail": "Journal entry",
+      "backToEntry": "Back to entry"
+    },
+    "years": {
+      "title": "Fiscal years",
+      "subtitle": "Close periods to stop posting into them; close the year to carry its result to retained earnings.",
+      "new": "New fiscal year"
+    },
+    "accountTypes": {
+      "asset": "Asset",
+      "liability": "Liability",
+      "equity": "Equity",
+      "revenue": "Revenue",
+      "cost_of_sales": "Cost of sales",
+      "expense": "Expense"
+    },
+    "entryStatuses": {
+      "draft": "Draft",
+      "posted": "Posted"
+    },
+    "periodStatuses": {
+      "open": "Open",
+      "closed": "Closed"
+    },
+    "origins": {
+      "manual": "Manual",
+      "automatic": "Automatic"
+    },
+    "fields": {
+      "account": "Account",
+      "accountType": "Type",
+      "kind": "Kind",
+      "isActive": "Active",
+      "code": "Code",
+      "name": "Name",
+      "parent": "Parent account",
+      "isGroup": "Group account",
+      "description": "Description",
+      "entryNumber": "Entry no.",
+      "date": "Date",
+      "origin": "Origin",
+      "status": "Status",
+      "amount": "Amount",
+      "reference": "Reference",
+      "postedAt": "Posted at",
+      "debit": "Debit",
+      "credit": "Credit",
+      "total": "Total",
+      "from": "From",
+      "to": "To",
+      "startDate": "Start date",
+      "endDate": "End date",
+      "closedAt": "Closed at"
+    },
+    "sections": {
+      "lines": "Lines"
+    },
+    "actions": {
+      "post": "Post",
+      "reverse": "Reverse",
+      "addLine": "Add line",
+      "removeLine": "Remove line",
+      "balance": "Balance last line",
+      "saveDraft": "Save as draft",
+      "saveAndPost": "Save and post",
+      "closeYear": "Close year",
+      "closePeriod": "Close period",
+      "reopen": "Reopen"
+    },
+    "confirm": {
+      "addDefaults": "Add any default account the chart is missing? Existing accounts are not changed.",
+      "post": "Post this entry? Posted entries can't be changed, only reversed.",
+      "closeYear": "Close {{name}}? All its periods are closed and the result moves to retained earnings.",
+      "reopenYear": "Reopen {{name}}? Its closing entry is reversed.",
+      "closePeriod": "Close {{name}}? Nothing can be posted into it afterwards.",
+      "reopenPeriod": "Reopen {{name}}?"
+    },
+    "toasts": {
+      "defaultsChecked": "Default accounts checked.",
+      "posted": "Entry posted.",
+      "reversed": "Reversal created.",
+      "yearCreated": "Fiscal year created with its periods.",
+      "yearClosed": "Fiscal year closed.",
+      "periodClosed": "Period closed.",
+      "reopened": "Reopened."
+    },
+    "hints": {
+      "searchAccounts": "Search by code or name",
+      "group": "Group",
+      "posting": "Posting",
+      "system": "System",
+      "systemAccount": "This is a system account: the app posts to it automatically, so its type can't change and it can't be deleted (deactivate it instead).",
+      "topLevel": "Top level",
+      "parent": "Only group accounts of the same type.",
+      "isGroup": "Group accounts only organise the chart; entries are posted to the accounts under them.",
+      "onlyDraftEditable": "Only draft entries can be edited. Posted entries are corrected by reversing them.",
+      "oneSide": "Enter either a debit or a credit.",
+      "balanced": "Balanced",
+      "difference": "Difference",
+      "mustBalance": "Debits and credits must be equal, with at least two lines.",
+      "reversed": "Reversed",
+      "reversedBy": "This entry was reversed.",
+      "reversalOf": "This entry reverses another one.",
+      "reverse": "Creates a new posted entry with debits and credits swapped.",
+      "reverseDate": "Leave empty to use today.",
+      "newYear": "Monthly periods are created automatically. The dates can't change later.",
+      "yearDates": "Pick a start date and an end date after it."
     }
   }
 }

@@ -62,6 +62,11 @@ export const routes: Routes = [
         loadChildren: () => import('./features/returns/returns.routes').then((m) => m.RETURNS_ROUTES),
       },
       {
+        path: 'accounting',
+        canActivate: [companyMemberGuard],
+        loadChildren: () => import('./features/accounting/accounting.routes').then((m) => m.ACCOUNTING_ROUTES),
+      },
+      {
         path: 'billing',
         canActivate: [companyMemberGuard],
         loadComponent: () => import('./features/billing/billing-page.component').then((m) => m.BillingPageComponent),
