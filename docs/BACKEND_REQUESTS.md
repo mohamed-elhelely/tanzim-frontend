@@ -103,9 +103,9 @@ Company admin: admin@testcompany.com / testpass123.
 9. The notifications WebSocket sends `type` and `timestamp` (notifications/services.py → _push) where the HTTP API
    says `notif_type` and `created_at`. Send the same field names as the HTTP API (the frontend accepts both).
 
-10. Accounting: the new /api/accounting/v1/ endpoints are described in docs/BUSINESS_LOGIC.md but not in
-   docs/API_REFERENCE.md. Document them there (paths, bodies, response objects, examples) so the frontend can build
-   the accounting screens.
+10. Accounting: the /api/accounting/v1/ endpoints are described in docs/BUSINESS_LOGIC.md but not in
+   docs/API_REFERENCE.md. The frontend built the ledger screens from accounting/serializers.py and views.py; please
+   still document them there (paths, bodies, filters, response objects) so the contract is written down.
 
 11. Sales workflow actions (confirm, cancel, clone, mark_delivered, create_delivery, …) answer
    `{"detail": str(e)}` for a Django ValidationError, so the message arrives as "['Order exceeds customer credit

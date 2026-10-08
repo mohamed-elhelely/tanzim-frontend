@@ -1,0 +1,198 @@
+<app-page-header
+  [title]="isEdit ? 'accounting.entries.edit' : 'accounting.entries.new'"
+  [showBack]="true"
+  [backLabel]="isEdit ? 'accounting.entries.backToEntry' : 'common.backToList'"
+  (back)="goBack()"
+></app-page-header>
+
+@if (loadError(); as err) {
+  <app-error-state [title]="errorTitleKey(err)" [showRetry]="false"></app-error-state>
+} @else if (loading()) {
+  <app-loading-state></app-loading-state>
+} @else if (notDraft()) {
+  <app-error-state title="accounting.hints.onlyDraftEditable" [showRetry]="false"></app-error-state>
+} @else {
+  <form [formGroup]="form" (ngSubmit)="submit(false)" class="flex max-w-5xl flex-col gap-4" novalidate>
+    @if (formErrors().length) {
+      <div
+        role="alert"
+        class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300"
+      >
+        @for (message of formErrors(); track $index) {
+          <p>{{ message }}</p>
+        }
+      </div>
+    }
+
+    <p-card>
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-4">
+        <div class="flex flex-col gap-1">
+          <label for="date" class="text-sm font-medium">{{ 'accounting.fields.date' | translate }} *</label>
+          <input pInputText id="date" type="date" formControlName="date" class="w-full" />
+          <app-field-error [control]="form.controls.date"></app-field-error>
+        </div>
+        <div class="flex flex-col gap-1 md:col-span-2">
+          <label for="description" class="text-sm font-medium">{{ 'accounting.fields.description' | translate }}</label>
+          <input pInputText id="description" formControlName="description" class="w-full" />
+          <app-field-error [control]="form.controls.description"></app-field-error>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="reference" class="text-sm font-medium">{{ 'accounting.fields.reference' | translate }}</label>
+          <input pInputText id="reference" formControlName="reference" dir="ltr" class="w-full" />
+          <app-field-error [control]="form.controls.reference"></app-field-error>
+        </div>
+      </div>
+    </p-card>
+
+    <p-card>
+      <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
+        <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'accounting.sections.lines' | translate }}</h3>
+        <div class="flex gap-2">
+          <p-button
+            type="button"
+            icon="pi pi-equals"
+            [label]="'accounting.actions.balance' | translate"
+            severity="secondary"
+            [text]="true"
+            size="small"
+            (onClick)="balanceLastLine()"
+          ></p-button>
+          <p-button
+            type="button"
+            icon="pi pi-plus"
+            [label]="'accounting.actions.addLine' | translate"
+            [outlined]="true"
+            size="small"
+            (onClick)="addLine()"
+          ></p-button>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto" formArrayName="lines">
+        <table class="w-full min-w-[48rem] text-sm">
+          <thead>
+            <tr class="border-b border-gray-200 text-xs text-gray-500 dark:border-gray-800 dark:text-gray-400">
+              <th class="py-2 text-start font-medium">{{ 'accounting.fields.account' | translate }} *</th>
+              <th class="py-2 ps-3 text-start font-medium">{{ 'accounting.fields.description' | translate }}</th>
+              <th class="w-32 py-2 ps-3 text-start font-medium">{{ 'accounting.fields.debit' | translate }}</th>
+              <th class="w-32 py-2 ps-3 text-start font-medium">{{ 'accounting.fields.credit' | translate }}</th>
+              <th class="w-10"></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (line of lines.controls; track line; let i = $index) {
+              <tr [formGroupName]="i" class="border-b border-gray-100 align-top dark:border-gray-800">
+                <td class="py-2">
+                  <p-select
+                    formControlName="account"
+                    [options]="accountOptions()"
+                    optionLabel="label"
+                    optionValue="value"
+                    [filter]="true"
+                    filterBy="label"
+                    [placeholder]="'common.select' | translate"
+                    [ariaLabel]="'accounting.fields.account' | translate"
+                    styleClass="w-full"
+                    appendTo="body"
+                  ></p-select>
+                  <app-field-error [control]="line.controls.account"></app-field-error>
+                  @if (line.touched && line.hasError('oneSide')) {
+                    <small class="text-sm text-red-600">{{ 'accounting.hints.oneSide' | translate }}</small>
+                  }
+                </td>
+                <td class="py-2 ps-3">
+                  <input
+                    pInputText
+                    formControlName="description"
+                    [attr.aria-label]="'accounting.fields.description' | translate"
+                    class="w-full"
+                  />
+                </td>
+                <td class="py-2 ps-3">
+                  <input
+                    pInputText
+                    formControlName="debit"
+                    dir="ltr"
+                    inputmode="decimal"
+                    [attr.aria-label]="'accounting.fields.debit' | translate"
+                    class="w-full"
+                  />
+                  <app-field-error [control]="line.controls.debit" patternKey="inventory.hints.decimal"></app-field-error>
+                </td>
+                <td class="py-2 ps-3">
+                  <input
+                    pInputText
+                    formControlName="credit"
+                    dir="ltr"
+                    inputmode="decimal"
+                    [attr.aria-label]="'accounting.fields.credit' | translate"
+                    class="w-full"
+                  />
+                  <app-field-error [control]="line.controls.credit" patternKey="inventory.hints.decimal"></app-field-error>
+                </td>
+                <td class="py-2 text-end">
+                  <p-button
+                    type="button"
+                    icon="pi pi-trash"
+                    severity="danger"
+                    [text]="true"
+                    [rounded]="true"
+                    [ariaLabel]="'accounting.actions.removeLine' | translate"
+                    (onClick)="removeLine(i)"
+                  ></p-button>
+                </td>
+              </tr>
+            }
+          </tbody>
+          <tfoot>
+            <tr class="font-semibold">
+              <td colspan="2" class="py-2">{{ 'accounting.fields.total' | translate }}</td>
+              <td class="py-2 ps-3" dir="ltr">{{ totals().debit | number: '1.2-2' }}</td>
+              <td class="py-2 ps-3" dir="ltr">{{ totals().credit | number: '1.2-2' }}</td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <div class="mt-3 flex flex-wrap items-center justify-end gap-2 text-sm">
+        @if (totals().balanced) {
+          <span class="text-green-700 dark:text-green-400"><i class="pi pi-check-circle me-1"></i>{{ 'accounting.hints.balanced' | translate }}</span>
+        } @else {
+          <span class="text-amber-700 dark:text-amber-400">
+            <i class="pi pi-exclamation-circle me-1"></i>{{ 'accounting.hints.difference' | translate }}:
+            <span dir="ltr">{{ totals().difference | number: '1.2-2' }}</span>
+          </span>
+        }
+      </div>
+      @if (balanceError()) {
+        <p role="alert" class="mt-2 text-end text-sm text-red-600">{{ 'accounting.hints.mustBalance' | translate }}</p>
+      }
+    </p-card>
+
+    <div class="flex flex-wrap justify-end gap-2">
+      <p-button
+        type="button"
+        [label]="'common.cancel' | translate"
+        severity="secondary"
+        [outlined]="true"
+        (onClick)="goBack()"
+      ></p-button>
+      <p-button
+        type="submit"
+        [label]="'accounting.actions.saveDraft' | translate"
+        severity="secondary"
+        [loading]="saving()"
+        [disabled]="saving()"
+      ></p-button>
+      <p-button
+        type="button"
+        [label]="'accounting.actions.saveAndPost' | translate"
+        icon="pi pi-check"
+        [loading]="saving()"
+        [disabled]="saving()"
+        (onClick)="submit(true)"
+      ></p-button>
+    </div>
+  </form>
+}

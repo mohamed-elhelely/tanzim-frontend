@@ -1,6 +1,6 @@
 import { AuthRole } from '../../core/auth/auth.model';
 
-export type AppModuleCode = 'inventory' | 'location';
+export type AppModuleCode = 'inventory' | 'location' | 'accounting';
 
 export interface NavItem {
   labelKey: string;
@@ -89,6 +89,18 @@ export const NAV_ITEMS: NavItem[] = [
     children: [
       { labelKey: 'nav.customerReturns', icon: 'pi pi-user', routerLink: '/returns/customer' },
       { labelKey: 'nav.supplierReturns', icon: 'pi pi-truck', routerLink: '/returns/supplier' },
+    ],
+  },
+  {
+    labelKey: 'nav.accounting',
+    icon: 'pi pi-calculator',
+    routerLink: '/accounting',
+    module: 'accounting',
+    roles: COMPANY_ROLES,
+    children: [
+      { labelKey: 'nav.journalEntries', icon: 'pi pi-book', routerLink: '/accounting/journal-entries' },
+      { labelKey: 'nav.accounts', icon: 'pi pi-sitemap', routerLink: '/accounting/accounts' },
+      { labelKey: 'nav.fiscalYears', icon: 'pi pi-calendar', routerLink: '/accounting/fiscal-years' },
     ],
   },
   // The company's subscription and platform invoices: for company admins.

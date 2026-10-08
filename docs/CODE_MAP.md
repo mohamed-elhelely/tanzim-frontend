@@ -238,6 +238,16 @@ Endpoints under `/api/returns/v1/` (the legacy `/api/returns/api/returns/` mount
 | `customer-returns/` | `returns/v1/customer-returns/` | List (status + reason filters). 🧠 form: from an order's shipped lines (capped, ⚠️ BACKEND_REQUESTS 17) or free item rows; no edit (20). Detail: approve / receive / inspect (outcome → derived restocking decision, `RESTOCKING_FOR`) / close with refund / replacement order. ⚠️ re-reads after each step (18) |
 | `supplier-returns/` | `returns/v1/supplier-returns/` | List, form (items with cost from the standard cost), detail: approve → shipped → confirmed. ⚠️ value = sum of lines (19) |
 
+### accounting — `/accounting` (module `accounting`)
+
+Built from `accounting/serializers.py` (not in API_REFERENCE.md, BACKEND_REQUESTS 10).
+
+| Resource | Endpoint | Notes |
+|---|---|---|
+| `accounts/` | `accounting/v1/accounts/` | Client list as a tree (`toTree`), type + search filters; `setup()` adds missing defaults. Form: 🧠 parent = same-type groups minus itself and descendants; system accounts keep type/group |
+| `journal-entries/` | `accounting/v1/journal-entries/` | Server list (status, origin, dates; no search). 🧠 form: balanced lines in cents, one side per line, "Balance last line", draft or `post: true`; drafts only. Detail: post / delete / reverse (opens the reversal, follows the route) |
+| `fiscal-years/` | `accounting/v1/fiscal-years/`, `fiscal-periods/{id}/close|reopen/` | One page: years with period tiles; create (periods made by the backend), close/reopen year and periods, delete year |
+
 ## 7. Cross-feature links
 
 ```mermaid

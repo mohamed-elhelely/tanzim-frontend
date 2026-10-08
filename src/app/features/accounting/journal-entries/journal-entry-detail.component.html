@@ -1,0 +1,134 @@
+@if (loadError(); as err) {
+  <app-page-header title="accounting.entries.title" [showBack]="true" backLabel="common.backToList" (back)="goBack()"></app-page-header>
+  <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403 && err.status !== 404" (retry)="load()"></app-error-state>
+} @else if (entry(); as entry) {
+  <app-page-header
+    [title]="entry.entry_number"
+    [subtitle]="entry.description"
+    [showBack]="true"
+    backLabel="common.backToList"
+    [actions]="actions()"
+    (back)="goBack()"
+  ></app-page-header>
+
+  @if (entry.reversed_by) {
+    <div role="status" class="mb-4 rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-200">
+      {{ 'accounting.hints.reversedBy' | translate }}
+      <a [routerLink]="['/accounting/journal-entries', entry.reversed_by]" class="font-semibold underline">{{ 'common.view' | translate }}</a>
+    </div>
+  }
+  @if (entry.reversal_of) {
+    <div role="status" class="mb-4 rounded-md border border-sky-200 bg-sky-50 p-3 text-sm text-sky-800 dark:border-sky-900 dark:bg-sky-950 dark:text-sky-200">
+      {{ 'accounting.hints.reversalOf' | translate }}
+      <a [routerLink]="['/accounting/journal-entries', entry.reversal_of]" class="font-semibold underline">{{ 'common.view' | translate }}</a>
+    </div>
+  }
+
+  <div class="flex max-w-5xl flex-col gap-4">
+    <p-card>
+      <dl class="grid grid-cols-2 gap-x-6 gap-y-3 text-sm md:grid-cols-4">
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'accounting.fields.status' | translate }}</dt>
+          <dd class="mt-1">
+            <app-status-badge
+              [value]="'accounting.entryStatuses.' + entry.status | translate"
+              [severity]="entry.status === 'posted' ? 'success' : 'secondary'"
+            ></app-status-badge>
+          </dd>
+        </div>
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'accounting.fields.date' | translate }}</dt>
+          <dd class="mt-1" dir="ltr">{{ entry.date }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'accounting.fields.origin' | translate }}</dt>
+          <dd class="mt-1">
+            {{ (entry.source_type ? 'accounting.origins.automatic' : 'accounting.origins.manual') | translate }}
+            @if (entry.source_type) {
+              <span class="font-mono text-xs text-gray-500" dir="ltr">({{ entry.source_type }} {{ entry.source_id }})</span>
+            }
+          </dd>
+        </div>
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'accounting.fields.postedAt' | translate }}</dt>
+          <dd class="mt-1" dir="ltr">{{ entry.posted_at ? (entry.posted_at | date: 'yyyy-MM-dd HH:mm') : '—' }}</dd>
+        </div>
+        <div class="col-span-2 md:col-span-4">
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'accounting.fields.reference' | translate }}</dt>
+          <dd class="mt-1 break-all" dir="ltr">{{ entry.reference || '—' }}</dd>
+        </div>
+      </dl>
+    </p-card>
+
+    <p-card>
+      <div class="overflow-x-auto">
+        <p-table [value]="entry.lines" dataKey="id" size="small">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>{{ 'accounting.fields.account' | translate }}</th>
+              <th>{{ 'accounting.fields.description' | translate }}</th>
+              <th class="text-end">{{ 'accounting.fields.debit' | translate }}</th>
+              <th class="text-end">{{ 'accounting.fields.credit' | translate }}</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-line>
+            <tr>
+              <td class="whitespace-nowrap">
+                <span class="font-mono text-xs text-gray-500" dir="ltr">{{ line.account_code }}</span> {{ line.account_name }}
+              </td>
+              <td>{{ line.description || '—' }}</td>
+              <td class="text-end">{{ +line.debit ? (line.debit | number: '1.2-2') : '' }}</td>
+              <td class="text-end">{{ +line.credit ? (line.credit | number: '1.2-2') : '' }}</td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="footer">
+            <tr>
+              <td colspan="2" class="font-semibold">{{ 'accounting.fields.total' | translate }}</td>
+              <td class="text-end font-semibold">{{ entry.total_debit | number: '1.2-2' }}</td>
+              <td class="text-end font-semibold">{{ entry.total_credit | number: '1.2-2' }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </p-card>
+  </div>
+
+  <p-dialog
+    [header]="'accounting.actions.reverse' | translate"
+    [visible]="reverseDialogOpen()"
+    (visibleChange)="reverseDialogOpen.set($event)"
+    [modal]="true"
+    [dismissableMask]="true"
+    [style]="{ width: '30rem', maxWidth: 'calc(100vw - 2rem)' }"
+  >
+    <p class="mb-3 text-sm text-gray-500 dark:text-gray-400">{{ 'accounting.hints.reverse' | translate }}</p>
+    <div class="flex flex-col gap-4">
+      <div class="flex flex-col gap-1">
+        <label for="reverse_date" class="text-sm font-medium">{{ 'accounting.fields.date' | translate }}</label>
+        <input pInputText id="reverse_date" type="date" [(ngModel)]="reverseDate" class="w-full" />
+        <small class="text-xs text-gray-500 dark:text-gray-400">{{ 'accounting.hints.reverseDate' | translate }}</small>
+      </div>
+      <div class="flex flex-col gap-1">
+        <label for="reverse_description" class="text-sm font-medium">{{ 'accounting.fields.description' | translate }}</label>
+        <input pInputText id="reverse_description" [(ngModel)]="reverseDescription" maxlength="255" class="w-full" />
+      </div>
+    </div>
+    <ng-template pTemplate="footer">
+      <p-button
+        [label]="'common.cancel' | translate"
+        severity="secondary"
+        [outlined]="true"
+        (onClick)="reverseDialogOpen.set(false)"
+      ></p-button>
+      <p-button
+        [label]="'accounting.actions.reverse' | translate"
+        icon="pi pi-undo"
+        [loading]="saving()"
+        [disabled]="saving()"
+        (onClick)="submitReverse()"
+      ></p-button>
+    </ng-template>
+  </p-dialog>
+} @else {
+  <app-loading-state></app-loading-state>
+}
