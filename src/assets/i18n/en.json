@@ -94,7 +94,8 @@
     "breadcrumb": "Breadcrumb",
     "lightMode": "Light mode",
     "darkMode": "Dark mode",
-    "account": "Account"
+    "account": "Account",
+    "notifications": "Notifications"
   },
   "dashboard": {
     "subtitle": "Overview of your organisation",
@@ -459,6 +460,56 @@
       "title": "Supplier price list",
       "new": "New price",
       "edit": "Edit price"
+    }
+  },
+  "notifications": {
+    "all": "All",
+    "unread": "Unread",
+    "markAllRead": "Mark all as read",
+    "empty": "No notifications yet."
+  },
+  "billing": {
+    "subscription": "Subscription",
+    "autoRenew": "Auto-renew",
+    "period": "Period",
+    "daysRemaining": "Days remaining",
+    "nextBilling": "Next billing date",
+    "licensedUsers": "Licensed users",
+    "billingEmail": "Billing email",
+    "modules": "Modules",
+    "noSubscription": "Your company has no active subscription.",
+    "invoices": "Invoices",
+    "noInvoices": "No invoices yet.",
+    "history": "History",
+    "subscriptionStatus": {
+      "trial": "Trial",
+      "active": "Active",
+      "past_due": "Past due",
+      "canceled": "Canceled",
+      "expired": "Expired"
+    },
+    "invoiceStatus": {
+      "draft": "Draft",
+      "issued": "Issued",
+      "partially_paid": "Partially paid",
+      "paid": "Paid",
+      "overdue": "Overdue",
+      "cancelled": "Cancelled"
+    },
+    "fields": {
+      "number": "Invoice",
+      "status": "Status",
+      "issueDate": "Issued",
+      "dueDate": "Due",
+      "total": "Total",
+      "amountDue": "Amount due",
+      "amountPaid": "Paid",
+      "subtotal": "Subtotal",
+      "tax": "Tax",
+      "description": "Description",
+      "quantity": "Qty",
+      "unitPrice": "Unit price",
+      "amount": "Amount"
     }
   }
 }

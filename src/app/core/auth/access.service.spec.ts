@@ -74,6 +74,7 @@ describe('AccessService', () => {
 
   it('takes is_staff from /me over the token, and forgets everything when the user changes', () => {
     const access = setup();
+    TestBed.tick(); // the effect records the current user
     expect(access.isStaff()).toBeFalse();
     access.load().subscribe();
     httpMock.expectOne(URL).flush(envelope(me({ is_staff: true })));
@@ -83,5 +84,15 @@ describe('AccessService', () => {
     TestBed.tick();
     expect(access.can('view_team')).toBeFalse();
     expect(access.settled()).toBeFalse();
+  });
+
+  it('does not wipe a load that started before its first effect run', () => {
+    const access = setup();
+    access.load().subscribe();
+    TestBed.tick();
+    httpMock.expectOne(URL).flush(envelope(me()));
+    expect(access.settled()).toBeTrue();
+    access.load().subscribe();
+    httpMock.expectNone(URL);
   });
 });

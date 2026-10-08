@@ -41,6 +41,49 @@
       <i class="pi" [class.pi-sun]="theme.theme() === 'dark'" [class.pi-moon]="theme.theme() !== 'dark'"></i>
     </button>
 
+    <button
+      type="button"
+      class="relative flex h-9 w-9 items-center justify-center rounded-lg text-gray-600 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+      [attr.aria-label]="'header.notifications' | translate"
+      [title]="'header.notifications' | translate"
+      (click)="bell.toggle($event)"
+    >
+      <i class="pi pi-bell"></i>
+      @if (notifications.hasUnread()) {
+        <span
+          class="absolute -end-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold leading-none text-white"
+        >
+          {{ notifications.unread() > 99 ? '99+' : notifications.unread() }}
+        </span>
+      }
+    </button>
+    <p-popover #bell styleClass="w-[22rem] max-w-[calc(100vw-2rem)]" appendTo="body">
+      <div class="-m-2 flex flex-col">
+        <div class="flex items-center justify-between px-3 py-2">
+          <span class="text-sm font-semibold text-gray-900 dark:text-gray-100">{{ 'header.notifications' | translate }}</span>
+          @if (notifications.hasUnread()) {
+            <button type="button" class="text-xs font-medium text-primary-600 hover:underline dark:text-primary-300" (click)="notifications.markAllRead()">
+              {{ 'notifications.markAllRead' | translate }}
+            </button>
+          }
+        </div>
+        <div class="flex max-h-96 flex-col gap-0.5 overflow-y-auto">
+          @for (item of latest(); track item.id) {
+            <app-notification-item [notification]="item" (open)="openNotification($event)"></app-notification-item>
+          } @empty {
+            <p class="px-3 py-6 text-center text-sm text-gray-500 dark:text-gray-400">{{ 'notifications.empty' | translate }}</p>
+          }
+        </div>
+        <a
+          routerLink="/notifications"
+          class="mt-1 border-t border-gray-100 px-3 pt-2 text-center text-sm font-medium text-primary-600 hover:underline dark:border-gray-800 dark:text-primary-300"
+          (click)="bell.hide()"
+        >
+          {{ 'common.viewAll' | translate }}
+        </a>
+      </div>
+    </p-popover>
+
     <span class="mx-1 hidden h-6 w-px bg-gray-200 dark:bg-gray-700 sm:block"></span>
 
     <button

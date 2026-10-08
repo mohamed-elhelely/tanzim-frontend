@@ -66,14 +66,15 @@ export const routes: Routes = [
       {
         path: 'billing',
         canActivate: [companyMemberGuard],
-        loadComponent: comingSoon,
-        data: { titleKey: 'nav.billing', icon: 'pi-credit-card' },
+        loadComponent: () => import('./features/billing/billing-page.component').then((m) => m.BillingPageComponent),
+        data: { titleKey: 'nav.billing' },
       },
       {
+        // Every signed-in user has notifications, platform staff included.
         path: 'notifications',
-        canActivate: [companyMemberGuard],
-        loadComponent: comingSoon,
-        data: { titleKey: 'nav.notifications', icon: 'pi-bell' },
+        loadComponent: () =>
+          import('./features/notifications/notifications-page.component').then((m) => m.NotificationsPageComponent),
+        data: { titleKey: 'nav.notifications' },
       },
       {
         path: 'import-export',

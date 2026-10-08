@@ -73,9 +73,9 @@ describe('NavListComponent', () => {
     expect(links(await render('/dashboard', 'ADMIN'))).toContain('/admin/companies');
   });
 
-  it('shows platform admins only the dashboard and Companies', async () => {
+  it('shows platform admins only the dashboard, Companies and their notifications', async () => {
     const fixture = await render('/dashboard', 'ADMIN');
-    expect(links(fixture)).toEqual(['/dashboard', '/admin/companies']);
+    expect(links(fixture)).toEqual(['/dashboard', '/admin/companies', '/notifications']);
     expect(fixture.nativeElement.querySelector('button[aria-expanded]')).toBeNull();
   });
 
@@ -108,6 +108,6 @@ describe('NavListComponent', () => {
 
   it('shows Companies to platform staff only, not to every user without a company', async () => {
     const fixture = await render('/dashboard', 'ADMIN', [], { hasModule: () => false, can: () => false, isStaff: () => false });
-    expect(links(fixture)).toEqual(['/dashboard']);
+    expect(links(fixture)).toEqual(['/dashboard', '/notifications']);
   });
 });

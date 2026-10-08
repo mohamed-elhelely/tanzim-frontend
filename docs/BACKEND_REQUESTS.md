@@ -30,6 +30,14 @@ Company admin: admin@testcompany.com / testpass123.
 
 ## Open items (in priority order)
 
+0. SECURITY — platform invoices: /api/subscriptions/invoices/ (InvoiceViewSet, billing/apis.py) only checks
+   IsAuthenticated, so ANY company user — verified with an employee who has no permissions — can create_draft,
+   add_item, issue, add_payment and mark_paid their own company's invoices (e.g. mark an unpaid invoice "paid").
+   Company users must only read; every write action must require platform staff.
+   Related: platform staff can't use these endpoints at all (CompanyContextMixin answers 403 "No company associated
+   with user"), so nobody can manage invoices through the API. Let staff act on any company's invoices (choose the
+   company from the subscription).
+
 1. Every DELETE answers "204 No Content" WITH a 99-byte JSON body (the renderer wraps the empty response).
    A 204 must not have a body. The Angular dev-server proxy rejects it ("Parse Error: Expected HTTP/") and turns
    it into a 500, so every delete looks failed in local development although it succeeded.
@@ -66,7 +74,10 @@ Company admin: admin@testcompany.com / testpass123.
 8. GET /api/inventory/v1/supplier-product/?supplier=<id> ignores the filter. Support `supplier` and `product_variant`
    as exact-match filters (the variant list already supports `?product=`).
 
-9. Accounting: the new /api/accounting/v1/ endpoints are described in docs/BUSINESS_LOGIC.md but not in
+9. The notifications WebSocket sends `type` and `timestamp` (notifications/services.py → _push) where the HTTP API
+   says `notif_type` and `created_at`. Send the same field names as the HTTP API (the frontend accepts both).
+
+10. Accounting: the new /api/accounting/v1/ endpoints are described in docs/BUSINESS_LOGIC.md but not in
    docs/API_REFERENCE.md. Document them there (paths, bodies, response objects, examples) so the frontend can build
    the accounting screens.
 ```
