@@ -65,7 +65,9 @@
     "bins": "Bins",
     "suppliers": "Suppliers",
     "variants": "Variants",
-    "supplierProducts": "Supplier price list"
+    "supplierProducts": "Supplier price list",
+    "salesOrders": "Sales orders",
+    "customers": "Customers"
   },
   "auth": {
     "login": "Login",
@@ -140,7 +142,9 @@
     "maxLength": "Maximum {{max}} characters.",
     "email": "Enter a valid email address.",
     "minLength": "Minimum {{min}} characters.",
-    "pattern": "Invalid format."
+    "pattern": "Invalid format.",
+    "greaterThan": "Must be greater than {{value}}.",
+    "max": "Must be {{max}} or less."
   },
   "company": {
     "fields": {
@@ -510,6 +514,130 @@
       "quantity": "Qty",
       "unitPrice": "Unit price",
       "amount": "Amount"
+    }
+  },
+  "sales": {
+    "customers": {
+      "title": "Customers",
+      "new": "New customer",
+      "edit": "Edit customer"
+    },
+    "orders": {
+      "title": "Sales orders",
+      "new": "New sales order",
+      "edit": "Edit sales order",
+      "detail": "Sales order",
+      "backToOrder": "Back to order"
+    },
+    "customerTypes": {
+      "individual": "Individual",
+      "business": "Business",
+      "government": "Government"
+    },
+    "orderStatuses": {
+      "draft": "Draft",
+      "confirmed": "Confirmed",
+      "picking": "Picking",
+      "shipped": "Shipped",
+      "delivered": "Delivered",
+      "cancelled": "Cancelled",
+      "on_hold": "On hold"
+    },
+    "priorities": {
+      "normal": "Normal",
+      "high": "High",
+      "urgent": "Urgent"
+    },
+    "fields": {
+      "name": "Name",
+      "customerNumber": "Customer no.",
+      "customerType": "Customer type",
+      "email": "Email",
+      "phone": "Phone",
+      "mobile": "Mobile",
+      "website": "Website",
+      "taxId": "Tax ID",
+      "creditLimit": "Credit limit",
+      "creditUsed": "Credit used",
+      "availableCredit": "Available credit",
+      "openOrders": "Open orders",
+      "paymentTerms": "Payment terms",
+      "currency": "Currency",
+      "isActive": "Active",
+      "notes": "Notes",
+      "internalNotes": "Internal notes",
+      "orderNumber": "Order no.",
+      "customer": "Customer",
+      "warehouse": "Warehouse",
+      "orderDate": "Order date",
+      "requiredDate": "Required by",
+      "shippedDate": "Shipped on",
+      "confirmedAt": "Confirmed at",
+      "status": "Status",
+      "priority": "Priority",
+      "reference": "Customer PO",
+      "total": "Total",
+      "subtotal": "Subtotal",
+      "tax": "Tax",
+      "shippingCost": "Shipping",
+      "orderDiscount": "Order discount",
+      "fulfillment": "Fulfilment",
+      "item": "Item",
+      "sku": "SKU",
+      "description": "Description",
+      "quantity": "Qty",
+      "reserved": "Reserved",
+      "shipped": "Shipped",
+      "unitPrice": "Unit price",
+      "discountPercent": "Disc. %",
+      "taxPercent": "Tax %",
+      "lineTotal": "Line total",
+      "cancelReason": "Reason (optional)"
+    },
+    "sections": {
+      "contact": "Contact",
+      "terms": "Credit and terms",
+      "billingAddress": "Billing address",
+      "shippingAddress": "Shipping address",
+      "lines": "Items"
+    },
+    "address": {
+      "street": "Street",
+      "city": "City",
+      "state": "State / province",
+      "zip": "Postal code",
+      "country": "Country"
+    },
+    "actions": {
+      "sameAsBilling": "Same as billing",
+      "addLine": "Add item",
+      "removeLine": "Remove item",
+      "confirmOrder": "Confirm order",
+      "cancelOrder": "Cancel order",
+      "clone": "Duplicate",
+      "markDelivered": "Mark delivered"
+    },
+    "confirm": {
+      "confirmOrder": "Confirm this order? Stock will be reserved for every item and the customer's credit limit checked.",
+      "markDelivered": "Mark this order as delivered?",
+      "clone": "Create a new draft order with the same customer and items?"
+    },
+    "toasts": {
+      "confirmed": "Order confirmed.",
+      "cancelled": "Order cancelled.",
+      "cloned": "Draft copy created.",
+      "delivered": "Order marked as delivered."
+    },
+    "hints": {
+      "noCreditLimit": "No limit",
+      "creditLimit": "Leave empty for no limit.",
+      "searchOrders": "Search by order no., customer or PO",
+      "reference": "The customer's purchase order number.",
+      "notes": "Visible to the customer.",
+      "internalNotes": "Only visible to your team.",
+      "atLeastOneLine": "Add at least one item.",
+      "orderCancelled": "This order was cancelled.",
+      "onlyDraftEditable": "Only draft orders can be edited."
     }
   }
 }

@@ -48,4 +48,22 @@ describe('ConfirmService', () => {
     lastConfirmation?.accept?.();
     expect(notifications.error).not.toHaveBeenCalled();
   });
+
+  it('runs a workflow action after accepting, then toasts and hands over the result', () => {
+    const onDone = jasmine.createSpy('onDone');
+    const run = jasmine.createSpy('run').and.returnValue(of({ id: 1, status: 'confirmed' }));
+    service.confirmAction({ message: 'sales.confirm.confirmOrder', accept: 'sales.actions.confirmOrder', success: 'sales.toasts.confirmed', run, onDone });
+    expect(run).not.toHaveBeenCalled();
+    expect(lastConfirmation?.acceptButtonStyleClass).toBeUndefined();
+    lastConfirmation?.accept?.();
+    expect(notifications.success).toHaveBeenCalledWith('sales.toasts.confirmed');
+    expect(onDone).toHaveBeenCalledWith({ id: 1, status: 'confirmed' });
+  });
+
+  it('shows the backend message when a workflow action is refused', () => {
+    const onDone = jasmine.createSpy('onDone');
+    service.runAction(() => throwError(() => ({ status: 400, message: 'Order exceeds customer credit limit', errors: {} })), 'x', onDone);
+    expect(notifications.error).toHaveBeenCalledWith('Order exceeds customer credit limit');
+    expect(onDone).not.toHaveBeenCalled();
+  });
 });

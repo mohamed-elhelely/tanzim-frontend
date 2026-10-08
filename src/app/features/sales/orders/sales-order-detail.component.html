@@ -1,0 +1,199 @@
+@if (loadError(); as err) {
+  <app-page-header title="sales.orders.title" [showBack]="true" backLabel="common.backToList" (back)="goBack()"></app-page-header>
+  <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403 && err.status !== 404" (retry)="load()"></app-error-state>
+} @else if (order(); as order) {
+  <app-page-header
+    [title]="order.order_number"
+    [subtitle]="order.customer_name"
+    [showBack]="true"
+    backLabel="common.backToList"
+    [actions]="actions()"
+    (back)="goBack()"
+  ></app-page-header>
+
+  @if (order.status === 'cancelled') {
+    <div
+      role="status"
+      class="mb-4 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300"
+    >
+      <p class="font-medium">{{ 'sales.hints.orderCancelled' | translate }}</p>
+      @if (order.cancelled_reason) {
+        <p class="mt-1">{{ order.cancelled_reason }}</p>
+      }
+    </div>
+  }
+
+  <div class="flex max-w-6xl flex-col gap-4">
+    <dl class="grid grid-cols-2 gap-3 md:grid-cols-4">
+      <div class="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+        <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.status' | translate }}</dt>
+        <dd class="mt-1">
+          <app-status-badge
+            [value]="'sales.orderStatuses.' + order.status | translate"
+            [severity]="statusSeverity[order.status]"
+          ></app-status-badge>
+        </dd>
+      </div>
+      <div class="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+        <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.customer' | translate }}</dt>
+        <dd class="mt-1 text-sm font-semibold">
+          <a [routerLink]="['/sales/customers', order.customer, 'edit']" class="text-primary-600 hover:underline dark:text-primary-300">
+            {{ order.customer_name }}
+          </a>
+        </dd>
+      </div>
+      <div class="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+        <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.warehouse' | translate }}</dt>
+        <dd class="mt-1 text-sm font-semibold">{{ order.warehouse_name }}</dd>
+      </div>
+      <div class="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+        <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.total' | translate }}</dt>
+        <dd class="mt-1 text-sm font-semibold">{{ order.total_amount | number: '1.2-2' }} {{ order.currency }}</dd>
+      </div>
+    </dl>
+
+    <p-card>
+      <dl class="grid grid-cols-2 gap-x-6 gap-y-3 text-sm md:grid-cols-4">
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.orderDate' | translate }}</dt>
+          <dd class="mt-0.5" dir="ltr">{{ order.order_date }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.requiredDate' | translate }}</dt>
+          <dd class="mt-0.5" dir="ltr">{{ order.required_date || '—' }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.priority' | translate }}</dt>
+          <dd class="mt-0.5">
+            <app-status-badge
+              [value]="'sales.priorities.' + order.priority | translate"
+              [severity]="prioritySeverity[order.priority]"
+            ></app-status-badge>
+          </dd>
+        </div>
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.fulfillment' | translate }}</dt>
+          <dd class="mt-0.5">{{ order.fulfillment_percent | number: '1.0-0' }}%</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.reference' | translate }}</dt>
+          <dd class="mt-0.5" dir="ltr">{{ order.reference || '—' }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.paymentTerms' | translate }}</dt>
+          <dd class="mt-0.5">{{ order.payment_terms || '—' }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.shippedDate' | translate }}</dt>
+          <dd class="mt-0.5" dir="ltr">{{ order.shipped_date || '—' }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.confirmedAt' | translate }}</dt>
+          <dd class="mt-0.5" dir="ltr">{{ order.approved_at ? (order.approved_at | date: 'yyyy-MM-dd HH:mm') : '—' }}</dd>
+        </div>
+      </dl>
+    </p-card>
+
+    <p-card>
+      <h3 class="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'sales.sections.lines' | translate }}</h3>
+      <div class="overflow-x-auto">
+        <p-table [value]="order.lines" dataKey="id" size="small">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>#</th>
+              <th>{{ 'sales.fields.sku' | translate }}</th>
+              <th>{{ 'sales.fields.item' | translate }}</th>
+              <th class="text-end">{{ 'sales.fields.quantity' | translate }}</th>
+              <th class="text-end">{{ 'sales.fields.reserved' | translate }}</th>
+              <th class="text-end">{{ 'sales.fields.shipped' | translate }}</th>
+              <th class="text-end">{{ 'sales.fields.unitPrice' | translate }}</th>
+              <th class="text-end">{{ 'sales.fields.discountPercent' | translate }}</th>
+              <th class="text-end">{{ 'sales.fields.taxPercent' | translate }}</th>
+              <th class="text-end">{{ 'sales.fields.lineTotal' | translate }}</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-line>
+            <tr>
+              <td class="text-gray-500">{{ line.line_number }}</td>
+              <td class="whitespace-nowrap font-mono text-xs" dir="ltr">{{ line.sku }}</td>
+              <td>
+                <div class="font-medium">{{ line.product_name }}</div>
+                @if (line.description && line.description !== line.product_name) {
+                  <div class="text-xs text-gray-500 dark:text-gray-400">{{ line.description }}</div>
+                }
+              </td>
+              <td class="text-end">{{ line.quantity_ordered | number: '1.0-3' }}</td>
+              <td class="text-end">{{ line.quantity_reserved | number: '1.0-3' }}</td>
+              <td class="text-end">{{ line.quantity_shipped | number: '1.0-3' }}</td>
+              <td class="text-end">{{ line.unit_price | number: '1.2-4' }}</td>
+              <td class="text-end">{{ line.discount_percent | number: '1.0-2' }}</td>
+              <td class="text-end">{{ line.tax_percent | number: '1.0-2' }}</td>
+              <td class="text-end font-medium">{{ line.line_total | number: '1.2-2' }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+
+      <dl class="ms-auto mt-4 grid max-w-72 grid-cols-2 gap-x-6 gap-y-1 text-sm">
+        <dt class="text-gray-500 dark:text-gray-400">{{ 'sales.fields.subtotal' | translate }}</dt>
+        <dd class="text-end">{{ order.subtotal | number: '1.2-2' }}</dd>
+        <dt class="text-gray-500 dark:text-gray-400">{{ 'sales.fields.tax' | translate }}</dt>
+        <dd class="text-end">{{ order.tax_amount | number: '1.2-2' }}</dd>
+        <dt class="text-gray-500 dark:text-gray-400">{{ 'sales.fields.shippingCost' | translate }}</dt>
+        <dd class="text-end">{{ order.shipping_cost | number: '1.2-2' }}</dd>
+        <dt class="text-gray-500 dark:text-gray-400">{{ 'sales.fields.orderDiscount' | translate }}</dt>
+        <dd class="text-end"><span dir="ltr">−{{ order.discount_amount | number: '1.2-2' }}</span></dd>
+          <div class="col-span-2 mt-1 flex justify-between gap-6 border-t border-gray-200 pt-1 font-semibold dark:border-gray-800">
+            <dt>{{ 'sales.fields.total' | translate }}</dt>
+            <dd>{{ order.total_amount | number: '1.2-2' }} {{ order.currency }}</dd>
+          </div>
+      </dl>
+    </p-card>
+
+    <p-card>
+      <dl class="grid grid-cols-1 gap-4 text-sm md:grid-cols-2">
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.sections.shippingAddress' | translate }}</dt>
+          <dd class="mt-0.5">{{ formatAddress(order.shipping_address) || '—' }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.sections.billingAddress' | translate }}</dt>
+          <dd class="mt-0.5">{{ formatAddress(order.billing_address) || '—' }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.notes' | translate }}</dt>
+          <dd class="mt-0.5 whitespace-pre-line">{{ order.notes || '—' }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.internalNotes' | translate }}</dt>
+          <dd class="mt-0.5 whitespace-pre-line">{{ order.internal_notes || '—' }}</dd>
+        </div>
+      </dl>
+    </p-card>
+  </div>
+
+  <p-dialog
+    [header]="'sales.actions.cancelOrder' | translate"
+    [visible]="cancelDialogOpen()"
+    (visibleChange)="cancelDialogOpen.set($event)"
+    [modal]="true"
+    [dismissableMask]="true"
+    [style]="{ width: '32rem', maxWidth: 'calc(100vw - 2rem)' }"
+  >
+    <div class="flex flex-col gap-1">
+      <label for="cancel_reason" class="text-sm font-medium">{{ 'sales.fields.cancelReason' | translate }}</label>
+      <textarea pTextarea id="cancel_reason" [(ngModel)]="cancelReason" rows="3" class="w-full"></textarea>
+    </div>
+    <ng-template pTemplate="footer">
+      <p-button
+        [label]="'common.cancel' | translate"
+        severity="secondary"
+        [outlined]="true"
+        (onClick)="cancelDialogOpen.set(false)"
+      ></p-button>
+      <p-button [label]="'sales.actions.cancelOrder' | translate" severity="danger" (onClick)="confirmCancel()"></p-button>
+    </ng-template>
+  </p-dialog>
+} @else {
+  <app-loading-state></app-loading-state>
+}

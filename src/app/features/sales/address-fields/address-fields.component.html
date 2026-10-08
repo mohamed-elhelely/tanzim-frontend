@@ -1,0 +1,27 @@
+<div [formGroup]="group" class="grid grid-cols-1 gap-4 md:grid-cols-2">
+  <div class="flex flex-col gap-1 md:col-span-2">
+    <label [for]="idPrefix + '_street'" class="text-sm font-medium">{{ 'sales.address.street' | translate }}</label>
+    <input pInputText [id]="idPrefix + '_street'" formControlName="street" class="w-full" />
+    <app-field-error [control]="group.controls.street"></app-field-error>
+  </div>
+  <div class="flex flex-col gap-1">
+    <label [for]="idPrefix + '_city'" class="text-sm font-medium">{{ 'sales.address.city' | translate }}</label>
+    <input pInputText [id]="idPrefix + '_city'" formControlName="city" class="w-full" />
+    <app-field-error [control]="group.controls.city"></app-field-error>
+  </div>
+  <div class="flex flex-col gap-1">
+    <label [for]="idPrefix + '_state'" class="text-sm font-medium">{{ 'sales.address.state' | translate }}</label>
+    <input pInputText [id]="idPrefix + '_state'" formControlName="state" class="w-full" />
+    <app-field-error [control]="group.controls.state"></app-field-error>
+  </div>
+  <div class="flex flex-col gap-1">
+    <label [for]="idPrefix + '_zip'" class="text-sm font-medium">{{ 'sales.address.zip' | translate }}</label>
+    <input pInputText [id]="idPrefix + '_zip'" formControlName="zip" dir="ltr" class="w-full" />
+    <app-field-error [control]="group.controls.zip"></app-field-error>
+  </div>
+  <div class="flex flex-col gap-1">
+    <label [for]="idPrefix + '_country'" class="text-sm font-medium">{{ 'sales.address.country' | translate }}</label>
+    <input pInputText [id]="idPrefix + '_country'" formControlName="country" class="w-full" />
+    <app-field-error [control]="group.controls.country"></app-field-error>
+  </div>
+</div>

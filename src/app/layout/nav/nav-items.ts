@@ -68,7 +68,16 @@ export const NAV_ITEMS: NavItem[] = [
       { labelKey: 'nav.supplierProducts', icon: 'pi pi-list', routerLink: '/inventory/supplier-products' },
     ],
   },
-  { labelKey: 'nav.sales', icon: 'pi pi-shopping-cart', routerLink: '/sales', roles: COMPANY_ROLES },
+  {
+    labelKey: 'nav.sales',
+    icon: 'pi pi-shopping-cart',
+    routerLink: '/sales',
+    roles: COMPANY_ROLES,
+    children: [
+      { labelKey: 'nav.salesOrders', icon: 'pi pi-file', routerLink: '/sales/orders' },
+      { labelKey: 'nav.customers', icon: 'pi pi-users', routerLink: '/sales/customers' },
+    ],
+  },
   { labelKey: 'nav.returns', icon: 'pi pi-replay', routerLink: '/returns', roles: COMPANY_ROLES },
   // The company's subscription and platform invoices: for company admins.
   { labelKey: 'nav.billing', icon: 'pi pi-credit-card', routerLink: '/billing', roles: ['COMPANY'] },

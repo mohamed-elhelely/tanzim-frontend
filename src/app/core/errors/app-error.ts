@@ -16,7 +16,7 @@ export function toAppError(error: unknown): AppError {
     if (body && typeof body === 'object' && body.error) {
       return {
         status: error.status,
-        message: body.error.message,
+        message: unwrapDjangoMessage(body.error.message),
         errors: body.error.errors ?? {},
         raw: error,
       };
@@ -30,4 +30,13 @@ export function toAppError(error: unknown): AppError {
     errors: {},
     raw: error,
   };
+}
+
+/**
+ * Workflow actions (sales, returns) answer `{"detail": str(ValidationError)}`, which arrives as "['Order exceeds
+ * customer credit limit']". Show just the text (BACKEND_REQUESTS 11).
+ */
+function unwrapDjangoMessage(message: string): string {
+  const match = /^\[\s*(['"])([\s\S]*)\1\s*\]$/.exec(message ?? '');
+  return match ? match[2] : message;
 }

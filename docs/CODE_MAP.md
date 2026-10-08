@@ -122,7 +122,7 @@ Things to know:
 | `auth/token-storage.service.ts` | Tokens in localStorage | |
 | `auth/access.service.ts` | Permissions, modules and staff flag from GET /me | 🆕 🧠 🔒 see §3 |
 | `auth/auth.guard.ts` | `authGuard`, `guestGuard`, `platformAdminGuard`, `companyMemberGuard`, `permissionGuard` | 🔒 `permissionGuard` reads `route.data.permission` |
-| `errors/app-error.ts` | `AppError` + `toAppError()` | The only error shape in the app |
+| `errors/app-error.ts` | `AppError` + `toAppError()` | The only error shape in the app. ⚠️ unwraps "['…']" workflow messages (BACKEND_REQUESTS 11) |
 | `errors/global-error-handler.ts` | Toast for uncaught non-HTTP errors | |
 | `interceptors/api-headers.interceptor.ts` | `ngrok-skip-browser-warning` for ngrok hosts | ⚠️ ngrok free tier, not a backend bug |
 | `interceptors/auth.interceptor.ts` | Bearer token, refresh on 401 | 🧠 see §2 |
@@ -130,7 +130,7 @@ Things to know:
 | `interceptors/error.interceptor.ts` | → `AppError`, toast for network/5xx | |
 | `models/api-response.model.ts` | Envelope types, `Paginated<T>` | |
 | `notifications/notification-center.service.ts` | Notifications list, unread count, live WebSocket | 🆕 🧠 reconnects with backoff, stops on sign-out; ⚠️ socket field names differ (`toAppNotification`) |
-| `services/confirm.service.ts` | `confirmDelete(name, remove, onDeleted)` | 🆕 used by every list that deletes |
+| `services/confirm.service.ts` | `confirmDelete(name, remove, onDeleted)`; `confirmAction()` / `runAction()` for workflow buttons | 🆕 used by every list that deletes and every confirm/ship/issue/cancel action |
 | `services/notification.service.ts` | Toasts | |
 | `services/language.service.ts` | en/ar, sets `<html lang dir>` | |
 | `services/theme.service.ts` | Light/dark via `.dark` on `<html>` | 🧠 `index.html` applies it before Angular starts |
@@ -149,7 +149,7 @@ Things to know:
 | `shared/table/server-table.ts` | State for server-paged tables | 🆕 🧠 cancels stale requests; steps back a page after deleting the last row |
 | `shared/utils/server-errors.ts` | `applyServerErrors`, `handleSaveError`, `errorTitleKey` | 🆕 🧠 flattens nested backend errors to dotted keys (`user.email`) |
 | `shared/utils/omit-pristine.ts` | Drops untouched fields from an edit body | 🆕 ⚠️ for read endpoints that don't return every field (BACKEND_REQUESTS 15e) |
-| `shared/components/field-error` | Message under an input | Not OnPush on purpose (reacts to `touched`) |
+| `shared/components/field-error` | Message under an input (required, email, length, pattern, `greaterThan`, `max`, server) | Not OnPush on purpose (reacts to `touched`) |
 | `shared/components/page-header` | Title, back link, action buttons | |
 | `shared/components/notification-item` | One notification row (bell + page) | Icon/colour by type, unread dot |
 | `shared/pipes/time-ago.pipe.ts` | "3 hours ago" in the current language | `Intl.RelativeTimeFormat`; not live |
@@ -214,6 +214,17 @@ marked "client list".
 | `suppliers/` | `inventory/v1/supplier/` | Reliability is 0–1; empty lead time/reliability → 0. ⚠️ contact/address/terms not returned → `omitPristine` |
 | `supplier-products/` | `inventory/v1/supplier-product/` | The supplier price list. ⚠️ read returns only supplier, variant, preferred → list shows those; edit uses `omitPristine` for everything else |
 
+### sales — `/sales` (no module needed)
+
+Sales endpoints (`/api/sales/…`) return flat ids plus `*_name` fields, a shorter list shape than retrieve
+(services add `detail(id)`), and only paginate when `page` is sent.
+
+| Resource | Endpoint | Notes |
+|---|---|---|
+| `customers/` | `sales/customers/` | Type filter. `credit_used` never sent; edit shows credit used / available / open orders. Addresses via `address-fields/` |
+| `orders/` (`SalesOrderService`) | `sales/sales-orders/` | List with status filter (delete on drafts only). 🧠 form: lines in a `FormArray`, one item picker over every active variant (sets product + variant + default price), totals previewed with the backend formula (`lineTotal`/`lineTax`), saving replaces all lines. ⚠️ only drafts open in the form (BACKEND_REQUESTS 12). Detail page: lines, totals, workflow (confirm, cancel with reason, duplicate, mark delivered) via `ConfirmService.confirmAction`; 🧠 follows the `:id` param because duplicate navigates to the copy |
+| `address-fields/` | — | `AddressFieldsComponent` + `addressGroup/toAddress/patchAddress`; keys `street, city, state, zip, country` |
+
 ## 7. Cross-feature links
 
 ```mermaid
@@ -232,6 +243,9 @@ flowchart LR
     products --> variants["inventory/variants"]
     spform["inventory/supplier-products form"] --> variants
     spform --> suppliers["inventory/suppliers"]
+    soform["sales/orders form"] --> customers["sales/customers"]
+    soform --> wh
+    soform --> variants
 ```
 
 Only services and models cross feature boundaries; components never do.
@@ -248,7 +262,8 @@ The places most likely to hide a bug, in the order to check them:
 6. 🧠 ⚠️ `features/inventory/categories/category-form.component.ts` — tree rules and the duplicate workaround.
 7. ⚠️ `shared/utils/omit-pristine.ts` and its users (warehouse, zone, bin, supplier, variant, supplier-product forms) — an edit must never
    send an untouched field the API didn't return.
-8. ⚠️ Every other workaround marked above: re-check when the backend fixes the matching item.
+8. 🧠 `features/sales/orders/sales-order-form.component.ts` — line rows, product/variant pairing and the totals preview.
+9. ⚠️ Every other workaround marked above: re-check when the backend fixes the matching item.
 
 ## 9. Keeping this map up to date
 

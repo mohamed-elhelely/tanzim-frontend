@@ -22,7 +22,8 @@ You are continuing work on Tanzim, a bilingual (English/Arabic, RTL) ERP. Two re
 - main also has the code-structure cleanup (#9) and Step 8 (warehouses, zones, bins, suppliers; #10).
 - main also has Step 9 (access control from /me), Step 10 (fixed workarounds dropped).
 - main also has Step 11 (variants + supplier price list).
-- Step 12 (notifications + billing) is on branch claude/notifications-billing; spec: docs/superpowers/specs/2026-10-09-notifications-billing-design.md.
+- main also has Step 12 (notifications + billing, #14) and Step 13 (customers + sales orders; spec 2026-10-09-sales-orders-design.md).
+- Test data: two variants have 50 units in Main Warehouse, seeded with the Django shell (the stock ledger is read-only in the API).
 - Open PR 0Mustafa37/Tanzim#11 (claude/cors-frontend-origins → master): CORS allows http://localhost:4200, https://mohamed-elhelely.github.io and the ngrok header; CORS_EXTRA_ORIGINS env var for more.
 - GitHub Pages (https://mohamed-elhelely.github.io/tanzim-frontend/) was deployed from claude/redesign-ui, which now equals main; redeploy from main from now on (`npm run deploy`, angular-cli-ghpages, baseHref /tanzim-frontend/).
 - Stale branches (delete only if the owner agrees): claude/awesome-hawking-7uf16d, step-4-company-organisation, master (frontend), claude/awesome-lovelace-2bdsqn, claude/redesign-ui, claude/menu-visibility (merged).
@@ -48,7 +49,9 @@ You are continuing work on Tanzim, a bilingual (English/Arabic, RTL) ERP. Two re
 - Before calling UI work done: screenshot the changed screens in English, Arabic (RTL), dark mode and 390px mobile, and check the console has no errors.
 
 ## Next steps (the owner asked to work through them in order, one branch + PR per step, merging each)
-1. Sales and returns, then inventory stock/movements and procurement (blocked on BACKEND_REQUESTS 2), then accounting.
+1. Step 14: delivery notes (ship from an order), sales invoices and payments.
+2. Step 15: customer and supplier returns.
+3. Inventory stock/movements and procurement (blocked on BACKEND_REQUESTS 2), then accounting.
 
 Reply to the owner in Egyptian Arabic; keep code, commits and PR text in English.
 ```
