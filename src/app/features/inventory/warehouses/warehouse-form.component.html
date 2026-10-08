@@ -1,0 +1,173 @@
+<app-page-header
+  [title]="isEdit ? 'inventory.warehouses.edit' : 'inventory.warehouses.new'"
+  [showBack]="true"
+  backLabel="common.backToList"
+  (back)="goBack()"
+></app-page-header>
+
+@if (loadError(); as err) {
+  <app-error-state [title]="errorTitleKey(err)" [showRetry]="false"></app-error-state>
+} @else if (loading()) {
+  <app-loading-state></app-loading-state>
+} @else {
+  <p-card styleClass="max-w-5xl">
+    <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-6" novalidate>
+      @if (isEdit) {
+        <!-- ⚠️ Some fields aren't returned by the API; see omitPristine(). -->
+        <div
+          class="rounded-md border border-sky-200 bg-sky-50 p-3 text-sm text-sky-800 dark:border-sky-900 dark:bg-sky-950 dark:text-sky-200"
+        >
+          {{ 'inventory.hints.partialData' | translate }}
+        </div>
+      }
+
+      @if (formErrors().length) {
+        <div
+          role="alert"
+          class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300"
+        >
+          @for (message of formErrors(); track $index) {
+            <p>{{ message }}</p>
+          }
+        </div>
+      }
+
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div class="flex flex-col gap-1">
+          <label for="name" class="text-sm font-medium">{{ 'inventory.fields.name' | translate }} *</label>
+          <input pInputText id="name" formControlName="name" class="w-full" />
+          <app-field-error [control]="form.controls.name"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="code" class="text-sm font-medium">{{ 'inventory.fields.code' | translate }}{{ isEdit ? '' : ' *' }}</label>
+          <input pInputText id="code" formControlName="code" dir="ltr" class="w-full" />
+          <app-field-error [control]="form.controls.code"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="warehouse_type" class="text-sm font-medium">{{ 'inventory.fields.warehouseType' | translate }} *</label>
+          <p-select
+            inputId="warehouse_type"
+            formControlName="warehouse_type"
+            [options]="typeOptions"
+            optionLabel="label"
+            optionValue="value"
+            [showClear]="false"
+            [placeholder]="'common.select' | translate"
+            styleClass="w-full"
+            appendTo="body"
+          >
+            <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
+            <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
+          </p-select>
+          <app-field-error [control]="form.controls.warehouse_type"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="location" class="text-sm font-medium">{{ 'inventory.fields.location' | translate }}</label>
+          <p-select
+            inputId="location"
+            formControlName="location"
+            [options]="locationOptions()"
+            optionLabel="label"
+            optionValue="value"
+            [filter]="true"
+            [showClear]="true"
+            [placeholder]="'common.select' | translate"
+            styleClass="w-full"
+            appendTo="body"
+          ></p-select>
+          <app-field-error [control]="form.controls.location"></app-field-error>
+        </div>
+
+        <h3 class="text-sm font-semibold text-gray-700 md:col-span-2 dark:text-gray-200">{{ 'inventory.sections.contact' | translate }}</h3>
+
+        <div class="flex flex-col gap-1">
+          <label for="email" class="text-sm font-medium">{{ 'inventory.fields.email' | translate }}</label>
+          <input pInputText id="email" formControlName="email" dir="ltr" class="w-full" />
+          <app-field-error [control]="form.controls.email"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="phone" class="text-sm font-medium">{{ 'inventory.fields.phone' | translate }}</label>
+          <input pInputText id="phone" formControlName="phone" dir="ltr" class="w-full" />
+          <app-field-error [control]="form.controls.phone"></app-field-error>
+        </div>
+
+        <h3 class="text-sm font-semibold text-gray-700 md:col-span-2 dark:text-gray-200">{{ 'inventory.sections.address' | translate }}</h3>
+
+        <div class="flex flex-col gap-1">
+          <label for="address_line1" class="text-sm font-medium">{{ 'inventory.fields.addressLine1' | translate }}</label>
+          <input pInputText id="address_line1" formControlName="address_line1" class="w-full" />
+          <app-field-error [control]="form.controls.address_line1"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="address_line2" class="text-sm font-medium">{{ 'inventory.fields.addressLine2' | translate }}</label>
+          <input pInputText id="address_line2" formControlName="address_line2" class="w-full" />
+          <app-field-error [control]="form.controls.address_line2"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="city" class="text-sm font-medium">{{ 'inventory.fields.city' | translate }}</label>
+          <input pInputText id="city" formControlName="city" class="w-full" />
+          <app-field-error [control]="form.controls.city"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="state" class="text-sm font-medium">{{ 'inventory.fields.state' | translate }}</label>
+          <input pInputText id="state" formControlName="state" class="w-full" />
+          <app-field-error [control]="form.controls.state"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="postal_code" class="text-sm font-medium">{{ 'inventory.fields.postalCode' | translate }}</label>
+          <input pInputText id="postal_code" formControlName="postal_code" class="w-full" />
+          <app-field-error [control]="form.controls.postal_code"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="country" class="text-sm font-medium">{{ 'inventory.fields.country' | translate }}</label>
+          <input pInputText id="country" formControlName="country" class="w-full" />
+          <app-field-error [control]="form.controls.country"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-3 md:col-span-2">
+          <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'inventory.sections.settings' | translate }}</h3>
+          <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <div class="flex items-center gap-3">
+              <p-toggleswitch inputId="is_active" formControlName="is_active"></p-toggleswitch>
+              <label for="is_active" class="text-sm font-medium">{{ 'inventory.fields.isActive' | translate }}</label>
+            </div>
+            <div class="flex items-center gap-3">
+              <p-toggleswitch inputId="allow_negative_stock" formControlName="allow_negative_stock"></p-toggleswitch>
+              <label for="allow_negative_stock" class="text-sm font-medium">{{ 'inventory.fields.allowNegativeStock' | translate }}</label>
+            </div>
+            <div class="flex items-center gap-3">
+              <p-toggleswitch inputId="use_bin_locations" formControlName="use_bin_locations"></p-toggleswitch>
+              <label for="use_bin_locations" class="text-sm font-medium">{{ 'inventory.fields.useBinLocations' | translate }}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 border-t border-gray-100 pt-5 dark:border-gray-800">
+        <p-button
+          type="button"
+          [label]="'common.cancel' | translate"
+          severity="secondary"
+          [outlined]="true"
+          (onClick)="goBack()"
+        ></p-button>
+        <p-button
+          type="submit"
+          [label]="'common.save' | translate"
+          icon="pi pi-check"
+          [loading]="saving()"
+          [disabled]="saving()"
+        ></p-button>
+      </div>
+    </form>
+  </p-card>
+}

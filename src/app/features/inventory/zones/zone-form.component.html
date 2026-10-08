@@ -1,0 +1,100 @@
+<app-page-header
+  [title]="isEdit ? 'inventory.zones.edit' : 'inventory.zones.new'"
+  [showBack]="true"
+  backLabel="common.backToList"
+  (back)="goBack()"
+></app-page-header>
+
+@if (loadError(); as err) {
+  <app-error-state [title]="errorTitleKey(err)" [showRetry]="false"></app-error-state>
+} @else if (loading()) {
+  <app-loading-state></app-loading-state>
+} @else {
+  <p-card styleClass="max-w-5xl">
+    <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-6" novalidate>
+      @if (isEdit) {
+        <!-- ⚠️ Some fields aren't returned by the API; see omitPristine(). -->
+        <div
+          class="rounded-md border border-sky-200 bg-sky-50 p-3 text-sm text-sky-800 dark:border-sky-900 dark:bg-sky-950 dark:text-sky-200"
+        >
+          {{ 'inventory.hints.partialData' | translate }}
+        </div>
+      }
+
+      @if (formErrors().length) {
+        <div
+          role="alert"
+          class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300"
+        >
+          @for (message of formErrors(); track $index) {
+            <p>{{ message }}</p>
+          }
+        </div>
+      }
+
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div class="flex flex-col gap-1">
+          <label for="warehouse" class="text-sm font-medium">{{ 'inventory.fields.warehouse' | translate }} *</label>
+          <p-select
+            inputId="warehouse"
+            formControlName="warehouse"
+            [options]="warehouseOptions()"
+            optionLabel="label"
+            optionValue="value"
+            [filter]="true"
+            [showClear]="true"
+            [placeholder]="'common.select' | translate"
+            styleClass="w-full"
+            appendTo="body"
+          ></p-select>
+          <app-field-error [control]="form.controls.warehouse"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="name" class="text-sm font-medium">{{ 'inventory.fields.name' | translate }} *</label>
+          <input pInputText id="name" formControlName="name" class="w-full" />
+          <app-field-error [control]="form.controls.name"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="code" class="text-sm font-medium">{{ 'inventory.fields.code' | translate }}</label>
+          <input pInputText id="code" formControlName="code" dir="ltr" class="w-full" />
+          <app-field-error [control]="form.controls.code"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1 md:col-span-2">
+          <label for="description" class="text-sm font-medium">{{ 'inventory.fields.description' | translate }}</label>
+          <textarea pTextarea id="description" formControlName="description" rows="3" class="w-full"></textarea>
+          <app-field-error [control]="form.controls.description"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-3 md:col-span-2">
+          <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'inventory.sections.settings' | translate }}</h3>
+          <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <div class="flex items-center gap-3">
+              <p-toggleswitch inputId="is_active" formControlName="is_active"></p-toggleswitch>
+              <label for="is_active" class="text-sm font-medium">{{ 'inventory.fields.isActive' | translate }}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 border-t border-gray-100 pt-5 dark:border-gray-800">
+        <p-button
+          type="button"
+          [label]="'common.cancel' | translate"
+          severity="secondary"
+          [outlined]="true"
+          (onClick)="goBack()"
+        ></p-button>
+        <p-button
+          type="submit"
+          [label]="'common.save' | translate"
+          icon="pi pi-check"
+          [loading]="saving()"
+          [disabled]="saving()"
+        ></p-button>
+      </div>
+    </form>
+  </p-card>
+}
