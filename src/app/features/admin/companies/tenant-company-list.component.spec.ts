@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { HttpTestingController } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
 import { envelope, errorEnvelope, provideApiTesting } from '../../../testing/api-testing';
@@ -29,36 +29,37 @@ describe('TenantCompanyListComponent', () => {
     return fixture;
   }
 
-  it('loads the full company list without paging params', () => {
+  it('loads the first page from the server', () => {
     const fixture = create();
-    const req = httpMock.expectOne(URL);
-    expect(req.request.params.keys().length).toBe(0);
-    req.flush(envelope([makeTenantCompany(), makeTenantCompany({ id: 2, name: 'Nile Foods', is_active: false })]));
+    const req = httpMock.expectOne((r) => r.url === URL);
+    expect(req.request.params.get('page')).toBe('1');
+    req.flush(envelope([makeTenantCompany(), makeTenantCompany({ id: 2, name: 'Nile Foods', is_active: false })], 2));
     fixture.detectChanges();
     const text = fixture.nativeElement.textContent;
     expect(text).toContain('Acme Trading');
-    expect(text).toContain('acme.example');
     expect(text).toContain('Nile Foods');
     expect(text).toContain('common.no');
-  });
-
-  it('has no delete action', () => {
-    const fixture = create();
-    httpMock.expectOne(URL).flush(envelope([makeTenantCompany()]));
-    fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('.pi-trash')).toBeNull();
   });
 
+  it('searches on the server', fakeAsync(() => {
+    const fixture = create();
+    httpMock.expectOne((r) => r.url === URL).flush(envelope([makeTenantCompany()], 1));
+    fixture.componentInstance.table.onSearch('nile');
+    tick(300);
+    httpMock.expectOne((r) => r.url === URL && r.params.get('search') === 'nile').flush(envelope([], 0));
+  }));
+
   it('shows the forbidden state on 403', () => {
     const fixture = create();
-    httpMock.expectOne(URL).flush(errorEnvelope(403, 'Forbidden'), { status: 403, statusText: 'Forbidden' });
+    httpMock.expectOne((r) => r.url === URL).flush(errorEnvelope(403, 'Forbidden'), { status: 403, statusText: 'Forbidden' });
     fixture.detectChanges();
     expect(fixture.nativeElement.textContent).toContain('common.forbidden');
   });
 
   it('opens the edit page with the company id', () => {
     const fixture = create();
-    httpMock.expectOne(URL).flush(envelope([makeTenantCompany()]));
+    httpMock.expectOne((r) => r.url === URL).flush(envelope([makeTenantCompany()], 1));
     fixture.componentInstance.edit(makeTenantCompany({ id: 7 }));
     expect(router.navigate).toHaveBeenCalledWith(['/admin/companies', 7, 'edit']);
   });

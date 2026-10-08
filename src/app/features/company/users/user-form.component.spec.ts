@@ -94,21 +94,18 @@ describe('UserFormComponent', () => {
 
     fixture.componentInstance.submit();
     const req = httpMock.expectOne((r) => r.url === `${URL}12/` && r.method === 'PATCH');
-    expect('user' in req.request.body).toBeFalse();
+    expect(req.request.body.user.email).toBe('sara@acme.example');
     req.flush(envelope(makeCompanyUser()));
   });
 
-  it('edits only role, department, team and flags; login fields are read-only', () => {
-    // The backend re-validates a nested `user` on PATCH and rejects the unchanged email as a duplicate.
+  it('edits the login details too, with a nested user and no password', () => {
     const fixture = setup('12');
     httpMock.expectOne(`${URL}12/`).flush(envelope(makeCompanyUser({ role: makeRole() })));
     fixture.detectChanges();
 
     const controls = fixture.componentInstance.form.controls;
-    for (const name of ['email', 'first_name', 'last_name', 'preferred_name', 'phone_number'] as const) {
-      expect(controls[name].disabled).withContext(name).toBeTrue();
-    }
-
+    expect(controls.email.enabled).toBeTrue();
+    controls.last_name.setValue(' Hassan ');
     controls.department.setValue(5);
     fixture.componentInstance.submit();
     const req = httpMock.expectOne((r) => r.url === `${URL}12/` && r.method === 'PATCH');
@@ -119,6 +116,7 @@ describe('UserFormComponent', () => {
       is_company_admin: false,
       is_department_manager: false,
       is_team_lead: false,
+      user: { email: 'sara@acme.example', first_name: 'Sara', last_name: 'Hassan', preferred_name: '', phone_number: '' },
     });
     req.flush(envelope(makeCompanyUser()));
   });

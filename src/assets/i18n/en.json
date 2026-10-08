@@ -217,7 +217,8 @@
       "postalCode": "Postal code",
       "locationType": "Type",
       "addressLine1": "Address line 1",
-      "addressLine2": "Address line 2"
+      "addressLine2": "Address line 2",
+      "fullAddress": "Address"
     },
     "hints": {
       "isoCode": "Two letters, e.g. EG.",

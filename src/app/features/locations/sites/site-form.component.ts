@@ -142,7 +142,7 @@ export class SiteFormComponent implements OnInit {
       return;
     }
     const value = this.form.getRawValue();
-    // Always the full body: a PATCH without country and region fails on older backends (API known issue #5).
+    // The full body on edit too, like every form (see ARCHITECTURE.md → form recipe).
     const body: LocationPayload = {
       name_en: value.name_en.trim(),
       name_ar: value.name_ar.trim() || null,

@@ -20,11 +20,10 @@ import { CityPayload, Region } from '../locations.models';
 import { RegionService } from '../regions/region.service';
 import { CityService } from './city.service';
 
-/** UTC and GMT first (the only values older backends accept), then the IANA zones known to the browser. */
+/** UTC, then the IANA zones known to the browser (some browsers leave UTC out of the list). */
 const TIMEZONE_OPTIONS: Array<{ value: string; label: string }> = [
   'UTC',
-  'GMT',
-  ...Intl.supportedValuesOf('timeZone').filter((zone) => zone !== 'UTC' && zone !== 'GMT'),
+  ...Intl.supportedValuesOf('timeZone').filter((zone) => zone !== 'UTC'),
 ].map((zone) => ({ value: zone, label: zone }));
 
 @Component({

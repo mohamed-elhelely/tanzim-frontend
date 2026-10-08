@@ -35,23 +35,13 @@ You are continuing work on Tanzim, a bilingual (English/Arabic, RTL) ERP. Two re
 - Commit after each logical step; never include model names in commits or PRs.
 
 ## Known backend issues (raise, don't work around silently)
-- The full list of backend requests, as a prompt for a backend session, is in docs/BACKEND_REQUESTS.md.
-- Soft-deleting a country/region/city/district still in use returns 204.
-- Re-using the name of a soft-deleted record returns 500 (unique_together ignores is_deleted).
-- Location `full_address` is never returned.
-- PATCH company-user with nested `user` re-validates the email (400).
-- GET /permissions/?search= returns 500.
-- Editing a category without renaming it returns 400 "already exists" (the form omits unchanged name/parent).
-- Deleting a brand/category still in use returns 204 and leaves products pointing at it.
-- Warehouse/zone/bin/supplier read endpoints return only some fields (edit forms use omitPristine); warehouse `manager` returns 500 (field hidden); warehouse code is unique across all companies.
-- Every DELETE returns 204 with a body; the dev-server proxy turns it into a 500 (the delete still happens). BACKEND_REQUESTS 1b.
-- Creating a company user returns the password hash (security; BACKEND_REQUESTS.md Priority 0).
-- Company create (admin/company/) is not atomic: a blank or already-used email returns 500 and leaves the company without an admin.
-- Company phone can't be blank (400), so it can't be cleared once saved.
-- DELETE admin/company/{id}/ is a cascading hard delete (docs say soft delete); the UI has no delete button.
+- The open list, as a prompt for a backend session, is in docs/BACKEND_REQUESTS.md (DELETE 204 with a body; partial
+  inventory read serializers → omitPristine; warehouse manager 500; warehouse code globally unique; category
+  duplicate check on edit; inventory deletes of used records; category cycles; accounting API undocumented).
+- The backend's own list is "Known issues" at the end of docs/API_REFERENCE.md.
 
 ## Running and verifying locally
-- Backend: python venv + `pip install -r requirements.txt`, `SECRET_KEY=... DEBUG=True python manage.py migrate && python manage.py setup_plans && python setup_data.py`; give "Test Company" an active Subscription with the `location` and `inventory` SubscriptionModules; `redis-server` + `python manage.py runserver 8000`. Login: admin@testcompany.com / testpass123. For platform-staff screens, create a user with is_staff=True and no CompanyUser (`manage.py shell`).
+- Backend: python venv + `pip install -r requirements.txt`, `SECRET_KEY=... DEBUG=True python manage.py migrate && python manage.py setup_plans && python manage.py seed_permissions && python setup_data.py`; give "Test Company" an active Subscription with the `location` and `inventory` SubscriptionModules; `redis-server` + `python manage.py runserver 8000`. Login: admin@testcompany.com / testpass123. For platform-staff screens, create a user with is_staff=True and no CompanyUser (`manage.py shell`).
 - Frontend: `npm ci`, `npx ng serve --proxy-config proxy.conf.json` (proxies /api to :8000), `npm run build`, `npx ng test --watch=false` (in a container, run ChromeHeadless with --no-sandbox).
 - Before calling UI work done: screenshot the changed screens in English, Arabic (RTL), dark mode and 390px mobile, and check the console has no errors.
 

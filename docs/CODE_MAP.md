@@ -169,27 +169,27 @@ marked "client list".
 
 | Resource | Endpoint | Notes |
 |---|---|---|
-| `companies/` (`TenantCompanyService`) | `company/v1/admin/company/` | Client list (not paginated). **No delete button**: the backend hard-deletes with cascade. ⚠️ phone left out when empty. Email required on create (the backend emails the admin's password) |
+| `companies/` (`TenantCompanyService`) | `company/v1/admin/company/` | Server list with search. No delete button: DELETE only deactivates, which the form's Active switch does. Email required on create (the backend emails the admin's password). Logo upload not built yet |
 
 ### company — `/company`
 
 | Resource | Endpoint | Notes |
 |---|---|---|
-| `users/` (`CompanyUserService`) | `company/v1/company-user/` | Client list. 🔒 New/Edit/Delete by `*_companyuser` permissions (+ `permissionGuard` on the form routes). `userOptions()` uses the dropdown, so pickers work without `view_companyuser`. ⚠️ edit sends only role/department/team/flags (nested user update fails). 🧠 `USER_FIELD_MAP` maps `user.email` errors to flat controls |
+| `users/` (`CompanyUserService`) | `company/v1/company-user/` | Client list (not paginated). 🔒 New/Edit/Delete by `*_companyuser` permissions (+ `permissionGuard` on the form routes). Edit sends the nested `user` without a password. `userOptions()` uses the dropdown, so pickers work without `view_companyuser`. 🧠 `USER_FIELD_MAP` maps `user.email` errors to flat controls |
 | `departments/` | `company/v1/departments/` | Parent picker excludes itself. 🔒 every company list shows New/edit/delete by permission |
 | `teams/` | `company/v1/teams/` | Uses `LocationService.dropdown()` for the location picker |
 | `roles/` | `company/v1/roles/` | |
 | `permission-groups/` | `company/v1/permission-groups/` | |
-| `permissions/` | `company/v1/permissions/` | ⚠️ no search box (backend search returns 500) |
+| `permissions/` | `company/v1/permissions/` | Search by name and codename |
 
 ### locations — `/locations` (module `location`)
 
 | Resource | Endpoint | Notes |
 |---|---|---|
-| `sites/` (`LocationService`) | `company/v1/location/` | 🧠 cascading pickers Country → Region → City → District filtered in the browser (no parent filter in the API). ⚠️ PATCH always sends the full body |
+| `sites/` (`LocationService`) | `company/v1/location/` | 🧠 cascading pickers Country → Region → City → District filtered in the browser (no parent filter in the API). List shows the backend's `full_address` |
 | `countries/` | `company/v1/country/` | ISO and phone code validated client-side |
 | `regions/` | `company/v1/region/` | |
-| `cities/` | `company/v1/city/` | ⚠️ time zone list starts with UTC/GMT (older backends accept only those) |
+| `cities/` | `company/v1/city/` | Time zone: UTC + the browser's IANA list |
 | `districts/` | `company/v1/district/` | |
 
 ### inventory — `/inventory` (module `inventory`)
