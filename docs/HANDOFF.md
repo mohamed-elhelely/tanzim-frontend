@@ -17,7 +17,8 @@ You are continuing work on Tanzim, a bilingual (English/Arabic, RTL) ERP. Two re
   - Builders moved to @angular/build.
   - Redesign: dark indigo sidebar, header with breadcrumb + language/dark-mode toggles + user menu, dashboard with real counts/setup checklist/quick actions, search inside list cards, coming-soon pages, split-screen login.
   - Production build points at the backend via ngrok: https://chunk-surcharge-manhood.ngrok-free.dev/api/. An interceptor adds `ngrok-skip-browser-warning` to any ngrok host.
-- Step 6 (platform-staff Companies screen, /admin/companies) is on branch claude/jolly-hopper-2gqwi0; spec: docs/superpowers/specs/2026-10-08-platform-companies-design.md.
+- Step 6 (platform-staff Companies screen, /admin/companies) is in PR mohamed-elhelely/tanzim-frontend#6 (branch claude/jolly-hopper-2gqwi0); spec: docs/superpowers/specs/2026-10-08-platform-companies-design.md.
+- Menu visibility by role and subscription is on branch claude/menu-visibility (stacked on claude/jolly-hopper-2gqwi0); spec: docs/superpowers/specs/2026-10-08-menu-visibility-design.md.
 - Open PR 0Mustafa37/Tanzim#11 (claude/cors-frontend-origins → master): CORS allows http://localhost:4200, https://mohamed-elhelely.github.io and the ngrok header; CORS_EXTRA_ORIGINS env var for more.
 - GitHub Pages (https://mohamed-elhelely.github.io/tanzim-frontend/) was deployed from claude/redesign-ui, which now equals main; redeploy from main from now on (`npm run deploy`, angular-cli-ghpages, baseHref /tanzim-frontend/).
 - Stale branches (delete only if the owner agrees): claude/awesome-hawking-7uf16d, step-4-company-organisation, master (frontend), claude/awesome-lovelace-2bdsqn, claude/redesign-ui (merged).
@@ -38,6 +39,7 @@ You are continuing work on Tanzim, a bilingual (English/Arabic, RTL) ERP. Two re
 - Location `full_address` is never returned.
 - PATCH company-user with nested `user` re-validates the email (400).
 - GET /permissions/?search= returns 500.
+- Creating a company user returns the password hash (security; BACKEND_REQUESTS.md Priority 0).
 - Company create (admin/company/) is not atomic: a blank or already-used email returns 500 and leaves the company without an admin.
 - Company phone can't be blank (400), so it can't be cleared once saved.
 - DELETE admin/company/{id}/ is a cascading hard delete (docs say soft delete); the UI has no delete button.
@@ -49,9 +51,8 @@ You are continuing work on Tanzim, a bilingual (English/Arabic, RTL) ERP. Two re
 
 ## Next steps (ask the owner which one first)
 1. Help merge 0Mustafa37/Tanzim#11 (backend CORS) if still open, then redeploy GitHub Pages from main.
-2. Hide menus/buttons by the user's permissions/role (including hiding Company/Locations from platform staff, who have no company).
-3. Hide menu sections when the subscription lacks a module (`module` field already on NavItem).
-4. Start Inventory screens (see API_REFERENCE.md "Inventory"; note backend known issues #1–#3 block workflow actions and variants).
+2. Fine-grained permissions (hide buttons by permission codename) once the backend ships a current-user endpoint (BACKEND_REQUESTS.md Priority 1). Role- and module-based hiding is done.
+3. Start Inventory screens (see API_REFERENCE.md "Inventory"; note backend known issues #1–#3 block workflow actions and variants).
 
 Reply to the owner in Egyptian Arabic; keep code, commits and PR text in English.
 ```
