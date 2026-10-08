@@ -59,7 +59,13 @@
     "companies": "Companies",
     "products": "Products",
     "categories": "Categories",
-    "brands": "Brands"
+    "brands": "Brands",
+    "warehouses": "Warehouses",
+    "zones": "Zones",
+    "bins": "Bins",
+    "suppliers": "Suppliers",
+    "variants": "Variants",
+    "supplierProducts": "Supplier price list"
   },
   "auth": {
     "login": "Login",
@@ -213,7 +219,8 @@
       "postalCode": "Postal code",
       "locationType": "Type",
       "addressLine1": "Address line 1",
-      "addressLine2": "Address line 2"
+      "addressLine2": "Address line 2",
+      "fullAddress": "Address"
     },
     "hints": {
       "isoCode": "Two letters, e.g. EG.",
@@ -316,11 +323,69 @@
       "hasExpiry": "Has expiry date",
       "shelfLifeDays": "Shelf life (days)",
       "purchasable": "Can be purchased",
-      "sellable": "Can be sold"
+      "sellable": "Can be sold",
+      "code": "Code",
+      "warehouseType": "Type",
+      "location": "Company location",
+      "email": "Email",
+      "phone": "Phone",
+      "mobile": "Mobile",
+      "addressLine1": "Address line 1",
+      "addressLine2": "Address line 2",
+      "city": "City",
+      "state": "State / province",
+      "postalCode": "Postal code",
+      "country": "Country",
+      "allowNegativeStock": "Allow negative stock",
+      "useBinLocations": "Track stock by bin",
+      "warehouse": "Warehouse",
+      "zone": "Zone",
+      "barcode": "Barcode",
+      "maxCapacity": "Max capacity",
+      "binType": "Bin type",
+      "allowMixedProducts": "Allow mixed products",
+      "supplierType": "Type",
+      "taxId": "Tax ID",
+      "contactPerson": "Contact person",
+      "website": "Website",
+      "paymentTerms": "Payment terms",
+      "currency": "Currency",
+      "creditLimit": "Credit limit",
+      "leadTimeDays": "Lead time (days)",
+      "reliabilityScore": "Reliability (0–1)",
+      "isPreferred": "Preferred",
+      "notes": "Notes",
+      "product": "Product",
+      "sku": "SKU",
+      "standardCost": "Standard cost",
+      "standardPrice": "Standard price",
+      "weight": "Weight",
+      "weightUom": "Weight unit",
+      "attributes": "Attributes",
+      "attributeName": "Attribute",
+      "attributeValue": "Value",
+      "addAttribute": "Add attribute",
+      "removeAttribute": "Remove attribute",
+      "supplier": "Supplier",
+      "variant": "Variant",
+      "supplierSku": "Supplier SKU",
+      "supplierProductName": "Supplier's product name",
+      "unitCost": "Unit cost",
+      "minOrderQty": "Min order qty",
+      "maxOrderQty": "Max order qty",
+      "isPrimary": "Primary supplier",
+      "effectiveFrom": "Effective from",
+      "effectiveTo": "Effective to"
     },
     "sections": {
       "tracking": "Tracking",
-      "availability": "Availability"
+      "availability": "Availability",
+      "contact": "Contact",
+      "address": "Address",
+      "settings": "Settings",
+      "terms": "Terms",
+      "pricing": "Pricing",
+      "validity": "Validity"
     },
     "productTypes": {
       "simple": "Simple",
@@ -334,7 +399,66 @@
       "lifo": "LIFO (last in, first out)"
     },
     "hints": {
-      "shelfLifeDays": "A whole number of days, 1 or more."
+      "shelfLifeDays": "A whole number of days, 1 or more.",
+      "partialData": "The server doesn't return some of this record's details yet (such as contact and address), so they show empty. Leave a field empty to keep its saved value, or type a new value to replace it.",
+      "decimal": "A number, e.g. 100 or 12.5.",
+      "whole": "A whole number, 0 or more.",
+      "reliability": "A number from 0 to 1, e.g. 0.8.",
+      "currency": "Three letters, e.g. SAR.",
+      "website": "A full address starting with http:// or https://.",
+      "noBinTracking": "Bins are only used in warehouses with “Track stock by bin” turned on.",
+      "decimal4": "A number with up to 4 decimals, e.g. 12.5.",
+      "decimal3": "A number with up to 3 decimals, e.g. 0.25.",
+      "attributes": "Each attribute needs a name. Names must be unique.",
+      "effectiveTo": "Leave empty if the price has no end date."
+    },
+    "warehouses": {
+      "title": "Warehouses",
+      "new": "New warehouse",
+      "edit": "Edit warehouse"
+    },
+    "zones": {
+      "title": "Zones",
+      "new": "New zone",
+      "edit": "Edit zone"
+    },
+    "bins": {
+      "title": "Bins",
+      "new": "New bin",
+      "edit": "Edit bin"
+    },
+    "suppliers": {
+      "title": "Suppliers",
+      "new": "New supplier",
+      "edit": "Edit supplier"
+    },
+    "warehouseTypes": {
+      "central": "Central",
+      "regional": "Regional",
+      "retail": "Retail store",
+      "transit": "Transit / cross-dock",
+      "returns": "Returns center",
+      "quarantine": "Quarantine"
+    },
+    "supplierTypes": {
+      "manufacturer": "Manufacturer",
+      "distributor": "Distributor",
+      "wholesaler": "Wholesaler",
+      "retailer": "Retailer",
+      "service": "Service provider"
+    },
+    "variants": {
+      "title": "Variants",
+      "new": "New variant",
+      "edit": "Edit variant",
+      "filteredBy": "Product: {{name}}",
+      "showAll": "Show all",
+      "manage": "Variants"
+    },
+    "supplierProducts": {
+      "title": "Supplier price list",
+      "new": "New price",
+      "edit": "Edit price"
     }
   }
 }
