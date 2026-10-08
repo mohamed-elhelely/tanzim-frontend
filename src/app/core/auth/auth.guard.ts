@@ -20,3 +20,17 @@ export const platformAdminGuard: CanActivateFn = () => {
   const router = inject(Router);
   return auth.role() === 'ADMIN' ? true : router.createUrlTree(['/dashboard']);
 };
+
+/** Users who belong to a company. Platform admins have none, so they go to their Companies screen. */
+export const companyMemberGuard: CanActivateFn = () => {
+  const auth = inject(AuthService);
+  const router = inject(Router);
+  return auth.role() === 'ADMIN' ? router.createUrlTree(['/admin/companies']) : true;
+};
+
+/** Company admins only (the backend allows only them to add, edit or delete company users). */
+export const companyAdminGuard: CanActivateFn = () => {
+  const auth = inject(AuthService);
+  const router = inject(Router);
+  return auth.role() === 'COMPANY' ? true : router.createUrlTree(['/company/users']);
+};

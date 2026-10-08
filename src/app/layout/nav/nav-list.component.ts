@@ -5,6 +5,7 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { filter } from 'rxjs';
 import { AuthService } from '../../core/auth/auth.service';
 import { LanguageService } from '../../core/services/language.service';
+import { SubscriptionService } from '../../core/subscription/subscription.service';
 import { NAV_ITEMS, NavItem } from './nav-items';
 
 // The navigation always sits on the dark indigo sidebar (desktop) or drawer (mobile).
@@ -68,11 +69,16 @@ const ACTIVE_CLASSES = '!bg-primary-600 !text-white shadow-md shadow-primary-950
 export class NavListComponent {
   private readonly router = inject(Router);
   private readonly role = inject(AuthService).role;
+  private readonly subscription = inject(SubscriptionService);
   private readonly expanded = signal<ReadonlySet<string>>(new Set());
 
   readonly items = computed(() => {
     const role = this.role();
-    return NAV_ITEMS.filter((item) => !item.roles || (role !== null && item.roles.includes(role)));
+    return NAV_ITEMS.filter(
+      (item) =>
+        (!item.roles || (role !== null && item.roles.includes(role))) &&
+        (!item.module || this.subscription.allows(item.module)),
+    );
   });
   readonly itemSelected = output<void>();
   readonly direction = inject(LanguageService).direction;

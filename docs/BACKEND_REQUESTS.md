@@ -26,6 +26,12 @@ redis-server --daemonize yes && SECRET_KEY=dev DEBUG=True python manage.py runse
 Company admin login: admin@testcompany.com / testpass123. For platform-staff checks, create a user with
 is_staff=True and no CompanyUser in `manage.py shell`. With no EMAIL_HOST_PASSWORD, emails go to the console.
 
+## Priority 0 — security, fix first
+
+0. POST /api/company/v1/company-user/ returns the new user's password hash (data.user.password = "pbkdf2_sha256$…").
+   company/serializers/user.py → UserWriteSerializer lists "password" without write_only. Make it
+   extra_kwargs = {"password": {"write_only": True}} and add a test that no response (create/update/retrieve/list) contains it.
+
 ## Priority 1 — needed for the frontend's next step (hide menus/buttons by permissions)
 
 1. Current-user endpoint, e.g. GET /api/company/v1/me/ (or /api/me/). Return at least:
@@ -84,6 +90,10 @@ is_staff=True and no CompanyUser in `manage.py shell`. With no EMAIL_HOST_PASSWO
     (confirmed on POST /api/inventory/v1/category/import/).
 
 ## Priority 5 — later
+
+- Subscriptions: FeatureFlag.is_enabled (billing/feature_flags.py) picks company.subscriptions.first() while
+  GET subscriptions/current/ picks latest("created_at"). With more than one subscription they can disagree, and the menu
+  (built from current/) won't match the 403s. Use the same lookup in both.
 
 19. WebSocket auth only reads the Authorization header, which browsers can't set on new WebSocket(). Also accept ?token=.
 20. Export reads `format`/`async` from the GET body; read them from query params so browsers can request xlsx/async.

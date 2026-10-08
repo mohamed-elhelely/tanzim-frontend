@@ -7,6 +7,7 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
+import { AuthService } from '../../../core/auth/auth.service';
 import { AppError } from '../../../core/errors/app-error';
 import { LanguageService } from '../../../core/services/language.service';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -46,19 +47,23 @@ export class UserListComponent implements OnInit {
   private readonly translate = inject(TranslateService);
 
   readonly lang = inject(LanguageService).currentLang;
+  /** Only company admins may add, edit or delete users (enforced by the backend). */
+  readonly canManage = inject(AuthService).role() === 'COMPANY';
   readonly users = signal<CompanyUser[]>([]);
   readonly loading = signal(false);
   readonly error = signal<AppError | null>(null);
   readonly errorTitleKey = errorTitleKey;
   readonly searchFields = ['user.first_name', 'user.last_name', 'user.email'];
 
-  readonly headerActions: PageHeaderAction[] = [
-    {
-      label: 'company.users.new',
-      icon: 'pi pi-plus',
-      onClick: () => void this.router.navigate(['/company/users/new']),
-    },
-  ];
+  readonly headerActions: PageHeaderAction[] = this.canManage
+    ? [
+        {
+          label: 'company.users.new',
+          icon: 'pi pi-plus',
+          onClick: () => void this.router.navigate(['/company/users/new']),
+        },
+      ]
+    : [];
 
   ngOnInit(): void {
     this.load();

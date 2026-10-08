@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { companyAdminGuard } from '../../core/auth/auth.guard';
 
 /** Lazy routes under /company. Each resource adds its list, new and edit routes below. */
 export const COMPANY_ROUTES: Routes = [
@@ -91,11 +92,13 @@ export const COMPANY_ROUTES: Routes = [
   },
   {
     path: 'users/new',
+    canActivate: [companyAdminGuard],
     loadComponent: () => import('./users/user-form.component').then((m) => m.UserFormComponent),
     data: { titleKey: 'company.users.new' },
   },
   {
     path: 'users/:id/edit',
+    canActivate: [companyAdminGuard],
     loadComponent: () => import('./users/user-form.component').then((m) => m.UserFormComponent),
     data: { titleKey: 'company.users.edit' },
   },

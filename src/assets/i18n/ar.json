@@ -96,7 +96,9 @@
       "users": "المستخدمون",
       "departments": "الأقسام",
       "teams": "الفرق",
-      "locations": "المواقع"
+      "locations": "المواقع",
+      "companies": "الشركات",
+      "activeCompanies": "الشركات النشطة"
     },
     "unavailable": "غير متاح",
     "quickActions": "إجراءات سريعة",
@@ -104,7 +106,8 @@
       "newUser": "إضافة مستخدم",
       "newDepartment": "إنشاء قسم",
       "newTeam": "إنشاء فريق",
-      "newLocation": "إضافة موقع"
+      "newLocation": "إضافة موقع",
+      "newCompany": "إضافة شركة"
     },
     "setup": "البداية",
     "setupHint": "أكمل هذه الخطوات لتجهيز مؤسستك.",
@@ -114,7 +117,8 @@
       "teams": "نظّم الموظفين في فرق",
       "users": "ادعُ زملاءك"
     },
-    "setupDone": "مؤسستك جاهزة بالكامل."
+    "setupDone": "مؤسستك جاهزة بالكامل.",
+    "welcomeTextPlatform": "نظرة سريعة على الشركات المسجلة في تنظيم."
   },
   "errors": {
     "network": "تعذّر الوصول إلى الخادم. تحقق من اتصالك.",

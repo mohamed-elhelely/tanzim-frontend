@@ -1,14 +1,19 @@
-import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, effect, inject, signal, untracked } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { Observable, catchError, map, of } from 'rxjs';
 import { AuthService } from '../../core/auth/auth.service';
+import { SubscriptionService } from '../../core/subscription/subscription.service';
+import { TenantCompanyService } from '../admin/companies/tenant-company.service';
 import { DepartmentService } from '../company/departments/department.service';
 import { TeamService } from '../company/teams/team.service';
 import { CompanyUserService } from '../company/users/company-user.service';
 import { LocationService } from '../locations/location.service';
 
-type StatKey = 'users' | 'departments' | 'teams' | 'locations';
+type StatKey = 'users' | 'departments' | 'teams' | 'locations' | 'companies' | 'activeCompanies';
+
+/** Stats that need the `location` subscription module. */
+const LOCATION_KEYS: ReadonlySet<string> = new Set(['locations']);
 
 interface StatCard {
   key: StatKey;
@@ -51,6 +56,26 @@ const STATS: StatCard[] = [
   },
 ];
 
+/** What a platform admin (no company) sees instead of the company stats. */
+const PLATFORM_STATS: StatCard[] = [
+  {
+    key: 'companies',
+    icon: 'pi-briefcase',
+    link: '/admin/companies',
+    tone: 'bg-primary-100 text-primary-600 dark:bg-primary-500/15 dark:text-primary-300',
+  },
+  {
+    key: 'activeCompanies',
+    icon: 'pi-check-circle',
+    link: '/admin/companies',
+    tone: 'bg-emerald-100 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-300',
+  },
+];
+
+const PLATFORM_ACTIONS: QuickAction[] = [
+  { labelKey: 'dashboard.actions.newCompany', icon: 'pi-plus', link: '/admin/companies/new' },
+];
+
 const QUICK_ACTIONS: QuickAction[] = [
   { labelKey: 'dashboard.actions.newUser', icon: 'pi-user-plus', link: '/company/users/new' },
   { labelKey: 'dashboard.actions.newDepartment', icon: 'pi-sitemap', link: '/company/departments/new' },
@@ -77,27 +102,55 @@ export class DashboardPageComponent implements OnInit {
   private readonly departments = inject(DepartmentService);
   private readonly teams = inject(TeamService);
   private readonly locations = inject(LocationService);
+  private readonly companies = inject(TenantCompanyService);
+  private readonly subscription = inject(SubscriptionService);
+  private readonly auth = inject(AuthService);
+  private readonly hasLocations = computed(() => this.subscription.allows('location'));
 
-  readonly userName = inject(AuthService).user()?.name ?? '';
-  readonly stats = STATS;
-  readonly quickActions = QUICK_ACTIONS;
-  /** undefined = loading, null = unavailable (e.g. no Locations module), number = count. */
-  readonly counts = signal<Record<StatKey, number | null | undefined>>({
-    users: undefined,
-    departments: undefined,
-    teams: undefined,
-    locations: undefined,
-  });
+  readonly userName = this.auth.user()?.name ?? '';
+  readonly isPlatformAdmin = this.auth.role() === 'ADMIN';
+  /** The setup checklist and quick actions are admin tasks; regular employees only see the stats. */
+  readonly showSetup = this.isPlatformAdmin || this.auth.role() === 'COMPANY';
+  readonly stats = computed(() =>
+    this.isPlatformAdmin ? PLATFORM_STATS : STATS.filter((stat) => this.hasLocations() || !LOCATION_KEYS.has(stat.key)),
+  );
+  readonly quickActions = computed(() =>
+    this.isPlatformAdmin
+      ? PLATFORM_ACTIONS
+      : QUICK_ACTIONS.filter((action) => this.hasLocations() || !action.link.startsWith('/locations')),
+  );
+  /** undefined = loading, null = unavailable, number = count. */
+  readonly counts = signal<Partial<Record<StatKey, number | null>>>({});
   readonly steps = computed(() =>
-    SETUP_STEPS.map((step) => ({ ...step, done: (this.counts()[step.key] ?? 0) > 0 })),
+    SETUP_STEPS.filter((step) => this.hasLocations() || !LOCATION_KEYS.has(step.key)).map((step) => ({
+      ...step,
+      done: (this.counts()[step.key] ?? 0) > 0,
+    })),
   );
   readonly stepsDone = computed(() => this.steps().filter((step) => step.done).length);
 
+  constructor() {
+    // The subscription loads in the background; count locations only once the module is known to be on.
+    effect(() => {
+      if (!this.isPlatformAdmin && this.hasLocations()) {
+        untracked(() => this.load('locations', this.total(this.locations.list({ page: 1, pageSize: 1 }))));
+      }
+    });
+  }
+
   ngOnInit(): void {
+    if (this.isPlatformAdmin) {
+      this.companies.all().pipe(catchError(() => of(null))).subscribe((companies) => {
+        this.counts.set({
+          companies: companies?.length ?? null,
+          activeCompanies: companies ? companies.filter((company) => company.is_active).length : null,
+        });
+      });
+      return;
+    }
     this.load('users', this.users.all().pipe(map((items) => items.length)));
     this.load('departments', this.total(this.departments.list({ page: 1, pageSize: 1 })));
     this.load('teams', this.total(this.teams.list({ page: 1, pageSize: 1 })));
-    this.load('locations', this.total(this.locations.list({ page: 1, pageSize: 1 })));
   }
 
   private total(request: Observable<{ total: number }>): Observable<number> {

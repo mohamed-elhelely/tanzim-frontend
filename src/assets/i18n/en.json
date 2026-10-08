@@ -96,7 +96,9 @@
       "users": "Users",
       "departments": "Departments",
       "teams": "Teams",
-      "locations": "Locations"
+      "locations": "Locations",
+      "companies": "Companies",
+      "activeCompanies": "Active companies"
     },
     "unavailable": "Not available",
     "quickActions": "Quick actions",
@@ -104,7 +106,8 @@
       "newUser": "Add a user",
       "newDepartment": "Create a department",
       "newTeam": "Create a team",
-      "newLocation": "Add a location"
+      "newLocation": "Add a location",
+      "newCompany": "Add a company"
     },
     "setup": "Getting started",
     "setupHint": "Finish these steps to set up your organisation.",
@@ -114,7 +117,8 @@
       "teams": "Organise people into teams",
       "users": "Invite your colleagues"
     },
-    "setupDone": "Your organisation is all set up."
+    "setupDone": "Your organisation is all set up.",
+    "welcomeTextPlatform": "Here's a quick look at the companies on Tanzim."
   },
   "errors": {
     "network": "Unable to reach the server. Please check your connection.",

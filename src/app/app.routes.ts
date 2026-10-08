@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard, guestGuard, platformAdminGuard } from './core/auth/auth.guard';
+import { authGuard, companyMemberGuard, guestGuard, platformAdminGuard } from './core/auth/auth.guard';
 import { ShellComponent } from './layout/shell/shell.component';
 
 export const routes: Routes = [
@@ -34,41 +34,49 @@ export const routes: Routes = [
       },
       {
         path: 'company',
+        canActivate: [companyMemberGuard],
         loadChildren: () => import('./features/company/company.routes').then((m) => m.COMPANY_ROUTES),
       },
       {
         path: 'locations',
+        canActivate: [companyMemberGuard],
         loadChildren: () => import('./features/locations/locations.routes').then((m) => m.LOCATIONS_ROUTES),
       },
       {
         path: 'inventory',
+        canActivate: [companyMemberGuard],
         loadComponent: () =>
           import('./features/inventory/inventory-page.component').then((m) => m.InventoryPageComponent),
         data: { titleKey: 'nav.inventory' },
       },
       {
         path: 'sales',
+        canActivate: [companyMemberGuard],
         loadComponent: () => import('./features/sales/sales-page.component').then((m) => m.SalesPageComponent),
         data: { titleKey: 'nav.sales' },
       },
       {
         path: 'returns',
+        canActivate: [companyMemberGuard],
         loadComponent: () => import('./features/returns/returns-page.component').then((m) => m.ReturnsPageComponent),
         data: { titleKey: 'nav.returns' },
       },
       {
         path: 'billing',
+        canActivate: [companyMemberGuard],
         loadComponent: () => import('./features/billing/billing-page.component').then((m) => m.BillingPageComponent),
         data: { titleKey: 'nav.billing' },
       },
       {
         path: 'notifications',
+        canActivate: [companyMemberGuard],
         loadComponent: () =>
           import('./features/notifications/notifications-page.component').then((m) => m.NotificationsPageComponent),
         data: { titleKey: 'nav.notifications' },
       },
       {
         path: 'import-export',
+        canActivate: [companyMemberGuard],
         loadComponent: () =>
           import('./features/import-export/import-export-page.component').then((m) => m.ImportExportPageComponent),
         data: { titleKey: 'nav.importExport' },
