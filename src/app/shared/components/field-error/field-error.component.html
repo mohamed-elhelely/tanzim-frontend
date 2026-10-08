@@ -10,6 +10,10 @@
       {{ 'validation.maxLength' | translate: { max: errors['maxlength'].requiredLength } }}
     } @else if (errors['minlength']) {
       {{ 'validation.minLength' | translate: { min: errors['minlength'].requiredLength } }}
+    } @else if (errors['greaterThan']) {
+      {{ 'validation.greaterThan' | translate: { value: errors['greaterThan'].value } }}
+    } @else if (errors['max']) {
+      {{ 'validation.max' | translate: { max: errors['max'].max } }}
     } @else if (errors['pattern']) {
       {{ patternKey | translate }}
     }

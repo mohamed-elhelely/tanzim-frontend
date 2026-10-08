@@ -54,8 +54,7 @@ export const routes: Routes = [
       {
         path: 'sales',
         canActivate: [companyMemberGuard],
-        loadComponent: comingSoon,
-        data: { titleKey: 'nav.sales', icon: 'pi-shopping-cart' },
+        loadChildren: () => import('./features/sales/sales.routes').then((m) => m.SALES_ROUTES),
       },
       {
         path: 'returns',

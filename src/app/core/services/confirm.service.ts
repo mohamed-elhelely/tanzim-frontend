@@ -8,7 +8,20 @@ import { NotificationService } from './notification.service';
 /** Key of the dialog hosted once in the shell (ConfirmDialogComponent). */
 export const CONFIRM_DIALOG_KEY = 'app-confirm';
 
-/** The confirm → delete → toast flow every list screen uses. */
+export interface ConfirmActionOptions<T> {
+  /** Translation key of the question, e.g. 'sales.confirm.confirmOrder'. */
+  message: string;
+  params?: Record<string, unknown>;
+  /** Translation key of the accept button. */
+  accept: string;
+  /** Translation key of the success toast. */
+  success: string;
+  danger?: boolean;
+  run: () => Observable<T>;
+  onDone: (result: T) => void;
+}
+
+/** The confirm → act → toast flows: deletes on list screens and workflow actions (confirm, ship, issue…). */
 @Injectable({ providedIn: 'root' })
 export class ConfirmService {
   private readonly confirmation = inject(ConfirmationService);
@@ -35,12 +48,39 @@ export class ConfirmService {
             this.notifications.success(this.translate.instant('common.deleted'));
             onDeleted();
           },
-          error: (error: AppError) => {
-            if (error.status >= 400 && error.status < 500 && error.status !== 401) {
-              this.notifications.error(error.message);
-            }
-          },
+          error: (error: AppError) => this.showClientError(error),
         }),
     });
+  }
+
+  /** Asks the question, runs the action, then toasts success or the backend's 4xx message (like confirmDelete). */
+  confirmAction<T>(options: ConfirmActionOptions<T>): void {
+    this.confirmation.confirm({
+      key: CONFIRM_DIALOG_KEY,
+      header: this.translate.instant('common.confirm'),
+      message: this.translate.instant(options.message, options.params),
+      icon: options.danger ? 'pi pi-exclamation-triangle' : 'pi pi-question-circle',
+      acceptLabel: this.translate.instant(options.accept),
+      rejectLabel: this.translate.instant('common.cancel'),
+      acceptButtonStyleClass: options.danger ? 'p-button-danger' : undefined,
+      accept: () => this.runAction(options.run, options.success, options.onDone),
+    });
+  }
+
+  /** Runs an action without asking (e.g. after a dialog collected its input), with the same toasts. */
+  runAction<T>(run: () => Observable<T>, success: string, onDone: (result: T) => void): void {
+    run().subscribe({
+      next: (result) => {
+        this.notifications.success(this.translate.instant(success));
+        onDone(result);
+      },
+      error: (error: AppError) => this.showClientError(error),
+    });
+  }
+
+  private showClientError(error: AppError): void {
+    if (error.status >= 400 && error.status < 500 && error.status !== 401) {
+      this.notifications.error(error.message);
+    }
   }
 }

@@ -86,7 +86,8 @@ describe('NavListComponent', () => {
     TestBed.resetTestingModule();
     const without = await render('/dashboard', 'EMPLOYEE', []);
     expect(without.nativeElement.textContent).not.toContain('nav.locations');
-    expect(links(without)).toContain('/sales');
+    // Sales needs no module (it's a collapsed group, so check its label).
+    expect(without.nativeElement.textContent).toContain('nav.sales');
   });
 
   it('expands a module group opened by URL once the subscription loads', async () => {

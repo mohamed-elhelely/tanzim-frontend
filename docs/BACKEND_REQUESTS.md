@@ -106,4 +106,18 @@ Company admin: admin@testcompany.com / testpass123.
 10. Accounting: the new /api/accounting/v1/ endpoints are described in docs/BUSINESS_LOGIC.md but not in
    docs/API_REFERENCE.md. Document them there (paths, bodies, response objects, examples) so the frontend can build
    the accounting screens.
+
+11. Sales workflow actions (confirm, cancel, clone, mark_delivered, create_delivery, …) answer
+   `{"detail": str(e)}` for a Django ValidationError, so the message arrives as "['Order exceeds customer credit
+   limit']". Use `" ".join(e.messages)` (as gdpr_erase already does). The frontend unwraps it for now
+   (core/errors/app-error.ts).
+
+12. Sales orders: PATCH /api/sales/sales-orders/{id}/ and DELETE accept orders in any status. A PATCH with `lines`
+   on a confirmed order deletes and recreates its lines while their stock reservations stay. Allow update and
+   delete only for `draft` orders (the order-line endpoint already does this with _require_draft). The frontend
+   only offers edit and delete for drafts.
+
+13. DELETE /api/sales/customers/{id}/ soft-deletes a customer that still has open orders (confirmed/picking/shipped),
+   so the customer disappears from the list while its orders still point to it. Refuse with 400 while the customer
+   has open orders (or unpaid invoices).
 ```

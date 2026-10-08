@@ -28,7 +28,7 @@ src/app/
 │   ├── interceptors/      api-headers → auth → loading → error
 │   ├── models/            the backend response envelope
 │   ├── notifications/     NotificationCenterService (list, unread count, live WebSocket)
-│   ├── services/          app-wide services (notifications, confirm, language, theme, loading)
+│   ├── services/          app-wide services (notifications, confirm + workflow actions, language, theme, loading)
 │   └── theme/             PrimeNG preset
 ├── layout/                the signed-in frame: shell, header, sidebar, nav
 ├── shared/                reusable UI and helpers with no business knowledge
@@ -184,10 +184,11 @@ backend problems added to `docs/BACKEND_REQUESTS.md`; [CODE_MAP.md](CODE_MAP.md)
 | 10 | Dropped the workarounds the backend fixed |
 | 11 | Product variants and the supplier price list |
 | 12 | Notifications (bell, page, live WebSocket) and Billing (subscription + invoices, read-only) |
+| 13 | Sales: customers and sales orders (lines, totals, confirm / cancel / duplicate / mark delivered) |
 
 ### Next — features (in order)
 
-1. **Sales and returns** (customers, sales orders, delivery notes, invoices and payments; customer and supplier returns).
+1. **Sales and returns**: delivery notes, invoices and payments (step 14), then customer and supplier returns (step 15).
 2. **Inventory stock and movements** (batches, serials, stock ledger, transfers, adjustments, cycle counts) and **procurement** (requisitions, purchase orders, goods receipts, supplier invoices, approvals). Blocked until the backend returns full read serializers (BACKEND_REQUESTS 2).
 3. **Accounting** (new backend app; its API isn't in API_REFERENCE.md yet).
 

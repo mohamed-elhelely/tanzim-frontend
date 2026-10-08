@@ -65,7 +65,9 @@
     "bins": "الأرفف",
     "suppliers": "الموردون",
     "variants": "المتغيرات",
-    "supplierProducts": "قائمة أسعار الموردين"
+    "supplierProducts": "قائمة أسعار الموردين",
+    "salesOrders": "أوامر البيع",
+    "customers": "العملاء"
   },
   "auth": {
     "login": "تسجيل الدخول",
@@ -140,7 +142,9 @@
     "maxLength": "الحد الأقصى {{max}} حرفًا.",
     "email": "أدخل بريدًا إلكترونيًا صحيحًا.",
     "minLength": "الحد الأدنى {{min}} أحرف.",
-    "pattern": "الصيغة غير صحيحة."
+    "pattern": "الصيغة غير صحيحة.",
+    "greaterThan": "يجب أن تكون القيمة أكبر من {{value}}.",
+    "max": "يجب ألا تزيد القيمة عن {{max}}."
   },
   "company": {
     "fields": {
@@ -510,6 +514,130 @@
       "quantity": "الكمية",
       "unitPrice": "سعر الوحدة",
       "amount": "المبلغ"
+    }
+  },
+  "sales": {
+    "customers": {
+      "title": "العملاء",
+      "new": "عميل جديد",
+      "edit": "تعديل العميل"
+    },
+    "orders": {
+      "title": "أوامر البيع",
+      "new": "أمر بيع جديد",
+      "edit": "تعديل أمر البيع",
+      "detail": "أمر البيع",
+      "backToOrder": "العودة إلى الأمر"
+    },
+    "customerTypes": {
+      "individual": "فرد",
+      "business": "شركة",
+      "government": "جهة حكومية"
+    },
+    "orderStatuses": {
+      "draft": "مسودة",
+      "confirmed": "مؤكد",
+      "picking": "قيد التجهيز",
+      "shipped": "تم الشحن",
+      "delivered": "تم التسليم",
+      "cancelled": "ملغي",
+      "on_hold": "معلّق"
+    },
+    "priorities": {
+      "normal": "عادية",
+      "high": "عالية",
+      "urgent": "عاجلة"
+    },
+    "fields": {
+      "name": "الاسم",
+      "customerNumber": "رقم العميل",
+      "customerType": "نوع العميل",
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف",
+      "mobile": "الجوال",
+      "website": "الموقع الإلكتروني",
+      "taxId": "الرقم الضريبي",
+      "creditLimit": "حد الائتمان",
+      "creditUsed": "الائتمان المستخدم",
+      "availableCredit": "الائتمان المتاح",
+      "openOrders": "الأوامر المفتوحة",
+      "paymentTerms": "شروط الدفع",
+      "currency": "العملة",
+      "isActive": "نشط",
+      "notes": "ملاحظات",
+      "internalNotes": "ملاحظات داخلية",
+      "orderNumber": "رقم الأمر",
+      "customer": "العميل",
+      "warehouse": "المستودع",
+      "orderDate": "تاريخ الأمر",
+      "requiredDate": "مطلوب بحلول",
+      "shippedDate": "تاريخ الشحن",
+      "confirmedAt": "تاريخ التأكيد",
+      "status": "الحالة",
+      "priority": "الأولوية",
+      "reference": "أمر شراء العميل",
+      "total": "الإجمالي",
+      "subtotal": "المجموع الفرعي",
+      "tax": "الضريبة",
+      "shippingCost": "الشحن",
+      "orderDiscount": "خصم الأمر",
+      "fulfillment": "نسبة التنفيذ",
+      "item": "الصنف",
+      "sku": "رمز الصنف",
+      "description": "الوصف",
+      "quantity": "الكمية",
+      "reserved": "محجوز",
+      "shipped": "مشحون",
+      "unitPrice": "سعر الوحدة",
+      "discountPercent": "خصم %",
+      "taxPercent": "ضريبة %",
+      "lineTotal": "إجمالي البند",
+      "cancelReason": "السبب (اختياري)"
+    },
+    "sections": {
+      "contact": "بيانات التواصل",
+      "terms": "الائتمان والشروط",
+      "billingAddress": "عنوان الفوترة",
+      "shippingAddress": "عنوان الشحن",
+      "lines": "الأصناف"
+    },
+    "address": {
+      "street": "الشارع",
+      "city": "المدينة",
+      "state": "المنطقة / المحافظة",
+      "zip": "الرمز البريدي",
+      "country": "الدولة"
+    },
+    "actions": {
+      "sameAsBilling": "نفس عنوان الفوترة",
+      "addLine": "إضافة صنف",
+      "removeLine": "حذف الصنف",
+      "confirmOrder": "تأكيد الأمر",
+      "cancelOrder": "إلغاء الأمر",
+      "clone": "نسخ",
+      "markDelivered": "تعيين كمُسلَّم"
+    },
+    "confirm": {
+      "confirmOrder": "تأكيد هذا الأمر؟ سيتم حجز المخزون لكل الأصناف والتحقق من حد ائتمان العميل.",
+      "markDelivered": "تعيين هذا الأمر كمُسلَّم؟",
+      "clone": "إنشاء أمر مسودة جديد بنفس العميل والأصناف؟"
+    },
+    "toasts": {
+      "confirmed": "تم تأكيد الأمر.",
+      "cancelled": "تم إلغاء الأمر.",
+      "cloned": "تم إنشاء نسخة مسودة.",
+      "delivered": "تم تعيين الأمر كمُسلَّم."
+    },
+    "hints": {
+      "noCreditLimit": "بدون حد",
+      "creditLimit": "اتركه فارغًا لعدم وضع حد.",
+      "searchOrders": "ابحث برقم الأمر أو العميل أو أمر الشراء",
+      "reference": "رقم أمر الشراء الخاص بالعميل.",
+      "notes": "تظهر للعميل.",
+      "internalNotes": "تظهر لفريقك فقط.",
+      "atLeastOneLine": "أضف صنفًا واحدًا على الأقل.",
+      "orderCancelled": "تم إلغاء هذا الأمر.",
+      "onlyDraftEditable": "لا يمكن تعديل إلا الأوامر المسودة."
     }
   }
 }
