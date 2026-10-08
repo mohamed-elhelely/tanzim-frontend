@@ -198,3 +198,67 @@ export interface SupplierPayload {
   is_active: boolean;
   notes: string;
 }
+
+// Product variants: the stock-keeping unit (API_REFERENCE.md → "Product variants").
+
+/** `?dropdown=true` items for variants. */
+export interface VariantRef {
+  id: number;
+  sku: string;
+  name: string;
+}
+
+export interface ProductVariant extends Audited {
+  product: Product;
+  sku: string;
+  name: string;
+  barcode: string;
+  /** Free-form attributes, e.g. `{ color: 'red', size: 'M' }`. */
+  attributes: Record<string, string>;
+  standard_cost: string | null;
+  standard_price: string | null;
+  weight: string | null;
+  dimensions: unknown;
+  is_active: boolean;
+}
+
+/** `dimensions` and `image` aren't edited here, so they're never sent (and never overwritten). */
+export interface ProductVariantPayload {
+  product: number | null;
+  sku: string;
+  name: string;
+  barcode: string;
+  attributes: Record<string, string>;
+  standard_cost: string | null;
+  standard_price: string | null;
+  weight: string | null;
+  weight_uom: string;
+  is_active: boolean;
+}
+
+// Supplier products: a supplier's price list per variant (API_REFERENCE.md → "Supplier products").
+// ⚠️ The read endpoint returns only supplier, variant and is_preferred; see omitPristine().
+
+export interface SupplierProduct extends Audited {
+  supplier: Supplier;
+  product_variant: ProductVariant | null;
+  is_preferred: boolean;
+}
+
+export interface SupplierProductPayload {
+  supplier: number | null;
+  product_variant: number | null;
+  supplier_sku: string;
+  supplier_product_name: string;
+  unit_cost: string;
+  currency: string;
+  min_order_qty: string;
+  max_order_qty: string | null;
+  lead_time_days: number | null;
+  is_preferred: boolean;
+  is_primary: boolean;
+  /** YYYY-MM-DD */
+  effective_from: string;
+  effective_to: string | null;
+  notes: string;
+}

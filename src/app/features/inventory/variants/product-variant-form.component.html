@@ -1,0 +1,165 @@
+<app-page-header
+  [title]="isEdit ? 'inventory.variants.edit' : 'inventory.variants.new'"
+  [showBack]="true"
+  backLabel="common.backToList"
+  (back)="goBack()"
+></app-page-header>
+
+@if (loadError(); as err) {
+  <app-error-state [title]="errorTitleKey(err)" [showRetry]="false"></app-error-state>
+} @else if (loading()) {
+  <app-loading-state></app-loading-state>
+} @else {
+  <p-card styleClass="max-w-5xl">
+    <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-6" novalidate>
+      @if (formErrors().length) {
+        <div
+          role="alert"
+          class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300"
+        >
+          @for (message of formErrors(); track $index) {
+            <p>{{ message }}</p>
+          }
+        </div>
+      }
+
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div class="flex flex-col gap-1">
+          <label for="product" class="text-sm font-medium">{{ 'inventory.fields.product' | translate }} *</label>
+          <p-select
+            inputId="product"
+            formControlName="product"
+            [options]="productOptions()"
+            optionLabel="label"
+            optionValue="value"
+            [filter]="true"
+            [placeholder]="'common.select' | translate"
+            styleClass="w-full"
+            appendTo="body"
+          ></p-select>
+          <app-field-error [control]="form.controls.product"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="sku" class="text-sm font-medium">{{ 'inventory.fields.sku' | translate }} *</label>
+          <input pInputText id="sku" formControlName="sku" dir="ltr" class="w-full" />
+          <app-field-error [control]="form.controls.sku"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="name" class="text-sm font-medium">{{ 'inventory.fields.name' | translate }} *</label>
+          <input pInputText id="name" formControlName="name" class="w-full" />
+          <app-field-error [control]="form.controls.name"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="barcode" class="text-sm font-medium">{{ 'inventory.fields.barcode' | translate }}</label>
+          <input pInputText id="barcode" formControlName="barcode" dir="ltr" class="w-full" />
+          <app-field-error [control]="form.controls.barcode"></app-field-error>
+        </div>
+
+        <h3 class="text-sm font-semibold text-gray-700 md:col-span-2 dark:text-gray-200">
+          {{ 'inventory.sections.pricing' | translate }}
+        </h3>
+
+        <div class="flex flex-col gap-1">
+          <label for="standard_cost" class="text-sm font-medium">{{ 'inventory.fields.standardCost' | translate }}</label>
+          <input pInputText id="standard_cost" formControlName="standard_cost" dir="ltr" inputmode="decimal" class="w-full" />
+          <app-field-error [control]="form.controls.standard_cost" patternKey="inventory.hints.decimal4"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="standard_price" class="text-sm font-medium">{{ 'inventory.fields.standardPrice' | translate }}</label>
+          <input pInputText id="standard_price" formControlName="standard_price" dir="ltr" inputmode="decimal" class="w-full" />
+          <app-field-error [control]="form.controls.standard_price" patternKey="inventory.hints.decimal4"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="weight" class="text-sm font-medium">{{ 'inventory.fields.weight' | translate }}</label>
+          <input pInputText id="weight" formControlName="weight" dir="ltr" inputmode="decimal" class="w-full" />
+          <app-field-error [control]="form.controls.weight" patternKey="inventory.hints.decimal3"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="weight_uom" class="text-sm font-medium">{{ 'inventory.fields.weightUom' | translate }}</label>
+          <input pInputText id="weight_uom" formControlName="weight_uom" dir="ltr" placeholder="kg" class="w-full" />
+          @if (isEdit) {
+            <!-- ⚠️ Not returned by the API: empty here means "keep the saved unit" (see omitPristine). -->
+            <small class="text-xs text-gray-500 dark:text-gray-400">{{ 'inventory.hints.partialData' | translate }}</small>
+          }
+          <app-field-error [control]="form.controls.weight_uom"></app-field-error>
+        </div>
+
+        <!-- Attributes: free-form name/value pairs stored as one object, e.g. { color: "red" }. -->
+        <div class="flex flex-col gap-3 md:col-span-2" formArrayName="attributes">
+          <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'inventory.fields.attributes' | translate }}</h3>
+          @for (row of attributes.controls; track row; let i = $index) {
+            <div class="grid grid-cols-[1fr_1fr_auto] items-start gap-2" [formGroupName]="i">
+              <div class="flex flex-col gap-1">
+                <input
+                  pInputText
+                  formControlName="key"
+                  [attr.aria-label]="'inventory.fields.attributeName' | translate"
+                  [placeholder]="'inventory.fields.attributeName' | translate"
+                  class="w-full"
+                />
+                <app-field-error [control]="row.controls.key"></app-field-error>
+              </div>
+              <input
+                pInputText
+                formControlName="value"
+                [attr.aria-label]="'inventory.fields.attributeValue' | translate"
+                [placeholder]="'inventory.fields.attributeValue' | translate"
+                class="w-full"
+              />
+              <p-button
+                icon="pi pi-times"
+                severity="danger"
+                [text]="true"
+                [rounded]="true"
+                [ariaLabel]="'inventory.fields.removeAttribute' | translate"
+                (onClick)="removeAttribute(i)"
+              ></p-button>
+            </div>
+          }
+          @if (attributes.errors?.['duplicateKeys']) {
+            <small class="text-sm text-red-600">{{ 'inventory.hints.attributes' | translate }}</small>
+          }
+          <div>
+            <p-button
+              type="button"
+              icon="pi pi-plus"
+              [label]="'inventory.fields.addAttribute' | translate"
+              severity="secondary"
+              [outlined]="true"
+              size="small"
+              (onClick)="addAttribute()"
+            ></p-button>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <p-toggleswitch inputId="is_active" formControlName="is_active"></p-toggleswitch>
+          <label for="is_active" class="text-sm font-medium">{{ 'inventory.fields.isActive' | translate }}</label>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 border-t border-gray-100 pt-5 dark:border-gray-800">
+        <p-button
+          type="button"
+          [label]="'common.cancel' | translate"
+          severity="secondary"
+          [outlined]="true"
+          (onClick)="goBack()"
+        ></p-button>
+        <p-button
+          type="submit"
+          [label]="'common.save' | translate"
+          icon="pi pi-check"
+          [loading]="saving()"
+          [disabled]="saving()"
+        ></p-button>
+      </div>
+    </form>
+  </p-card>
+}

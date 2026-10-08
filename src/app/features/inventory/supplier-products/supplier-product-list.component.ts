@@ -13,11 +13,11 @@ import { PageHeaderAction, PageHeaderComponent } from '../../../shared/component
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
 import { ServerTable } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
-import { Product } from '../inventory.models';
-import { ProductService } from './product.service';
+import { SupplierProduct } from '../inventory.models';
+import { SupplierProductService } from './supplier-product.service';
 
 @Component({
-  selector: 'app-product-list',
+  selector: 'app-supplier-product-list',
   imports: [
     TranslatePipe,
     TableModule,
@@ -31,21 +31,22 @@ import { ProductService } from './product.service';
     StatusBadgeComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './product-list.component.html',
+  templateUrl: './supplier-product-list.component.html',
 })
-export class ProductListComponent implements OnInit {
-  private readonly api = inject(ProductService);
+/** ⚠️ The list endpoint returns only supplier, variant and preferred (no cost or dates; BACKEND_REQUESTS item 2). */
+export class SupplierProductListComponent implements OnInit {
+  private readonly api = inject(SupplierProductService);
   private readonly router = inject(Router);
   private readonly confirm = inject(ConfirmService);
 
-  readonly table = new ServerTable<Product>((query) => this.api.list(query));
+  readonly table = new ServerTable<SupplierProduct>((query) => this.api.list(query));
   readonly errorTitleKey = errorTitleKey;
 
   readonly headerActions: PageHeaderAction[] = [
     {
-      label: 'inventory.products.new',
+      label: 'inventory.supplierProducts.new',
       icon: 'pi pi-plus',
-      onClick: () => void this.router.navigate(['/inventory/products/new']),
+      onClick: () => void this.router.navigate(['/inventory/supplier-products/new']),
     },
   ];
 
@@ -53,16 +54,11 @@ export class ProductListComponent implements OnInit {
     this.table.load();
   }
 
-  edit(row: Product): void {
-    void this.router.navigate(['/inventory/products', row.id, 'edit']);
+  edit(row: SupplierProduct): void {
+    void this.router.navigate(['/inventory/supplier-products', row.id, 'edit']);
   }
 
-  /** Opens this product's variants (the variants list filtered with ?product=). */
-  variants(row: Product): void {
-    void this.router.navigate(['/inventory/variants'], { queryParams: { product: row.id } });
-  }
-
-  confirmDelete(row: Product): void {
-    this.confirm.confirmDelete(row.name, () => this.api.remove(row.id), () => this.table.afterDelete());
+  confirmDelete(row: SupplierProduct): void {
+    this.confirm.confirmDelete(`${row.supplier?.name ?? ''} · ${row.product_variant?.sku ?? ''}`, () => this.api.remove(row.id), () => this.table.afterDelete());
   }
 }

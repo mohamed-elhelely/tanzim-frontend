@@ -20,7 +20,8 @@ You are continuing work on Tanzim, a bilingual (English/Arabic, RTL) ERP. Two re
 - main also has Step 6 (platform-staff Companies, /admin/companies; spec 2026-10-08-platform-companies-design.md) and menu visibility by role and subscription (spec 2026-10-08-menu-visibility-design.md).
 - main also has Step 7 (Inventory catalogue; spec 2026-10-08-inventory-catalogue-design.md).
 - main also has the code-structure cleanup (#9) and Step 8 (warehouses, zones, bins, suppliers; #10).
-- Step 9 (access control from /me) is on branch claude/access-control; spec: docs/superpowers/specs/2026-10-09-access-control-design.md.
+- main also has Step 9 (access control from /me), Step 10 (fixed workarounds dropped).
+- Step 11 (variants + supplier price list) is on branch claude/variants; spec: docs/superpowers/specs/2026-10-09-variants-supplier-products-design.md.
 - Open PR 0Mustafa37/Tanzim#11 (claude/cors-frontend-origins → master): CORS allows http://localhost:4200, https://mohamed-elhelely.github.io and the ngrok header; CORS_EXTRA_ORIGINS env var for more.
 - GitHub Pages (https://mohamed-elhelely.github.io/tanzim-frontend/) was deployed from claude/redesign-ui, which now equals main; redeploy from main from now on (`npm run deploy`, angular-cli-ghpages, baseHref /tanzim-frontend/).
 - Stale branches (delete only if the owner agrees): claude/awesome-hawking-7uf16d, step-4-company-organisation, master (frontend), claude/awesome-lovelace-2bdsqn, claude/redesign-ui, claude/menu-visibility (merged).
@@ -46,10 +47,8 @@ You are continuing work on Tanzim, a bilingual (English/Arabic, RTL) ERP. Two re
 - Before calling UI work done: screenshot the changed screens in English, Arabic (RTL), dark mode and 390px mobile, and check the console has no errors.
 
 ## Next steps (the owner asked to work through them in order, one branch + PR per step, merging each)
-1. Drop workarounds the backend has fixed (Step 10).
-2. Product variants and supplier products (the backend now has a variants API).
-3. Notifications (bell + page, polling) and Billing (the company's own subscription and invoices).
-4. Inventory stock and procurement workflows, then sales, returns and accounting.
+1. Notifications (bell + page, live over the WebSocket with ?token=) and Billing (the company's own subscription and invoices).
+2. Inventory stock and movements, then procurement, then sales, returns and accounting.
 
 Reply to the owner in Egyptian Arabic; keep code, commits and PR text in English.
 ```

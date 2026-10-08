@@ -63,7 +63,9 @@
     "warehouses": "المخازن",
     "zones": "المناطق",
     "bins": "الأرفف",
-    "suppliers": "الموردون"
+    "suppliers": "الموردون",
+    "variants": "المتغيرات",
+    "supplierProducts": "قائمة أسعار الموردين"
   },
   "auth": {
     "login": "تسجيل الدخول",
@@ -352,7 +354,28 @@
       "leadTimeDays": "مدة التوريد (بالأيام)",
       "reliabilityScore": "الموثوقية (0–1)",
       "isPreferred": "مفضّل",
-      "notes": "ملاحظات"
+      "notes": "ملاحظات",
+      "product": "المنتج",
+      "sku": "رمز الصنف (SKU)",
+      "standardCost": "التكلفة القياسية",
+      "standardPrice": "السعر القياسي",
+      "weight": "الوزن",
+      "weightUom": "وحدة الوزن",
+      "attributes": "الخصائص",
+      "attributeName": "الخاصية",
+      "attributeValue": "القيمة",
+      "addAttribute": "إضافة خاصية",
+      "removeAttribute": "حذف الخاصية",
+      "supplier": "المورد",
+      "variant": "المتغير",
+      "supplierSku": "رمز الصنف لدى المورد",
+      "supplierProductName": "اسم المنتج لدى المورد",
+      "unitCost": "تكلفة الوحدة",
+      "minOrderQty": "أقل كمية للطلب",
+      "maxOrderQty": "أقصى كمية للطلب",
+      "isPrimary": "المورد الأساسي",
+      "effectiveFrom": "ساري من",
+      "effectiveTo": "ساري حتى"
     },
     "sections": {
       "tracking": "التتبّع",
@@ -360,7 +383,9 @@
       "contact": "التواصل",
       "address": "العنوان",
       "settings": "الإعدادات",
-      "terms": "الشروط"
+      "terms": "الشروط",
+      "pricing": "التسعير",
+      "validity": "مدة السريان"
     },
     "productTypes": {
       "simple": "بسيط",
@@ -381,7 +406,11 @@
       "reliability": "رقم من 0 إلى 1، مثل 0.8.",
       "currency": "ثلاثة أحرف، مثل SAR.",
       "website": "عنوان كامل يبدأ بـ http:// أو https://.",
-      "noBinTracking": "تُستخدم الأرفف فقط في المخازن المفعّل بها «تتبّع المخزون بالرف»."
+      "noBinTracking": "تُستخدم الأرفف فقط في المخازن المفعّل بها «تتبّع المخزون بالرف».",
+      "decimal4": "رقم حتى 4 خانات عشرية، مثل 12.5.",
+      "decimal3": "رقم حتى 3 خانات عشرية، مثل 0.25.",
+      "attributes": "كل خاصية تحتاج اسمًا، ولا تتكرر الأسماء.",
+      "effectiveTo": "اتركه فارغًا إذا لم يكن للسعر تاريخ انتهاء."
     },
     "warehouses": {
       "title": "المخازن",
@@ -417,6 +446,19 @@
       "wholesaler": "تاجر جملة",
       "retailer": "تاجر تجزئة",
       "service": "مزوّد خدمة"
+    },
+    "variants": {
+      "title": "المتغيرات",
+      "new": "متغير جديد",
+      "edit": "تعديل المتغير",
+      "filteredBy": "المنتج: {{name}}",
+      "showAll": "عرض الكل",
+      "manage": "المتغيرات"
+    },
+    "supplierProducts": {
+      "title": "قائمة أسعار الموردين",
+      "new": "سعر جديد",
+      "edit": "تعديل السعر"
     }
   }
 }

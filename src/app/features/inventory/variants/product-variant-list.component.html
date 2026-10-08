@@ -1,10 +1,10 @@
-<app-page-header title="inventory.products.title" [actions]="headerActions"></app-page-header>
+<app-page-header title="inventory.variants.title" [actions]="headerActions"></app-page-header>
 
 @if (table.error(); as err) {
   <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403" (retry)="table.load()"></app-error-state>
 } @else {
   <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
-    <div class="flex items-center gap-3 border-b border-gray-100 p-4 dark:border-gray-800">
+    <div class="flex flex-wrap items-center gap-3 border-b border-gray-100 p-4 dark:border-gray-800">
       <p-iconfield class="w-full sm:w-80">
         <p-inputicon class="pi pi-search"></p-inputicon>
         <input
@@ -15,6 +15,14 @@
           class="w-full"
         />
       </p-iconfield>
+      @if (productId()) {
+        <span
+          class="inline-flex items-center gap-2 rounded-full bg-primary-50 px-3 py-1 text-sm text-primary-700 dark:bg-primary-500/15 dark:text-primary-200"
+        >
+          {{ 'inventory.variants.filteredBy' | translate: { name: productName() || '#' + productId() } }}
+          <a routerLink="/inventory/variants" class="font-medium underline">{{ 'inventory.variants.showAll' | translate }}</a>
+        </span>
+      }
     </div>
     <div class="overflow-x-auto">
       <p-table
@@ -33,26 +41,20 @@
       >
         <ng-template pTemplate="header">
           <tr>
-            <th pSortableColumn="id">{{ 'inventory.fields.id' | translate }} <p-sortIcon field="id"></p-sortIcon></th>
-            <th pSortableColumn="name">
-              {{ 'inventory.fields.name' | translate }} <p-sortIcon field="name"></p-sortIcon>
-            </th>
-            <th>{{ 'inventory.fields.productType' | translate }}</th>
-            <th>{{ 'inventory.fields.category' | translate }}</th>
-            <th>{{ 'inventory.fields.brand' | translate }}</th>
-            <th>{{ 'inventory.fields.defaultUom' | translate }}</th>
+            <th pSortableColumn="sku">{{ 'inventory.fields.sku' | translate }} <p-sortIcon field="sku"></p-sortIcon></th>
+            <th pSortableColumn="name">{{ 'inventory.fields.name' | translate }} <p-sortIcon field="name"></p-sortIcon></th>
+            <th>{{ 'inventory.fields.product' | translate }}</th>
+            <th>{{ 'inventory.fields.standardPrice' | translate }}</th>
             <th>{{ 'inventory.fields.isActive' | translate }}</th>
             <th class="text-end">{{ 'common.actions' | translate }}</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-row>
           <tr>
-            <td>{{ row.id }}</td>
+            <td class="font-mono text-sm">{{ row.sku }}</td>
             <td class="font-medium">{{ row.name }}</td>
-            <td>{{ 'inventory.productTypes.' + row.product_type | translate }}</td>
-            <td>{{ row.category?.name }}</td>
-            <td>{{ row.brand?.name }}</td>
-            <td>{{ row.default_uom }}</td>
+            <td>{{ row.product?.name }}</td>
+            <td>{{ row.standard_price }}</td>
             <td>
               @if (row.is_active) {
                 <app-status-badge [value]="'common.yes' | translate" severity="success"></app-status-badge>
@@ -61,14 +63,6 @@
               }
             </td>
             <td class="whitespace-nowrap text-end">
-              <p-button
-                icon="pi pi-clone"
-                [text]="true"
-                [rounded]="true"
-                severity="secondary"
-                [ariaLabel]="'inventory.variants.manage' | translate"
-                (onClick)="variants(row)"
-              ></p-button>
               <p-button
                 icon="pi pi-pencil"
                 [text]="true"
@@ -89,7 +83,7 @@
         </ng-template>
         <ng-template pTemplate="emptymessage">
           <tr>
-            <td colspan="8"><app-empty-state icon="pi-box"></app-empty-state></td>
+            <td colspan="6"><app-empty-state icon="pi-clone"></app-empty-state></td>
           </tr>
         </ng-template>
       </p-table>

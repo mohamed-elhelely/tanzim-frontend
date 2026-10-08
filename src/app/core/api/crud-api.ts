@@ -8,6 +8,8 @@ export interface ListQuery {
   pageSize: number;
   search?: string;
   ordering?: string;
+  /** Exact-match filters the endpoint supports, e.g. `{ product: 3 }` → `?product=3`. */
+  filters?: Record<string, string | number>;
 }
 
 /**
@@ -27,6 +29,7 @@ export abstract class CrudApi<T, TPayload, TCreated = T> extends BaseApiService 
     if (query.ordering) {
       params['ordering'] = query.ordering;
     }
+    Object.assign(params, query.filters ?? {});
     return this.get<T[]>(this.path, { params }).pipe(
       map((response) => {
         const items = response.data ?? [];
