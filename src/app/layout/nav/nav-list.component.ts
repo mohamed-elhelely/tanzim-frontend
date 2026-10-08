@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, output, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { filter } from 'rxjs';
+import { AuthService } from '../../core/auth/auth.service';
 import { LanguageService } from '../../core/services/language.service';
 import { NAV_ITEMS, NavItem } from './nav-items';
 
@@ -17,7 +18,7 @@ const ACTIVE_CLASSES = '!bg-primary-600 !text-white shadow-md shadow-primary-950
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <nav class="flex flex-col gap-1 px-3 pb-4 pt-2">
-      @for (item of items; track item.routerLink) {
+      @for (item of items(); track item.routerLink) {
         @if (item.children) {
           <button
             type="button"
@@ -66,9 +67,13 @@ const ACTIVE_CLASSES = '!bg-primary-600 !text-white shadow-md shadow-primary-950
 })
 export class NavListComponent {
   private readonly router = inject(Router);
+  private readonly role = inject(AuthService).role;
   private readonly expanded = signal<ReadonlySet<string>>(new Set());
 
-  readonly items = NAV_ITEMS;
+  readonly items = computed(() => {
+    const role = this.role();
+    return NAV_ITEMS.filter((item) => !item.roles || (role !== null && item.roles.includes(role)));
+  });
   readonly itemSelected = output<void>();
   readonly direction = inject(LanguageService).direction;
   readonly linkClasses = LINK_CLASSES;
@@ -107,7 +112,7 @@ export class NavListComponent {
   }
 
   private expandActiveGroup(url: string): void {
-    for (const item of this.items) {
+    for (const item of this.items()) {
       if (item.children && (url === item.routerLink || url.startsWith(`${item.routerLink}/`))) {
         this.expanded.update((current) => new Set(current).add(item.routerLink));
       }

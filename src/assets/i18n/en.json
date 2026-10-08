@@ -55,7 +55,8 @@
     "countries": "Countries",
     "regions": "Regions",
     "cities": "Cities",
-    "districts": "Districts"
+    "districts": "Districts",
+    "companies": "Companies"
   },
   "auth": {
     "login": "Login",
@@ -247,6 +248,33 @@
       "title": "Districts",
       "new": "New district",
       "edit": "Edit district"
+    }
+  },
+  "admin": {
+    "companies": {
+      "title": "Companies",
+      "new": "New company",
+      "edit": "Edit company",
+      "created": "Company created. The admin's login details were emailed to {{email}}."
+    },
+    "fields": {
+      "name": "Company name",
+      "legalName": "Legal name",
+      "domain": "Domain",
+      "taxId": "Tax ID",
+      "email": "Contact email",
+      "phone": "Phone",
+      "address": "Address",
+      "timezone": "Time zone",
+      "primaryColor": "Primary color",
+      "secondaryColor": "Secondary color",
+      "isActive": "Active"
+    },
+    "hints": {
+      "domain": "A domain name, e.g. acme.example.",
+      "taxId": "Letters, digits and hyphens only.",
+      "phone": "International format: + then 8–15 digits, e.g. +966501234567.",
+      "adminEmail": "An admin account is created for this address and its login details are emailed to it."
     }
   }
 }

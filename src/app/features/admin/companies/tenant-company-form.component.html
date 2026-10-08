@@ -1,0 +1,144 @@
+<app-page-header
+  [title]="isEdit ? 'admin.companies.edit' : 'admin.companies.new'"
+  [showBack]="true"
+  backLabel="common.backToList"
+  (back)="goBack()"
+></app-page-header>
+
+@if (loadError(); as err) {
+  <app-error-state [title]="errorTitleKey(err)" [showRetry]="false"></app-error-state>
+} @else if (loading()) {
+  <app-loading-state></app-loading-state>
+} @else {
+  <p-card styleClass="max-w-5xl">
+    <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-6" novalidate>
+      @if (formErrors().length) {
+        <div
+          role="alert"
+          class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300"
+        >
+          @for (message of formErrors(); track $index) {
+            <p>{{ message }}</p>
+          }
+        </div>
+      }
+
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div class="flex flex-col gap-1">
+          <label for="name" class="text-sm font-medium">{{ 'admin.fields.name' | translate }} *</label>
+          <input pInputText id="name" formControlName="name" class="w-full" />
+          <app-field-error [control]="form.controls.name"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="legal_name" class="text-sm font-medium">{{ 'admin.fields.legalName' | translate }}</label>
+          <input pInputText id="legal_name" formControlName="legal_name" class="w-full" />
+          <app-field-error [control]="form.controls.legal_name"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="domain" class="text-sm font-medium">{{ 'admin.fields.domain' | translate }} *</label>
+          <input pInputText id="domain" formControlName="domain" dir="ltr" placeholder="acme.example" class="w-full" />
+          <app-field-error [control]="form.controls.domain" patternKey="admin.hints.domain"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="tax_id" class="text-sm font-medium">{{ 'admin.fields.taxId' | translate }}</label>
+          <input pInputText id="tax_id" formControlName="tax_id" dir="ltr" class="w-full" />
+          <app-field-error [control]="form.controls.tax_id" patternKey="admin.hints.taxId"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="email" class="text-sm font-medium">
+            {{ 'admin.fields.email' | translate }}{{ isEdit ? '' : ' *' }}
+          </label>
+          <input pInputText id="email" type="email" formControlName="email" dir="ltr" class="w-full" />
+          @if (!isEdit) {
+            <small class="text-xs text-gray-500 dark:text-gray-400">{{ 'admin.hints.adminEmail' | translate }}</small>
+          }
+          <app-field-error [control]="form.controls.email"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="phone" class="text-sm font-medium">{{ 'admin.fields.phone' | translate }}</label>
+          <input pInputText id="phone" type="tel" formControlName="phone" dir="ltr" placeholder="+966501234567" class="w-full" />
+          <app-field-error [control]="form.controls.phone" patternKey="admin.hints.phone"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1 md:col-span-2">
+          <label for="address" class="text-sm font-medium">{{ 'admin.fields.address' | translate }}</label>
+          <textarea pTextarea id="address" formControlName="address" rows="3" class="w-full"></textarea>
+          <app-field-error [control]="form.controls.address"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="timezone" class="text-sm font-medium">{{ 'admin.fields.timezone' | translate }} *</label>
+          <p-select
+            inputId="timezone"
+            formControlName="timezone"
+            [options]="timezoneOptions()"
+            [filter]="true"
+            [placeholder]="'common.select' | translate"
+            styleClass="w-full"
+            appendTo="body"
+          ></p-select>
+          <app-field-error [control]="form.controls.timezone"></app-field-error>
+        </div>
+
+        <div class="flex items-center gap-3 md:pt-6">
+          <p-toggleswitch inputId="is_active" formControlName="is_active"></p-toggleswitch>
+          <label for="is_active" class="text-sm font-medium">{{ 'admin.fields.isActive' | translate }}</label>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="primary_color" class="text-sm font-medium">{{ 'admin.fields.primaryColor' | translate }}</label>
+          <div class="flex items-center gap-3">
+            <input
+              id="primary_color"
+              type="color"
+              formControlName="primary_color"
+              class="h-9 w-14 cursor-pointer rounded border border-gray-300 bg-transparent p-0.5 dark:border-gray-700"
+            />
+            <span class="font-mono text-sm uppercase text-gray-600 dark:text-gray-300" dir="ltr">
+              {{ form.controls.primary_color.value }}
+            </span>
+          </div>
+          <app-field-error [control]="form.controls.primary_color"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="secondary_color" class="text-sm font-medium">{{ 'admin.fields.secondaryColor' | translate }}</label>
+          <div class="flex items-center gap-3">
+            <input
+              id="secondary_color"
+              type="color"
+              formControlName="secondary_color"
+              class="h-9 w-14 cursor-pointer rounded border border-gray-300 bg-transparent p-0.5 dark:border-gray-700"
+            />
+            <span class="font-mono text-sm uppercase text-gray-600 dark:text-gray-300" dir="ltr">
+              {{ form.controls.secondary_color.value }}
+            </span>
+          </div>
+          <app-field-error [control]="form.controls.secondary_color"></app-field-error>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 border-t border-gray-100 pt-5 dark:border-gray-800">
+        <p-button
+          type="button"
+          [label]="'common.cancel' | translate"
+          severity="secondary"
+          [outlined]="true"
+          (onClick)="goBack()"
+        ></p-button>
+        <p-button
+          type="submit"
+          [label]="'common.save' | translate"
+          icon="pi pi-check"
+          [loading]="saving()"
+          [disabled]="saving()"
+        ></p-button>
+      </div>
+    </form>
+  </p-card>
+}
