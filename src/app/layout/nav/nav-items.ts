@@ -1,3 +1,5 @@
+import { AuthRole } from '../../core/auth/auth.model';
+
 export type AppModuleCode = 'inventory' | 'location';
 
 export interface NavItem {
@@ -5,11 +7,14 @@ export interface NavItem {
   icon: string;
   routerLink: string;
   module?: AppModuleCode;
+  /** Only these login roles see the item. Omitted means everyone. */
+  roles?: AuthRole[];
   children?: NavItem[];
 }
 
 export const NAV_ITEMS: NavItem[] = [
   { labelKey: 'nav.dashboard', icon: 'pi pi-home', routerLink: '/dashboard' },
+  { labelKey: 'nav.companies', icon: 'pi pi-briefcase', routerLink: '/admin/companies', roles: ['ADMIN'] },
   {
     labelKey: 'nav.company',
     icon: 'pi pi-building',

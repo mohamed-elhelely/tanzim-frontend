@@ -17,6 +17,7 @@ You are continuing work on Tanzim, a bilingual (English/Arabic, RTL) ERP. Two re
   - Builders moved to @angular/build.
   - Redesign: dark indigo sidebar, header with breadcrumb + language/dark-mode toggles + user menu, dashboard with real counts/setup checklist/quick actions, search inside list cards, coming-soon pages, split-screen login.
   - Production build points at the backend via ngrok: https://chunk-surcharge-manhood.ngrok-free.dev/api/. An interceptor adds `ngrok-skip-browser-warning` to any ngrok host.
+- Step 6 (platform-staff Companies screen, /admin/companies) is on branch claude/jolly-hopper-2gqwi0; spec: docs/superpowers/specs/2026-10-08-platform-companies-design.md.
 - Open PR 0Mustafa37/Tanzim#11 (claude/cors-frontend-origins → master): CORS allows http://localhost:4200, https://mohamed-elhelely.github.io and the ngrok header; CORS_EXTRA_ORIGINS env var for more.
 - GitHub Pages (https://mohamed-elhelely.github.io/tanzim-frontend/) was deployed from claude/redesign-ui, which now equals main; redeploy from main from now on (`npm run deploy`, angular-cli-ghpages, baseHref /tanzim-frontend/).
 - Stale branches (delete only if the owner agrees): claude/awesome-hawking-7uf16d, step-4-company-organisation, master (frontend), claude/awesome-lovelace-2bdsqn, claude/redesign-ui (merged).
@@ -31,23 +32,26 @@ You are continuing work on Tanzim, a bilingual (English/Arabic, RTL) ERP. Two re
 - Commit after each logical step; never include model names in commits or PRs.
 
 ## Known backend issues (raise, don't work around silently)
+- The full list of backend requests, as a prompt for a backend session, is in docs/BACKEND_REQUESTS.md.
 - Soft-deleting a country/region/city/district still in use returns 204.
 - Re-using the name of a soft-deleted record returns 500 (unique_together ignores is_deleted).
 - Location `full_address` is never returned.
 - PATCH company-user with nested `user` re-validates the email (400).
 - GET /permissions/?search= returns 500.
+- Company create (admin/company/) is not atomic: a blank or already-used email returns 500 and leaves the company without an admin.
+- Company phone can't be blank (400), so it can't be cleared once saved.
+- DELETE admin/company/{id}/ is a cascading hard delete (docs say soft delete); the UI has no delete button.
 
 ## Running and verifying locally
-- Backend: python venv + `pip install -r requirements.txt`, `SECRET_KEY=... DEBUG=True python manage.py migrate && python manage.py setup_plans && python setup_data.py`; give "Test Company" an active Subscription with the `location` and `inventory` SubscriptionModules; `redis-server` + `python manage.py runserver 8000`. Login: admin@testcompany.com / testpass123.
+- Backend: python venv + `pip install -r requirements.txt`, `SECRET_KEY=... DEBUG=True python manage.py migrate && python manage.py setup_plans && python setup_data.py`; give "Test Company" an active Subscription with the `location` and `inventory` SubscriptionModules; `redis-server` + `python manage.py runserver 8000`. Login: admin@testcompany.com / testpass123. For platform-staff screens, create a user with is_staff=True and no CompanyUser (`manage.py shell`).
 - Frontend: `npm ci`, `npx ng serve --proxy-config proxy.conf.json` (proxies /api to :8000), `npm run build`, `npx ng test --watch=false` (in a container, run ChromeHeadless with --no-sandbox).
 - Before calling UI work done: screenshot the changed screens in English, Arabic (RTL), dark mode and 390px mobile, and check the console has no errors.
 
 ## Next steps (ask the owner which one first)
 1. Help merge 0Mustafa37/Tanzim#11 (backend CORS) if still open, then redeploy GitHub Pages from main.
-2. Platform-staff Companies screen (/api/company/v1/admin/company/).
-3. Hide menus/buttons by the user's permissions/role.
-4. Hide menu sections when the subscription lacks a module (`module` field already on NavItem).
-5. Start Inventory screens (see API_REFERENCE.md "Inventory"; note backend known issues #1–#3 block workflow actions and variants).
+2. Hide menus/buttons by the user's permissions/role (including hiding Company/Locations from platform staff, who have no company).
+3. Hide menu sections when the subscription lacks a module (`module` field already on NavItem).
+4. Start Inventory screens (see API_REFERENCE.md "Inventory"; note backend known issues #1–#3 block workflow actions and variants).
 
 Reply to the owner in Egyptian Arabic; keep code, commits and PR text in English.
 ```

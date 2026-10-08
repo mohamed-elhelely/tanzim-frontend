@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree, provideRouter } from '@angular/router';
 import { AuthService } from './auth.service';
-import { authGuard, guestGuard } from './auth.guard';
+import { authGuard, guestGuard, platformAdminGuard } from './auth.guard';
 
 function configure(isAuthenticated: boolean): void {
   TestBed.configureTestingModule({
@@ -43,5 +43,25 @@ describe('guestGuard', () => {
     configure(false);
     const result = TestBed.runInInjectionContext(() => guestGuard(route, state));
     expect(result).toBeTrue();
+  });
+});
+
+describe('platformAdminGuard', () => {
+  function configureRole(role: string | null): void {
+    TestBed.configureTestingModule({
+      providers: [provideRouter([]), { provide: AuthService, useValue: { role: () => role } }],
+    });
+  }
+
+  it('allows platform admins', () => {
+    configureRole('ADMIN');
+    expect(TestBed.runInInjectionContext(() => platformAdminGuard(route, state))).toBeTrue();
+  });
+
+  it('sends company users back to the dashboard', () => {
+    configureRole('COMPANY');
+    const result = TestBed.runInInjectionContext(() => platformAdminGuard(route, state));
+    expect(result instanceof UrlTree).toBeTrue();
+    expect((result as UrlTree).toString()).toBe('/dashboard');
   });
 });
