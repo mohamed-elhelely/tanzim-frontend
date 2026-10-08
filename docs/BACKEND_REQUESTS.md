@@ -79,6 +79,16 @@ is_staff=True and no CompanyUser in `manage.py shell`. With no EMAIL_HOST_PASSWO
     Fall back to the instance's values on partial updates.
 15. POST /api/company/v1/city/ accepts only timezone UTC or GMT although the model default is Asia/Riyadh. Accept IANA names.
 
+## Priority 3b — found while building the Inventory catalogue screens (inventory/serializers/product.py)
+
+15a. PATCH /api/inventory/v1/category/{id}/ re-sending the unchanged name and parent returns 400 "Category with this
+     name already exists under this parent.": CategorySerializer.validate doesn't exclude self.instance. Exclude it
+     (and use the instance's name/parent when they are missing from a partial update). The frontend currently omits
+     unchanged name/parent as a workaround.
+15b. Soft-deleting a brand or category that is still in use returns 204: products keep pointing at the deleted brand or
+     category, and child categories at a deleted parent. Return 400 while it is in use (same as item 9).
+15c. Category parent: nothing stops a category from becoming its own ancestor (cycles). Validate on the server.
+
 ## Priority 4 — blocks the Inventory screens (see "Known issues" #1–#3 in docs/API_REFERENCE.md)
 
 16. Workflow actions return 405: POST /api/inventory/v1/{stock-transfer, stock-adjustment, cycle-count, purchase-requisition,
