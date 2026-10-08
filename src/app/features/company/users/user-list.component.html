@@ -1,4 +1,4 @@
-<app-page-header title="company.users.title" [actions]="headerActions"></app-page-header>
+<app-page-header title="company.users.title" [actions]="headerActions()"></app-page-header>
 
 @if (error(); as err) {
   <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403" (retry)="load()"></app-error-state>
@@ -40,7 +40,7 @@
             <th>{{ 'company.fields.department' | translate }}</th>
             <th>{{ 'company.fields.team' | translate }}</th>
             <th>{{ 'company.fields.companyAdmin' | translate }}</th>
-            @if (canManage) {
+            @if (canEdit() || canDelete()) {
               <th class="text-end">{{ 'common.actions' | translate }}</th>
             }
           </tr>
@@ -57,30 +57,34 @@
                 <app-status-badge [value]="'common.yes' | translate" severity="warn"></app-status-badge>
               }
             </td>
-            @if (canManage) {
+            @if (canEdit() || canDelete()) {
               <td class="whitespace-nowrap text-end">
-                <p-button
-                  icon="pi pi-pencil"
-                  [text]="true"
-                  [rounded]="true"
-                  [ariaLabel]="'common.edit' | translate"
-                  (onClick)="edit(row)"
-                ></p-button>
-                <p-button
-                  icon="pi pi-trash"
-                  severity="danger"
-                  [text]="true"
-                  [rounded]="true"
-                  [ariaLabel]="'common.delete' | translate"
-                  (onClick)="confirmDelete(row)"
-                ></p-button>
+                @if (canEdit()) {
+                  <p-button
+                    icon="pi pi-pencil"
+                    [text]="true"
+                    [rounded]="true"
+                    [ariaLabel]="'common.edit' | translate"
+                    (onClick)="edit(row)"
+                  ></p-button>
+                }
+                @if (canDelete()) {
+                  <p-button
+                    icon="pi pi-trash"
+                    severity="danger"
+                    [text]="true"
+                    [rounded]="true"
+                    [ariaLabel]="'common.delete' | translate"
+                    (onClick)="confirmDelete(row)"
+                  ></p-button>
+                }
               </td>
             }
           </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">
           <tr>
-            <td [attr.colspan]="canManage ? 7 : 6"><app-empty-state icon="pi-users"></app-empty-state></td>
+            <td [attr.colspan]="canEdit() || canDelete() ? 7 : 6"><app-empty-state icon="pi-users"></app-empty-state></td>
           </tr>
         </ng-template>
       </p-table>

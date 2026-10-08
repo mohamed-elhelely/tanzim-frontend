@@ -9,6 +9,10 @@ export interface NavItem {
   module?: AppModuleCode;
   /** Only these login roles see the item. Omitted means everyone. */
   roles?: AuthRole[];
+  /** Only users with this permission codename see the item (see AccessService.can). */
+  permission?: string;
+  /** Only platform staff see the item. */
+  staffOnly?: boolean;
   children?: NavItem[];
 }
 
@@ -17,19 +21,19 @@ const COMPANY_ROLES: AuthRole[] = ['COMPANY', 'EMPLOYEE'];
 
 export const NAV_ITEMS: NavItem[] = [
   { labelKey: 'nav.dashboard', icon: 'pi pi-home', routerLink: '/dashboard' },
-  { labelKey: 'nav.companies', icon: 'pi pi-briefcase', routerLink: '/admin/companies', roles: ['ADMIN'] },
+  { labelKey: 'nav.companies', icon: 'pi pi-briefcase', routerLink: '/admin/companies', staffOnly: true },
   {
     labelKey: 'nav.company',
     icon: 'pi pi-building',
     routerLink: '/company',
     roles: COMPANY_ROLES,
     children: [
-      { labelKey: 'nav.companyUsers', icon: 'pi pi-users', routerLink: '/company/users' },
-      { labelKey: 'nav.departments', icon: 'pi pi-sitemap', routerLink: '/company/departments' },
-      { labelKey: 'nav.teams', icon: 'pi pi-id-card', routerLink: '/company/teams' },
-      { labelKey: 'nav.roles', icon: 'pi pi-shield', routerLink: '/company/roles' },
-      { labelKey: 'nav.permissionGroups', icon: 'pi pi-th-large', routerLink: '/company/permission-groups' },
-      { labelKey: 'nav.permissions', icon: 'pi pi-key', routerLink: '/company/permissions' },
+      { labelKey: 'nav.companyUsers', icon: 'pi pi-users', routerLink: '/company/users', permission: 'view_companyuser' },
+      { labelKey: 'nav.departments', icon: 'pi pi-sitemap', routerLink: '/company/departments', permission: 'view_department' },
+      { labelKey: 'nav.teams', icon: 'pi pi-id-card', routerLink: '/company/teams', permission: 'view_team' },
+      { labelKey: 'nav.roles', icon: 'pi pi-shield', routerLink: '/company/roles', permission: 'view_role' },
+      { labelKey: 'nav.permissionGroups', icon: 'pi pi-th-large', routerLink: '/company/permission-groups', permission: 'view_permissiongroup' },
+      { labelKey: 'nav.permissions', icon: 'pi pi-key', routerLink: '/company/permissions', permission: 'view_permission' },
     ],
   },
   {

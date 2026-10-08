@@ -3,9 +3,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { filter } from 'rxjs';
+import { AccessService } from '../../core/auth/access.service';
 import { AuthService } from '../../core/auth/auth.service';
 import { LanguageService } from '../../core/services/language.service';
-import { SubscriptionService } from '../../core/subscription/subscription.service';
 import { NAV_ITEMS, NavItem } from './nav-items';
 
 // The navigation always sits on the dark indigo sidebar (desktop) or drawer (mobile).
@@ -22,17 +22,15 @@ const ACTIVE_CLASSES = '!bg-primary-600 !text-white shadow-md shadow-primary-950
 export class NavListComponent {
   private readonly router = inject(Router);
   private readonly role = inject(AuthService).role;
-  private readonly subscription = inject(SubscriptionService);
+  private readonly access = inject(AccessService);
   private readonly expanded = signal<ReadonlySet<string>>(new Set());
 
-  readonly items = computed(() => {
-    const role = this.role();
-    return NAV_ITEMS.filter(
-      (item) =>
-        (!item.roles || (role !== null && item.roles.includes(role))) &&
-        (!item.module || this.subscription.allows(item.module)),
-    );
-  });
+  /** The menu this user may see: by role, staff flag, subscription module and permission; empty groups drop out. */
+  readonly items = computed(() =>
+    NAV_ITEMS.filter((item) => this.visible(item))
+      .map((item) => (item.children ? { ...item, children: item.children.filter((child) => this.visible(child)) } : item))
+      .filter((item) => !item.children || item.children.length > 0),
+  );
   readonly itemSelected = output<void>();
   readonly direction = inject(LanguageService).direction;
   readonly linkClasses = LINK_CLASSES;
@@ -70,8 +68,18 @@ export class NavListComponent {
     });
   }
 
+  private visible(item: NavItem): boolean {
+    const role = this.role();
+    return (
+      (!item.roles || (role !== null && item.roles.includes(role))) &&
+      (!item.staffOnly || this.access.isStaff()) &&
+      (!item.module || this.access.hasModule(item.module)) &&
+      (!item.permission || this.access.can(item.permission))
+    );
+  }
+
   private expandActiveGroup(url: string): void {
-    // All items, not just the visible ones: a module-gated group appears only once the subscription loads.
+    // All items, not just the visible ones: a gated group appears only once /me has loaded.
     for (const item of NAV_ITEMS) {
       if (item.children && (url === item.routerLink || url.startsWith(`${item.routerLink}/`))) {
         this.expanded.update((current) => new Set(current).add(item.routerLink));

@@ -4,7 +4,7 @@ import { PrimeTemplate } from 'primeng/api';
 import { DrawerModule } from 'primeng/drawer';
 import { ToastModule } from 'primeng/toast';
 import { LanguageService } from '../../core/services/language.service';
-import { SubscriptionService } from '../../core/subscription/subscription.service';
+import { AccessService } from '../../core/auth/access.service';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { LoadingBarComponent } from '../../shared/components/loading-bar/loading-bar.component';
 import { AppHeaderComponent } from '../header/header.component';
@@ -35,8 +35,8 @@ export class ShellComponent {
   readonly mobileNavOpen = signal(false);
 
   constructor() {
-    // The shell only renders for a signed-in user, so this runs once per sign-in.
-    inject(SubscriptionService).load();
+    // What this user may see (GET /me). Guards may already have started it; load() shares the request.
+    inject(AccessService).load().subscribe();
   }
 
   openMobileNav(): void {

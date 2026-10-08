@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { HttpTestingController } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
 import { Confirmation, ConfirmationService } from 'primeng/api';
-import { AuthService } from '../../../core/auth/auth.service';
+import { AccessService } from '../../../core/auth/access.service';
 import { envelope, errorEnvelope, provideApiTesting } from '../../../testing/api-testing';
 import { makeCompanyUser, makeRole } from '../../../testing/company-fixtures';
 import { UserListComponent } from './user-list.component';
@@ -13,13 +13,16 @@ describe('UserListComponent', () => {
   let httpMock: HttpTestingController;
   let router: Router;
 
-  let role = 'COMPANY';
+  let permissions: string[] = [];
 
   beforeEach(async () => {
-    role = 'COMPANY';
+    permissions = ['view_companyuser', 'add_companyuser', 'change_companyuser', 'delete_companyuser'];
     await TestBed.configureTestingModule({
       imports: [UserListComponent],
-      providers: [...provideApiTesting(), { provide: AuthService, useValue: { role: () => role } }],
+      providers: [
+        ...provideApiTesting(),
+        { provide: AccessService, useValue: { can: (codename: string) => permissions.includes(codename) } },
+      ],
     }).compileComponents();
     httpMock = TestBed.inject(HttpTestingController);
     router = TestBed.inject(Router);
@@ -73,12 +76,12 @@ describe('UserListComponent', () => {
     httpMock.expectOne(URL).flush(envelope([]));
   });
 
-  it('hides add, edit and delete from employees', () => {
-    role = 'EMPLOYEE';
+  it('hides add, edit and delete without the permissions', () => {
+    permissions = ['view_companyuser'];
     const fixture = create();
     httpMock.expectOne(URL).flush(envelope([makeCompanyUser()]));
     fixture.detectChanges();
-    expect(fixture.componentInstance.headerActions).toEqual([]);
+    expect(fixture.componentInstance.headerActions()).toEqual([]);
     expect(fixture.nativeElement.querySelector('.pi-pencil')).toBeNull();
     expect(fixture.nativeElement.querySelector('.pi-trash')).toBeNull();
     expect(fixture.nativeElement.textContent).toContain('Sara Ali');

@@ -33,7 +33,7 @@ describe('TeamFormComponent', () => {
     httpMock
       .expectOne((r) => r.url === DEPARTMENTS_URL && r.params.get('dropdown') === 'true')
       .flush(envelope([{ id: 5, name_en: 'Sales', name_ar: 'المبيعات' }]));
-    httpMock.expectOne(USERS_URL).flush(envelope([makeCompanyUser()]));
+    httpMock.expectOne((r) => r.url === USERS_URL).flush(envelope([makeCompanyUser()]));
     httpMock
       .expectOne((r) => r.url === LOCATIONS_URL && r.params.get('dropdown') === 'true')
       .flush(locations.body, locations.status ? { status: locations.status, statusText: 'Error' } : undefined);

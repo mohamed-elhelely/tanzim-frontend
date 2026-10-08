@@ -20,7 +20,8 @@ interface StoredUser {
 /**
  * The signed-in user. Login stores the tokens and builds `AuthUser` from the login response plus the
  * decoded JWT (company_id, company_role, is_company_admin). `role` drives the menu and the route guards:
- * ADMIN = platform admin (no company), COMPANY = company admin, EMPLOYEE = everyone else.
+ * ADMIN = no company (platform staff when `isStaff`), COMPANY = company admin, EMPLOYEE = everyone else.
+ * What a user may open or change comes from AccessService (GET /me).
  */
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -54,6 +55,7 @@ export class AuthService {
             companyId: payload?.company_id ?? null,
             companyRole: payload?.company_role ?? null,
             isCompanyAdmin: payload?.is_company_admin ?? false,
+            isStaff: data.is_staff ?? payload?.is_staff ?? false,
           };
           this.setUser(user);
           return user;
@@ -126,6 +128,7 @@ export class AuthService {
       companyId: payload.company_id ?? null,
       companyRole: payload.company_role ?? null,
       isCompanyAdmin: payload.is_company_admin ?? false,
+      isStaff: payload.is_staff ?? false,
     };
   }
 

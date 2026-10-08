@@ -29,7 +29,7 @@ describe('DepartmentFormComponent', () => {
     httpMock
       .expectOne((r) => r.url === URL && r.params.get('dropdown') === 'true')
       .flush(envelope([{ id: 1, name_en: 'Head office', name_ar: null }, { id: 5, name_en: 'Sales', name_ar: 'المبيعات' }]));
-    httpMock.expectOne(USERS_URL).flush(envelope([makeCompanyUser()]));
+    httpMock.expectOne((r) => r.url === USERS_URL).flush(envelope([makeCompanyUser()]));
     return fixture;
   }
 
