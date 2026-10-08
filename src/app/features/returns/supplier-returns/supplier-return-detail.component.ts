@@ -4,6 +4,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
+import { AccessService } from '../../../core/auth/access.service';
 import { AppError } from '../../../core/errors/app-error';
 import { ConfirmService } from '../../../core/services/confirm.service';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
@@ -11,6 +12,7 @@ import { LoadingStateComponent } from '../../../shared/components/loading-state/
 import { PageHeaderAction, PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
+import { DebitNoteService } from '../../accounting/debit-notes/debit-note.service';
 import { SUPPLIER_RETURN_SEVERITY, SupplierReturn } from '../returns.models';
 import { SupplierReturnService } from './supplier-return.service';
 
@@ -35,6 +37,8 @@ export class SupplierReturnDetailComponent implements OnInit {
   private readonly api = inject(SupplierReturnService);
   private readonly router = inject(Router);
   private readonly confirm = inject(ConfirmService);
+  private readonly access = inject(AccessService);
+  private readonly debitNotes = inject(DebitNoteService);
 
   readonly id = Number(inject(ActivatedRoute).snapshot.paramMap.get('id'));
   readonly srn = signal<SupplierReturn | null>(null);
@@ -50,6 +54,11 @@ export class SupplierReturnDetailComponent implements OnInit {
     if (!srn) {
       return [];
     }
+    // With accounting, an approved return can be claimed back from the supplier as a debit note.
+    const claim: PageHeaderAction[] =
+      srn.status !== 'draft' && this.access.hasModule('accounting')
+        ? [{ label: 'returns.actions.raiseDebitNote', icon: 'pi pi-minus-circle', severity: 'secondary', onClick: () => this.raiseDebitNote() }]
+        : [];
     switch (srn.status) {
       case 'draft':
         return [
@@ -57,11 +66,11 @@ export class SupplierReturnDetailComponent implements OnInit {
           { label: 'common.delete', icon: 'pi pi-trash', severity: 'secondary', onClick: () => this.remove() },
         ];
       case 'approved':
-        return [{ label: 'returns.actions.markShipped', icon: 'pi pi-truck', onClick: () => this.step('ship') }];
+        return [{ label: 'returns.actions.markShipped', icon: 'pi pi-truck', onClick: () => this.step('ship') }, ...claim];
       case 'shipped':
-        return [{ label: 'returns.actions.confirmReceipt', icon: 'pi pi-flag', onClick: () => this.step('confirmReceipt') }];
+        return [{ label: 'returns.actions.confirmReceipt', icon: 'pi pi-flag', onClick: () => this.step('confirmReceipt') }, ...claim];
       default:
-        return [];
+        return claim;
     }
   });
 
@@ -93,6 +102,17 @@ export class SupplierReturnDetailComponent implements OnInit {
       success: keys[2],
       run: () => this.api[name](this.id),
       onDone: (srn) => this.srn.set(srn),
+    });
+  }
+
+  /** A draft debit note for the return's value; the backend refuses a second one. */
+  private raiseDebitNote(): void {
+    this.confirm.confirmAction({
+      message: 'returns.confirm.raiseDebitNote',
+      accept: 'returns.actions.raiseDebitNote',
+      success: 'returns.toasts.debitNoteCreated',
+      run: () => this.debitNotes.fromSupplierReturn(this.id),
+      onDone: (note) => void this.router.navigate(['/accounting/debit-notes', note.id]),
     });
   }
 

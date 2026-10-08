@@ -1,7 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController } from '@angular/common/http/testing';
 import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
+import { signal } from '@angular/core';
 import { Confirmation, ConfirmationService } from 'primeng/api';
+import { AccessService } from '../../../core/auth/access.service';
 import { envelope, provideApiTesting } from '../../../testing/api-testing';
 import { makeSupplierReturn } from '../../../testing/returns-fixtures';
 import { SupplierReturn } from '../returns.models';
@@ -12,11 +14,13 @@ const URL = '/api/returns/v1/supplier-returns/';
 describe('SupplierReturnDetailComponent', () => {
   let httpMock: HttpTestingController;
 
-  function setup(overrides: Partial<SupplierReturn> = {}) {
+  function setup(overrides: Partial<SupplierReturn> = {}, accounting = false) {
+    const modules = signal(accounting);
     TestBed.configureTestingModule({
       imports: [SupplierReturnDetailComponent],
       providers: [
         ...provideApiTesting(),
+        { provide: AccessService, useValue: { hasModule: (code: string) => code === 'accounting' && modules() } },
         { provide: ActivatedRoute, useValue: { snapshot: { paramMap: convertToParamMap({ id: '1' }) } } },
       ],
     });
@@ -55,5 +59,17 @@ describe('SupplierReturnDetailComponent', () => {
     run(fixture, 'returns.actions.confirmReceipt');
     httpMock.expectOne(`${URL}1/confirm_receipt/`).flush(envelope(makeSupplierReturn({ status: 'confirmed' })));
     expect(fixture.componentInstance.actions()).toEqual([]);
+  });
+
+  it('offers "Raise debit note" on approved returns when accounting is on, and opens the draft', () => {
+    expect(setup({ status: 'approved' }).componentInstance.actions().map((a) => a.label)).toEqual(['returns.actions.markShipped']);
+    TestBed.resetTestingModule();
+    const fixture = setup({ status: 'approved' }, true);
+    expect(fixture.componentInstance.actions().map((a) => a.label)).toEqual(['returns.actions.markShipped', 'returns.actions.raiseDebitNote']);
+    run(fixture, 'returns.actions.raiseDebitNote');
+    const req = httpMock.expectOne('/api/accounting/v1/debit-notes/from-supplier-return/');
+    expect(req.request.body).toEqual({ supplier_return: 1 });
+    req.flush(envelope({ id: 9 }), { status: 201, statusText: 'Created' });
+    expect(TestBed.inject(Router).navigate).toHaveBeenCalledWith(['/accounting/debit-notes', 9]);
   });
 });

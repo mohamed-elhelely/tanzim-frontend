@@ -48,6 +48,13 @@ export class BaseApiService {
       .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
   }
 
+  /** A file response (e.g. `?export=xlsx`), not wrapped in the envelope. */
+  protected getBlob(path: string, options?: RequestOptions): Observable<Blob> {
+    return this.http
+      .get(this.buildUrl(path), { ...options, responseType: 'blob' })
+      .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
+  }
+
   private buildUrl(path: string): string {
     return `${this.baseUrl}${path.replace(/^\/+/, '')}`;
   }

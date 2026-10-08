@@ -77,7 +77,10 @@
     "accounting": "Accounting",
     "journalEntries": "Journal entries",
     "accounts": "Chart of accounts",
-    "fiscalYears": "Fiscal years"
+    "fiscalYears": "Fiscal years",
+    "accountingReports": "Reports",
+    "supplierPayments": "Supplier payments",
+    "debitNotes": "Debit notes"
   },
   "auth": {
     "login": "Login",
@@ -864,14 +867,16 @@
       "close": "Close and refund",
       "createReplacement": "Create replacement order",
       "markShipped": "Mark shipped",
-      "confirmReceipt": "Supplier confirmed"
+      "confirmReceipt": "Supplier confirmed",
+      "raiseDebitNote": "Raise debit note"
     },
     "confirm": {
       "approve": "Approve this return? The customer can then send the items back.",
       "approveSupplier": "Approve this supplier return? The items leave the warehouse stock.",
       "createReplacement": "Create a new sales order for the accepted items?",
       "markShipped": "Mark this return as shipped to the supplier?",
-      "confirmReceipt": "Has the supplier confirmed they received the items?"
+      "confirmReceipt": "Has the supplier confirmed they received the items?",
+      "raiseDebitNote": "Create a draft debit note to claim this return's value from the supplier?"
     },
     "toasts": {
       "approved": "Return approved.",
@@ -880,7 +885,8 @@
       "closed": "Return closed.",
       "replacementCreated": "Replacement order created.",
       "shipped": "Marked as shipped.",
-      "receiptConfirmed": "Receipt confirmed."
+      "receiptConfirmed": "Receipt confirmed.",
+      "debitNoteCreated": "Draft debit note created."
     },
     "hints": {
       "searchCustomer": "Search by return no., customer or order",
@@ -963,10 +969,26 @@
       "to": "To",
       "startDate": "Start date",
       "endDate": "End date",
-      "closedAt": "Closed at"
+      "closedAt": "Closed at",
+      "paymentNumber": "Payment no.",
+      "noteNumber": "Note no.",
+      "supplier": "Supplier",
+      "paymentMethod": "Payment method",
+      "notes": "Notes",
+      "allocated": "Allocated",
+      "unallocated": "Unallocated",
+      "voidedAt": "Voided at",
+      "supplierInvoice": "Supplier invoice",
+      "supplierReturn": "Supplier return",
+      "supplierReference": "Supplier reference",
+      "subtotal": "Subtotal",
+      "tax": "Tax",
+      "reason": "Reason",
+      "issuedAt": "Issued at"
     },
     "sections": {
-      "lines": "Lines"
+      "lines": "Lines",
+      "allocations": "Allocations"
     },
     "actions": {
       "post": "Post",
@@ -978,7 +1000,12 @@
       "saveAndPost": "Save and post",
       "closeYear": "Close year",
       "closePeriod": "Close period",
-      "reopen": "Reopen"
+      "reopen": "Reopen",
+      "addAllocation": "Add invoice",
+      "recordPayment": "Record payment",
+      "void": "Void payment",
+      "issue": "Issue",
+      "cancelNote": "Cancel note"
     },
     "confirm": {
       "addDefaults": "Add any default account the chart is missing? Existing accounts are not changed.",
@@ -986,7 +1013,8 @@
       "closeYear": "Close {{name}}? All its periods are closed and the result moves to retained earnings.",
       "reopenYear": "Reopen {{name}}? Its closing entry is reversed.",
       "closePeriod": "Close {{name}}? Nothing can be posted into it afterwards.",
-      "reopenPeriod": "Reopen {{name}}?"
+      "reopenPeriod": "Reopen {{name}}?",
+      "issueNote": "Issue this debit note? It is posted and can then only be cancelled."
     },
     "toasts": {
       "defaultsChecked": "Default accounts checked.",
@@ -995,7 +1023,11 @@
       "yearCreated": "Fiscal year created with its periods.",
       "yearClosed": "Fiscal year closed.",
       "periodClosed": "Period closed.",
-      "reopened": "Reopened."
+      "reopened": "Reopened.",
+      "paymentRecorded": "Payment recorded.",
+      "paymentVoided": "Payment voided.",
+      "noteIssued": "Debit note issued.",
+      "noteCancelled": "Debit note cancelled."
     },
     "hints": {
       "searchAccounts": "Search by code or name",
@@ -1017,7 +1049,112 @@
       "reverse": "Creates a new posted entry with debits and credits swapped.",
       "reverseDate": "Leave empty to use today.",
       "newYear": "Monthly periods are created automatically. The dates can't change later.",
-      "yearDates": "Pick a start date and an end date after it."
+      "yearDates": "Pick a start date and an end date after it.",
+      "notBalanced": "Not balanced",
+      "allocations": "Optional: which of the supplier's invoices this pays.",
+      "noAllocations": "Not allocated to invoices.",
+      "noSupplierInvoices": "No supplier invoices yet.",
+      "overAllocated": "more than the payment amount",
+      "paymentVoided": "This payment was voided.",
+      "noteCancelled": "This debit note was cancelled.",
+      "onlyDraftNote": "Only draft debit notes can be edited.",
+      "optional": "Optional"
+    },
+    "reports": {
+      "trial_balance": "Trial balance",
+      "income_statement": "Income statement",
+      "balance_sheet": "Balance sheet",
+      "general_ledger": "General ledger",
+      "customer_statement": "Customer statement",
+      "supplier_statement": "Supplier statement",
+      "receivables_aging": "Receivables aging",
+      "payables_aging": "Payables aging",
+      "title": "Accounting reports",
+      "subtitle": "From posted entries. Download any report as Excel.",
+      "report": "Report",
+      "run": "Run",
+      "exportXlsx": "Excel",
+      "pick": "Pick the {{field}} first."
+    },
+    "reportParams": {
+      "start_date": "From",
+      "end_date": "To",
+      "as_of_date": "As of",
+      "account": "Account",
+      "customer": "Customer",
+      "supplier": "Supplier"
+    },
+    "reportColumns": {
+      "code": "Code",
+      "name": "Account",
+      "account_type": "Type",
+      "opening_debit": "Opening debit",
+      "opening_credit": "Opening credit",
+      "debit": "Debit",
+      "credit": "Credit",
+      "closing_debit": "Closing debit",
+      "closing_credit": "Closing credit",
+      "section": "Section",
+      "amount": "Amount",
+      "date": "Date",
+      "entry_number": "Entry",
+      "description": "Description",
+      "reference": "Reference",
+      "balance": "Balance",
+      "customer": "Customer",
+      "supplier": "Supplier",
+      "current": "Current",
+      "days_1_30": "1–30 days",
+      "days_31_60": "31–60 days",
+      "days_61_90": "61–90 days",
+      "over_90": "Over 90 days",
+      "total": "Total",
+      "credits": "Credits",
+      "net": "Net",
+      "start_date": "From",
+      "end_date": "To",
+      "total_opening_debit": "Opening debit",
+      "total_opening_credit": "Opening credit",
+      "total_debit": "Total debit",
+      "total_credit": "Total credit",
+      "total_closing_debit": "Closing debit",
+      "total_closing_credit": "Closing credit",
+      "is_balanced": "Balanced",
+      "total_revenue": "Revenue",
+      "total_cost_of_sales": "Cost of sales",
+      "gross_profit": "Gross profit",
+      "total_expenses": "Expenses",
+      "net_income": "Net income",
+      "as_of_date": "As of",
+      "total_assets": "Assets",
+      "total_liabilities": "Liabilities",
+      "total_equity": "Equity",
+      "total_liabilities_and_equity": "Liabilities and equity",
+      "account": "Account",
+      "opening_balance": "Opening balance",
+      "closing_balance": "Closing balance"
+    },
+    "payments": {
+      "title": "Supplier payments",
+      "new": "New supplier payment",
+      "detail": "Supplier payment"
+    },
+    "notes": {
+      "title": "Debit notes",
+      "subtitle": "Claims against suppliers (returns, overcharges). Issuing posts them.",
+      "new": "New debit note",
+      "edit": "Edit debit note",
+      "detail": "Debit note",
+      "backToNote": "Back to note"
+    },
+    "paymentStatuses": {
+      "completed": "Completed",
+      "voided": "Voided"
+    },
+    "noteStatuses": {
+      "draft": "Draft",
+      "issued": "Issued",
+      "cancelled": "Cancelled"
     }
   }
 }

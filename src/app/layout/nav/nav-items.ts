@@ -101,6 +101,9 @@ export const NAV_ITEMS: NavItem[] = [
       { labelKey: 'nav.journalEntries', icon: 'pi pi-book', routerLink: '/accounting/journal-entries' },
       { labelKey: 'nav.accounts', icon: 'pi pi-sitemap', routerLink: '/accounting/accounts' },
       { labelKey: 'nav.fiscalYears', icon: 'pi pi-calendar', routerLink: '/accounting/fiscal-years' },
+      { labelKey: 'nav.accountingReports', icon: 'pi pi-chart-bar', routerLink: '/accounting/reports' },
+      { labelKey: 'nav.supplierPayments', icon: 'pi pi-wallet', routerLink: '/accounting/supplier-payments' },
+      { labelKey: 'nav.debitNotes', icon: 'pi pi-minus-circle', routerLink: '/accounting/debit-notes' },
     ],
   },
   // The company's subscription and platform invoices: for company admins.

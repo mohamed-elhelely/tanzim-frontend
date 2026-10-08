@@ -1,4 +1,4 @@
-import { Account, FiscalYear, JournalEntry } from '../features/accounting/accounting.models';
+import { Account, DebitNote, FiscalYear, JournalEntry, SupplierPayment } from '../features/accounting/accounting.models';
 
 export function makeAccount(overrides: Partial<Account> = {}): Account {
   return {
@@ -68,6 +68,51 @@ export function makeYear(overrides: Partial<FiscalYear> = {}): FiscalYear {
       { id: 1, fiscal_year: 1, name: 'Jan 2026', start_date: '2026-01-01', end_date: '2026-01-31', status: 'open', closed_at: null, closed_by: null },
       { id: 2, fiscal_year: 1, name: 'Feb 2026', start_date: '2026-02-01', end_date: '2026-02-28', status: 'closed', closed_at: null, closed_by: null },
     ],
+    ...overrides,
+  };
+}
+
+export function makeSupplierPayment(overrides: Partial<SupplierPayment> = {}): SupplierPayment {
+  return {
+    id: 1,
+    payment_number: 'SP-00001',
+    supplier: 1,
+    supplier_name: 'S3',
+    payment_date: '2026-10-09',
+    amount: '75.00',
+    payment_method: 'cash',
+    reference: 'CASH-1',
+    notes: '',
+    status: 'completed',
+    allocations: [],
+    allocated_amount: '0.00',
+    unallocated_amount: '75.00',
+    voided_at: null,
+    void_reason: '',
+    created_at: '2026-10-09T02:00:00+03:00',
+    ...overrides,
+  };
+}
+
+export function makeDebitNote(overrides: Partial<DebitNote> = {}): DebitNote {
+  return {
+    id: 1,
+    note_number: 'DBN-00001',
+    supplier: 1,
+    supplier_name: 'S3',
+    supplier_invoice: null,
+    supplier_return: 1,
+    date: '2026-10-09',
+    subtotal: '10.00',
+    tax_amount: '0.00',
+    total_amount: '10.00',
+    supplier_reference: '',
+    reason: 'Supplier return SRN-2026-00001',
+    status: 'draft',
+    issued_at: null,
+    cancelled_at: null,
+    cancel_reason: '',
+    created_at: '2026-10-09T02:00:00+03:00',
     ...overrides,
   };
 }

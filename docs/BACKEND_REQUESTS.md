@@ -98,7 +98,9 @@ Company admin: admin@testcompany.com / testpass123.
 7. Nothing stops a category from becoming its own ancestor (parent cycles). Validate on create/update.
 
 8. GET /api/inventory/v1/supplier-product/?supplier=<id> ignores the filter. Support `supplier` and `product_variant`
-   as exact-match filters (the variant list already supports `?product=`).
+   as exact-match filters (the variant list already supports `?product=`). The same for
+   GET /api/inventory/v1/supplier-invoice/?supplier=<id> (and ideally `?open=true`, with the open balance in the
+   dropdown): the supplier-payment allocation picker currently lists every supplier's invoices.
 
 9. The notifications WebSocket sends `type` and `timestamp` (notifications/services.py → _push) where the HTTP API
    says `notif_type` and `created_at`. Send the same field names as the HTTP API (the frontend accepts both).

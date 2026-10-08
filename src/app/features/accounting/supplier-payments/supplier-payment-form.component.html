@@ -1,0 +1,146 @@
+<app-page-header title="accounting.payments.new" [showBack]="true" backLabel="common.backToList" (back)="goBack()"></app-page-header>
+
+<form [formGroup]="form" (ngSubmit)="submit()" class="flex max-w-4xl flex-col gap-4" novalidate>
+  @if (formErrors().length) {
+    <div
+      role="alert"
+      class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300"
+    >
+      @for (message of formErrors(); track $index) {
+        <p>{{ message }}</p>
+      }
+    </div>
+  }
+
+  <p-card>
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div class="flex flex-col gap-1">
+        <label for="supplier" class="text-sm font-medium">{{ 'accounting.fields.supplier' | translate }} *</label>
+        <p-select
+          inputId="supplier"
+          formControlName="supplier"
+          [options]="suppliers()"
+          optionLabel="name"
+          optionValue="id"
+          [filter]="true"
+          filterBy="name"
+          [placeholder]="'common.select' | translate"
+          styleClass="w-full"
+          appendTo="body"
+        ></p-select>
+        <app-field-error [control]="form.controls.supplier"></app-field-error>
+      </div>
+      <div class="flex flex-col gap-1">
+        <label for="payment_date" class="text-sm font-medium">{{ 'accounting.fields.date' | translate }} *</label>
+        <input pInputText id="payment_date" type="date" formControlName="payment_date" class="w-full" />
+        <app-field-error [control]="form.controls.payment_date"></app-field-error>
+      </div>
+      <div class="flex flex-col gap-1">
+        <label for="amount" class="text-sm font-medium">{{ 'accounting.fields.amount' | translate }} *</label>
+        <input pInputText id="amount" formControlName="amount" dir="ltr" inputmode="decimal" class="w-full" />
+        <app-field-error [control]="form.controls.amount" patternKey="inventory.hints.decimal"></app-field-error>
+      </div>
+      <div class="flex flex-col gap-1">
+        <label for="payment_method" class="text-sm font-medium">{{ 'accounting.fields.paymentMethod' | translate }}</label>
+        <p-select
+          inputId="payment_method"
+          formControlName="payment_method"
+          [options]="methodOptions"
+          optionLabel="label"
+          optionValue="value"
+          styleClass="w-full"
+          appendTo="body"
+        >
+          <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
+          <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
+        </p-select>
+      </div>
+      <div class="flex flex-col gap-1">
+        <label for="reference" class="text-sm font-medium">{{ 'accounting.fields.reference' | translate }}</label>
+        <input pInputText id="reference" formControlName="reference" dir="ltr" class="w-full" />
+      </div>
+      <div class="flex flex-col gap-1">
+        <label for="notes" class="text-sm font-medium">{{ 'accounting.fields.notes' | translate }}</label>
+        <textarea pTextarea id="notes" formControlName="notes" rows="1" class="w-full"></textarea>
+      </div>
+    </div>
+  </p-card>
+
+  <p-card>
+    <div class="mb-3 flex items-center justify-between gap-2">
+      <div>
+        <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'accounting.sections.allocations' | translate }}</h3>
+        <p class="text-xs text-gray-500 dark:text-gray-400">{{ 'accounting.hints.allocations' | translate }}</p>
+      </div>
+      <p-button
+        type="button"
+        icon="pi pi-plus"
+        [label]="'accounting.actions.addAllocation' | translate"
+        [outlined]="true"
+        size="small"
+        (onClick)="addAllocation()"
+      ></p-button>
+    </div>
+    @if (allocations.length) {
+      <div formArrayName="allocations" class="flex flex-col gap-2">
+        @for (row of allocations.controls; track row; let i = $index) {
+          <div [formGroupName]="i" class="grid grid-cols-[1fr_8rem_auto] items-start gap-2">
+            <div>
+              <p-select
+                formControlName="invoice"
+                [options]="invoices()"
+                optionLabel="invoice_number"
+                optionValue="id"
+                [filter]="true"
+                filterBy="invoice_number"
+                [placeholder]="'accounting.fields.supplierInvoice' | translate"
+                [ariaLabel]="'accounting.fields.supplierInvoice' | translate"
+                [emptyMessage]="'accounting.hints.noSupplierInvoices' | translate"
+                styleClass="w-full"
+                appendTo="body"
+              ></p-select>
+              <app-field-error [control]="row.controls.invoice"></app-field-error>
+            </div>
+            <div>
+              <input
+                pInputText
+                formControlName="amount"
+                dir="ltr"
+                inputmode="decimal"
+                [attr.aria-label]="'accounting.fields.amount' | translate"
+                class="w-full"
+              />
+              <app-field-error [control]="row.controls.amount" patternKey="inventory.hints.decimal"></app-field-error>
+            </div>
+            <p-button
+              type="button"
+              icon="pi pi-trash"
+              severity="danger"
+              [text]="true"
+              [rounded]="true"
+              [ariaLabel]="'accounting.actions.removeLine' | translate"
+              (onClick)="removeAllocation(i)"
+            ></p-button>
+          </div>
+        }
+      </div>
+      <p class="mt-3 text-end text-sm" [class.text-red-600]="overAllocated()">
+        {{ 'accounting.fields.allocated' | translate }}: <span dir="ltr">{{ allocated() | number: '1.2-2' }}</span>
+        @if (overAllocated()) {
+          — {{ 'accounting.hints.overAllocated' | translate }}
+        }
+      </p>
+    }
+  </p-card>
+
+  <div class="flex justify-end gap-2">
+    <p-button type="button" [label]="'common.cancel' | translate" severity="secondary" [outlined]="true" (onClick)="goBack()"></p-button>
+    <p-button
+      type="submit"
+      [label]="'accounting.actions.recordPayment' | translate"
+      icon="pi pi-check"
+      [loading]="saving()"
+      [disabled]="saving()"
+    ></p-button>
+  </div>
+</form>

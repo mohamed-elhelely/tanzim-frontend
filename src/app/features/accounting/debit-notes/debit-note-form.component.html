@@ -1,0 +1,108 @@
+<app-page-header
+  [title]="isEdit ? 'accounting.notes.edit' : 'accounting.notes.new'"
+  [showBack]="true"
+  [backLabel]="isEdit ? 'accounting.notes.backToNote' : 'common.backToList'"
+  (back)="goBack()"
+></app-page-header>
+
+@if (loadError(); as err) {
+  <app-error-state [title]="errorTitleKey(err)" [showRetry]="false"></app-error-state>
+} @else if (loading()) {
+  <app-loading-state></app-loading-state>
+} @else if (notDraft()) {
+  <app-error-state title="accounting.hints.onlyDraftNote" [showRetry]="false"></app-error-state>
+} @else {
+  <p-card styleClass="max-w-3xl">
+    <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-6" novalidate>
+      @if (formErrors().length) {
+        <div
+          role="alert"
+          class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300"
+        >
+          @for (message of formErrors(); track $index) {
+            <p>{{ message }}</p>
+          }
+        </div>
+      }
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div class="flex flex-col gap-1">
+          <label for="supplier" class="text-sm font-medium">{{ 'accounting.fields.supplier' | translate }} *</label>
+          <p-select
+            inputId="supplier"
+            formControlName="supplier"
+            [options]="suppliers()"
+            optionLabel="name"
+            optionValue="id"
+            [filter]="true"
+            filterBy="name"
+            [placeholder]="'common.select' | translate"
+            (onChange)="onSupplierChange($event.value)"
+            styleClass="w-full"
+            appendTo="body"
+          ></p-select>
+          <app-field-error [control]="form.controls.supplier"></app-field-error>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="date" class="text-sm font-medium">{{ 'accounting.fields.date' | translate }} *</label>
+          <input pInputText id="date" type="date" formControlName="date" class="w-full" />
+          <app-field-error [control]="form.controls.date"></app-field-error>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="supplier_return" class="text-sm font-medium">{{ 'accounting.fields.supplierReturn' | translate }}</label>
+          <p-select
+            inputId="supplier_return"
+            formControlName="supplier_return"
+            [options]="returns()"
+            optionLabel="return_number"
+            optionValue="id"
+            [showClear]="true"
+            [placeholder]="'accounting.hints.optional' | translate"
+            styleClass="w-full"
+            appendTo="body"
+          ></p-select>
+          <app-field-error [control]="form.controls.supplier_return"></app-field-error>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="supplier_invoice" class="text-sm font-medium">{{ 'accounting.fields.supplierInvoice' | translate }}</label>
+          <p-select
+            inputId="supplier_invoice"
+            formControlName="supplier_invoice"
+            [options]="invoices()"
+            optionLabel="invoice_number"
+            optionValue="id"
+            [showClear]="true"
+            [filter]="true"
+            filterBy="invoice_number"
+            [placeholder]="'accounting.hints.optional' | translate"
+            [emptyMessage]="'accounting.hints.noSupplierInvoices' | translate"
+            styleClass="w-full"
+            appendTo="body"
+          ></p-select>
+          <app-field-error [control]="form.controls.supplier_invoice"></app-field-error>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="subtotal" class="text-sm font-medium">{{ 'accounting.fields.subtotal' | translate }} *</label>
+          <input pInputText id="subtotal" formControlName="subtotal" dir="ltr" inputmode="decimal" class="w-full" />
+          <app-field-error [control]="form.controls.subtotal" patternKey="inventory.hints.decimal"></app-field-error>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="tax_amount" class="text-sm font-medium">{{ 'accounting.fields.tax' | translate }}</label>
+          <input pInputText id="tax_amount" formControlName="tax_amount" dir="ltr" inputmode="decimal" class="w-full" />
+          <app-field-error [control]="form.controls.tax_amount" patternKey="inventory.hints.decimal"></app-field-error>
+        </div>
+        <div class="flex flex-col gap-1 md:col-span-2">
+          <label for="supplier_reference" class="text-sm font-medium">{{ 'accounting.fields.supplierReference' | translate }}</label>
+          <input pInputText id="supplier_reference" formControlName="supplier_reference" dir="ltr" class="w-full" />
+        </div>
+        <div class="flex flex-col gap-1 md:col-span-2">
+          <label for="reason" class="text-sm font-medium">{{ 'accounting.fields.reason' | translate }}</label>
+          <textarea pTextarea id="reason" formControlName="reason" rows="2" class="w-full"></textarea>
+        </div>
+      </div>
+      <div class="flex justify-end gap-2 border-t border-gray-100 pt-5 dark:border-gray-800">
+        <p-button type="button" [label]="'common.cancel' | translate" severity="secondary" [outlined]="true" (onClick)="goBack()"></p-button>
+        <p-button type="submit" [label]="'common.save' | translate" icon="pi pi-check" [loading]="saving()" [disabled]="saving()"></p-button>
+      </div>
+    </form>
+  </p-card>
+}
