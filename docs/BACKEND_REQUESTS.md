@@ -40,6 +40,8 @@ Company admin: admin@testcompany.com / testpass123.
    WarehouseReadSerializer (no code, email, phone, address fields), ZoneReadSerializer (no code, description),
    BinReadSerializer (no code, barcode, max_capacity, bin_type), SupplierReadSerializer (no tax_id, contact_person,
    email, phone, mobile, website, address fields, payment_terms, currency, reliability_score, notes).
+   SupplierProductReadSerializer (returns only supplier, product_variant, is_preferred: no unit_cost, currency,
+   quantities, lead time, dates, supplier_sku/name, is_primary, notes), ProductVariantReadSerializer (no weight_uom).
    Return every model field (keep the nested objects as they are). The frontend currently shows those fields empty
    and only sends them when the user changes them (shared/utils/omit-pristine.ts).
 
@@ -47,8 +49,9 @@ Company admin: admin@testcompany.com / testpass123.
    WarehouseSerializer.manager is a CompanyRelatedField over User, which has no company. Restrict managers to users
    of the current company through CompanyUser. The frontend hides the manager field until then.
 
-4. Warehouse.code still has `unique=True` (besides unique_together company + code), so a company can't use a code
-   another company has, and the 400 message reveals that it exists elsewhere. Drop `unique=True` (migration).
+4. Warehouse.code and ProductVariant.sku still have `unique=True` (besides unique_together company + code/sku), so a
+   company can't use a code or SKU another company has, and the 400 message reveals that it exists elsewhere.
+   Drop `unique=True` on both (migration) and make ProductVariantSerializer.validate_sku check only the current company.
 
 5. PATCH /api/inventory/v1/category/{id}/ that re-sends the unchanged name and parent returns 400 "Category with this
    name already exists under this parent.": CategorySerializer.validate doesn't exclude self.instance (and should use
@@ -60,7 +63,10 @@ Company admin: admin@testcompany.com / testpass123.
 
 7. Nothing stops a category from becoming its own ancestor (parent cycles). Validate on create/update.
 
-8. Accounting: the new /api/accounting/v1/ endpoints are described in docs/BUSINESS_LOGIC.md but not in
+8. GET /api/inventory/v1/supplier-product/?supplier=<id> ignores the filter. Support `supplier` and `product_variant`
+   as exact-match filters (the variant list already supports `?product=`).
+
+9. Accounting: the new /api/accounting/v1/ endpoints are described in docs/BUSINESS_LOGIC.md but not in
    docs/API_REFERENCE.md. Document them there (paths, bodies, response objects, examples) so the frontend can build
    the accounting screens.
 ```

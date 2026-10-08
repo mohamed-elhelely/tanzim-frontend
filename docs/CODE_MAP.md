@@ -114,7 +114,7 @@ Things to know:
 |---|---|---|
 | `api/api.config.ts` | `API_BASE_URL` from `src/environments` | Prod points at the backend's ngrok URL |
 | `api/base-api.service.ts` | Typed `get/post/put/patch/delete` with the base URL | |
-| `api/crud-api.ts` | Standard calls for one resource | 🆕 every resource service extends it |
+| `api/crud-api.ts` | Standard calls for one resource; `ListQuery.filters` for exact-match filters | 🆕 every resource service extends it |
 | `auth/auth.service.ts` | Signed-in user, login, logout, token refresh | 🧠 role restored from the JWT on reload |
 | `auth/token-storage.service.ts` | Tokens in localStorage | |
 | `auth/access.service.ts` | Permissions, modules and staff flag from GET /me | 🆕 🧠 🔒 see §3 |
@@ -196,13 +196,15 @@ marked "client list".
 
 | Resource | Endpoint | Notes |
 |---|---|---|
-| `products/` | `inventory/v1/product/` | Enum selects (type, valuation); shelf life only with an expiry date |
+| `products/` | `inventory/v1/product/` | Enum selects (type, valuation); shelf life only with an expiry date. Each row links to its variants |
+| `variants/` | `inventory/v1/product-variant/` | 🧠 `?product=` filter from the URL (chip + "Show all", reloads on change). 🧠 attributes edited as name/value rows (`FormArray`), sent as an object. `dimensions`/`image` never sent. ⚠️ `weight_uom` not returned → `omitPristine` |
 | `categories/` | `inventory/v1/category/` | 🧠 parent picker shows the full path and excludes itself and its descendants. ⚠️ edit sends name/parent only when changed (15a) |
 | `brands/` | `inventory/v1/brand/` | Smallest resource: copy it for new ones |
 | `warehouses/` | `inventory/v1/warehouse/` | ⚠️ code shown from the dropdown (list + edit); contact/address not returned → `omitPristine`; no manager field (backend 500) |
 | `zones/` | `inventory/v1/zone/` | Warehouse picker "Name (CODE)". ⚠️ code/description not returned → `omitPristine` |
 | `bins/` | `inventory/v1/bin/` | 🧠 zone picker from the full zone list, labelled "Warehouse › Zone". ⚠️ code/barcode/capacity/type not returned → `omitPristine` |
-| `suppliers/` | `inventory/v1/supplier/` | Reliability is 0–1; empty lead time/reliability → 0. ⚠️ contact/address/terms not returned → `omitPristine`. Supplier products not built (needs variants) |
+| `suppliers/` | `inventory/v1/supplier/` | Reliability is 0–1; empty lead time/reliability → 0. ⚠️ contact/address/terms not returned → `omitPristine` |
+| `supplier-products/` | `inventory/v1/supplier-product/` | The supplier price list. ⚠️ read returns only supplier, variant, preferred → list shows those; edit uses `omitPristine` for everything else |
 
 ## 7. Cross-feature links
 
@@ -219,6 +221,9 @@ flowchart LR
     whform["inventory/warehouses form"] -->|LocationService| sites
     zoneform["inventory/zones form"] --> wh["inventory/warehouses"]
     binform["inventory/bins form"] --> zones["inventory/zones"]
+    products --> variants["inventory/variants"]
+    spform["inventory/supplier-products form"] --> variants
+    spform --> suppliers["inventory/suppliers"]
 ```
 
 Only services and models cross feature boundaries; components never do.
@@ -233,7 +238,7 @@ The places most likely to hide a bug, in the order to check them:
 4. 🧠 `shared/utils/server-errors.ts` — every form depends on it.
 5. 🧠 `features/locations/sites/site-form.component.ts` — cascading pickers that must not clear on load.
 6. 🧠 ⚠️ `features/inventory/categories/category-form.component.ts` — tree rules and the duplicate workaround.
-7. ⚠️ `shared/utils/omit-pristine.ts` and its four users (warehouse, zone, bin, supplier forms) — an edit must never
+7. ⚠️ `shared/utils/omit-pristine.ts` and its users (warehouse, zone, bin, supplier, variant, supplier-product forms) — an edit must never
    send an untouched field the API didn't return.
 8. ⚠️ Every other workaround marked above: re-check when the backend fixes the matching item.
 
