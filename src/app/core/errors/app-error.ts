@@ -1,6 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { ApiErrorResponse } from '../models/api-response.model';
 
+/** The one error shape the app works with; built from the backend's error envelope by toAppError(). */
 export interface AppError {
   status: number;
   message: string;
@@ -8,6 +9,7 @@ export interface AppError {
   raw?: unknown;
 }
 
+/** Turns any thrown value (HttpErrorResponse or not) into an AppError. */
 export function toAppError(error: unknown): AppError {
   if (error instanceof HttpErrorResponse) {
     const body = error.error as Partial<ApiErrorResponse> | string | null;

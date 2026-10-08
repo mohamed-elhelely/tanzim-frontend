@@ -23,6 +23,11 @@ function statusOf(error: unknown): number | null {
   return null;
 }
 
+/**
+ * Adds the Bearer token. On a 401 it refreshes the access token once (shared between parallel requests,
+ * see AuthService.refreshAccessToken) and retries; if there is no refresh token, the refresh fails, or the
+ * retry is still 401, it logs out. Login and refresh calls pass through untouched.
+ */
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const injector = inject(Injector);
   const tokens = inject(TokenStorageService);

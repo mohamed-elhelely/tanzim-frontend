@@ -11,11 +11,10 @@ import { LanguageService } from '../../../core/services/language.service';
 import { ThemeService } from '../../../core/services/theme.service';
 
 @Component({
-    selector: 'app-login-page',
-    imports: [ReactiveFormsModule, TranslatePipe, InputTextModule, PasswordModule, ButtonModule],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    templateUrl: './login-page.component.html',
-    styleUrl: './login-page.component.scss'
+  selector: 'app-login-page',
+  imports: [ReactiveFormsModule, TranslatePipe, InputTextModule, PasswordModule, ButtonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './login-page.component.html',
 })
 export class LoginPageComponent {
   private readonly fb = inject(NonNullableFormBuilder);

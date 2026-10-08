@@ -9,9 +9,11 @@ export interface RequestOptions {
   headers?: Record<string, string>;
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+/**
+ * Thin HttpClient wrapper: prefixes API_BASE_URL and types the backend envelope ({ success, data, metadata }).
+ * Errors are already converted to AppError by the error interceptor. Resource services extend CrudApi instead.
+ */
+@Injectable({ providedIn: 'root' })
 export class BaseApiService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = inject(API_BASE_URL);

@@ -49,18 +49,18 @@ describe('ProductListComponent', () => {
   it('sends paging and name ordering from the table', () => {
     const fixture = create();
     expectList({}, [makeProduct()], 30);
-    fixture.componentInstance.onLazyLoad({ first: 20, rows: 10, sortField: 'name', sortOrder: -1 });
+    fixture.componentInstance.table.onLazyLoad({ first: 20, rows: 10, sortField: 'name', sortOrder: -1 });
     expectList({ page: '3', page_size: '10', ordering: '-name' }, []);
   });
 
   it('debounces search and restarts from page 1', fakeAsync(() => {
     const fixture = create();
     expectList({}, [makeProduct()], 30);
-    fixture.componentInstance.onLazyLoad({ first: 10, rows: 10 });
+    fixture.componentInstance.table.onLazyLoad({ first: 10, rows: 10 });
     expectList({ page: '2' }, []);
-    fixture.componentInstance.onSearch('pho');
+    fixture.componentInstance.table.onSearch('pho');
     tick(100);
-    fixture.componentInstance.onSearch('phone ');
+    fixture.componentInstance.table.onSearch('phone ');
     tick(300);
     expectList({ page: '1', search: 'phone' }, [makeProduct()]);
   }));

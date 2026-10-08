@@ -8,7 +8,7 @@ import { TenantCompanyService } from '../admin/companies/tenant-company.service'
 import { DepartmentService } from '../company/departments/department.service';
 import { TeamService } from '../company/teams/team.service';
 import { CompanyUserService } from '../company/users/company-user.service';
-import { LocationService } from '../locations/location.service';
+import { LocationService } from '../locations/sites/location.service';
 
 type StatKey = 'users' | 'departments' | 'teams' | 'locations' | 'companies' | 'activeCompanies';
 

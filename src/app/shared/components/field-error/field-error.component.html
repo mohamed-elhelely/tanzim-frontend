@@ -1,0 +1,17 @@
+@if (control.touched && control.errors; as errors) {
+  <small class="text-sm text-red-600">
+    @if (errors['serverError']) {
+      {{ errors['serverError'] }}
+    } @else if (errors['required']) {
+      {{ 'validation.required' | translate }}
+    } @else if (errors['email']) {
+      {{ 'validation.email' | translate }}
+    } @else if (errors['maxlength']) {
+      {{ 'validation.maxLength' | translate: { max: errors['maxlength'].requiredLength } }}
+    } @else if (errors['minlength']) {
+      {{ 'validation.minLength' | translate: { min: errors['minlength'].requiredLength } }}
+    } @else if (errors['pattern']) {
+      {{ patternKey | translate }}
+    }
+  </small>
+}

@@ -3,6 +3,7 @@ import { inject } from '@angular/core';
 import { finalize } from 'rxjs';
 import { LoadingService } from '../services/loading.service';
 
+/** Counts requests in flight for the top loading bar (LoadingService). */
 export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
   const loading = inject(LoadingService);
   loading.begin();

@@ -18,17 +18,18 @@ You are continuing work on Tanzim, a bilingual (English/Arabic, RTL) ERP. Two re
   - Redesign: dark indigo sidebar, header with breadcrumb + language/dark-mode toggles + user menu, dashboard with real counts/setup checklist/quick actions, search inside list cards, coming-soon pages, split-screen login.
   - Production build points at the backend via ngrok: https://chunk-surcharge-manhood.ngrok-free.dev/api/. An interceptor adds `ngrok-skip-browser-warning` to any ngrok host.
 - main also has Step 6 (platform-staff Companies, /admin/companies; spec 2026-10-08-platform-companies-design.md) and menu visibility by role and subscription (spec 2026-10-08-menu-visibility-design.md).
-- Step 7 (Inventory catalogue: products, categories, brands) is on branch claude/jolly-hopper-2gqwi0; spec: docs/superpowers/specs/2026-10-08-inventory-catalogue-design.md.
+- Step 7 (Inventory catalogue: products, categories, brands) is in PR mohamed-elhelely/tanzim-frontend#8 (branch claude/jolly-hopper-2gqwi0); spec: docs/superpowers/specs/2026-10-08-inventory-catalogue-design.md.
+- Code-structure cleanup (one convention, ServerTable/ConfirmService/handleSaveError, ARCHITECTURE.md, CODE_MAP.md) is on branch claude/code-structure, stacked on #8.
 - Open PR 0Mustafa37/Tanzim#11 (claude/cors-frontend-origins → master): CORS allows http://localhost:4200, https://mohamed-elhelely.github.io and the ngrok header; CORS_EXTRA_ORIGINS env var for more.
 - GitHub Pages (https://mohamed-elhelely.github.io/tanzim-frontend/) was deployed from claude/redesign-ui, which now equals main; redeploy from main from now on (`npm run deploy`, angular-cli-ghpages, baseHref /tanzim-frontend/).
 - Stale branches (delete only if the owner agrees): claude/awesome-hawking-7uf16d, step-4-company-organisation, master (frontend), claude/awesome-lovelace-2bdsqn, claude/redesign-ui, claude/menu-visibility (merged).
 
 ## Architecture and conventions (frontend)
-- API: `CrudApi<T, TPayload>` in core/api/crud-api.ts (list/all/listAll/dropdown/retrieve/create/update(PATCH)/remove), unwraps `{ success, data, metadata }`. One ~8-line service per resource. Paths are relative to API_BASE_URL and MUST end with `/`.
-- Each resource has explicit list + form components (no generic config-driven screens), mirroring features/company/departments/*. Lists: p-table lazy paging, 300 ms debounced search, cancel stale requests, step back a page after deleting the last row. Forms: reactive, `applyServerErrors` for field errors, `app-field-error` (supports `patternKey`), PATCH sends full values, cleared pickers send null.
-- Theme: Aura preset in core/theme/tanzim-preset.ts (indigo primary, gray surfaces), providePrimeNG with cssLayer `primeng`. Layer order (src/layer-order.css): tailwind-base, primeng, app, tailwind-utilities. Dark mode = `.dark` on <html> (ThemeService + inline script in index.html). Base font size 14px; fonts Inter + IBM Plex Sans Arabic.
+- Read docs/ARCHITECTURE.md (structure, conventions, recipes, roadmap) and docs/CODE_MAP.md (what exists, how it connects, hot spots) before changing code. Keep CODE_MAP.md updated with every change.
+- Lists: `readonly table = new ServerTable((q) => this.api.list(q))` (shared/table) + `ConfirmService.confirmDelete(...)` (core/services). Forms: reactive, `handleSaveError(...)` (shared/utils/server-errors), PATCH sends full values, cleared pickers send null.
+- Every component is .ts + .html (no inline templates, no empty .scss). Services extend `CrudApi` and only set `path` (ending in `/`).
 - PrimeNG 21 names: p-select, p-toggleswitch, pTextarea, p-drawer, p-iconfield/p-inputicon; severity 'warn' (not 'warning').
-- Every user-visible string in src/assets/i18n/en.json AND ar.json. Use logical Tailwind classes (ps-/pe-/ms-/me-/text-start/text-end, rtl:rotate-180 for arrows), never pl-/pr-/ml-/mr-/text-left/right.
+- Every user-visible string in src/assets/i18n/en.json AND ar.json. Logical Tailwind classes only (ps-/pe-/ms-/me-/text-start/text-end, rtl:rotate-180).
 - Match surrounding code style and comment density; no new npm dependencies without asking; no Angular Material.
 - Commit after each logical step; never include model names in commits or PRs.
 
@@ -41,6 +42,7 @@ You are continuing work on Tanzim, a bilingual (English/Arabic, RTL) ERP. Two re
 - GET /permissions/?search= returns 500.
 - Editing a category without renaming it returns 400 "already exists" (the form omits unchanged name/parent).
 - Deleting a brand/category still in use returns 204 and leaves products pointing at it.
+- Every DELETE returns 204 with a body; the dev-server proxy turns it into a 500 (the delete still happens). BACKEND_REQUESTS 1b.
 - Creating a company user returns the password hash (security; BACKEND_REQUESTS.md Priority 0).
 - Company create (admin/company/) is not atomic: a blank or already-used email returns 500 and leaves the company without an admin.
 - Company phone can't be blank (400), so it can't be cleared once saved.

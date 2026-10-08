@@ -47,6 +47,15 @@ is_staff=True and no CompanyUser in `manage.py shell`. With no EMAIL_HOST_PASSWO
    "has no CompanyUser"; the admin/company/ endpoints check is_staff (IsAdminUser), so a non-staff user without a company
    sees a Companies menu that returns 403.
 
+## Priority 1b — breaks every delete through a proxy
+
+1b. Every DELETE answers "204 No Content" WITH a 99-byte JSON body (StandardizedJSONRenderer wraps the empty
+    response). A 204 must not have a body; strict HTTP clients reject it. The Angular dev-server proxy fails with
+    "Parse Error: Expected HTTP/" and turns it into a 500, so in local development every delete succeeds on the server
+    but the UI reports an error. Return 204 with no body (skip the envelope for 204), or return 200 with the envelope.
+    Reproduce: `curl -i -X DELETE localhost:8000/api/inventory/v1/brand/{id}/ -H "Authorization: Bearer …"` → 204 with
+    Content-Length: 99.
+
 ## Priority 2 — found while building the platform-staff Companies screen (company/apis/company.py, company/serializers/company.py)
 
 4. POST /api/company/v1/admin/company/ is not atomic. With a blank email (ValueError "Users must have an email address")

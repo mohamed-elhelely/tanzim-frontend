@@ -4,9 +4,8 @@ import { MessageService } from 'primeng/api';
 
 type NotificationSeverity = 'success' | 'info' | 'warn' | 'error';
 
-@Injectable({
-  providedIn: 'root',
-})
+/** Toasts (PrimeNG MessageService) with a translated title. Messages passed in are shown as-is. */
+@Injectable({ providedIn: 'root' })
 export class NotificationService {
   private readonly messages = inject(MessageService);
   private readonly injector = inject(Injector);

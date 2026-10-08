@@ -1,9 +1,10 @@
 import { ErrorHandler, Injectable, Injector, inject } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
-import { toAppError } from '../errors/app-error';
+import { toAppError } from './app-error';
 import { NotificationService } from '../services/notification.service';
 
+/** Last resort for uncaught errors. HTTP errors were already shown by the error interceptor, so only others get a toast. */
 @Injectable()
 export class GlobalErrorHandler implements ErrorHandler {
   private readonly injector = inject(Injector);

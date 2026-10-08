@@ -1,8 +1,7 @@
 import { Injectable, computed, signal } from '@angular/core';
 
-@Injectable({
-  providedIn: 'root',
-})
+/** Number of HTTP requests in flight; fed by loadingInterceptor, shown by LoadingBarComponent. */
+@Injectable({ providedIn: 'root' })
 export class LoadingService {
   private readonly activeRequests = signal(0);
 

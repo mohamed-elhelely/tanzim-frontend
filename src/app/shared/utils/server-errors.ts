@@ -1,5 +1,6 @@
 import { FormGroup } from '@angular/forms';
 import { AppError } from '../../core/errors/app-error';
+import { NotificationService } from '../../core/services/notification.service';
 
 const NON_FIELD_ERRORS = 'non_field_errors';
 
@@ -25,6 +26,27 @@ export function applyServerErrors(
     }
   }
   return unmatched;
+}
+
+/**
+ * What every form does when a save fails. Returns the messages for the alert above the form.
+ * - network, 401 and 5xx: nothing here, the interceptors already told the user;
+ * - field errors: shown under the matching controls (see applyServerErrors);
+ * - a 4xx without field errors: the backend's message as a toast.
+ */
+export function handleSaveError(
+  form: FormGroup,
+  error: AppError,
+  notifications: NotificationService,
+  fieldMap: Record<string, string> = {},
+): string[] {
+  if (error.status === 0 || error.status === 401 || error.status >= 500) {
+    return [];
+  }
+  if (Object.keys(error.errors ?? {}).length === 0) {
+    notifications.error(error.message);
+  }
+  return applyServerErrors(form, error, fieldMap);
 }
 
 /** Translation key for an ErrorState title. */

@@ -42,8 +42,8 @@ describe('PermissionGroupListComponent', () => {
   it('cancels the older list request when a newer one starts', () => {
     const fixture = create();
     httpMock.expectOne((r) => r.url === URL).flush(envelope([makePermissionGroup()], 30));
-    fixture.componentInstance.onLazyLoad({ first: 10, rows: 10 });
-    fixture.componentInstance.onLazyLoad({ first: 20, rows: 10 });
+    fixture.componentInstance.table.onLazyLoad({ first: 10, rows: 10 });
+    fixture.componentInstance.table.onLazyLoad({ first: 20, rows: 10 });
 
     const requests = httpMock.match((r) => r.url === URL);
     expect(requests.length).toBe(2);

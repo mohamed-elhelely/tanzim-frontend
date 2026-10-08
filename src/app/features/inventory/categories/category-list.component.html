@@ -1,7 +1,7 @@
 <app-page-header title="inventory.categories.title" [actions]="headerActions"></app-page-header>
 
-@if (error(); as err) {
-  <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403" (retry)="load()"></app-error-state>
+@if (table.error(); as err) {
+  <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403" (retry)="table.load()"></app-error-state>
 } @else {
   <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
     <div class="flex items-center gap-3 border-b border-gray-100 p-4 dark:border-gray-800">
@@ -11,23 +11,23 @@
           pInputText
           type="search"
           [placeholder]="'common.search' | translate"
-          (input)="onSearch($any($event.target).value)"
+          (input)="table.onSearch($any($event.target).value)"
           class="w-full"
         />
       </p-iconfield>
     </div>
     <div class="overflow-x-auto">
       <p-table
-        [value]="rows()"
+        [value]="table.rows()"
         [lazy]="true"
         [lazyLoadOnInit]="false"
-        (onLazyLoad)="onLazyLoad($event)"
+        (onLazyLoad)="table.onLazyLoad($event)"
         [paginator]="true"
-        [first]="first()"
-        [rows]="pageSize()"
-        [totalRecords]="total()"
+        [first]="table.first()"
+        [rows]="table.pageSize()"
+        [totalRecords]="table.total()"
         [rowsPerPageOptions]="[10, 25, 50]"
-        [loading]="loading()"
+        [loading]="table.loading()"
         dataKey="id"
         size="small"
       >

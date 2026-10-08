@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { ConfirmationService } from 'primeng/api';
+import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
@@ -9,8 +8,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { AuthService } from '../../../core/auth/auth.service';
 import { AppError } from '../../../core/errors/app-error';
+import { ConfirmService } from '../../../core/services/confirm.service';
 import { LanguageService } from '../../../core/services/language.service';
-import { NotificationService } from '../../../core/services/notification.service';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
 import { PageHeaderAction, PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
@@ -22,29 +21,27 @@ import { CompanyUserService } from './company-user.service';
 
 /** The company-user endpoint returns the full list, so paging, sorting and search happen in the table. */
 @Component({
-    selector: 'app-user-list',
-    imports: [
-        TranslatePipe,
-        TableModule,
-        ButtonModule,
-        InputTextModule,
+  selector: 'app-user-list',
+  imports: [
+    TranslatePipe,
+    TableModule,
+    ButtonModule,
+    InputTextModule,
     IconFieldModule,
     InputIconModule,
-        PageHeaderComponent,
-        EmptyStateComponent,
-        ErrorStateComponent,
-        StatusBadgeComponent,
-        LocalizedNamePipe,
-    ],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    templateUrl: './user-list.component.html'
+    PageHeaderComponent,
+    EmptyStateComponent,
+    ErrorStateComponent,
+    StatusBadgeComponent,
+    LocalizedNamePipe,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './user-list.component.html',
 })
 export class UserListComponent implements OnInit {
   private readonly api = inject(CompanyUserService);
   private readonly router = inject(Router);
-  private readonly confirmation = inject(ConfirmationService);
-  private readonly notifications = inject(NotificationService);
-  private readonly translate = inject(TranslateService);
+  private readonly confirm = inject(ConfirmService);
 
   readonly lang = inject(LanguageService).currentLang;
   /** Only company admins may add, edit or delete users (enforced by the backend). */
@@ -89,29 +86,6 @@ export class UserListComponent implements OnInit {
   }
 
   confirmDelete(row: CompanyUser): void {
-    this.confirmation.confirm({
-      key: 'app-confirm',
-      header: this.translate.instant('common.confirm'),
-      message: this.translate.instant('common.confirmDelete', { name: row.user.email }),
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel: this.translate.instant('common.delete'),
-      rejectLabel: this.translate.instant('common.cancel'),
-      acceptButtonStyleClass: 'p-button-danger',
-      accept: () => this.delete(row),
-    });
-  }
-
-  private delete(row: CompanyUser): void {
-    this.api.remove(row.id).subscribe({
-      next: () => {
-        this.notifications.success(this.translate.instant('common.deleted'));
-        this.load();
-      },
-      error: (error: AppError) => {
-        if (error.status >= 400 && error.status < 500 && error.status !== 401) {
-          this.notifications.error(error.message);
-        }
-      },
-    });
+    this.confirm.confirmDelete(row.user.email, () => this.api.remove(row.id), () => this.load());
   }
 }

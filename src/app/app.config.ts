@@ -7,7 +7,7 @@ import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
 import { routes } from './app.routes';
-import { GlobalErrorHandler } from './core/handlers/global-error-handler';
+import { GlobalErrorHandler } from './core/errors/global-error-handler';
 import { apiHeadersInterceptor } from './core/interceptors/api-headers.interceptor';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { errorInterceptor } from './core/interceptors/error.interceptor';

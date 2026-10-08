@@ -2,6 +2,10 @@ import { Routes } from '@angular/router';
 import { authGuard, companyMemberGuard, guestGuard, platformAdminGuard } from './core/auth/auth.guard';
 import { ShellComponent } from './layout/shell/shell.component';
 
+/** Sections that aren't built yet share one placeholder page; see ComingSoonPageComponent. */
+const comingSoon = () =>
+  import('./features/coming-soon/coming-soon-page.component').then((m) => m.ComingSoonPageComponent);
+
 export const routes: Routes = [
   {
     path: 'auth',
@@ -50,34 +54,32 @@ export const routes: Routes = [
       {
         path: 'sales',
         canActivate: [companyMemberGuard],
-        loadComponent: () => import('./features/sales/sales-page.component').then((m) => m.SalesPageComponent),
-        data: { titleKey: 'nav.sales' },
+        loadComponent: comingSoon,
+        data: { titleKey: 'nav.sales', icon: 'pi-shopping-cart' },
       },
       {
         path: 'returns',
         canActivate: [companyMemberGuard],
-        loadComponent: () => import('./features/returns/returns-page.component').then((m) => m.ReturnsPageComponent),
-        data: { titleKey: 'nav.returns' },
+        loadComponent: comingSoon,
+        data: { titleKey: 'nav.returns', icon: 'pi-replay' },
       },
       {
         path: 'billing',
         canActivate: [companyMemberGuard],
-        loadComponent: () => import('./features/billing/billing-page.component').then((m) => m.BillingPageComponent),
-        data: { titleKey: 'nav.billing' },
+        loadComponent: comingSoon,
+        data: { titleKey: 'nav.billing', icon: 'pi-credit-card' },
       },
       {
         path: 'notifications',
         canActivate: [companyMemberGuard],
-        loadComponent: () =>
-          import('./features/notifications/notifications-page.component').then((m) => m.NotificationsPageComponent),
-        data: { titleKey: 'nav.notifications' },
+        loadComponent: comingSoon,
+        data: { titleKey: 'nav.notifications', icon: 'pi-bell' },
       },
       {
         path: 'import-export',
         canActivate: [companyMemberGuard],
-        loadComponent: () =>
-          import('./features/import-export/import-export-page.component').then((m) => m.ImportExportPageComponent),
-        data: { titleKey: 'nav.importExport' },
+        loadComponent: comingSoon,
+        data: { titleKey: 'nav.importExport', icon: 'pi-file-import' },
       },
     ],
   },
