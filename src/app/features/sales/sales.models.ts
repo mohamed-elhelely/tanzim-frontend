@@ -196,3 +196,191 @@ export const PRIORITY_SEVERITY: Record<OrderPriority, Severity> = {
   high: 'warn',
   urgent: 'danger',
 };
+
+// Delivery notes (sales/serializers.py → DeliveryNote*Serializer).
+
+export const DELIVERY_STATUSES = ['draft', 'confirmed', 'in_transit', 'delivered', 'failed'] as const;
+export type DeliveryStatus = (typeof DELIVERY_STATUSES)[number];
+
+export const SHIPPING_METHODS = ['standard', 'express', 'overnight', 'pickup'] as const;
+export type ShippingMethod = (typeof SHIPPING_METHODS)[number];
+
+export interface DeliveryNoteListItem {
+  id: number;
+  sales_order: number;
+  sales_order_number: string;
+  customer_name: string;
+  delivery_number: string;
+  status: DeliveryStatus;
+  warehouse: number;
+  warehouse_name: string;
+  shipped_date: string | null;
+  delivered_date: string | null;
+  carrier: string;
+  tracking_number: string;
+  shipping_method: ShippingMethod;
+  created_at: string;
+}
+
+export interface DeliveryNoteLine {
+  id: number;
+  sales_order_line: number;
+  product: number;
+  product_name: string;
+  sku: string | null;
+  quantity_delivered: string;
+  batch: number | null;
+  bin: number | null;
+  serials: number[];
+}
+
+export interface DeliveryNote extends DeliveryNoteListItem {
+  notes: string;
+  created_by: number | null;
+  created_by_name: string | null;
+  lines: DeliveryNoteLine[];
+  updated_at: string;
+}
+
+/** The fields a delivery note's PATCH accepts besides its order and lines. */
+export interface DeliveryNoteDetailsPayload {
+  shipping_method: ShippingMethod;
+  carrier: string;
+  tracking_number: string;
+  notes: string;
+}
+
+/** POST sales-orders/{id}/create_delivery/: stock is issued as soon as the note is created. */
+export interface CreateDeliveryPayload {
+  lines: { line_id: number; quantity: string }[];
+  carrier: string;
+  tracking_number: string;
+}
+
+export const DELIVERY_STATUS_SEVERITY: Record<DeliveryStatus, Severity> = {
+  draft: 'secondary',
+  confirmed: 'info',
+  in_transit: 'warn',
+  delivered: 'success',
+  failed: 'danger',
+};
+
+// Sales invoices and payments.
+
+export const INVOICE_STATUSES = ['draft', 'issued', 'paid', 'overdue', 'cancelled'] as const;
+export type SalesInvoiceStatus = (typeof INVOICE_STATUSES)[number];
+
+export const PAYMENT_STATUSES = ['pending', 'partial', 'paid', 'overpaid', 'failed'] as const;
+export type InvoicePaymentStatus = (typeof PAYMENT_STATUSES)[number];
+
+export interface SalesInvoiceListItem {
+  id: number;
+  invoice_number: string;
+  sales_order: number;
+  sales_order_number: string;
+  delivery_note: number | null;
+  delivery_note_number: string | null;
+  status: SalesInvoiceStatus;
+  payment_status: InvoicePaymentStatus;
+  invoice_date: string;
+  due_date: string | null;
+  customer: number;
+  customer_name: string;
+  currency: string;
+  total_amount: string;
+  amount_paid: string;
+  /** ⚠️ A JSON number here (a model property), while the other amounts are decimal strings. */
+  amount_due: number | string;
+  payment_percentage: number;
+  created_at: string;
+}
+
+export interface SalesInvoiceLine {
+  id: number;
+  line_number: number;
+  product: number;
+  product_name: string;
+  variant: number | null;
+  sku: string | null;
+  description: string;
+  quantity: string;
+  unit_price: string;
+  discount_percent: string;
+  tax_percent: string;
+  line_total: string;
+}
+
+export interface SalesInvoice extends SalesInvoiceListItem {
+  subtotal: string;
+  tax_amount: string;
+  discount_amount: string;
+  reference: string;
+  notes: string;
+  payment_terms: string;
+  issued_by_name: string | null;
+  paid_by_name: string | null;
+  paid_at: string | null;
+  cancelled_at: string | null;
+  cancelled_reason: string;
+  created_by_name: string | null;
+  lines: SalesInvoiceLine[];
+  updated_at: string;
+}
+
+/** Editable while the invoice is a draft (SalesInvoiceWriteSerializer, without lines). */
+export interface SalesInvoiceDetailsPayload {
+  due_date: string | null;
+  reference: string;
+  payment_terms: string;
+  notes: string;
+}
+
+export const PAYMENT_METHODS = ['bank_transfer', 'cash', 'credit_card', 'check', 'other'] as const;
+export type PaymentMethod = (typeof PAYMENT_METHODS)[number];
+
+export type PaymentRecordStatus = 'pending' | 'completed' | 'failed' | 'refunded';
+
+export interface InvoicePayment {
+  id: number;
+  invoice: number;
+  invoice_number: string;
+  payment_date: string;
+  amount: string;
+  payment_method: PaymentMethod;
+  reference: string;
+  notes: string;
+  created_by_name: string | null;
+  status: PaymentRecordStatus;
+  created_at: string;
+}
+
+export interface PaymentPayload {
+  amount: string;
+  payment_method: PaymentMethod;
+  payment_date: string;
+  reference: string;
+  notes: string;
+}
+
+export const INVOICE_STATUS_SEVERITY: Record<SalesInvoiceStatus, Severity> = {
+  draft: 'secondary',
+  issued: 'info',
+  paid: 'success',
+  overdue: 'danger',
+  cancelled: 'secondary',
+};
+
+export const PAYMENT_STATUS_SEVERITY: Record<InvoicePaymentStatus, Severity> = {
+  pending: 'warn',
+  partial: 'info',
+  paid: 'success',
+  overpaid: 'warn',
+  failed: 'danger',
+};
+
+export const PAYMENT_RECORD_SEVERITY: Record<PaymentRecordStatus, Severity> = {
+  pending: 'warn',
+  completed: 'success',
+  failed: 'danger',
+  refunded: 'secondary',
+};

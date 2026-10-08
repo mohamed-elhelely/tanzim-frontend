@@ -1,0 +1,80 @@
+<app-page-header title="sales.payments.title" subtitle="sales.payments.subtitle"></app-page-header>
+
+@if (table.error(); as err) {
+  <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403" (retry)="table.load()"></app-error-state>
+} @else {
+  <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
+    <div class="flex flex-col gap-3 border-b border-gray-100 p-4 sm:flex-row sm:items-center dark:border-gray-800">
+      <p-select
+        [(ngModel)]="method"
+        (ngModelChange)="onMethodChange()"
+        [options]="methodOptions"
+        optionLabel="label"
+        optionValue="value"
+        [showClear]="true"
+        [placeholder]="'sales.fields.paymentMethod' | translate"
+        [ariaLabel]="'sales.fields.paymentMethod' | translate"
+        styleClass="w-full sm:w-56"
+        appendTo="body"
+      >
+        <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
+        <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
+      </p-select>
+    </div>
+    <div class="overflow-x-auto">
+      <p-table
+        [value]="table.rows()"
+        [lazy]="true"
+        [lazyLoadOnInit]="false"
+        (onLazyLoad)="table.onLazyLoad($event)"
+        [paginator]="true"
+        [first]="table.first()"
+        [rows]="table.pageSize()"
+        [totalRecords]="table.total()"
+        [rowsPerPageOptions]="[10, 25, 50]"
+        [loading]="table.loading()"
+        dataKey="id"
+        size="small"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="payment_date">
+              {{ 'sales.fields.paymentDate' | translate }} <p-sortIcon field="payment_date"></p-sortIcon>
+            </th>
+            <th>{{ 'sales.fields.invoiceNumber' | translate }}</th>
+            <th>{{ 'sales.fields.paymentMethod' | translate }}</th>
+            <th>{{ 'sales.fields.paymentReference' | translate }}</th>
+            <th>{{ 'sales.fields.status' | translate }}</th>
+            <th>{{ 'sales.fields.createdBy' | translate }}</th>
+            <th pSortableColumn="amount" class="text-end">
+              {{ 'sales.fields.amount' | translate }} <p-sortIcon field="amount"></p-sortIcon>
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-row>
+          <tr class="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50" (click)="openInvoice(row)">
+            <td class="whitespace-nowrap" dir="ltr">{{ row.payment_date }}</td>
+            <td class="whitespace-nowrap font-mono text-xs font-semibold text-primary-600 dark:text-primary-300" dir="ltr">
+              {{ row.invoice_number }}
+            </td>
+            <td>{{ 'sales.paymentMethods.' + row.payment_method | translate }}</td>
+            <td dir="ltr">{{ row.reference || '—' }}</td>
+            <td>
+              <app-status-badge
+                [value]="'sales.paymentRecordStatuses.' + row.status | translate"
+                [severity]="statusSeverity(row.status)"
+              ></app-status-badge>
+            </td>
+            <td>{{ row.created_by_name || '—' }}</td>
+            <td class="whitespace-nowrap text-end font-medium">{{ row.amount | number: '1.2-2' }}</td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="7"><app-empty-state icon="pi-wallet"></app-empty-state></td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+}

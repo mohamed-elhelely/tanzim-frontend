@@ -43,8 +43,9 @@ export abstract class CrudApi<T, TPayload, TCreated = T> extends BaseApiService 
     );
   }
 
-  all(): Observable<T[]> {
-    return this.get<T[]>(this.path).pipe(map((response) => response.data ?? []));
+  /** Everything from an unpaginated endpoint, optionally with exact-match filters (e.g. `{ sales_order: 4 }`). */
+  all(filters: Record<string, string | number> = {}): Observable<T[]> {
+    return this.get<T[]>(this.path, { params: filters }).pipe(map((response) => response.data ?? []));
   }
 
   /** Every record of a paginated resource, fetched 100 at a time (the backend's max page size). */

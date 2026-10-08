@@ -33,7 +33,8 @@
     "backToList": "Back to list",
     "comingSoonBadge": "Coming soon",
     "backToDashboard": "Back to dashboard",
-    "viewAll": "View all"
+    "viewAll": "View all",
+    "reasonOptional": "Reason (optional)"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -67,7 +68,10 @@
     "variants": "Variants",
     "supplierProducts": "Supplier price list",
     "salesOrders": "Sales orders",
-    "customers": "Customers"
+    "customers": "Customers",
+    "deliveries": "Deliveries",
+    "salesInvoices": "Invoices",
+    "payments": "Payments"
   },
   "auth": {
     "login": "Login",
@@ -592,14 +596,37 @@
       "discountPercent": "Disc. %",
       "taxPercent": "Tax %",
       "lineTotal": "Line total",
-      "cancelReason": "Reason (optional)"
+      "amount": "Amount",
+      "amountDue": "Amount due",
+      "amountPaid": "Paid",
+      "carrier": "Carrier",
+      "createdBy": "Created by",
+      "deliveredDate": "Delivered on",
+      "deliveryNumber": "Delivery no.",
+      "dueDate": "Due date",
+      "invoiceDate": "Invoice date",
+      "invoiceNumber": "Invoice no.",
+      "issuedBy": "Issued by",
+      "paidAt": "Paid at",
+      "paymentDate": "Payment date",
+      "paymentMethod": "Payment method",
+      "paymentStatus": "Payment",
+      "quantityDelivered": "Qty delivered",
+      "remaining": "Remaining",
+      "shipNow": "Ship now",
+      "shippingMethod": "Shipping method",
+      "trackingNumber": "Tracking no.",
+      "paymentReference": "Reference"
     },
     "sections": {
       "contact": "Contact",
       "terms": "Credit and terms",
       "billingAddress": "Billing address",
       "shippingAddress": "Shipping address",
-      "lines": "Items"
+      "lines": "Items",
+      "deliveries": "Deliveries",
+      "invoices": "Invoices",
+      "payments": "Payments"
     },
     "address": {
       "street": "Street",
@@ -615,18 +642,44 @@
       "confirmOrder": "Confirm order",
       "cancelOrder": "Cancel order",
       "clone": "Duplicate",
-      "markDelivered": "Mark delivered"
+      "markDelivered": "Mark delivered",
+      "ship": "Ship",
+      "createDelivery": "Create delivery note",
+      "confirmDelivery": "Confirm delivery",
+      "handToCarrier": "Hand to carrier",
+      "markFailed": "Delivery failed",
+      "editDetails": "Edit details",
+      "createInvoice": "Create invoice",
+      "issueInvoice": "Issue invoice",
+      "recordPayment": "Record payment",
+      "refund": "Refund",
+      "cancelInvoice": "Cancel invoice"
     },
     "confirm": {
       "confirmOrder": "Confirm this order? Stock will be reserved for every item and the customer's credit limit checked.",
       "markDelivered": "Mark this order as delivered?",
-      "clone": "Create a new draft order with the same customer and items?"
+      "clone": "Create a new draft order with the same customer and items?",
+      "confirmDelivery": "Confirm this delivery note? The order is marked shipped once every item has shipped.",
+      "deliveryDelivered": "Mark this delivery as delivered?",
+      "createInvoice": "Create a draft invoice for everything shipped on this order?",
+      "issueInvoice": "Issue this invoice? It can no longer be edited, and the amount is added to the customer's balance.",
+      "refund": "Refund this payment of {{amount}} in full?"
     },
     "toasts": {
       "confirmed": "Order confirmed.",
       "cancelled": "Order cancelled.",
       "cloned": "Draft copy created.",
-      "delivered": "Order marked as delivered."
+      "delivered": "Order marked as delivered.",
+      "deliveryCreated": "Delivery note created and stock issued.",
+      "deliveryConfirmed": "Delivery confirmed.",
+      "handedToCarrier": "Handed to the carrier.",
+      "deliveryDelivered": "Delivery marked as delivered.",
+      "deliveryFailed": "Delivery marked as failed.",
+      "invoiceCreated": "Draft invoice created.",
+      "invoiceIssued": "Invoice issued.",
+      "paymentRecorded": "Payment recorded.",
+      "refunded": "Payment refunded.",
+      "invoiceCancelled": "Invoice cancelled."
     },
     "hints": {
       "noCreditLimit": "No limit",
@@ -637,7 +690,69 @@
       "internalNotes": "Only visible to your team.",
       "atLeastOneLine": "Add at least one item.",
       "orderCancelled": "This order was cancelled.",
-      "onlyDraftEditable": "Only draft orders can be edited."
+      "onlyDraftEditable": "Only draft orders can be edited.",
+      "shipIssuesStock": "The stock leaves the warehouse as soon as the delivery note is created.",
+      "shipQuantity": "Enter quantities between 0 and the remaining amount.",
+      "shipSomething": "Enter a quantity for at least one item.",
+      "searchDeliveries": "Search by delivery or tracking no.",
+      "searchInvoices": "Search by invoice no., customer or reference",
+      "invoiceCancelled": "This invoice was cancelled.",
+      "noPayments": "No payments yet.",
+      "paymentAmount": "Enter an amount greater than 0 and no more than the amount due."
+    },
+    "deliveries": {
+      "title": "Delivery notes",
+      "subtitle": "Created from an order with \"Ship\".",
+      "detail": "Delivery note"
+    },
+    "invoices": {
+      "title": "Sales invoices",
+      "subtitle": "Created from a delivered order.",
+      "detail": "Sales invoice"
+    },
+    "payments": {
+      "title": "Payments",
+      "subtitle": "Recorded and refunded from their invoice."
+    },
+    "deliveryStatuses": {
+      "draft": "Draft",
+      "confirmed": "Confirmed",
+      "in_transit": "In transit",
+      "delivered": "Delivered",
+      "failed": "Failed"
+    },
+    "shippingMethods": {
+      "standard": "Standard",
+      "express": "Express",
+      "overnight": "Overnight",
+      "pickup": "Customer pick-up"
+    },
+    "invoiceStatuses": {
+      "draft": "Draft",
+      "issued": "Issued",
+      "paid": "Paid",
+      "overdue": "Overdue",
+      "cancelled": "Cancelled"
+    },
+    "paymentStatuses": {
+      "pending": "Unpaid",
+      "partial": "Partly paid",
+      "paid": "Paid",
+      "overpaid": "Overpaid",
+      "failed": "Failed"
+    },
+    "paymentMethods": {
+      "bank_transfer": "Bank transfer",
+      "cash": "Cash",
+      "credit_card": "Credit card",
+      "check": "Cheque",
+      "other": "Other"
+    },
+    "paymentRecordStatuses": {
+      "pending": "Pending",
+      "completed": "Completed",
+      "failed": "Failed",
+      "refunded": "Refunded"
     }
   }
 }

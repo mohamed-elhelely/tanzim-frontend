@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { CrudApi } from '../../../core/api/crud-api';
-import { SalesOrder, SalesOrderListItem, SalesOrderPayload, SalesOrderSaved } from '../sales.models';
+import { CreateDeliveryPayload, DeliveryNote, SalesOrder, SalesOrderListItem, SalesOrderPayload, SalesOrderSaved } from '../sales.models';
 
 /**
  * Sales orders and their workflow actions. The list returns SalesOrderListItem; `detail()` returns the full
@@ -33,6 +33,11 @@ export class SalesOrderService extends CrudApi<SalesOrderListItem, SalesOrderPay
   /** shipped → delivered. */
   markDelivered(id: number): Observable<SalesOrder> {
     return this.action(id, 'mark_delivered');
+  }
+
+  /** Ships the given quantities (confirmed or picking orders): creates a delivery note and issues the stock. */
+  createDelivery(id: number, body: CreateDeliveryPayload): Observable<DeliveryNote> {
+    return this.post<DeliveryNote>(`${this.detailPath(id)}create_delivery/`, body).pipe(map((response) => response.data as DeliveryNote));
   }
 
   private action(id: number, name: string, body: unknown = {}): Observable<SalesOrder> {

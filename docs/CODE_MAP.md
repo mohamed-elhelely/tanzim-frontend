@@ -117,7 +117,7 @@ Things to know:
 |---|---|---|
 | `api/api.config.ts` | `API_BASE_URL` from `src/environments` | Prod points at the backend's ngrok URL |
 | `api/base-api.service.ts` | Typed `get/post/put/patch/delete` with the base URL | |
-| `api/crud-api.ts` | Standard calls for one resource; `ListQuery.filters` for exact-match filters | 🆕 every resource service extends it |
+| `api/crud-api.ts` | Standard calls for one resource; `ListQuery.filters` and `all(filters)` for exact-match filters | 🆕 every resource service extends it |
 | `auth/auth.service.ts` | Signed-in user, login, logout, token refresh | 🧠 role restored from the JWT on reload |
 | `auth/token-storage.service.ts` | Tokens in localStorage | |
 | `auth/access.service.ts` | Permissions, modules and staff flag from GET /me | 🆕 🧠 🔒 see §3 |
@@ -154,6 +154,7 @@ Things to know:
 | `shared/components/notification-item` | One notification row (bell + page) | Icon/colour by type, unread dot |
 | `shared/pipes/time-ago.pipe.ts` | "3 hours ago" in the current language | `Intl.RelativeTimeFormat`; not live |
 | `shared/components/confirm-dialog` | The one PrimeNG confirm dialog | Opened only through `ConfirmService` |
+| `shared/components/reason-dialog` | Optional-reason dialog before cancel / failed steps | Collects the text; the parent runs the action |
 | `shared/components/empty-state`, `error-state`, `loading-state`, `status-badge`, `loading-bar` | Visual states | |
 | `shared/pipes/localized-name.pipe.ts` | Arabic name in Arabic, else English | |
 | `shared/pipes/user-name.pipe.ts` | Full name → first + last → email | |
@@ -222,7 +223,10 @@ Sales endpoints (`/api/sales/…`) return flat ids plus `*_name` fields, a short
 | Resource | Endpoint | Notes |
 |---|---|---|
 | `customers/` | `sales/customers/` | Type filter. `credit_used` never sent; edit shows credit used / available / open orders. Addresses via `address-fields/` |
-| `orders/` (`SalesOrderService`) | `sales/sales-orders/` | List with status filter (delete on drafts only). 🧠 form: lines in a `FormArray`, one item picker over every active variant (sets product + variant + default price), totals previewed with the backend formula (`lineTotal`/`lineTax`), saving replaces all lines. ⚠️ only drafts open in the form (BACKEND_REQUESTS 12). Detail page: lines, totals, workflow (confirm, cancel with reason, duplicate, mark delivered) via `ConfirmService.confirmAction`; 🧠 follows the `:id` param because duplicate navigates to the copy |
+| `orders/` (`SalesOrderService`) | `sales/sales-orders/` | List with status filter (delete on drafts only). 🧠 form: lines in a `FormArray`, one item picker over every active variant (sets product + variant + default price), totals previewed with the backend formula (`lineTotal`/`lineTax`), saving replaces all lines. ⚠️ only drafts open in the form (BACKEND_REQUESTS 12). Detail page: lines, totals, its deliveries and invoices, workflow (confirm, ship dialog, mark delivered, create invoice, cancel with reason, duplicate) via `ConfirmService.confirmAction`; 🧠 follows the `:id` param because duplicate navigates to the copy |
+| `deliveries/` | `sales/delivery-notes/` | Created only from an order (Ship dialog on the order page, which issues stock). List + detail; workflow confirm → hand to carrier → delivered / failed (pick-ups skip the carrier); draft details via PATCH, then re-read (the write shape has no names) |
+| `invoices/` | `sales/sales-invoices/` | Created only from a delivered order. Detail: lines, totals, payments; draft details / issue / delete / cancel; record payment (≤ amount due), refund. ⚠️ "Create invoice" hidden while a non-cancelled invoice exists (BACKEND_REQUESTS 14); `amount_due` is a number (16) |
+| `payments/` (`InvoicePaymentService`) | `sales/invoice-payments/` | Read-only list (method filter) → invoice; `refund(id)` |
 | `address-fields/` | — | `AddressFieldsComponent` + `addressGroup/toAddress/patchAddress`; keys `street, city, state, zip, country` |
 
 ## 7. Cross-feature links

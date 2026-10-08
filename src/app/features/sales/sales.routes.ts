@@ -24,6 +24,31 @@ export const SALES_ROUTES: Routes = [
     data: { titleKey: 'sales.orders.edit' },
   },
   {
+    path: 'deliveries',
+    loadComponent: () => import('./deliveries/delivery-note-list.component').then((m) => m.DeliveryNoteListComponent),
+    data: { titleKey: 'sales.deliveries.title' },
+  },
+  {
+    path: 'deliveries/:id',
+    loadComponent: () => import('./deliveries/delivery-note-detail.component').then((m) => m.DeliveryNoteDetailComponent),
+    data: { titleKey: 'sales.deliveries.detail' },
+  },
+  {
+    path: 'invoices',
+    loadComponent: () => import('./invoices/sales-invoice-list.component').then((m) => m.SalesInvoiceListComponent),
+    data: { titleKey: 'sales.invoices.title' },
+  },
+  {
+    path: 'invoices/:id',
+    loadComponent: () => import('./invoices/sales-invoice-detail.component').then((m) => m.SalesInvoiceDetailComponent),
+    data: { titleKey: 'sales.invoices.detail' },
+  },
+  {
+    path: 'payments',
+    loadComponent: () => import('./payments/payment-list.component').then((m) => m.PaymentListComponent),
+    data: { titleKey: 'sales.payments.title' },
+  },
+  {
     path: 'customers',
     loadComponent: () => import('./customers/customer-list.component').then((m) => m.CustomerListComponent),
     data: { titleKey: 'sales.customers.title' },

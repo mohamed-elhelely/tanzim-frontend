@@ -1,0 +1,306 @@
+@if (loadError(); as err) {
+  <app-page-header title="sales.invoices.title" [showBack]="true" backLabel="common.backToList" (back)="goBack()"></app-page-header>
+  <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403 && err.status !== 404" (retry)="load()"></app-error-state>
+} @else if (invoice(); as invoice) {
+  <app-page-header
+    [title]="invoice.invoice_number"
+    [subtitle]="invoice.customer_name"
+    [showBack]="true"
+    backLabel="common.backToList"
+    [actions]="actions()"
+    (back)="goBack()"
+  ></app-page-header>
+
+  @if (invoice.status === 'cancelled') {
+    <div
+      role="status"
+      class="mb-4 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300"
+    >
+      <p class="font-medium">{{ 'sales.hints.invoiceCancelled' | translate }}</p>
+      @if (invoice.cancelled_reason) {
+        <p class="mt-1">{{ invoice.cancelled_reason }}</p>
+      }
+    </div>
+  }
+
+  <div class="flex max-w-6xl flex-col gap-4">
+    <dl class="grid grid-cols-2 gap-3 md:grid-cols-4">
+      <div class="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+        <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.status' | translate }}</dt>
+        <dd class="mt-1 flex flex-wrap gap-1">
+          <app-status-badge
+            [value]="'sales.invoiceStatuses.' + invoice.status | translate"
+            [severity]="statusSeverity[invoice.status]"
+          ></app-status-badge>
+          <app-status-badge
+            [value]="'sales.paymentStatuses.' + invoice.payment_status | translate"
+            [severity]="paymentStatusSeverity[invoice.payment_status]"
+          ></app-status-badge>
+        </dd>
+      </div>
+      <div class="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+        <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.orderNumber' | translate }}</dt>
+        <dd class="mt-1 text-sm font-semibold">
+          <a
+            [routerLink]="['/sales/orders', invoice.sales_order]"
+            class="font-mono text-primary-600 hover:underline dark:text-primary-300"
+            dir="ltr"
+          >{{ invoice.sales_order_number }}</a>
+        </dd>
+      </div>
+      <div class="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+        <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.total' | translate }}</dt>
+        <dd class="mt-1 text-sm font-semibold">{{ invoice.total_amount | number: '1.2-2' }} {{ invoice.currency }}</dd>
+      </div>
+      <div class="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+        <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.amountDue' | translate }}</dt>
+        <dd class="mt-1 text-sm font-semibold">{{ invoice.amount_due | number: '1.2-2' }} {{ invoice.currency }}</dd>
+      </div>
+    </dl>
+
+    <p-card>
+      <dl class="grid grid-cols-2 gap-x-6 gap-y-3 text-sm md:grid-cols-4">
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.invoiceDate' | translate }}</dt>
+          <dd class="mt-0.5" dir="ltr">{{ invoice.invoice_date }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.dueDate' | translate }}</dt>
+          <dd class="mt-0.5" dir="ltr">{{ invoice.due_date || '—' }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.paymentTerms' | translate }}</dt>
+          <dd class="mt-0.5">{{ invoice.payment_terms || '—' }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.reference' | translate }}</dt>
+          <dd class="mt-0.5" dir="ltr">{{ invoice.reference || '—' }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.issuedBy' | translate }}</dt>
+          <dd class="mt-0.5">{{ invoice.issued_by_name || '—' }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.paidAt' | translate }}</dt>
+          <dd class="mt-0.5" dir="ltr">{{ invoice.paid_at ? (invoice.paid_at | date: 'yyyy-MM-dd HH:mm') : '—' }}</dd>
+        </div>
+        <div class="col-span-2">
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.notes' | translate }}</dt>
+          <dd class="mt-0.5 whitespace-pre-line">{{ invoice.notes || '—' }}</dd>
+        </div>
+      </dl>
+    </p-card>
+
+    <p-card>
+      <h3 class="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'sales.sections.lines' | translate }}</h3>
+      <div class="overflow-x-auto">
+        <p-table [value]="invoice.lines" dataKey="id" size="small">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>#</th>
+              <th>{{ 'sales.fields.sku' | translate }}</th>
+              <th>{{ 'sales.fields.item' | translate }}</th>
+              <th class="text-end">{{ 'sales.fields.quantity' | translate }}</th>
+              <th class="text-end">{{ 'sales.fields.unitPrice' | translate }}</th>
+              <th class="text-end">{{ 'sales.fields.discountPercent' | translate }}</th>
+              <th class="text-end">{{ 'sales.fields.taxPercent' | translate }}</th>
+              <th class="text-end">{{ 'sales.fields.lineTotal' | translate }}</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-line>
+            <tr>
+              <td class="text-gray-500">{{ line.line_number }}</td>
+              <td class="whitespace-nowrap font-mono text-xs" dir="ltr">{{ line.sku }}</td>
+              <td class="font-medium">{{ line.description || line.product_name }}</td>
+              <td class="text-end">{{ line.quantity | number: '1.0-3' }}</td>
+              <td class="text-end">{{ line.unit_price | number: '1.2-4' }}</td>
+              <td class="text-end">{{ line.discount_percent | number: '1.0-2' }}</td>
+              <td class="text-end">{{ line.tax_percent | number: '1.0-2' }}</td>
+              <td class="text-end font-medium">{{ line.line_total | number: '1.2-2' }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+
+      <dl class="ms-auto mt-4 grid max-w-72 grid-cols-2 gap-x-6 gap-y-1 text-sm">
+        <dt class="text-gray-500 dark:text-gray-400">{{ 'sales.fields.subtotal' | translate }}</dt>
+        <dd class="text-end">{{ invoice.subtotal | number: '1.2-2' }}</dd>
+        <dt class="text-gray-500 dark:text-gray-400">{{ 'sales.fields.tax' | translate }}</dt>
+        <dd class="text-end">{{ invoice.tax_amount | number: '1.2-2' }}</dd>
+        <dt class="text-gray-500 dark:text-gray-400">{{ 'sales.fields.orderDiscount' | translate }}</dt>
+        <dd class="text-end"><span dir="ltr">−{{ invoice.discount_amount | number: '1.2-2' }}</span></dd>
+        <div class="col-span-2 mt-1 flex justify-between gap-6 border-t border-gray-200 pt-1 font-semibold dark:border-gray-800">
+          <dt>{{ 'sales.fields.total' | translate }}</dt>
+          <dd>{{ invoice.total_amount | number: '1.2-2' }} {{ invoice.currency }}</dd>
+        </div>
+        <dt class="text-gray-500 dark:text-gray-400">{{ 'sales.fields.amountPaid' | translate }}</dt>
+        <dd class="text-end">{{ invoice.amount_paid | number: '1.2-2' }}</dd>
+        <dt class="font-semibold">{{ 'sales.fields.amountDue' | translate }}</dt>
+        <dd class="text-end font-semibold">{{ invoice.amount_due | number: '1.2-2' }}</dd>
+      </dl>
+    </p-card>
+
+    <p-card>
+      <h3 class="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'sales.sections.payments' | translate }}</h3>
+      @if (payments().length) {
+        <div class="overflow-x-auto">
+          <p-table [value]="payments()" dataKey="id" size="small">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>{{ 'sales.fields.paymentDate' | translate }}</th>
+                <th>{{ 'sales.fields.paymentMethod' | translate }}</th>
+                <th>{{ 'sales.fields.paymentReference' | translate }}</th>
+                <th>{{ 'sales.fields.status' | translate }}</th>
+                <th class="text-end">{{ 'sales.fields.amount' | translate }}</th>
+                <th class="text-end">{{ 'common.actions' | translate }}</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-payment>
+              <tr>
+                <td class="whitespace-nowrap" dir="ltr">{{ payment.payment_date }}</td>
+                <td>{{ 'sales.paymentMethods.' + payment.payment_method | translate }}</td>
+                <td dir="ltr">{{ payment.reference || '—' }}</td>
+                <td>
+                  <app-status-badge
+                    [value]="'sales.paymentRecordStatuses.' + payment.status | translate"
+                    [severity]="paymentSeverity(payment)"
+                  ></app-status-badge>
+                </td>
+                <td class="text-end font-medium">{{ payment.amount | number: '1.2-2' }}</td>
+                <td class="text-end">
+                  @if (canRefund(payment)) {
+                    <p-button
+                      icon="pi pi-replay"
+                      [label]="'sales.actions.refund' | translate"
+                      severity="secondary"
+                      [text]="true"
+                      size="small"
+                      (onClick)="refund(payment)"
+                    ></p-button>
+                  }
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      } @else {
+        <p class="text-sm text-gray-500 dark:text-gray-400">{{ 'sales.hints.noPayments' | translate }}</p>
+      }
+    </p-card>
+  </div>
+
+  <p-dialog
+    [header]="'sales.actions.editDetails' | translate"
+    [visible]="detailsDialogOpen()"
+    (visibleChange)="detailsDialogOpen.set($event)"
+    [modal]="true"
+    [dismissableMask]="true"
+    [style]="{ width: '32rem', maxWidth: 'calc(100vw - 2rem)' }"
+  >
+    <div class="flex flex-col gap-4">
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div class="flex flex-col gap-1">
+          <label for="inv_due" class="text-sm font-medium">{{ 'sales.fields.dueDate' | translate }}</label>
+          <input pInputText id="inv_due" type="date" [(ngModel)]="details.due_date" class="w-full" />
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="inv_terms" class="text-sm font-medium">{{ 'sales.fields.paymentTerms' | translate }}</label>
+          <input pInputText id="inv_terms" [(ngModel)]="details.payment_terms" maxlength="100" class="w-full" />
+        </div>
+      </div>
+      <div class="flex flex-col gap-1">
+        <label for="inv_reference" class="text-sm font-medium">{{ 'sales.fields.reference' | translate }}</label>
+        <input pInputText id="inv_reference" [(ngModel)]="details.reference" maxlength="100" dir="ltr" class="w-full" />
+      </div>
+      <div class="flex flex-col gap-1">
+        <label for="inv_notes" class="text-sm font-medium">{{ 'sales.fields.notes' | translate }}</label>
+        <textarea pTextarea id="inv_notes" [(ngModel)]="details.notes" rows="3" class="w-full"></textarea>
+      </div>
+    </div>
+    <ng-template pTemplate="footer">
+      <p-button
+        [label]="'common.cancel' | translate"
+        severity="secondary"
+        [outlined]="true"
+        (onClick)="detailsDialogOpen.set(false)"
+      ></p-button>
+      <p-button [label]="'common.save' | translate" [loading]="saving()" [disabled]="saving()" (onClick)="saveDetails()"></p-button>
+    </ng-template>
+  </p-dialog>
+
+  <p-dialog
+    [header]="'sales.actions.recordPayment' | translate"
+    [visible]="paymentDialogOpen()"
+    (visibleChange)="paymentDialogOpen.set($event)"
+    [modal]="true"
+    [dismissableMask]="true"
+    [style]="{ width: '32rem', maxWidth: 'calc(100vw - 2rem)' }"
+  >
+    <div class="flex flex-col gap-4">
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div class="flex flex-col gap-1">
+          <label for="pay_amount" class="text-sm font-medium">{{ 'sales.fields.amount' | translate }} *</label>
+          <input pInputText id="pay_amount" [(ngModel)]="payment.amount" dir="ltr" inputmode="decimal" class="w-full" />
+          <small class="text-xs text-gray-500 dark:text-gray-400">
+            {{ 'sales.fields.amountDue' | translate }}: {{ invoice.amount_due | number: '1.2-2' }} {{ invoice.currency }}
+          </small>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="pay_date" class="text-sm font-medium">{{ 'sales.fields.paymentDate' | translate }}</label>
+          <input pInputText id="pay_date" type="date" [(ngModel)]="payment.payment_date" class="w-full" />
+        </div>
+      </div>
+      <div class="flex flex-col gap-1">
+        <label for="pay_method" class="text-sm font-medium">{{ 'sales.fields.paymentMethod' | translate }}</label>
+        <p-select
+          inputId="pay_method"
+          [(ngModel)]="payment.payment_method"
+          [options]="methodOptions"
+          optionLabel="label"
+          optionValue="value"
+          styleClass="w-full"
+          appendTo="body"
+        >
+          <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
+          <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
+        </p-select>
+      </div>
+      <div class="flex flex-col gap-1">
+        <label for="pay_reference" class="text-sm font-medium">{{ 'sales.fields.paymentReference' | translate }}</label>
+        <input pInputText id="pay_reference" [(ngModel)]="payment.reference" maxlength="100" dir="ltr" class="w-full" />
+      </div>
+      <div class="flex flex-col gap-1">
+        <label for="pay_notes" class="text-sm font-medium">{{ 'sales.fields.notes' | translate }}</label>
+        <textarea pTextarea id="pay_notes" [(ngModel)]="payment.notes" rows="2" class="w-full"></textarea>
+      </div>
+      @if (dialogError(); as key) {
+        <p role="alert" class="text-sm text-red-600">{{ key | translate }}</p>
+      }
+    </div>
+    <ng-template pTemplate="footer">
+      <p-button
+        [label]="'common.cancel' | translate"
+        severity="secondary"
+        [outlined]="true"
+        (onClick)="paymentDialogOpen.set(false)"
+      ></p-button>
+      <p-button
+        [label]="'sales.actions.recordPayment' | translate"
+        icon="pi pi-check"
+        [loading]="saving()"
+        [disabled]="saving()"
+        (onClick)="savePayment()"
+      ></p-button>
+    </ng-template>
+  </p-dialog>
+
+  <app-reason-dialog
+    header="sales.actions.cancelInvoice"
+    confirmLabel="sales.actions.cancelInvoice"
+    [visible]="cancelDialogOpen()"
+    (visibleChange)="cancelDialogOpen.set($event)"
+    (confirmed)="onCancelConfirmed($event)"
+  ></app-reason-dialog>
+} @else {
+  <app-loading-state></app-loading-state>
+}
