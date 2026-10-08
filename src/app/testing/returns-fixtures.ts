@@ -1,0 +1,83 @@
+import { CustomerReturn, CustomerReturnLine, SupplierReturn } from '../features/returns/returns.models';
+
+export function makeReturnLine(overrides: Partial<CustomerReturnLine> = {}): CustomerReturnLine {
+  return {
+    id: 1,
+    sales_order_line: 11,
+    sales_order_line_info: { line_number: 1, quantity_ordered: 2, unit_price: 100 },
+    product: 1,
+    product_name: 'Phone X',
+    quantity_requested: '1.000',
+    quantity_received: '0.000',
+    quantity_accepted: '0.000',
+    condition: '',
+    rejection_reason: '',
+    disposition: null,
+    defect_description: 'Screen flickers',
+    unit_price: null,
+    line_value: null,
+    notes: '',
+    ...overrides,
+  };
+}
+
+export function makeCustomerReturn(overrides: Partial<CustomerReturn> = {}): CustomerReturn {
+  return {
+    id: 1,
+    return_number: 'RMA-2026-00001',
+    customer: 1,
+    customer_name: 'Acme Trading',
+    warehouse: 1,
+    warehouse_name: 'Main Warehouse',
+    status: 'requested',
+    return_reason: 'defective',
+    requested_date: '2026-10-09T02:00:00+03:00',
+    refund_amount: '0.0000',
+    total_lines: 1,
+    created_at: '2026-10-09T02:00:00+03:00',
+    sales_order: 1,
+    sales_order_number: 'SO-2026-00001',
+    customer_number: 'CUST-00001',
+    return_reason_note: '',
+    approved_date: null,
+    received_date: null,
+    inspected_date: null,
+    closed_date: null,
+    refund_method: 'replacement',
+    credit_note_number: null,
+    replacement_order: null,
+    total_items_received: '0.000',
+    total_items_accepted: '0.000',
+    total_items_quarantined: '0.000',
+    total_items_rejected: '0.000',
+    total_items_returned_to_supplier: '0.000',
+    total_return_value: '0.0000',
+    lines: [makeReturnLine()],
+    updated_at: '2026-10-09T02:00:00+03:00',
+    ...overrides,
+  };
+}
+
+export function makeSupplierReturn(overrides: Partial<SupplierReturn> = {}): SupplierReturn {
+  return {
+    id: 1,
+    return_number: 'SRN-2026-00001',
+    supplier: 1,
+    supplier_name: 'Gulf Supply',
+    warehouse: 1,
+    warehouse_name: 'Main Warehouse',
+    status: 'draft',
+    shipped_date: null,
+    refund_amount: '0.0000',
+    created_at: '2026-10-09T02:00:00+03:00',
+    purchase_order: null,
+    return_reason: 'Damaged batch',
+    confirmed_date: null,
+    customer_return: null,
+    customer_return_number: null,
+    lines: [{ id: 1, product: 1, product_name: 'Phone X', quantity: '2.000', unit_cost: '10.0000', line_total: '20.0000000', notes: '' }],
+    total_lines: 1,
+    updated_at: '2026-10-09T02:00:00+03:00',
+    ...overrides,
+  };
+}

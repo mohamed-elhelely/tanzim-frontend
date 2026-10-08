@@ -59,8 +59,7 @@ export const routes: Routes = [
       {
         path: 'returns',
         canActivate: [companyMemberGuard],
-        loadComponent: comingSoon,
-        data: { titleKey: 'nav.returns', icon: 'pi-replay' },
+        loadChildren: () => import('./features/returns/returns.routes').then((m) => m.RETURNS_ROUTES),
       },
       {
         path: 'billing',

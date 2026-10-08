@@ -206,7 +206,7 @@ marked "client list".
 | Resource | Endpoint | Notes |
 |---|---|---|
 | `products/` | `inventory/v1/product/` | Enum selects (type, valuation); shelf life only with an expiry date. Each row links to its variants |
-| `variants/` | `inventory/v1/product-variant/` | 🧠 `?product=` filter from the URL (chip + "Show all", reloads on change). 🧠 attributes edited as name/value rows (`FormArray`), sent as an object. `dimensions`/`image` never sent. ⚠️ `weight_uom` not returned → `omitPristine` |
+| `variants/` | `inventory/v1/product-variant/` | 🧠 `?product=` filter from the URL (chip + "Show all", reloads on change). 🧠 attributes edited as name/value rows (`FormArray`), sent as an object. `dimensions`/`image` never sent. ⚠️ `weight_uom` not returned → `omitPristine`. `variant-options.ts` (`toItemOption`, `trimZeros`) feeds the item pickers of the sales order and return forms |
 | `categories/` | `inventory/v1/category/` | 🧠 parent picker shows the full path and excludes itself and its descendants. ⚠️ edit sends name/parent only when changed (15a) |
 | `brands/` | `inventory/v1/brand/` | Smallest resource: copy it for new ones |
 | `warehouses/` | `inventory/v1/warehouse/` | ⚠️ code shown from the dropdown (list + edit); contact/address not returned → `omitPristine`; no manager field (backend 500) |
@@ -229,6 +229,15 @@ Sales endpoints (`/api/sales/…`) return flat ids plus `*_name` fields, a short
 | `payments/` (`InvoicePaymentService`) | `sales/invoice-payments/` | Read-only list (method filter) → invoice; `refund(id)` |
 | `address-fields/` | — | `AddressFieldsComponent` + `addressGroup/toAddress/patchAddress`; keys `street, city, state, zip, country` |
 
+### returns — `/returns` (no module needed)
+
+Endpoints under `/api/returns/v1/` (the legacy `/api/returns/api/returns/` mount is not used).
+
+| Resource | Endpoint | Notes |
+|---|---|---|
+| `customer-returns/` | `returns/v1/customer-returns/` | List (status + reason filters). 🧠 form: from an order's shipped lines (capped, ⚠️ BACKEND_REQUESTS 17) or free item rows; no edit (20). Detail: approve / receive / inspect (outcome → derived restocking decision, `RESTOCKING_FOR`) / close with refund / replacement order. ⚠️ re-reads after each step (18) |
+| `supplier-returns/` | `returns/v1/supplier-returns/` | List, form (items with cost from the standard cost), detail: approve → shipped → confirmed. ⚠️ value = sum of lines (19) |
+
 ## 7. Cross-feature links
 
 ```mermaid
@@ -250,6 +259,10 @@ flowchart LR
     soform["sales/orders form"] --> customers["sales/customers"]
     soform --> wh
     soform --> variants
+    rmaform["returns/customer form"] --> customers
+    rmaform --> soS["sales/orders service"]
+    srnform["returns/supplier form"] --> suppliers
+    srnform --> variants
 ```
 
 Only services and models cross feature boundaries; components never do.

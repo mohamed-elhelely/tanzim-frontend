@@ -71,7 +71,9 @@
     "customers": "العملاء",
     "deliveries": "التسليمات",
     "salesInvoices": "فواتير المبيعات",
-    "payments": "المدفوعات"
+    "payments": "المدفوعات",
+    "customerReturns": "مرتجعات العملاء",
+    "supplierReturns": "مرتجعات الموردين"
   },
   "auth": {
     "login": "تسجيل الدخول",
@@ -753,6 +755,145 @@
       "completed": "مكتملة",
       "failed": "فاشلة",
       "refunded": "مستردة"
+    }
+  },
+  "returns": {
+    "customer": {
+      "title": "مرتجعات العملاء",
+      "new": "مرتجع عميل جديد",
+      "detail": "مرتجع عميل"
+    },
+    "supplier": {
+      "title": "مرتجعات الموردين",
+      "new": "مرتجع مورد جديد",
+      "detail": "مرتجع مورد"
+    },
+    "customerStatuses": {
+      "requested": "مطلوب",
+      "approved": "معتمد",
+      "in_transit": "قيد النقل",
+      "received": "مستلم",
+      "inspected": "تم الفحص",
+      "closed": "مغلق",
+      "rejected": "مرفوض"
+    },
+    "supplierStatuses": {
+      "draft": "مسودة",
+      "approved": "معتمد",
+      "shipped": "تم الشحن",
+      "confirmed": "أكّد المورد الاستلام",
+      "closed": "مغلق"
+    },
+    "reasons": {
+      "defective": "معيب",
+      "wrong_item": "صنف خاطئ",
+      "not_as_described": "غير مطابق للوصف",
+      "changed_mind": "غيّر رأيه",
+      "damaged_in_transit": "تلف أثناء الشحن",
+      "other": "أخرى"
+    },
+    "refundMethods": {
+      "refund": "استرداد مبلغ",
+      "credit_note": "إشعار دائن",
+      "replacement": "استبدال",
+      "exchange": "تبديل"
+    },
+    "conditions": {
+      "new": "جديد",
+      "good": "جيد",
+      "fair": "مقبول",
+      "damaged": "تالف",
+      "unsaleable": "غير قابل للبيع"
+    },
+    "dispositions": {
+      "accept": "إرجاع للمخزون",
+      "quarantine": "حجر",
+      "reject": "شطب",
+      "return_to_supplier": "إرجاع للمورد",
+      "warranty_repair": "إصلاح بالضمان"
+    },
+    "fields": {
+      "returnNumber": "رقم المرتجع",
+      "customer": "العميل",
+      "supplier": "المورد",
+      "salesOrder": "أمر البيع",
+      "warehouse": "المستودع",
+      "status": "الحالة",
+      "reason": "السبب",
+      "reasonNote": "تفاصيل السبب",
+      "refundMethod": "طريقة التعويض",
+      "refundAmount": "مبلغ الاسترداد",
+      "returnValue": "القيمة المقبولة",
+      "value": "القيمة",
+      "notes": "ملاحظات",
+      "requestedDate": "تاريخ الطلب",
+      "receivedDate": "تاريخ الاستلام",
+      "inspectedDate": "تاريخ الفحص",
+      "closedDate": "تاريخ الإغلاق",
+      "shippedDate": "تاريخ الشحن",
+      "confirmedDate": "تاريخ التأكيد",
+      "replacementOrder": "أمر الاستبدال",
+      "customerReturn": "مرتجع العميل",
+      "items": "الأصناف",
+      "item": "الصنف",
+      "shipped": "المشحون",
+      "returnQty": "كمية الإرجاع",
+      "defect": "المشكلة",
+      "requested": "المطلوب",
+      "received": "المستلم",
+      "accepted": "المقبول",
+      "condition": "الحالة الفنية",
+      "disposition": "الإجراء",
+      "quantity": "الكمية",
+      "unitCost": "تكلفة الوحدة"
+    },
+    "sections": {
+      "items": "الأصناف"
+    },
+    "actions": {
+      "addItem": "إضافة صنف",
+      "removeItem": "حذف الصنف",
+      "createReturn": "إنشاء المرتجع",
+      "approve": "اعتماد",
+      "receive": "استلام الأصناف",
+      "inspect": "فحص",
+      "close": "إغلاق واسترداد",
+      "createReplacement": "إنشاء أمر استبدال",
+      "markShipped": "تعيين كمشحون",
+      "confirmReceipt": "أكّد المورد"
+    },
+    "confirm": {
+      "approve": "اعتماد هذا المرتجع؟ يمكن للعميل بعدها إرسال الأصناف.",
+      "approveSupplier": "اعتماد مرتجع المورد هذا؟ ستخرج الأصناف من مخزون المستودع.",
+      "createReplacement": "إنشاء أمر بيع جديد للأصناف المقبولة؟",
+      "markShipped": "تعيين هذا المرتجع كمشحون إلى المورد؟",
+      "confirmReceipt": "هل أكّد المورد استلام الأصناف؟"
+    },
+    "toasts": {
+      "approved": "تم اعتماد المرتجع.",
+      "received": "تم استلام الأصناف.",
+      "inspected": "تم حفظ الفحص.",
+      "closed": "تم إغلاق المرتجع.",
+      "replacementCreated": "تم إنشاء أمر الاستبدال.",
+      "shipped": "تم التعيين كمشحون.",
+      "receiptConfirmed": "تم تأكيد الاستلام."
+    },
+    "hints": {
+      "searchCustomer": "ابحث برقم المرتجع أو العميل أو الأمر",
+      "searchSupplier": "ابحث برقم المرتجع أو المورد",
+      "noOrder": "بدون أمر",
+      "orderOptional": "اختر أمرًا لإرجاع أصنافه المشحونة، أو اتركه فارغًا.",
+      "nothingShipped": "لم يُشحن شيء في هذا الأمر.",
+      "lineQuantity": "أدخل كميات أكبر من 0 ولا تزيد عن المشحون.",
+      "atLeastOneLine": "أضف صنفًا واحدًا على الأقل.",
+      "supplierLine": "كل صنف يحتاج منتجًا وكمية أكبر من 0 وتكلفة وحدة.",
+      "receiveStock": "تعود الأصناف المستلمة إلى مخزون المستودع.",
+      "receiveQuantity": "أدخل كميات بين 0 والكمية المطلوبة.",
+      "inspect": "لكل صنف: الكمية المقبولة وحالتها وما سيحدث لها.",
+      "inspectQuantity": "يجب أن تكون الكميات المقبولة بين 0 والكمية المستلمة.",
+      "refundDefault": "القيمة الافتراضية هي القيمة المقبولة. اتركه فارغًا لاستخدامها.",
+      "refundAmount": "أدخل مبلغًا صحيحًا.",
+      "freeLine": "كل صنف يحتاج منتجًا وكمية أكبر من 0."
     }
   }
 }

@@ -186,12 +186,12 @@ backend problems added to `docs/BACKEND_REQUESTS.md`; [CODE_MAP.md](CODE_MAP.md)
 | 12 | Notifications (bell, page, live WebSocket) and Billing (subscription + invoices, read-only) |
 | 13 | Sales: customers and sales orders (lines, totals, confirm / cancel / duplicate / mark delivered) |
 | 14 | Sales: delivery notes (ship from an order), sales invoices and payments |
+| 15 | Returns: customer returns (RMA workflow, replacement orders) and supplier returns |
 
 ### Next — features (in order)
 
-1. **Returns**: customer returns (RMA) and supplier returns (step 15).
-2. **Inventory stock and movements** (batches, serials, stock ledger, transfers, adjustments, cycle counts) and **procurement** (requisitions, purchase orders, goods receipts, supplier invoices, approvals). Blocked until the backend returns full read serializers (BACKEND_REQUESTS 2).
-3. **Accounting** (new backend app; its API isn't in API_REFERENCE.md yet).
+1. **Inventory stock and movements** (batches, serials, stock ledger, transfers, adjustments, cycle counts) and **procurement** (requisitions, purchase orders, goods receipts, supplier invoices, approvals). Blocked until the backend returns full read serializers (BACKEND_REQUESTS 2).
+2. **Accounting** (new backend app; its API isn't in API_REFERENCE.md yet).
 
 ### Next — code health (small, do alongside features)
 

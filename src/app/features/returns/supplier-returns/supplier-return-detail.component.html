@@ -1,0 +1,92 @@
+@if (loadError(); as err) {
+  <app-page-header title="returns.supplier.title" [showBack]="true" backLabel="common.backToList" (back)="goBack()"></app-page-header>
+  <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403 && err.status !== 404" (retry)="load()"></app-error-state>
+} @else if (srn(); as srn) {
+  <app-page-header
+    [title]="srn.return_number"
+    [subtitle]="srn.supplier_name"
+    [showBack]="true"
+    backLabel="common.backToList"
+    [actions]="actions()"
+    (back)="goBack()"
+  ></app-page-header>
+
+  <div class="flex max-w-6xl flex-col gap-4">
+    <dl class="grid grid-cols-2 gap-3 md:grid-cols-4">
+      <div class="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+        <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'returns.fields.status' | translate }}</dt>
+        <dd class="mt-1">
+          <app-status-badge
+            [value]="'returns.supplierStatuses.' + srn.status | translate"
+            [severity]="statusSeverity[srn.status]"
+          ></app-status-badge>
+        </dd>
+      </div>
+      <div class="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+        <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'returns.fields.warehouse' | translate }}</dt>
+        <dd class="mt-1 text-sm font-semibold">{{ srn.warehouse_name }}</dd>
+      </div>
+      <div class="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+        <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'returns.fields.value' | translate }}</dt>
+        <dd class="mt-1 text-sm font-semibold">{{ linesTotal() | number: '1.2-2' }}</dd>
+      </div>
+      <div class="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+        <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'returns.fields.customerReturn' | translate }}</dt>
+        <dd class="mt-1 text-sm font-semibold">
+          @if (srn.customer_return) {
+            <a
+              [routerLink]="['/returns/customer', srn.customer_return]"
+              class="font-mono text-primary-600 hover:underline dark:text-primary-300"
+              dir="ltr"
+            >{{ srn.customer_return_number }}</a>
+          } @else {
+            —
+          }
+        </dd>
+      </div>
+    </dl>
+
+    <p-card>
+      <dl class="grid grid-cols-2 gap-x-6 gap-y-3 text-sm md:grid-cols-4">
+        <div class="col-span-2">
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'returns.fields.reason' | translate }}</dt>
+          <dd class="mt-0.5">{{ srn.return_reason || '—' }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'returns.fields.shippedDate' | translate }}</dt>
+          <dd class="mt-0.5" dir="ltr">{{ srn.shipped_date || '—' }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'returns.fields.confirmedDate' | translate }}</dt>
+          <dd class="mt-0.5" dir="ltr">{{ srn.confirmed_date || '—' }}</dd>
+        </div>
+      </dl>
+    </p-card>
+
+    <p-card>
+      <h3 class="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'returns.sections.items' | translate }}</h3>
+      <div class="overflow-x-auto">
+        <p-table [value]="srn.lines" dataKey="id" size="small">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>{{ 'returns.fields.item' | translate }}</th>
+              <th class="text-end">{{ 'returns.fields.quantity' | translate }}</th>
+              <th class="text-end">{{ 'returns.fields.unitCost' | translate }}</th>
+              <th class="text-end">{{ 'returns.fields.value' | translate }}</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-line>
+            <tr>
+              <td class="font-medium">{{ line.product_name }}</td>
+              <td class="text-end">{{ line.quantity | number: '1.0-3' }}</td>
+              <td class="text-end">{{ line.unit_cost | number: '1.2-4' }}</td>
+              <td class="text-end font-medium">{{ line.line_total | number: '1.2-2' }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </p-card>
+  </div>
+} @else {
+  <app-loading-state></app-loading-state>
+}
