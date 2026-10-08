@@ -33,7 +33,8 @@
     "backToList": "العودة إلى القائمة",
     "comingSoonBadge": "قريبًا",
     "backToDashboard": "العودة للوحة التحكم",
-    "viewAll": "عرض الكل"
+    "viewAll": "عرض الكل",
+    "reasonOptional": "السبب (اختياري)"
   },
   "nav": {
     "dashboard": "لوحة التحكم",
@@ -65,7 +66,14 @@
     "bins": "الأرفف",
     "suppliers": "الموردون",
     "variants": "المتغيرات",
-    "supplierProducts": "قائمة أسعار الموردين"
+    "supplierProducts": "قائمة أسعار الموردين",
+    "salesOrders": "أوامر البيع",
+    "customers": "العملاء",
+    "deliveries": "التسليمات",
+    "salesInvoices": "فواتير المبيعات",
+    "payments": "المدفوعات",
+    "customerReturns": "مرتجعات العملاء",
+    "supplierReturns": "مرتجعات الموردين"
   },
   "auth": {
     "login": "تسجيل الدخول",
@@ -94,7 +102,8 @@
     "breadcrumb": "مسار التنقل",
     "lightMode": "الوضع الفاتح",
     "darkMode": "الوضع الداكن",
-    "account": "الحساب"
+    "account": "الحساب",
+    "notifications": "الإشعارات"
   },
   "dashboard": {
     "subtitle": "نظرة عامة على مؤسستك",
@@ -139,7 +148,9 @@
     "maxLength": "الحد الأقصى {{max}} حرفًا.",
     "email": "أدخل بريدًا إلكترونيًا صحيحًا.",
     "minLength": "الحد الأدنى {{min}} أحرف.",
-    "pattern": "الصيغة غير صحيحة."
+    "pattern": "الصيغة غير صحيحة.",
+    "greaterThan": "يجب أن تكون القيمة أكبر من {{value}}.",
+    "max": "يجب ألا تزيد القيمة عن {{max}}."
   },
   "company": {
     "fields": {
@@ -459,6 +470,430 @@
       "title": "قائمة أسعار الموردين",
       "new": "سعر جديد",
       "edit": "تعديل السعر"
+    }
+  },
+  "notifications": {
+    "all": "الكل",
+    "unread": "غير المقروءة",
+    "markAllRead": "تعليم الكل كمقروء",
+    "empty": "لا توجد إشعارات بعد."
+  },
+  "billing": {
+    "subscription": "الاشتراك",
+    "autoRenew": "تجديد تلقائي",
+    "period": "المدة",
+    "daysRemaining": "الأيام المتبقية",
+    "nextBilling": "تاريخ الفاتورة القادمة",
+    "licensedUsers": "عدد المستخدمين المرخّصين",
+    "billingEmail": "بريد الفواتير",
+    "modules": "الوحدات",
+    "noSubscription": "لا يوجد اشتراك نشط لشركتك.",
+    "invoices": "الفواتير",
+    "noInvoices": "لا توجد فواتير بعد.",
+    "history": "السجل",
+    "subscriptionStatus": {
+      "trial": "تجريبي",
+      "active": "نشط",
+      "past_due": "متأخر السداد",
+      "canceled": "ملغى",
+      "expired": "منتهي"
+    },
+    "invoiceStatus": {
+      "draft": "مسودة",
+      "issued": "صادرة",
+      "partially_paid": "مدفوعة جزئيًا",
+      "paid": "مدفوعة",
+      "overdue": "متأخرة",
+      "cancelled": "ملغاة"
+    },
+    "fields": {
+      "number": "الفاتورة",
+      "status": "الحالة",
+      "issueDate": "تاريخ الإصدار",
+      "dueDate": "تاريخ الاستحقاق",
+      "total": "الإجمالي",
+      "amountDue": "المستحق",
+      "amountPaid": "المدفوع",
+      "subtotal": "المجموع الفرعي",
+      "tax": "الضريبة",
+      "description": "الوصف",
+      "quantity": "الكمية",
+      "unitPrice": "سعر الوحدة",
+      "amount": "المبلغ"
+    }
+  },
+  "sales": {
+    "customers": {
+      "title": "العملاء",
+      "new": "عميل جديد",
+      "edit": "تعديل العميل"
+    },
+    "orders": {
+      "title": "أوامر البيع",
+      "new": "أمر بيع جديد",
+      "edit": "تعديل أمر البيع",
+      "detail": "أمر البيع",
+      "backToOrder": "العودة إلى الأمر"
+    },
+    "customerTypes": {
+      "individual": "فرد",
+      "business": "شركة",
+      "government": "جهة حكومية"
+    },
+    "orderStatuses": {
+      "draft": "مسودة",
+      "confirmed": "مؤكد",
+      "picking": "قيد التجهيز",
+      "shipped": "تم الشحن",
+      "delivered": "تم التسليم",
+      "cancelled": "ملغي",
+      "on_hold": "معلّق"
+    },
+    "priorities": {
+      "normal": "عادية",
+      "high": "عالية",
+      "urgent": "عاجلة"
+    },
+    "fields": {
+      "name": "الاسم",
+      "customerNumber": "رقم العميل",
+      "customerType": "نوع العميل",
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف",
+      "mobile": "الجوال",
+      "website": "الموقع الإلكتروني",
+      "taxId": "الرقم الضريبي",
+      "creditLimit": "حد الائتمان",
+      "creditUsed": "الائتمان المستخدم",
+      "availableCredit": "الائتمان المتاح",
+      "openOrders": "الأوامر المفتوحة",
+      "paymentTerms": "شروط الدفع",
+      "currency": "العملة",
+      "isActive": "نشط",
+      "notes": "ملاحظات",
+      "internalNotes": "ملاحظات داخلية",
+      "orderNumber": "رقم الأمر",
+      "customer": "العميل",
+      "warehouse": "المستودع",
+      "orderDate": "تاريخ الأمر",
+      "requiredDate": "مطلوب بحلول",
+      "shippedDate": "تاريخ الشحن",
+      "confirmedAt": "تاريخ التأكيد",
+      "status": "الحالة",
+      "priority": "الأولوية",
+      "reference": "أمر شراء العميل",
+      "total": "الإجمالي",
+      "subtotal": "المجموع الفرعي",
+      "tax": "الضريبة",
+      "shippingCost": "الشحن",
+      "orderDiscount": "خصم الأمر",
+      "fulfillment": "نسبة التنفيذ",
+      "item": "الصنف",
+      "sku": "رمز الصنف",
+      "description": "الوصف",
+      "quantity": "الكمية",
+      "reserved": "محجوز",
+      "shipped": "مشحون",
+      "unitPrice": "سعر الوحدة",
+      "discountPercent": "خصم %",
+      "taxPercent": "ضريبة %",
+      "lineTotal": "إجمالي البند",
+      "amount": "المبلغ",
+      "amountDue": "المبلغ المستحق",
+      "amountPaid": "المدفوع",
+      "carrier": "شركة الشحن",
+      "createdBy": "أنشأه",
+      "deliveredDate": "تاريخ التسليم",
+      "deliveryNumber": "رقم التسليم",
+      "dueDate": "تاريخ الاستحقاق",
+      "invoiceDate": "تاريخ الفاتورة",
+      "invoiceNumber": "رقم الفاتورة",
+      "issuedBy": "أصدرها",
+      "paidAt": "تاريخ السداد",
+      "paymentDate": "تاريخ الدفع",
+      "paymentMethod": "طريقة الدفع",
+      "paymentStatus": "الدفع",
+      "quantityDelivered": "الكمية المسلّمة",
+      "remaining": "المتبقي",
+      "shipNow": "شحن الآن",
+      "shippingMethod": "طريقة الشحن",
+      "trackingNumber": "رقم التتبع",
+      "paymentReference": "المرجع"
+    },
+    "sections": {
+      "contact": "بيانات التواصل",
+      "terms": "الائتمان والشروط",
+      "billingAddress": "عنوان الفوترة",
+      "shippingAddress": "عنوان الشحن",
+      "lines": "الأصناف",
+      "deliveries": "التسليمات",
+      "invoices": "الفواتير",
+      "payments": "المدفوعات"
+    },
+    "address": {
+      "street": "الشارع",
+      "city": "المدينة",
+      "state": "المنطقة / المحافظة",
+      "zip": "الرمز البريدي",
+      "country": "الدولة"
+    },
+    "actions": {
+      "sameAsBilling": "نفس عنوان الفوترة",
+      "addLine": "إضافة صنف",
+      "removeLine": "حذف الصنف",
+      "confirmOrder": "تأكيد الأمر",
+      "cancelOrder": "إلغاء الأمر",
+      "clone": "نسخ",
+      "markDelivered": "تعيين كمُسلَّم",
+      "ship": "شحن",
+      "createDelivery": "إنشاء إشعار تسليم",
+      "confirmDelivery": "تأكيد التسليم",
+      "handToCarrier": "تسليم لشركة الشحن",
+      "markFailed": "فشل التسليم",
+      "editDetails": "تعديل التفاصيل",
+      "createInvoice": "إنشاء فاتورة",
+      "issueInvoice": "إصدار الفاتورة",
+      "recordPayment": "تسجيل دفعة",
+      "refund": "استرداد",
+      "cancelInvoice": "إلغاء الفاتورة"
+    },
+    "confirm": {
+      "confirmOrder": "تأكيد هذا الأمر؟ سيتم حجز المخزون لكل الأصناف والتحقق من حد ائتمان العميل.",
+      "markDelivered": "تعيين هذا الأمر كمُسلَّم؟",
+      "clone": "إنشاء أمر مسودة جديد بنفس العميل والأصناف؟",
+      "confirmDelivery": "تأكيد إشعار التسليم هذا؟ يُعتبر الأمر مشحونًا عند شحن كل الأصناف.",
+      "deliveryDelivered": "تعيين هذا التسليم كمُسلَّم؟",
+      "createInvoice": "إنشاء فاتورة مسودة لكل ما تم شحنه في هذا الأمر؟",
+      "issueInvoice": "إصدار هذه الفاتورة؟ لن يمكن تعديلها بعد ذلك، وسيُضاف المبلغ إلى رصيد العميل.",
+      "refund": "استرداد هذه الدفعة بقيمة {{amount}} بالكامل؟"
+    },
+    "toasts": {
+      "confirmed": "تم تأكيد الأمر.",
+      "cancelled": "تم إلغاء الأمر.",
+      "cloned": "تم إنشاء نسخة مسودة.",
+      "delivered": "تم تعيين الأمر كمُسلَّم.",
+      "deliveryCreated": "تم إنشاء إشعار التسليم وصرف المخزون.",
+      "deliveryConfirmed": "تم تأكيد التسليم.",
+      "handedToCarrier": "تم التسليم لشركة الشحن.",
+      "deliveryDelivered": "تم تعيين التسليم كمُسلَّم.",
+      "deliveryFailed": "تم تسجيل فشل التسليم.",
+      "invoiceCreated": "تم إنشاء فاتورة مسودة.",
+      "invoiceIssued": "تم إصدار الفاتورة.",
+      "paymentRecorded": "تم تسجيل الدفعة.",
+      "refunded": "تم استرداد الدفعة.",
+      "invoiceCancelled": "تم إلغاء الفاتورة."
+    },
+    "hints": {
+      "noCreditLimit": "بدون حد",
+      "creditLimit": "اتركه فارغًا لعدم وضع حد.",
+      "searchOrders": "ابحث برقم الأمر أو العميل أو أمر الشراء",
+      "reference": "رقم أمر الشراء الخاص بالعميل.",
+      "notes": "تظهر للعميل.",
+      "internalNotes": "تظهر لفريقك فقط.",
+      "atLeastOneLine": "أضف صنفًا واحدًا على الأقل.",
+      "orderCancelled": "تم إلغاء هذا الأمر.",
+      "onlyDraftEditable": "لا يمكن تعديل إلا الأوامر المسودة.",
+      "shipIssuesStock": "يخرج المخزون من المستودع بمجرد إنشاء إشعار التسليم.",
+      "shipQuantity": "أدخل كميات بين 0 والكمية المتبقية.",
+      "shipSomething": "أدخل كمية لصنف واحد على الأقل.",
+      "searchDeliveries": "ابحث برقم التسليم أو التتبع",
+      "searchInvoices": "ابحث برقم الفاتورة أو العميل أو المرجع",
+      "invoiceCancelled": "تم إلغاء هذه الفاتورة.",
+      "noPayments": "لا توجد مدفوعات بعد.",
+      "paymentAmount": "أدخل مبلغًا أكبر من 0 ولا يزيد عن المبلغ المستحق."
+    },
+    "deliveries": {
+      "title": "إشعارات التسليم",
+      "subtitle": "تُنشأ من أمر البيع عبر \"شحن\".",
+      "detail": "إشعار التسليم"
+    },
+    "invoices": {
+      "title": "فواتير المبيعات",
+      "subtitle": "تُنشأ من أمر بيع تم تسليمه.",
+      "detail": "فاتورة المبيعات"
+    },
+    "payments": {
+      "title": "المدفوعات",
+      "subtitle": "تُسجَّل وتُسترد من الفاتورة."
+    },
+    "deliveryStatuses": {
+      "draft": "مسودة",
+      "confirmed": "مؤكد",
+      "in_transit": "قيد النقل",
+      "delivered": "تم التسليم",
+      "failed": "فشل التسليم"
+    },
+    "shippingMethods": {
+      "standard": "عادي",
+      "express": "سريع",
+      "overnight": "خلال ليلة",
+      "pickup": "استلام من العميل"
+    },
+    "invoiceStatuses": {
+      "draft": "مسودة",
+      "issued": "صادرة",
+      "paid": "مدفوعة",
+      "overdue": "متأخرة",
+      "cancelled": "ملغاة"
+    },
+    "paymentStatuses": {
+      "pending": "غير مدفوعة",
+      "partial": "مدفوعة جزئيًا",
+      "paid": "مدفوعة",
+      "overpaid": "مدفوعة بزيادة",
+      "failed": "فشل الدفع"
+    },
+    "paymentMethods": {
+      "bank_transfer": "تحويل بنكي",
+      "cash": "نقدًا",
+      "credit_card": "بطاقة ائتمان",
+      "check": "شيك",
+      "other": "أخرى"
+    },
+    "paymentRecordStatuses": {
+      "pending": "معلّقة",
+      "completed": "مكتملة",
+      "failed": "فاشلة",
+      "refunded": "مستردة"
+    }
+  },
+  "returns": {
+    "customer": {
+      "title": "مرتجعات العملاء",
+      "new": "مرتجع عميل جديد",
+      "detail": "مرتجع عميل"
+    },
+    "supplier": {
+      "title": "مرتجعات الموردين",
+      "new": "مرتجع مورد جديد",
+      "detail": "مرتجع مورد"
+    },
+    "customerStatuses": {
+      "requested": "مطلوب",
+      "approved": "معتمد",
+      "in_transit": "قيد النقل",
+      "received": "مستلم",
+      "inspected": "تم الفحص",
+      "closed": "مغلق",
+      "rejected": "مرفوض"
+    },
+    "supplierStatuses": {
+      "draft": "مسودة",
+      "approved": "معتمد",
+      "shipped": "تم الشحن",
+      "confirmed": "أكّد المورد الاستلام",
+      "closed": "مغلق"
+    },
+    "reasons": {
+      "defective": "معيب",
+      "wrong_item": "صنف خاطئ",
+      "not_as_described": "غير مطابق للوصف",
+      "changed_mind": "غيّر رأيه",
+      "damaged_in_transit": "تلف أثناء الشحن",
+      "other": "أخرى"
+    },
+    "refundMethods": {
+      "refund": "استرداد مبلغ",
+      "credit_note": "إشعار دائن",
+      "replacement": "استبدال",
+      "exchange": "تبديل"
+    },
+    "conditions": {
+      "new": "جديد",
+      "good": "جيد",
+      "fair": "مقبول",
+      "damaged": "تالف",
+      "unsaleable": "غير قابل للبيع"
+    },
+    "dispositions": {
+      "accept": "إرجاع للمخزون",
+      "quarantine": "حجر",
+      "reject": "شطب",
+      "return_to_supplier": "إرجاع للمورد",
+      "warranty_repair": "إصلاح بالضمان"
+    },
+    "fields": {
+      "returnNumber": "رقم المرتجع",
+      "customer": "العميل",
+      "supplier": "المورد",
+      "salesOrder": "أمر البيع",
+      "warehouse": "المستودع",
+      "status": "الحالة",
+      "reason": "السبب",
+      "reasonNote": "تفاصيل السبب",
+      "refundMethod": "طريقة التعويض",
+      "refundAmount": "مبلغ الاسترداد",
+      "returnValue": "القيمة المقبولة",
+      "value": "القيمة",
+      "notes": "ملاحظات",
+      "requestedDate": "تاريخ الطلب",
+      "receivedDate": "تاريخ الاستلام",
+      "inspectedDate": "تاريخ الفحص",
+      "closedDate": "تاريخ الإغلاق",
+      "shippedDate": "تاريخ الشحن",
+      "confirmedDate": "تاريخ التأكيد",
+      "replacementOrder": "أمر الاستبدال",
+      "customerReturn": "مرتجع العميل",
+      "items": "الأصناف",
+      "item": "الصنف",
+      "shipped": "المشحون",
+      "returnQty": "كمية الإرجاع",
+      "defect": "المشكلة",
+      "requested": "المطلوب",
+      "received": "المستلم",
+      "accepted": "المقبول",
+      "condition": "الحالة الفنية",
+      "disposition": "الإجراء",
+      "quantity": "الكمية",
+      "unitCost": "تكلفة الوحدة"
+    },
+    "sections": {
+      "items": "الأصناف"
+    },
+    "actions": {
+      "addItem": "إضافة صنف",
+      "removeItem": "حذف الصنف",
+      "createReturn": "إنشاء المرتجع",
+      "approve": "اعتماد",
+      "receive": "استلام الأصناف",
+      "inspect": "فحص",
+      "close": "إغلاق واسترداد",
+      "createReplacement": "إنشاء أمر استبدال",
+      "markShipped": "تعيين كمشحون",
+      "confirmReceipt": "أكّد المورد"
+    },
+    "confirm": {
+      "approve": "اعتماد هذا المرتجع؟ يمكن للعميل بعدها إرسال الأصناف.",
+      "approveSupplier": "اعتماد مرتجع المورد هذا؟ ستخرج الأصناف من مخزون المستودع.",
+      "createReplacement": "إنشاء أمر بيع جديد للأصناف المقبولة؟",
+      "markShipped": "تعيين هذا المرتجع كمشحون إلى المورد؟",
+      "confirmReceipt": "هل أكّد المورد استلام الأصناف؟"
+    },
+    "toasts": {
+      "approved": "تم اعتماد المرتجع.",
+      "received": "تم استلام الأصناف.",
+      "inspected": "تم حفظ الفحص.",
+      "closed": "تم إغلاق المرتجع.",
+      "replacementCreated": "تم إنشاء أمر الاستبدال.",
+      "shipped": "تم التعيين كمشحون.",
+      "receiptConfirmed": "تم تأكيد الاستلام."
+    },
+    "hints": {
+      "searchCustomer": "ابحث برقم المرتجع أو العميل أو الأمر",
+      "searchSupplier": "ابحث برقم المرتجع أو المورد",
+      "noOrder": "بدون أمر",
+      "orderOptional": "اختر أمرًا لإرجاع أصنافه المشحونة، أو اتركه فارغًا.",
+      "nothingShipped": "لم يُشحن شيء في هذا الأمر.",
+      "lineQuantity": "أدخل كميات أكبر من 0 ولا تزيد عن المشحون.",
+      "atLeastOneLine": "أضف صنفًا واحدًا على الأقل.",
+      "supplierLine": "كل صنف يحتاج منتجًا وكمية أكبر من 0 وتكلفة وحدة.",
+      "receiveStock": "تعود الأصناف المستلمة إلى مخزون المستودع.",
+      "receiveQuantity": "أدخل كميات بين 0 والكمية المطلوبة.",
+      "inspect": "لكل صنف: الكمية المقبولة وحالتها وما سيحدث لها.",
+      "inspectQuantity": "يجب أن تكون الكميات المقبولة بين 0 والكمية المستلمة.",
+      "refundDefault": "القيمة الافتراضية هي القيمة المقبولة. اتركه فارغًا لاستخدامها.",
+      "refundAmount": "أدخل مبلغًا صحيحًا.",
+      "freeLine": "كل صنف يحتاج منتجًا وكمية أكبر من 0."
     }
   }
 }

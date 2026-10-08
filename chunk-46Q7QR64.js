@@ -1,0 +1,1 @@
+import{N as r}from"./chunk-SRBTIFII.js";var e="https://chunk-surcharge-manhood.ngrok-free.dev",n={production:!0,apiBaseUrl:`${e}/api/`,wsBaseUrl:`${e.replace(/^http/,"ws")}/ws/`};function t(o){return`${o.replace(/\/+$/,"")}/`}var p=new r("API_BASE_URL",{providedIn:"root",factory:()=>t(n.apiBaseUrl)});export{n as a,p as b};

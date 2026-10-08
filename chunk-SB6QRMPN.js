@@ -1,0 +1,1 @@
+import{a as m}from"./chunk-SMPWEBKZ.js";import{K as a,ha as s,l as o}from"./chunk-SRBTIFII.js";var i=class t extends m{path="sales/customers/";detail(e){return this.get(this.detailPath(e)).pipe(o(r=>r.data))}static \u0275fac=(()=>{let e;return function(u){return(e||(e=s(t)))(u||t)}})();static \u0275prov=a({token:t,factory:t.\u0275fac,providedIn:"root"})};export{i as a};

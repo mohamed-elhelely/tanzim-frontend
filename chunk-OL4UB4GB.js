@@ -1,0 +1,1 @@
+function e(t){let r=t.name||t.product?.name||"";return{value:t.id,label:`${t.sku} \u2014 ${r}`,product:t.product?.id,price:t.standard_price,cost:t.standard_cost}}function n(t){return t?t.includes(".")?t.replace(/\.?0+$/,""):t:""}export{e as a,n as b};
