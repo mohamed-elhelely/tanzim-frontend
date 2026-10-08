@@ -1,4 +1,14 @@
-import { Bin, Brand, Category, Product, Supplier, Warehouse, Zone } from '../features/inventory/inventory.models';
+import {
+  Bin,
+  Brand,
+  Category,
+  Product,
+  ProductVariant,
+  Supplier,
+  SupplierProduct,
+  Warehouse,
+  Zone,
+} from '../features/inventory/inventory.models';
 
 const AUDIT = {
   created_at: '2026-10-08T17:40:02+03:00',
@@ -74,4 +84,26 @@ export function makeSupplier(overrides: Partial<Supplier> = {}): Supplier {
     credit_limit: '5000.00',
     ...overrides,
   };
+}
+
+export function makeVariant(overrides: Partial<ProductVariant> = {}): ProductVariant {
+  return {
+    id: 1,
+    ...AUDIT,
+    product: makeProduct(),
+    sku: 'PX-RED-128',
+    name: 'Phone X Red 128',
+    barcode: '111',
+    attributes: { color: 'red', storage: '128GB' },
+    standard_cost: '500.0000',
+    standard_price: '799.9900',
+    weight: '0.200',
+    dimensions: {},
+    is_active: true,
+    ...overrides,
+  };
+}
+
+export function makeSupplierProduct(overrides: Partial<SupplierProduct> = {}): SupplierProduct {
+  return { id: 1, ...AUDIT, supplier: makeSupplier(), product_variant: makeVariant(), is_preferred: true, ...overrides };
 }

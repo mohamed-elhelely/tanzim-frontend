@@ -47,6 +47,13 @@ describe('CrudApi', () => {
     expect(result).toEqual({ items: [{ id: 1, name_en: 'Sales' }], total: 31, page: 2, pageSize: 25 });
   });
 
+  it('adds exact-match filters as query params', () => {
+    api.list({ page: 1, pageSize: 10, filters: { product: 3 } }).subscribe();
+    const req = httpMock.expectOne((r) => r.url === URL);
+    expect(req.request.params.get('product')).toBe('3');
+    req.flush(envelope([], 0));
+  });
+
   it('fetches every page for listAll', () => {
     let result: Thing[] = [];
     api.listAll().subscribe((r) => (result = r));

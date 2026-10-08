@@ -108,4 +108,34 @@ export const INVENTORY_ROUTES: Routes = [
     loadComponent: () => import('./suppliers/supplier-form.component').then((m) => m.SupplierFormComponent),
     data: { titleKey: 'inventory.suppliers.edit' },
   },
+  {
+    path: 'variants',
+    loadComponent: () => import('./variants/product-variant-list.component').then((m) => m.ProductVariantListComponent),
+    data: { titleKey: 'inventory.variants.title' },
+  },
+  {
+    path: 'variants/new',
+    loadComponent: () => import('./variants/product-variant-form.component').then((m) => m.ProductVariantFormComponent),
+    data: { titleKey: 'inventory.variants.new' },
+  },
+  {
+    path: 'variants/:id/edit',
+    loadComponent: () => import('./variants/product-variant-form.component').then((m) => m.ProductVariantFormComponent),
+    data: { titleKey: 'inventory.variants.edit' },
+  },
+  {
+    path: 'supplier-products',
+    loadComponent: () => import('./supplier-products/supplier-product-list.component').then((m) => m.SupplierProductListComponent),
+    data: { titleKey: 'inventory.supplierProducts.title' },
+  },
+  {
+    path: 'supplier-products/new',
+    loadComponent: () => import('./supplier-products/supplier-product-form.component').then((m) => m.SupplierProductFormComponent),
+    data: { titleKey: 'inventory.supplierProducts.new' },
+  },
+  {
+    path: 'supplier-products/:id/edit',
+    loadComponent: () => import('./supplier-products/supplier-product-form.component').then((m) => m.SupplierProductFormComponent),
+    data: { titleKey: 'inventory.supplierProducts.edit' },
+  },
 ];

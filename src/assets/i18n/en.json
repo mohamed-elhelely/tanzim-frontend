@@ -63,7 +63,9 @@
     "warehouses": "Warehouses",
     "zones": "Zones",
     "bins": "Bins",
-    "suppliers": "Suppliers"
+    "suppliers": "Suppliers",
+    "variants": "Variants",
+    "supplierProducts": "Supplier price list"
   },
   "auth": {
     "login": "Login",
@@ -352,7 +354,28 @@
       "leadTimeDays": "Lead time (days)",
       "reliabilityScore": "Reliability (0–1)",
       "isPreferred": "Preferred",
-      "notes": "Notes"
+      "notes": "Notes",
+      "product": "Product",
+      "sku": "SKU",
+      "standardCost": "Standard cost",
+      "standardPrice": "Standard price",
+      "weight": "Weight",
+      "weightUom": "Weight unit",
+      "attributes": "Attributes",
+      "attributeName": "Attribute",
+      "attributeValue": "Value",
+      "addAttribute": "Add attribute",
+      "removeAttribute": "Remove attribute",
+      "supplier": "Supplier",
+      "variant": "Variant",
+      "supplierSku": "Supplier SKU",
+      "supplierProductName": "Supplier's product name",
+      "unitCost": "Unit cost",
+      "minOrderQty": "Min order qty",
+      "maxOrderQty": "Max order qty",
+      "isPrimary": "Primary supplier",
+      "effectiveFrom": "Effective from",
+      "effectiveTo": "Effective to"
     },
     "sections": {
       "tracking": "Tracking",
@@ -360,7 +383,9 @@
       "contact": "Contact",
       "address": "Address",
       "settings": "Settings",
-      "terms": "Terms"
+      "terms": "Terms",
+      "pricing": "Pricing",
+      "validity": "Validity"
     },
     "productTypes": {
       "simple": "Simple",
@@ -381,7 +406,11 @@
       "reliability": "A number from 0 to 1, e.g. 0.8.",
       "currency": "Three letters, e.g. SAR.",
       "website": "A full address starting with http:// or https://.",
-      "noBinTracking": "Bins are only used in warehouses with “Track stock by bin” turned on."
+      "noBinTracking": "Bins are only used in warehouses with “Track stock by bin” turned on.",
+      "decimal4": "A number with up to 4 decimals, e.g. 12.5.",
+      "decimal3": "A number with up to 3 decimals, e.g. 0.25.",
+      "attributes": "Each attribute needs a name. Names must be unique.",
+      "effectiveTo": "Leave empty if the price has no end date."
     },
     "warehouses": {
       "title": "Warehouses",
@@ -417,6 +446,19 @@
       "wholesaler": "Wholesaler",
       "retailer": "Retailer",
       "service": "Service provider"
+    },
+    "variants": {
+      "title": "Variants",
+      "new": "New variant",
+      "edit": "Edit variant",
+      "filteredBy": "Product: {{name}}",
+      "showAll": "Show all",
+      "manage": "Variants"
+    },
+    "supplierProducts": {
+      "title": "Supplier price list",
+      "new": "New price",
+      "edit": "Edit price"
     }
   }
 }

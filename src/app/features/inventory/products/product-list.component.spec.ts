@@ -87,4 +87,11 @@ describe('ProductListComponent', () => {
     httpMock.expectOne(`${URL}1/`).flush(null, { status: 204, statusText: 'No Content' });
     expectList({ page: '1' }, [makeProduct({ id: 2 })]);
   });
+
+  it('opens the product\'s variants', () => {
+    const fixture = create();
+    expectList({}, [makeProduct()]);
+    fixture.componentInstance.variants(makeProduct({ id: 3 }));
+    expect(router.navigate).toHaveBeenCalledWith(['/inventory/variants'], { queryParams: { product: 3 } });
+  });
 });
