@@ -132,4 +132,26 @@ Company admin: admin@testcompany.com / testpass123.
 
 16. `amount_due` (sales invoices) is serialized as a JSON number (`ReadOnlyField` over a Decimal property) while every
    other amount is a decimal string. Use `DecimalField(read_only=True, max_digits=19, decimal_places=4)`.
+
+17. Customer returns don't check quantities against the order: a return for 100 units of an order line that
+   shipped 2 was accepted, and nothing stops several returns for the same units. Cap `quantity_requested` by
+   `quantity_shipped` minus what earlier returns already requested. The frontend caps it by the shipped quantity.
+
+18. The customer-return actions (receive, inspect, close) answer with the return's lines as they were before the
+   step (the viewset prefetches `lines`, the service updates other instances): after receive the response still
+   says `quantity_received: 0`. Re-fetch the object before serializing the response. The frontend re-reads the
+   return after each step.
+
+19. Supplier returns: `refund_amount` is never set and nothing moves a return to `closed`; and
+   `purchase_order_number` reads `purchase_order.order_number`, but PurchaseOrder's field is `po_number`, so a return
+   linked to a PO will fail to serialize. The frontend shows the sum of the lines instead of `refund_amount`.
+
+20. Customer returns: there's no reject/cancel action, so `rejected` can't be reached and a wrong request can only be
+   deleted; `notes` is accepted on create but not returned by the read serializer; and PATCH with `lines` fails
+   (CustomerReturnWriteSerializer has no nested `update`). The frontend offers create, delete (while requested) and
+   the workflow only.
+
+21. The accepted value of a returned line (`line_value`, then the default refund) is `quantity × unit_price` of the
+   order line, ignoring its discount and tax: a line sold at 100 with 10 % off and 15 % tax refunds 100 instead of
+   103.50. Tell us if that is intended.
 ```

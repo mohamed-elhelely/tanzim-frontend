@@ -71,7 +71,9 @@
     "customers": "Customers",
     "deliveries": "Deliveries",
     "salesInvoices": "Invoices",
-    "payments": "Payments"
+    "payments": "Payments",
+    "customerReturns": "Customer returns",
+    "supplierReturns": "Supplier returns"
   },
   "auth": {
     "login": "Login",
@@ -753,6 +755,145 @@
       "completed": "Completed",
       "failed": "Failed",
       "refunded": "Refunded"
+    }
+  },
+  "returns": {
+    "customer": {
+      "title": "Customer returns",
+      "new": "New customer return",
+      "detail": "Customer return"
+    },
+    "supplier": {
+      "title": "Supplier returns",
+      "new": "New supplier return",
+      "detail": "Supplier return"
+    },
+    "customerStatuses": {
+      "requested": "Requested",
+      "approved": "Approved",
+      "in_transit": "In transit",
+      "received": "Received",
+      "inspected": "Inspected",
+      "closed": "Closed",
+      "rejected": "Rejected"
+    },
+    "supplierStatuses": {
+      "draft": "Draft",
+      "approved": "Approved",
+      "shipped": "Shipped",
+      "confirmed": "Confirmed by supplier",
+      "closed": "Closed"
+    },
+    "reasons": {
+      "defective": "Defective",
+      "wrong_item": "Wrong item",
+      "not_as_described": "Not as described",
+      "changed_mind": "Changed mind",
+      "damaged_in_transit": "Damaged in transit",
+      "other": "Other"
+    },
+    "refundMethods": {
+      "refund": "Refund",
+      "credit_note": "Credit note",
+      "replacement": "Replacement",
+      "exchange": "Exchange"
+    },
+    "conditions": {
+      "new": "New",
+      "good": "Good",
+      "fair": "Fair",
+      "damaged": "Damaged",
+      "unsaleable": "Unsaleable"
+    },
+    "dispositions": {
+      "accept": "Back to stock",
+      "quarantine": "Quarantine",
+      "reject": "Write off",
+      "return_to_supplier": "Return to supplier",
+      "warranty_repair": "Warranty repair"
+    },
+    "fields": {
+      "returnNumber": "Return no.",
+      "customer": "Customer",
+      "supplier": "Supplier",
+      "salesOrder": "Sales order",
+      "warehouse": "Warehouse",
+      "status": "Status",
+      "reason": "Reason",
+      "reasonNote": "Reason details",
+      "refundMethod": "Refund method",
+      "refundAmount": "Refund",
+      "returnValue": "Accepted value",
+      "value": "Value",
+      "notes": "Notes",
+      "requestedDate": "Requested on",
+      "receivedDate": "Received on",
+      "inspectedDate": "Inspected on",
+      "closedDate": "Closed on",
+      "shippedDate": "Shipped on",
+      "confirmedDate": "Confirmed on",
+      "replacementOrder": "Replacement order",
+      "customerReturn": "Customer return",
+      "items": "Items",
+      "item": "Item",
+      "shipped": "Shipped",
+      "returnQty": "Return qty",
+      "defect": "Problem",
+      "requested": "Requested",
+      "received": "Received",
+      "accepted": "Accepted",
+      "condition": "Condition",
+      "disposition": "Outcome",
+      "quantity": "Qty",
+      "unitCost": "Unit cost"
+    },
+    "sections": {
+      "items": "Items"
+    },
+    "actions": {
+      "addItem": "Add item",
+      "removeItem": "Remove item",
+      "createReturn": "Create return",
+      "approve": "Approve",
+      "receive": "Receive items",
+      "inspect": "Inspect",
+      "close": "Close and refund",
+      "createReplacement": "Create replacement order",
+      "markShipped": "Mark shipped",
+      "confirmReceipt": "Supplier confirmed"
+    },
+    "confirm": {
+      "approve": "Approve this return? The customer can then send the items back.",
+      "approveSupplier": "Approve this supplier return? The items leave the warehouse stock.",
+      "createReplacement": "Create a new sales order for the accepted items?",
+      "markShipped": "Mark this return as shipped to the supplier?",
+      "confirmReceipt": "Has the supplier confirmed they received the items?"
+    },
+    "toasts": {
+      "approved": "Return approved.",
+      "received": "Items received.",
+      "inspected": "Inspection saved.",
+      "closed": "Return closed.",
+      "replacementCreated": "Replacement order created.",
+      "shipped": "Marked as shipped.",
+      "receiptConfirmed": "Receipt confirmed."
+    },
+    "hints": {
+      "searchCustomer": "Search by return no., customer or order",
+      "searchSupplier": "Search by return no. or supplier",
+      "noOrder": "No order",
+      "orderOptional": "Pick an order to return its shipped items, or leave empty.",
+      "nothingShipped": "Nothing was shipped on this order.",
+      "lineQuantity": "Enter quantities greater than 0 and no more than what was shipped.",
+      "atLeastOneLine": "Add at least one item.",
+      "supplierLine": "Each item needs a product, a quantity greater than 0 and a unit cost.",
+      "receiveStock": "Received items go back into the warehouse stock.",
+      "receiveQuantity": "Enter quantities between 0 and the requested amount.",
+      "inspect": "For each item: how many are accepted, their condition and what happens to them.",
+      "inspectQuantity": "Accepted quantities must be between 0 and the received amount.",
+      "refundDefault": "Defaults to the accepted value. Leave empty to use it.",
+      "refundAmount": "Enter a valid amount.",
+      "freeLine": "Each item needs a product and a quantity greater than 0."
     }
   }
 }

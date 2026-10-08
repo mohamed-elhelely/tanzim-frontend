@@ -1,0 +1,267 @@
+<app-page-header title="returns.customer.new" [showBack]="true" backLabel="common.backToList" (back)="goBack()"></app-page-header>
+
+@if (loadError(); as err) {
+  <app-error-state [title]="errorTitleKey(err)" [showRetry]="false"></app-error-state>
+} @else if (loading()) {
+  <app-loading-state></app-loading-state>
+} @else {
+  <form [formGroup]="form" (ngSubmit)="submit()" class="flex max-w-5xl flex-col gap-4" novalidate>
+    @if (formErrors().length) {
+      <div
+        role="alert"
+        class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300"
+      >
+        @for (message of formErrors(); track $index) {
+          <p>{{ message }}</p>
+        }
+      </div>
+    }
+
+    <p-card>
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div class="flex flex-col gap-1">
+          <label for="customer" class="text-sm font-medium">{{ 'returns.fields.customer' | translate }} *</label>
+          <p-select
+            inputId="customer"
+            formControlName="customer"
+            [options]="customerOptions()"
+            optionLabel="label"
+            optionValue="value"
+            [filter]="true"
+            filterBy="label"
+            [placeholder]="'common.select' | translate"
+            (onChange)="onCustomerChange($event.value)"
+            styleClass="w-full"
+            appendTo="body"
+          ></p-select>
+          <app-field-error [control]="form.controls.customer"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="sales_order" class="text-sm font-medium">{{ 'returns.fields.salesOrder' | translate }}</label>
+          <p-select
+            inputId="sales_order"
+            formControlName="sales_order"
+            [options]="orderOptions()"
+            optionLabel="label"
+            optionValue="value"
+            [showClear]="true"
+            [placeholder]="'returns.hints.noOrder' | translate"
+            (onChange)="onOrderChange($event.value)"
+            styleClass="w-full"
+            appendTo="body"
+          ></p-select>
+          <small class="text-xs text-gray-500 dark:text-gray-400">{{ 'returns.hints.orderOptional' | translate }}</small>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="warehouse" class="text-sm font-medium">{{ 'returns.fields.warehouse' | translate }} *</label>
+          <p-select
+            inputId="warehouse"
+            formControlName="warehouse"
+            [options]="warehouses()"
+            optionLabel="name"
+            optionValue="id"
+            [placeholder]="'common.select' | translate"
+            styleClass="w-full"
+            appendTo="body"
+          ></p-select>
+          <app-field-error [control]="form.controls.warehouse"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="return_reason" class="text-sm font-medium">{{ 'returns.fields.reason' | translate }} *</label>
+          <p-select
+            inputId="return_reason"
+            formControlName="return_reason"
+            [options]="reasonOptions"
+            optionLabel="label"
+            optionValue="value"
+            styleClass="w-full"
+            appendTo="body"
+          >
+            <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
+            <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
+          </p-select>
+        </div>
+
+        <div class="flex flex-col gap-1 md:col-span-2">
+          <label for="return_reason_note" class="text-sm font-medium">{{ 'returns.fields.reasonNote' | translate }}</label>
+          <input pInputText id="return_reason_note" formControlName="return_reason_note" class="w-full" />
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="refund_method" class="text-sm font-medium">{{ 'returns.fields.refundMethod' | translate }}</label>
+          <p-select
+            inputId="refund_method"
+            formControlName="refund_method"
+            [options]="refundOptions"
+            optionLabel="label"
+            optionValue="value"
+            [showClear]="true"
+            [placeholder]="'common.select' | translate"
+            styleClass="w-full"
+            appendTo="body"
+          >
+            <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
+            <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
+          </p-select>
+        </div>
+
+        <div class="flex flex-col gap-1 md:col-span-2">
+          <label for="notes" class="text-sm font-medium">{{ 'returns.fields.notes' | translate }}</label>
+          <textarea pTextarea id="notes" formControlName="notes" rows="2" class="w-full"></textarea>
+        </div>
+      </div>
+    </p-card>
+
+    <p-card>
+      <div class="mb-3 flex items-center justify-between gap-2">
+        <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'returns.sections.items' | translate }}</h3>
+        @if (form.controls.sales_order.value === null) {
+          <p-button
+            type="button"
+            icon="pi pi-plus"
+            [label]="'returns.actions.addItem' | translate"
+            [outlined]="true"
+            size="small"
+            (onClick)="addFreeRow()"
+          ></p-button>
+        }
+      </div>
+
+      <div class="overflow-x-auto">
+        @if (form.controls.sales_order.value !== null) {
+          <table class="w-full min-w-[40rem] text-sm">
+            <thead>
+              <tr class="border-b border-gray-200 text-xs text-gray-500 dark:border-gray-800 dark:text-gray-400">
+                <th class="py-2 text-start font-medium">{{ 'returns.fields.item' | translate }}</th>
+                <th class="py-2 text-end font-medium">{{ 'returns.fields.shipped' | translate }}</th>
+                <th class="w-28 py-2 ps-3 text-start font-medium">{{ 'returns.fields.returnQty' | translate }}</th>
+                <th class="py-2 ps-3 text-start font-medium">{{ 'returns.fields.defect' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of orderRows(); track row.lineId) {
+                <tr class="border-b border-gray-100 dark:border-gray-800">
+                  <td class="py-2">
+                    <div class="font-medium">{{ row.name }}</div>
+                    <div class="font-mono text-xs text-gray-500" dir="ltr">{{ row.sku }}</div>
+                  </td>
+                  <td class="py-2 text-end">{{ row.shipped | number: '1.0-3' }}</td>
+                  <td class="py-2 ps-3">
+                    <input
+                      pInputText
+                      [(ngModel)]="row.quantity"
+                      [ngModelOptions]="{ standalone: true }"
+                      dir="ltr"
+                      inputmode="decimal"
+                      [attr.aria-label]="('returns.fields.returnQty' | translate) + ' ' + row.name"
+                      class="w-full"
+                    />
+                  </td>
+                  <td class="py-2 ps-3">
+                    <input
+                      pInputText
+                      [(ngModel)]="row.defect"
+                      [ngModelOptions]="{ standalone: true }"
+                      [attr.aria-label]="('returns.fields.defect' | translate) + ' ' + row.name"
+                      class="w-full"
+                    />
+                  </td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="4" class="py-4 text-center text-gray-500 dark:text-gray-400">{{ 'returns.hints.nothingShipped' | translate }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        } @else {
+          <table class="w-full min-w-[40rem] text-sm">
+            <thead>
+              <tr class="border-b border-gray-200 text-xs text-gray-500 dark:border-gray-800 dark:text-gray-400">
+                <th class="py-2 text-start font-medium">{{ 'returns.fields.item' | translate }} *</th>
+                <th class="w-28 py-2 ps-3 text-start font-medium">{{ 'returns.fields.returnQty' | translate }} *</th>
+                <th class="py-2 ps-3 text-start font-medium">{{ 'returns.fields.defect' | translate }}</th>
+                <th class="w-10"></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (row of freeRows; track $index; let i = $index) {
+                <tr class="border-b border-gray-100 dark:border-gray-800">
+                  <td class="py-2">
+                    <p-select
+                      [(ngModel)]="row.variant"
+                      [ngModelOptions]="{ standalone: true }"
+                      [options]="items()"
+                      optionLabel="label"
+                      optionValue="value"
+                      [filter]="true"
+                      filterBy="label"
+                      [placeholder]="'common.select' | translate"
+                      [ariaLabel]="'returns.fields.item' | translate"
+                      styleClass="w-full"
+                      appendTo="body"
+                    ></p-select>
+                  </td>
+                  <td class="py-2 ps-3">
+                    <input
+                      pInputText
+                      [(ngModel)]="row.quantity"
+                      [ngModelOptions]="{ standalone: true }"
+                      dir="ltr"
+                      inputmode="decimal"
+                      [attr.aria-label]="'returns.fields.returnQty' | translate"
+                      class="w-full"
+                    />
+                  </td>
+                  <td class="py-2 ps-3">
+                    <input
+                      pInputText
+                      [(ngModel)]="row.defect"
+                      [ngModelOptions]="{ standalone: true }"
+                      [attr.aria-label]="'returns.fields.defect' | translate"
+                      class="w-full"
+                    />
+                  </td>
+                  <td class="py-2 text-end">
+                    <p-button
+                      type="button"
+                      icon="pi pi-trash"
+                      severity="danger"
+                      [text]="true"
+                      [rounded]="true"
+                      [ariaLabel]="'returns.actions.removeItem' | translate"
+                      (onClick)="removeFreeRow(i)"
+                    ></p-button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
+      </div>
+      @if (linesError(); as key) {
+        <p role="alert" class="mt-3 text-sm text-red-600">{{ key | translate }}</p>
+      }
+    </p-card>
+
+    <div class="flex justify-end gap-2">
+      <p-button
+        type="button"
+        [label]="'common.cancel' | translate"
+        severity="secondary"
+        [outlined]="true"
+        (onClick)="goBack()"
+      ></p-button>
+      <p-button
+        type="submit"
+        [label]="'returns.actions.createReturn' | translate"
+        icon="pi pi-check"
+        [loading]="saving()"
+        [disabled]="saving()"
+      ></p-button>
+    </div>
+  </form>
+}

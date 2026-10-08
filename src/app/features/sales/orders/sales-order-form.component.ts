@@ -28,6 +28,7 @@ import { PageHeaderComponent } from '../../../shared/components/page-header/page
 import { errorTitleKey, handleSaveError } from '../../../shared/utils/server-errors';
 import { CodedRef, ProductVariant } from '../../inventory/inventory.models';
 import { ProductVariantService } from '../../inventory/variants/product-variant.service';
+import { ItemOption, toItemOption, trimZeros } from '../../inventory/variants/variant-options';
 import { WarehouseService } from '../../inventory/warehouses/warehouse.service';
 import { AddressFieldsComponent, addressGroup, patchAddress, toAddress } from '../address-fields/address-fields.component';
 import { CustomerService } from '../customers/customer.service';
@@ -57,13 +58,6 @@ type LineForm = FormGroup<{
   tax_percent: FormControl<string>;
   notes: FormControl<string>;
 }>;
-
-interface ItemOption {
-  value: number;
-  label: string;
-  product: number;
-  price: string | null;
-}
 
 function positive(control: AbstractControl<string>): ValidationErrors | null {
   return control.value && Number(control.value) <= 0 ? { greaterThan: { value: 0 } } : null;
@@ -335,17 +329,4 @@ export class SalesOrderFormComponent implements OnInit {
     this.items.update((items) => [...items, ...missing.map(toItemOption)]);
     order.lines.forEach((line) => this.addLine(line));
   }
-}
-
-function toItemOption(variant: ProductVariant): ItemOption {
-  const name = variant.name || variant.product?.name || '';
-  return { value: variant.id, label: `${variant.sku} — ${name}`, product: variant.product?.id, price: variant.standard_price };
-}
-
-/** "12.5000" → "12.5" so inputs show what the user would type. */
-function trimZeros(value: string | null | undefined): string {
-  if (!value) {
-    return '';
-  }
-  return value.includes('.') ? value.replace(/\.?0+$/, '') : value;
 }

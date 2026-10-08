@@ -81,7 +81,16 @@ export const NAV_ITEMS: NavItem[] = [
       { labelKey: 'nav.customers', icon: 'pi pi-users', routerLink: '/sales/customers' },
     ],
   },
-  { labelKey: 'nav.returns', icon: 'pi pi-replay', routerLink: '/returns', roles: COMPANY_ROLES },
+  {
+    labelKey: 'nav.returns',
+    icon: 'pi pi-replay',
+    routerLink: '/returns',
+    roles: COMPANY_ROLES,
+    children: [
+      { labelKey: 'nav.customerReturns', icon: 'pi pi-user', routerLink: '/returns/customer' },
+      { labelKey: 'nav.supplierReturns', icon: 'pi pi-truck', routerLink: '/returns/supplier' },
+    ],
+  },
   // The company's subscription and platform invoices: for company admins.
   { labelKey: 'nav.billing', icon: 'pi pi-credit-card', routerLink: '/billing', roles: ['COMPANY'] },
   { labelKey: 'nav.notifications', icon: 'pi pi-bell', routerLink: '/notifications' },
