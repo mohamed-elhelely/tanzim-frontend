@@ -32,6 +32,7 @@ You are continuing work on Tanzim, a bilingual (English/Arabic, RTL) ERP. Two re
 - Commit after each logical step; never include model names in commits or PRs.
 
 ## Known backend issues (raise, don't work around silently)
+- The full list of backend requests, as a prompt for a backend session, is in docs/BACKEND_REQUESTS.md.
 - Soft-deleting a country/region/city/district still in use returns 204.
 - Re-using the name of a soft-deleted record returns 500 (unique_together ignores is_deleted).
 - Location `full_address` is never returned.
