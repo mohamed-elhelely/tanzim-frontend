@@ -1,7 +1,11 @@
 # Backend session prompt
 
 Paste the block below as the first message of a new session on the backend repo (`0Mustafa37/Tanzim`).
-It lists what the frontend needs from the backend, in priority order. Tick items off (or delete them) as they ship.
+It lists what the frontend still needs from the backend. Remove items as they ship.
+
+History: the first round (current-user endpoint, enforced permissions, `is_staff`, company and location fixes,
+product variants, workflow actions, import, WebSocket token, export parameters, the password-hash leak) shipped on
+2026-10-08 and was verified from the frontend on 2026-10-09. Everything below was still open on that date.
 
 ```text
 You are working on the backend of Tanzim, a bilingual (English/Arabic) multi-tenant ERP.
@@ -9,127 +13,54 @@ You are working on the backend of Tanzim, a bilingual (English/Arabic) multi-ten
 - Backend (this repo): 0Mustafa37/Tanzim — Django + DRF, SQLite + Redis locally, pytest. Follow CLAUDE.md.
 - Frontend: mohamed-elhelely/tanzim-frontend (Angular 21). It consumes the API exactly as documented in docs/API_REFERENCE.md.
 - Responses are wrapped by sales.renderers.StandardizedJSONRenderer: { success, data, metadata, error: { code, message, errors } }.
-  Field validation errors must come back as 400 with errors keyed by field name, so the frontend can show them under the right input.
+  Field validation errors must come back as 400 with errors keyed by field name.
 
 ## Rules
-- One logical change per commit, each with a test (pytest) that fails before and passes after.
-- Keep docs/API_REFERENCE.md (and its "Known issues" section) in sync with every change: remove an issue when it is fixed, document any new field or endpoint.
-- Don't change existing response shapes without saying so; the frontend depends on them. Additive changes are fine.
-- Work on a new branch and open a PR to master when a group of items is done. Never include model names in commits or PRs.
-- Ask the owner before anything destructive or ambiguous (e.g. item 6).
+- One logical change per commit, each with a pytest test that fails before and passes after.
+- Keep docs/API_REFERENCE.md (and its "Known issues") in sync with every change.
+- Additive response changes are fine; don't remove or rename fields the frontend reads.
+- New branch, PR to master when done. Never include model names in commits or PRs.
 - Reply to the owner in Egyptian Arabic; keep code, commits and PR text in English.
 
 ## Running locally
 python -m venv venv && venv/bin/pip install -r requirements.txt
-SECRET_KEY=dev DEBUG=True python manage.py migrate && python manage.py setup_plans && python setup_data.py
+SECRET_KEY=dev DEBUG=True python manage.py migrate && python manage.py setup_plans && python manage.py seed_permissions && python setup_data.py
 redis-server --daemonize yes && SECRET_KEY=dev DEBUG=True python manage.py runserver 8000
-Company admin login: admin@testcompany.com / testpass123. For platform-staff checks, create a user with
-is_staff=True and no CompanyUser in `manage.py shell`. With no EMAIL_HOST_PASSWORD, emails go to the console.
+Company admin: admin@testcompany.com / testpass123.
 
-## Priority 0 — security, fix first
+## Open items (in priority order)
 
-0. POST /api/company/v1/company-user/ returns the new user's password hash (data.user.password = "pbkdf2_sha256$…").
-   company/serializers/user.py → UserWriteSerializer lists "password" without write_only. Make it
-   extra_kwargs = {"password": {"write_only": True}} and add a test that no response (create/update/retrieve/list) contains it.
+1. Every DELETE answers "204 No Content" WITH a 99-byte JSON body (the renderer wraps the empty response).
+   A 204 must not have a body. The Angular dev-server proxy rejects it ("Parse Error: Expected HTTP/") and turns
+   it into a 500, so every delete looks failed in local development although it succeeded.
+   Fix: skip the envelope (empty body) for 204, or answer 200 with the envelope.
+   Reproduce: curl -i -X DELETE localhost:8000/api/inventory/v1/brand/{id}/ -H "Authorization: Bearer …" → Content-Length: 99.
 
-## Priority 1 — needed for the frontend's next step (hide menus/buttons by permissions)
+2. Inventory read serializers return only a few fields, so edit screens can't show what is saved:
+   WarehouseReadSerializer (no code, email, phone, address fields), ZoneReadSerializer (no code, description),
+   BinReadSerializer (no code, barcode, max_capacity, bin_type), SupplierReadSerializer (no tax_id, contact_person,
+   email, phone, mobile, website, address fields, payment_terms, currency, reliability_score, notes).
+   Return every model field (keep the nested objects as they are). The frontend currently shows those fields empty
+   and only sends them when the user changes them (shared/utils/omit-pristine.ts).
 
-1. Current-user endpoint, e.g. GET /api/company/v1/me/ (or /api/me/). Return at least:
-   user (id, email, first_name, last_name), is_staff, company (id, name) or null, role (id, name_en, name_ar, is_admin) or null,
-   is_company_admin, is_department_manager, is_team_lead, and `permissions`: the flat, de-duplicated list of permission
-   codenames the user gets through role → permission_groups → permissions (all permissions if is_company_admin / role.is_admin).
-   Also return the company's active subscription module codes (`modules`: ["inventory", "location", …]) so one call drives the menu.
-2. Enforce those permissions on the server. Today the company endpoints (departments, teams, roles, permission groups,
-   permissions — common/views.py and company/apis/*.py) only check IsAuthenticated, so any employee can create/edit/delete
-   them through the API. Add a permission class that maps the view + HTTP method to a codename (view/add/change/delete) and
-   checks it against the same rules as item 1. Company admins keep full access. Document the codenames in API_REFERENCE.md.
-3. Put is_staff in the login response and the JWT payload (users/apis.py → LoginAPIView). Today role "ADMIN" only means
-   "has no CompanyUser"; the admin/company/ endpoints check is_staff (IsAdminUser), so a non-staff user without a company
-   sees a Companies menu that returns 403.
+3. POST/PATCH /api/inventory/v1/warehouse/ with `manager` returns 500 ("Cannot resolve keyword 'company_id'"):
+   WarehouseSerializer.manager is a CompanyRelatedField over User, which has no company. Restrict managers to users
+   of the current company through CompanyUser. The frontend hides the manager field until then.
 
-## Priority 1b — breaks every delete through a proxy
+4. Warehouse.code still has `unique=True` (besides unique_together company + code), so a company can't use a code
+   another company has, and the 400 message reveals that it exists elsewhere. Drop `unique=True` (migration).
 
-1b. Every DELETE answers "204 No Content" WITH a 99-byte JSON body (StandardizedJSONRenderer wraps the empty
-    response). A 204 must not have a body; strict HTTP clients reject it. The Angular dev-server proxy fails with
-    "Parse Error: Expected HTTP/" and turns it into a 500, so in local development every delete succeeds on the server
-    but the UI reports an error. Return 204 with no body (skip the envelope for 204), or return 200 with the envelope.
-    Reproduce: `curl -i -X DELETE localhost:8000/api/inventory/v1/brand/{id}/ -H "Authorization: Bearer …"` → 204 with
-    Content-Length: 99.
+5. PATCH /api/inventory/v1/category/{id}/ that re-sends the unchanged name and parent returns 400 "Category with this
+   name already exists under this parent.": CategorySerializer.validate doesn't exclude self.instance (and should use
+   the instance's name/parent when a partial update omits them). The frontend omits unchanged name/parent for now.
 
-## Priority 2 — found while building the platform-staff Companies screen (company/apis/company.py, company/serializers/company.py)
+6. Soft-deleting a brand or category that is still used returns 204: products keep pointing at the deleted brand or
+   category, and child categories at a deleted parent. Return 400 "Cannot delete: still used by …" like the location
+   endpoints now do.
 
-4. POST /api/company/v1/admin/company/ is not atomic. With a blank email (ValueError "Users must have an email address")
-   or an email that already belongs to a user (IntegrityError on users_user.email) it returns 500 AND the company row stays
-   created without an admin. Wrap create in transaction.atomic, make email required on create, and validate that no user has
-   that email yet → 400 { email: [...] }. Send the credentials email only after the transaction commits (transaction.on_commit).
-5. Company phone: PhoneNumberField(required=False) rejects "" ("This field may not be blank."), so a saved phone can't be cleared.
-   Allow blank (and treat "" as empty). The frontend currently omits phone when empty.
-6. DELETE /api/company/v1/admin/company/{id}/ is a hard delete and every company-owned model cascades (common/models.py
-   on_delete=CASCADE), while API_REFERENCE.md says "soft delete". ASK THE OWNER which one is intended; either make it a real
-   soft delete (or deactivate) or fix the docs. The frontend has no delete button until this is settled.
-7. Confirm/document how to upload the company logo (multipart PATCH with `logo`) and that logo_url comes back absolute.
-8. Optional: add search_fields (name, legal_name, domain, email) and ordering to the companies list.
+7. Nothing stops a category from becoming its own ancestor (parent cycles). Validate on create/update.
 
-## Priority 3 — still open from the Company & Locations screens
-
-9. Soft-deleting a country/region/city/district that is still referenced (by a region/city/district/location) returns 204.
-   Return 400 with a clear message while it is in use.
-10. Re-using the name of a soft-deleted record returns 500: unique_together (company/models.py, e.g. ("country", "name_en"))
-    ignores is_deleted. Use a UniqueConstraint with condition=Q(is_deleted=False) (plus a migration), or validate in the
-    serializer and return 400.
-11. Location `full_address` is never returned: company/serializers/location.py uses source="get_full_address" but the model
-    has a `full_address` property (company/models.py).
-12. PATCH /api/company/v1/company-user/{id}/ with a nested `user` re-validates the unchanged email and returns 400
-    ("User with this Email Address already exists."). Support nested update of the user's name/email/phone, excluding the
-    instance's own user from the uniqueness check.
-13. GET /api/company/v1/permissions/?search= returns 500: the shared view (common/views.py) searches name_en/name_ar, which
-    Permission doesn't have. Give the permissions view its own search_fields (name, codename).
-14. PATCH /api/company/v1/location/{id}/ returns 500 unless both country and region are sent (validator reads data["region"]).
-    Fall back to the instance's values on partial updates.
-15. POST /api/company/v1/city/ accepts only timezone UTC or GMT although the model default is Asia/Riyadh. Accept IANA names.
-
-## Priority 3b — found while building the Inventory catalogue screens (inventory/serializers/product.py)
-
-15a. PATCH /api/inventory/v1/category/{id}/ re-sending the unchanged name and parent returns 400 "Category with this
-     name already exists under this parent.": CategorySerializer.validate doesn't exclude self.instance. Exclude it
-     (and use the instance's name/parent when they are missing from a partial update). The frontend currently omits
-     unchanged name/parent as a workaround.
-15b. Soft-deleting a brand or category that is still in use returns 204: products keep pointing at the deleted brand or
-     category, and child categories at a deleted parent. Return 400 while it is in use (same as item 9).
-15c. Category parent: nothing stops a category from becoming its own ancestor (cycles). Validate on the server.
-
-## Priority 3c — found while building the warehouse and supplier screens
-
-15d. POST/PATCH /api/inventory/v1/warehouse/ with `manager` returns 500 ("Cannot resolve keyword 'company_id'"):
-     WarehouseSerializer.manager is a CompanyRelatedField over User, which has no company. Filter managers through
-     CompanyUser (users of the current company) instead. The frontend hides the manager field until then.
-15e. The read serializers for warehouse, zone, bin and supplier return only a few fields (no code, contact, address,
-     barcode, capacity, terms, notes…), so an edit screen can't show what is saved. Return every model field in the
-     read serializers (WarehouseReadSerializer, ZoneReadSerializer, BinReadSerializer, SupplierReadSerializer). The
-     frontend shows those fields empty and only sends them when changed (shared/utils/omit-pristine.ts) until then.
-15f. Warehouse.code is `unique=True` across ALL companies: one company can't use a code another company has, and the
-     400 message reveals that the code exists elsewhere. Make it unique per company (unique_together company + code).
-
-## Priority 4 — blocks the Inventory screens (see "Known issues" #1–#3 in docs/API_REFERENCE.md)
-
-16. Workflow actions return 405: POST /api/inventory/v1/{stock-transfer, stock-adjustment, cycle-count, purchase-requisition,
-    purchase-order, supplier-invoice}/{id}/action/ and POST /api/inventory/v1/approval-request/{id}/process/. Route them to
-    the existing approve/ship/post/… methods, and filter the lookups by company.
-17. No CRUD API for ProductVariant, while stock, batches, serials, PO lines, transfers and supplier products all require
-    product_variant (the frontend can't build the Supplier products screen without it).
-    Add list/create/retrieve/update/delete under /api/inventory/v1/product-variant/ (company-scoped, with dropdown=true).
-18. Import fails on every row: validate_name() missing 1 required positional argument: 'field_name'
-    (confirmed on POST /api/inventory/v1/category/import/).
-
-## Priority 5 — later
-
-- Subscriptions: FeatureFlag.is_enabled (billing/feature_flags.py) picks company.subscriptions.first() while
-  GET subscriptions/current/ picks latest("created_at"). With more than one subscription they can disagree, and the menu
-  (built from current/) won't match the 403s. Use the same lookup in both.
-
-19. WebSocket auth only reads the Authorization header, which browsers can't set on new WebSocket(). Also accept ?token=.
-20. Export reads `format`/`async` from the GET body; read them from query params so browsers can request xlsx/async.
-
-Start by reading docs/API_REFERENCE.md and the files named above, then confirm the plan for Priority 1 with the owner
-(endpoint path and the codename scheme) before writing code. Then work down the list.
+8. Accounting: the new /api/accounting/v1/ endpoints are described in docs/BUSINESS_LOGIC.md but not in
+   docs/API_REFERENCE.md. Document them there (paths, bodies, response objects, examples) so the frontend can build
+   the accounting screens.
 ```
