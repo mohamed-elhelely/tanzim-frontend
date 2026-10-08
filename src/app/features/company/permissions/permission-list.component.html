@@ -1,11 +1,21 @@
 <app-page-header title="company.permissions.title" [actions]="headerActions()"></app-page-header>
 
-<!-- No search box: the backend searches name_en/name_ar, which permissions don't have, and returns 500. -->
-
 @if (table.error(); as err) {
   <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403" (retry)="table.load()"></app-error-state>
 } @else {
   <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
+    <div class="flex items-center gap-3 border-b border-gray-100 p-4 dark:border-gray-800">
+      <p-iconfield class="w-full sm:w-80">
+        <p-inputicon class="pi pi-search"></p-inputicon>
+        <input
+          pInputText
+          type="search"
+          [placeholder]="'common.search' | translate"
+          (input)="table.onSearch($any($event.target).value)"
+          class="w-full"
+        />
+      </p-iconfield>
+    </div>
     <div class="overflow-x-auto">
       <p-table
         [value]="table.rows()"

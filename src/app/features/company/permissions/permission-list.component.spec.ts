@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { HttpTestingController } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
 import { Confirmation, ConfirmationService } from 'primeng/api';
@@ -40,12 +40,15 @@ describe('PermissionListComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('Sales access');
   });
 
-  it('has no search box, because the backend search on permissions returns 500', () => {
+  it('searches by name and codename', fakeAsync(() => {
     const fixture = create();
     httpMock.expectOne((r) => r.url === URL).flush(envelope([makePermission()], 1));
     fixture.detectChanges();
-    expect(fixture.nativeElement.querySelector('input[type="search"]')).toBeNull();
-  });
+    expect(fixture.nativeElement.querySelector('input[type="search"]')).not.toBeNull();
+    fixture.componentInstance.table.onSearch('team');
+    tick(300);
+    httpMock.expectOne((r) => r.url === URL && r.params.get('search') === 'team').flush(envelope([], 0));
+  }));
 
   it('cancels the older list request when a newer one starts', () => {
     const fixture = create();

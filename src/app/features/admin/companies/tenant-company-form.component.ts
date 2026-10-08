@@ -102,15 +102,13 @@ export class TenantCompanyFormComponent implements OnInit {
       domain: value.domain.trim().toLowerCase(),
       tax_id: value.tax_id.trim(),
       email: value.email.trim(),
+      phone: value.phone.trim(),
       address: value.address.trim(),
       timezone: value.timezone,
       primary_color: value.primary_color,
       secondary_color: value.secondary_color,
       is_active: value.is_active,
     };
-    if (value.phone.trim()) {
-      body.phone = value.phone.trim();
-    }
     this.saving.set(true);
     this.formErrors.set([]);
     const request = this.id !== null ? this.api.update(this.id, body) : this.api.create(body);

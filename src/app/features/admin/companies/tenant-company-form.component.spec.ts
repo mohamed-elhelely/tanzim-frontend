@@ -49,9 +49,8 @@ describe('TenantCompanyFormComponent', () => {
     component.submit();
 
     const req = httpMock.expectOne((r) => r.url === URL && r.method === 'POST');
-    const { phone, ...withoutPhone } = VALID;
-    expect(phone).toBe('');
-    expect(req.request.body).toEqual({ ...withoutPhone, name: 'Acme Trading', domain: 'acme.example' });
+    // An empty phone is sent as "" (the backend clears it).
+    expect(req.request.body).toEqual({ ...VALID, name: 'Acme Trading', domain: 'acme.example' });
     req.flush(envelope(makeTenantCompany()), { status: 201, statusText: 'Created' });
     expect(router.navigate).toHaveBeenCalledWith(['/admin/companies']);
   });

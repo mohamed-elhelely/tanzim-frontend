@@ -2,6 +2,9 @@ import { ChangeDetectionStrategy, Component, OnInit, computed, inject } from '@a
 import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { AccessService } from '../../../core/auth/access.service';
 import { ConfirmService } from '../../../core/services/confirm.service';
@@ -21,6 +24,9 @@ import { PermissionService } from './permission.service';
     TranslatePipe,
     TableModule,
     ButtonModule,
+    InputTextModule,
+    IconFieldModule,
+    InputIconModule,
     PageHeaderComponent,
     EmptyStateComponent,
     ErrorStateComponent,

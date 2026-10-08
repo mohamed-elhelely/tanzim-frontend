@@ -63,6 +63,8 @@ export interface Location {
   address_line1: string;
   address_line2: string;
   postal_code: string | null;
+  /** Built by the backend from the address and the place names. */
+  full_address?: string | null;
   is_active: boolean;
   location_type: LocationType;
   created_by: UserRef | null;

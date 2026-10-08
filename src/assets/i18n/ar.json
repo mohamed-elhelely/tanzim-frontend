@@ -217,7 +217,8 @@
       "postalCode": "الرمز البريدي",
       "locationType": "النوع",
       "addressLine1": "العنوان (سطر 1)",
-      "addressLine2": "العنوان (سطر 2)"
+      "addressLine2": "العنوان (سطر 2)",
+      "fullAddress": "العنوان"
     },
     "hints": {
       "isoCode": "حرفان، مثل EG.",

@@ -41,7 +41,7 @@
             <th>{{ 'locations.fields.code' | translate }}</th>
             <th>{{ 'locations.fields.locationType' | translate }}</th>
             <th>{{ 'locations.fields.city' | translate }}</th>
-            <th>{{ 'locations.fields.addressLine1' | translate }}</th>
+            <th>{{ 'locations.fields.fullAddress' | translate }}</th>
             <th>{{ 'locations.fields.isActive' | translate }}</th>
             <th class="text-end">{{ 'common.actions' | translate }}</th>
           </tr>
@@ -54,7 +54,7 @@
             <td>{{ row.code }}</td>
             <td>{{ 'locations.types.' + row.location_type | translate }}</td>
             <td>{{ row.city | localizedName: lang() }}</td>
-            <td dir="auto">{{ row.address_line1 }}</td>
+            <td dir="auto" class="max-w-md truncate" [title]="row.full_address ?? ''">{{ row.full_address || row.address_line1 }}</td>
             <td>
               @if (row.is_active) {
                 <app-status-badge [value]="'common.yes' | translate" severity="success"></app-status-badge>
