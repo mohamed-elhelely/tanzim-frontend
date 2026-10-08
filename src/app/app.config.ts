@@ -5,18 +5,32 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { providePrimeNG } from 'primeng/config';
 import { routes } from './app.routes';
 import { GlobalErrorHandler } from './core/handlers/global-error-handler';
+import { apiHeadersInterceptor } from './core/interceptors/api-headers.interceptor';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { errorInterceptor } from './core/interceptors/error.interceptor';
 import { loadingInterceptor } from './core/interceptors/loading.interceptor';
+import { TanzimPreset } from './core/theme/tanzim-preset';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([authInterceptor, loadingInterceptor, errorInterceptor])),
+    provideHttpClient(withInterceptors([apiHeadersInterceptor, authInterceptor, loadingInterceptor, errorInterceptor])),
     provideAnimations(),
+    providePrimeNG({
+      theme: {
+        preset: TanzimPreset,
+        options: {
+          // Dark mode follows the `dark` class on <html> (shared with Tailwind).
+          darkModeSelector: '.dark',
+          // Same order as src/layer-order.css.
+          cssLayer: { name: 'primeng', order: 'tailwind-base, primeng, app, tailwind-utilities' },
+        },
+      },
+    }),
     provideTranslateService({
       lang: 'en',
       fallbackLang: 'en',

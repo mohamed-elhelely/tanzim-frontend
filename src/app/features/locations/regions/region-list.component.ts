@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { Subject, debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
@@ -19,20 +21,21 @@ import { Region } from '../locations.models';
 import { RegionService } from './region.service';
 
 @Component({
-  selector: 'app-region-list',
-  standalone: true,
-  imports: [
-    TranslatePipe,
-    TableModule,
-    ButtonModule,
-    InputTextModule,
-    PageHeaderComponent,
-    EmptyStateComponent,
-    ErrorStateComponent,
-    LocalizedNamePipe,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './region-list.component.html',
+    selector: 'app-region-list',
+    imports: [
+        TranslatePipe,
+        TableModule,
+        ButtonModule,
+        InputTextModule,
+    IconFieldModule,
+    InputIconModule,
+        PageHeaderComponent,
+        EmptyStateComponent,
+        ErrorStateComponent,
+        LocalizedNamePipe,
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './region-list.component.html'
 })
 export class RegionListComponent implements OnInit {
   private readonly api = inject(RegionService);

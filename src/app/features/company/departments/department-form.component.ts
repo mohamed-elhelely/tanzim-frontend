@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { DropdownModule } from 'primeng/dropdown';
+import { SelectModule } from 'primeng/select';
 import { InputTextModule } from 'primeng/inputtext';
 import { AppError } from '../../../core/errors/app-error';
 import { LanguageService } from '../../../core/services/language.service';
@@ -20,22 +20,21 @@ import { CompanyUserService } from '../users/company-user.service';
 import { DepartmentService } from './department.service';
 
 @Component({
-  selector: 'app-department-form',
-  standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    TranslatePipe,
-    ButtonModule,
-    CardModule,
-    DropdownModule,
-    InputTextModule,
-    PageHeaderComponent,
-    LoadingStateComponent,
-    ErrorStateComponent,
-    FieldErrorComponent,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './department-form.component.html',
+    selector: 'app-department-form',
+    imports: [
+        ReactiveFormsModule,
+        TranslatePipe,
+        ButtonModule,
+        CardModule,
+        SelectModule,
+        InputTextModule,
+        PageHeaderComponent,
+        LoadingStateComponent,
+        ErrorStateComponent,
+        FieldErrorComponent,
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './department-form.component.html'
 })
 export class DepartmentFormComponent implements OnInit {
   private readonly api = inject(DepartmentService);

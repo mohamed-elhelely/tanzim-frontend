@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { DropdownModule } from 'primeng/dropdown';
+import { SelectModule } from 'primeng/select';
 import { InputTextModule } from 'primeng/inputtext';
 import { AppError } from '../../../core/errors/app-error';
 import { LanguageService } from '../../../core/services/language.service';
@@ -21,22 +21,21 @@ import { RegionPayload } from '../locations.models';
 import { RegionService } from './region.service';
 
 @Component({
-  selector: 'app-region-form',
-  standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    TranslatePipe,
-    ButtonModule,
-    CardModule,
-    DropdownModule,
-    InputTextModule,
-    PageHeaderComponent,
-    LoadingStateComponent,
-    ErrorStateComponent,
-    FieldErrorComponent,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './region-form.component.html',
+    selector: 'app-region-form',
+    imports: [
+        ReactiveFormsModule,
+        TranslatePipe,
+        ButtonModule,
+        CardModule,
+        SelectModule,
+        InputTextModule,
+        PageHeaderComponent,
+        LoadingStateComponent,
+        ErrorStateComponent,
+        FieldErrorComponent,
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './region-form.component.html'
 })
 export class RegionFormComponent implements OnInit {
   private readonly api = inject(RegionService);

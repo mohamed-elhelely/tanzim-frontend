@@ -10,7 +10,7 @@
 } @else if (loading()) {
   <app-loading-state></app-loading-state>
 } @else {
-  <p-card>
+  <p-card styleClass="max-w-5xl">
     <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-6" novalidate>
       @if (formErrors().length) {
         <div
@@ -38,17 +38,17 @@
 
         <div class="flex flex-col gap-1 md:col-span-2">
           <label for="description" class="text-sm font-medium">{{ 'company.fields.description' | translate }}</label>
-          <textarea pInputTextarea id="description" formControlName="description" rows="3" class="w-full"></textarea>
+          <textarea pTextarea id="description" formControlName="description" rows="3" class="w-full"></textarea>
           <app-field-error [control]="form.controls.description"></app-field-error>
         </div>
 
         <div class="flex items-center gap-3">
-          <p-inputSwitch inputId="is_core" formControlName="is_core"></p-inputSwitch>
+          <p-toggleswitch inputId="is_core" formControlName="is_core"></p-toggleswitch>
           <label for="is_core" class="text-sm font-medium">{{ 'company.fields.isCore' | translate }}</label>
         </div>
       </div>
 
-      <div class="flex justify-end gap-2">
+      <div class="flex justify-end gap-2 border-t border-gray-100 pt-5 dark:border-gray-800">
         <p-button
           type="button"
           [label]="'common.cancel' | translate"

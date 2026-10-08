@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { AppError } from '../../../core/errors/app-error';
@@ -19,21 +21,22 @@ import { CompanyUserService } from './company-user.service';
 
 /** The company-user endpoint returns the full list, so paging, sorting and search happen in the table. */
 @Component({
-  selector: 'app-user-list',
-  standalone: true,
-  imports: [
-    TranslatePipe,
-    TableModule,
-    ButtonModule,
-    InputTextModule,
-    PageHeaderComponent,
-    EmptyStateComponent,
-    ErrorStateComponent,
-    StatusBadgeComponent,
-    LocalizedNamePipe,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './user-list.component.html',
+    selector: 'app-user-list',
+    imports: [
+        TranslatePipe,
+        TableModule,
+        ButtonModule,
+        InputTextModule,
+    IconFieldModule,
+    InputIconModule,
+        PageHeaderComponent,
+        EmptyStateComponent,
+        ErrorStateComponent,
+        StatusBadgeComponent,
+        LocalizedNamePipe,
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './user-list.component.html'
 })
 export class UserListComponent implements OnInit {
   private readonly api = inject(CompanyUserService);

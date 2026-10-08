@@ -17,18 +17,17 @@ import { Permission } from '../company.models';
 import { PermissionService } from './permission.service';
 
 @Component({
-  selector: 'app-permission-list',
-  standalone: true,
-  imports: [
-    TranslatePipe,
-    TableModule,
-    ButtonModule,
-    PageHeaderComponent,
-    EmptyStateComponent,
-    ErrorStateComponent,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './permission-list.component.html',
+    selector: 'app-permission-list',
+    imports: [
+        TranslatePipe,
+        TableModule,
+        ButtonModule,
+        PageHeaderComponent,
+        EmptyStateComponent,
+        ErrorStateComponent,
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './permission-list.component.html'
 })
 export class PermissionListComponent implements OnInit {
   private readonly api = inject(PermissionService);

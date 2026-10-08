@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { DropdownModule } from 'primeng/dropdown';
+import { SelectModule } from 'primeng/select';
 import { InputTextModule } from 'primeng/inputtext';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { AppError } from '../../../core/errors/app-error';
@@ -25,23 +25,22 @@ import { TeamService } from './team.service';
 export type LocationState = 'loading' | 'ready' | 'forbidden' | 'empty' | 'error';
 
 @Component({
-  selector: 'app-team-form',
-  standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    TranslatePipe,
-    ButtonModule,
-    CardModule,
-    DropdownModule,
-    InputTextModule,
-    MultiSelectModule,
-    PageHeaderComponent,
-    LoadingStateComponent,
-    ErrorStateComponent,
-    FieldErrorComponent,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './team-form.component.html',
+    selector: 'app-team-form',
+    imports: [
+        ReactiveFormsModule,
+        TranslatePipe,
+        ButtonModule,
+        CardModule,
+        SelectModule,
+        InputTextModule,
+        MultiSelectModule,
+        PageHeaderComponent,
+        LoadingStateComponent,
+        ErrorStateComponent,
+        FieldErrorComponent,
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './team-form.component.html'
 })
 export class TeamFormComponent implements OnInit {
   private readonly api = inject(TeamService);

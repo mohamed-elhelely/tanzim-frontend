@@ -3,20 +3,19 @@ import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angula
 import { Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { AuthService } from '../../../core/auth/auth.service';
 import { AppError } from '../../../core/errors/app-error';
 import { LanguageService } from '../../../core/services/language.service';
+import { ThemeService } from '../../../core/services/theme.service';
 
 @Component({
-  selector: 'app-login-page',
-  standalone: true,
-  imports: [ReactiveFormsModule, TranslatePipe, CardModule, InputTextModule, PasswordModule, ButtonModule],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './login-page.component.html',
-  styleUrl: './login-page.component.scss',
+    selector: 'app-login-page',
+    imports: [ReactiveFormsModule, TranslatePipe, InputTextModule, PasswordModule, ButtonModule],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './login-page.component.html',
+    styleUrl: './login-page.component.scss'
 })
 export class LoginPageComponent {
   private readonly fb = inject(NonNullableFormBuilder);
@@ -25,6 +24,8 @@ export class LoginPageComponent {
   private readonly translate = inject(TranslateService);
 
   readonly language = inject(LanguageService);
+  readonly theme = inject(ThemeService);
+  readonly features = ['auth.features.organisation', 'auth.features.locations', 'auth.features.bilingual'];
   readonly submitting = signal(false);
   readonly errorMessage = signal<string | null>(null);
 

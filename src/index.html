@@ -2,10 +2,32 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>TanzimFrontend</title>
+  <title>Tanzim</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+  >
+  <script>
+    // Apply the saved (or system) theme and language before Angular starts, so the page doesn't flash.
+    (function () {
+      try {
+        var theme = localStorage.getItem('tanzim.theme');
+        if (theme !== 'light' && theme !== 'dark') {
+          theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        var root = document.documentElement;
+        root.classList.toggle('dark', theme === 'dark');
+        var lang = localStorage.getItem('tanzim.lang') === 'ar' ? 'ar' : 'en';
+        root.lang = lang;
+        root.dir = lang === 'ar' ? 'rtl' : 'ltr';
+      } catch (e) {}
+    })();
+  </script>
 </head>
 <body>
   <app-root></app-root>

@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { InputSwitchModule } from 'primeng/inputswitch';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { InputTextModule } from 'primeng/inputtext';
 import { AppError } from '../../../core/errors/app-error';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -17,22 +17,21 @@ import { CountryPayload } from '../locations.models';
 import { CountryService } from './country.service';
 
 @Component({
-  selector: 'app-country-form',
-  standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    TranslatePipe,
-    ButtonModule,
-    CardModule,
-    InputSwitchModule,
-    InputTextModule,
-    PageHeaderComponent,
-    LoadingStateComponent,
-    ErrorStateComponent,
-    FieldErrorComponent,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './country-form.component.html',
+    selector: 'app-country-form',
+    imports: [
+        ReactiveFormsModule,
+        TranslatePipe,
+        ButtonModule,
+        CardModule,
+        ToggleSwitchModule,
+        InputTextModule,
+        PageHeaderComponent,
+        LoadingStateComponent,
+        ErrorStateComponent,
+        FieldErrorComponent,
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './country-form.component.html'
 })
 export class CountryFormComponent implements OnInit {
   private readonly api = inject(CountryService);

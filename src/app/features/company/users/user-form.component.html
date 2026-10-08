@@ -10,7 +10,7 @@
 } @else if (loading()) {
   <app-loading-state></app-loading-state>
 } @else {
-  <p-card>
+  <p-card styleClass="max-w-5xl">
     <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-6" novalidate>
       @if (formErrors().length) {
         <div
@@ -72,7 +72,7 @@
 
         <div class="flex flex-col gap-1">
           <label for="role" class="text-sm font-medium">{{ 'company.fields.role' | translate }}</label>
-          <p-dropdown
+          <p-select
             inputId="role"
             formControlName="role"
             [options]="roleOptions()"
@@ -83,13 +83,13 @@
             [placeholder]="'common.select' | translate"
             styleClass="w-full"
             appendTo="body"
-          ></p-dropdown>
+          ></p-select>
           <app-field-error [control]="form.controls.role"></app-field-error>
         </div>
 
         <div class="flex flex-col gap-1">
           <label for="department" class="text-sm font-medium">{{ 'company.fields.department' | translate }}</label>
-          <p-dropdown
+          <p-select
             inputId="department"
             formControlName="department"
             [options]="departmentOptions()"
@@ -100,13 +100,13 @@
             [placeholder]="'common.select' | translate"
             styleClass="w-full"
             appendTo="body"
-          ></p-dropdown>
+          ></p-select>
           <app-field-error [control]="form.controls.department"></app-field-error>
         </div>
 
         <div class="flex flex-col gap-1">
           <label for="team" class="text-sm font-medium">{{ 'company.fields.team' | translate }}</label>
-          <p-dropdown
+          <p-select
             inputId="team"
             formControlName="team"
             [options]="teamOptions()"
@@ -117,29 +117,29 @@
             [placeholder]="'common.select' | translate"
             styleClass="w-full"
             appendTo="body"
-          ></p-dropdown>
+          ></p-select>
           <app-field-error [control]="form.controls.team"></app-field-error>
         </div>
       </div>
 
       <div class="flex flex-col gap-3 sm:flex-row sm:gap-8">
         <div class="flex items-center gap-3">
-          <p-inputSwitch inputId="is_company_admin" formControlName="is_company_admin"></p-inputSwitch>
+          <p-toggleswitch inputId="is_company_admin" formControlName="is_company_admin"></p-toggleswitch>
           <label for="is_company_admin" class="text-sm font-medium">{{ 'company.fields.companyAdmin' | translate }}</label>
         </div>
         <div class="flex items-center gap-3">
-          <p-inputSwitch inputId="is_department_manager" formControlName="is_department_manager"></p-inputSwitch>
+          <p-toggleswitch inputId="is_department_manager" formControlName="is_department_manager"></p-toggleswitch>
           <label for="is_department_manager" class="text-sm font-medium">
             {{ 'company.fields.departmentManager' | translate }}
           </label>
         </div>
         <div class="flex items-center gap-3">
-          <p-inputSwitch inputId="is_team_lead" formControlName="is_team_lead"></p-inputSwitch>
+          <p-toggleswitch inputId="is_team_lead" formControlName="is_team_lead"></p-toggleswitch>
           <label for="is_team_lead" class="text-sm font-medium">{{ 'company.fields.teamLead' | translate }}</label>
         </div>
       </div>
 
-      <div class="flex justify-end gap-2">
+      <div class="flex justify-end gap-2 border-t border-gray-100 pt-5 dark:border-gray-800">
         <p-button
           type="button"
           [label]="'common.cancel' | translate"

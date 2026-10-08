@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { Subject, debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
@@ -20,21 +22,22 @@ import { Location } from '../locations.models';
 import { LocationService } from './../location.service';
 
 @Component({
-  selector: 'app-site-list',
-  standalone: true,
-  imports: [
-    TranslatePipe,
-    TableModule,
-    ButtonModule,
-    InputTextModule,
-    PageHeaderComponent,
-    EmptyStateComponent,
-    ErrorStateComponent,
-    StatusBadgeComponent,
-    LocalizedNamePipe,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './site-list.component.html',
+    selector: 'app-site-list',
+    imports: [
+        TranslatePipe,
+        TableModule,
+        ButtonModule,
+        InputTextModule,
+    IconFieldModule,
+    InputIconModule,
+        PageHeaderComponent,
+        EmptyStateComponent,
+        ErrorStateComponent,
+        StatusBadgeComponent,
+        LocalizedNamePipe,
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './site-list.component.html'
 })
 export class SiteListComponent implements OnInit {
   private readonly api = inject(LocationService);

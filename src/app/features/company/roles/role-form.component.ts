@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { InputSwitchModule } from 'primeng/inputswitch';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { InputTextModule } from 'primeng/inputtext';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { AppError } from '../../../core/errors/app-error';
@@ -21,23 +21,22 @@ import { PermissionGroupService } from '../permission-groups/permission-group.se
 import { RoleService } from './role.service';
 
 @Component({
-  selector: 'app-role-form',
-  standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    TranslatePipe,
-    ButtonModule,
-    CardModule,
-    InputSwitchModule,
-    InputTextModule,
-    MultiSelectModule,
-    PageHeaderComponent,
-    LoadingStateComponent,
-    ErrorStateComponent,
-    FieldErrorComponent,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './role-form.component.html',
+    selector: 'app-role-form',
+    imports: [
+        ReactiveFormsModule,
+        TranslatePipe,
+        ButtonModule,
+        CardModule,
+        ToggleSwitchModule,
+        InputTextModule,
+        MultiSelectModule,
+        PageHeaderComponent,
+        LoadingStateComponent,
+        ErrorStateComponent,
+        FieldErrorComponent,
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './role-form.component.html'
 })
 export class RoleFormComponent implements OnInit {
   private readonly api = inject(RoleService);

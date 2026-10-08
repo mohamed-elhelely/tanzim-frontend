@@ -1,5 +1,8 @@
+// GitHub Pages only serves static files, so the API lives on the backend's ngrok tunnel.
+const BACKEND_URL = 'https://chunk-surcharge-manhood.ngrok-free.dev';
+
 export const environment = {
   production: true,
-  apiBaseUrl: '/api/',
-  wsBaseUrl: 'wss://your-domain.com/ws/',
+  apiBaseUrl: `${BACKEND_URL}/api/`,
+  wsBaseUrl: `${BACKEND_URL.replace(/^http/, 'ws')}/ws/`,
 };

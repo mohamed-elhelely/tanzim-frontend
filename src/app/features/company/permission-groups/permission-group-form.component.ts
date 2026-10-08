@@ -4,9 +4,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { InputSwitchModule } from 'primeng/inputswitch';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { InputTextModule } from 'primeng/inputtext';
-import { InputTextareaModule } from 'primeng/inputtextarea';
+import { TextareaModule } from 'primeng/textarea';
 import { AppError } from '../../../core/errors/app-error';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
@@ -18,23 +18,22 @@ import { PermissionGroupPayload } from '../company.models';
 import { PermissionGroupService } from './permission-group.service';
 
 @Component({
-  selector: 'app-permission-group-form',
-  standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    TranslatePipe,
-    ButtonModule,
-    CardModule,
-    InputSwitchModule,
-    InputTextModule,
-    InputTextareaModule,
-    PageHeaderComponent,
-    LoadingStateComponent,
-    ErrorStateComponent,
-    FieldErrorComponent,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './permission-group-form.component.html',
+    selector: 'app-permission-group-form',
+    imports: [
+        ReactiveFormsModule,
+        TranslatePipe,
+        ButtonModule,
+        CardModule,
+        ToggleSwitchModule,
+        InputTextModule,
+        TextareaModule,
+        PageHeaderComponent,
+        LoadingStateComponent,
+        ErrorStateComponent,
+        FieldErrorComponent,
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './permission-group-form.component.html'
 })
 export class PermissionGroupFormComponent implements OnInit {
   private readonly api = inject(PermissionGroupService);

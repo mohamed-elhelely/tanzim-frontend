@@ -10,7 +10,7 @@
 } @else if (loading()) {
   <app-loading-state></app-loading-state>
 } @else {
-  <p-card>
+  <p-card styleClass="max-w-5xl">
     <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-6" novalidate>
       @if (formErrors().length) {
         <div
@@ -38,7 +38,7 @@
 
         <div class="flex flex-col gap-1">
           <label for="parent" class="text-sm font-medium">{{ 'company.fields.parent' | translate }}</label>
-          <p-dropdown
+          <p-select
             inputId="parent"
             formControlName="parent"
             [options]="parentOptions()"
@@ -49,13 +49,13 @@
             [placeholder]="'common.select' | translate"
             styleClass="w-full"
             appendTo="body"
-          ></p-dropdown>
+          ></p-select>
           <app-field-error [control]="form.controls.parent"></app-field-error>
         </div>
 
         <div class="flex flex-col gap-1">
           <label for="manager" class="text-sm font-medium">{{ 'company.fields.manager' | translate }}</label>
-          <p-dropdown
+          <p-select
             inputId="manager"
             formControlName="manager"
             [options]="userOptions()"
@@ -66,12 +66,12 @@
             [placeholder]="'common.select' | translate"
             styleClass="w-full"
             appendTo="body"
-          ></p-dropdown>
+          ></p-select>
           <app-field-error [control]="form.controls.manager"></app-field-error>
         </div>
       </div>
 
-      <div class="flex justify-end gap-2">
+      <div class="flex justify-end gap-2 border-t border-gray-100 pt-5 dark:border-gray-800">
         <p-button
           type="button"
           [label]="'common.cancel' | translate"

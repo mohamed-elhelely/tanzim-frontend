@@ -1,36 +1,67 @@
-<p-toolbar styleClass="!rounded-none !border-x-0 !border-t-0 !bg-white dark:!bg-gray-800">
-  <ng-template pTemplate="start">
-    <div class="flex min-w-0 items-center gap-3">
-      <p-button
-        icon="pi pi-bars"
-        [rounded]="true"
-        [text]="true"
-        severity="secondary"
-        styleClass="lg:!hidden"
-        (onClick)="menuToggle.emit()"
-      ></p-button>
-      <span class="truncate text-base font-semibold text-gray-800 dark:text-gray-100 lg:text-lg">
-        {{ (pageTitleKey() ? pageTitleKey() : 'app.name') | translate }}
-      </span>
-    </div>
-  </ng-template>
-  <ng-template pTemplate="end">
-    <div class="flex items-center gap-2">
-      <p-button
-        [label]="language.currentLang() === 'en' ? 'العربية' : 'English'"
-        icon="pi pi-globe"
-        [text]="true"
-        severity="secondary"
-        (onClick)="language.toggle()"
-      ></p-button>
-      <button
-        type="button"
-        class="flex items-center rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
-        (click)="userMenu.toggle($event)"
+<header
+  class="flex h-16 shrink-0 items-center gap-3 border-b border-gray-200 bg-white/90 px-4 backdrop-blur dark:border-gray-800 dark:bg-gray-900/90 md:px-6"
+>
+  <p-button
+    icon="pi pi-bars"
+    [rounded]="true"
+    [text]="true"
+    severity="secondary"
+    styleClass="lg:!hidden"
+    [ariaLabel]="'header.menu' | translate"
+    (onClick)="menuToggle.emit()"
+  ></p-button>
+
+  <nav class="flex min-w-0 flex-1 items-center gap-2 text-sm" [attr.aria-label]="'header.breadcrumb' | translate">
+    @if (sectionKey(); as section) {
+      <span class="hidden truncate text-gray-500 dark:text-gray-400 sm:inline">{{ section | translate }}</span>
+      <i class="pi pi-angle-right hidden text-xs text-gray-400 rtl:rotate-180 sm:inline"></i>
+    }
+    <span class="truncate font-semibold text-gray-900 dark:text-gray-100">
+      {{ (pageTitleKey() || 'app.name') | translate }}
+    </span>
+  </nav>
+
+  <div class="flex items-center gap-1">
+    <button
+      type="button"
+      class="flex h-9 items-center gap-2 rounded-lg px-2.5 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+      (click)="language.toggle()"
+    >
+      <i class="pi pi-globe"></i>
+      <span class="hidden sm:inline">{{ language.currentLang() === 'en' ? 'العربية' : 'English' }}</span>
+    </button>
+
+    <button
+      type="button"
+      class="flex h-9 w-9 items-center justify-center rounded-lg text-gray-600 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+      [attr.aria-label]="(theme.theme() === 'dark' ? 'header.lightMode' : 'header.darkMode') | translate"
+      [title]="(theme.theme() === 'dark' ? 'header.lightMode' : 'header.darkMode') | translate"
+      (click)="theme.toggle()"
+    >
+      <i class="pi" [class.pi-sun]="theme.theme() === 'dark'" [class.pi-moon]="theme.theme() !== 'dark'"></i>
+    </button>
+
+    <span class="mx-1 hidden h-6 w-px bg-gray-200 dark:bg-gray-700 sm:block"></span>
+
+    <button
+      type="button"
+      class="flex items-center gap-2 rounded-lg p-1 pe-2 transition-colors hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 dark:hover:bg-gray-800"
+      [attr.aria-label]="'header.account' | translate"
+      (click)="userMenu.toggle($event)"
+    >
+      <span
+        class="flex h-8 w-8 items-center justify-center rounded-full bg-primary-100 text-xs font-bold text-primary-700 dark:bg-primary-900 dark:text-primary-200"
       >
-        <p-avatar label="U" shape="circle" styleClass="!bg-primary-600 !text-white"></p-avatar>
-      </button>
-      <p-menu #userMenu [model]="userMenuItems" [popup]="true" appendTo="body"></p-menu>
-    </div>
-  </ng-template>
-</p-toolbar>
+        {{ initials() }}
+      </span>
+      <span class="hidden max-w-40 flex-col text-start leading-tight md:flex">
+        <span class="truncate text-sm font-semibold text-gray-900 dark:text-gray-100">{{ displayName() }}</span>
+        @if (auth.user()?.companyRole; as role) {
+          <span class="truncate text-xs text-gray-500 dark:text-gray-400">{{ role }}</span>
+        }
+      </span>
+      <i class="pi pi-chevron-down hidden text-xs text-gray-400 md:inline"></i>
+    </button>
+    <p-menu #userMenu [model]="userMenuItems" [popup]="true" appendTo="body"></p-menu>
+  </div>
+</header>

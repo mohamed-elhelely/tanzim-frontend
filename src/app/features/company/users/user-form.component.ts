@@ -4,8 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { DropdownModule } from 'primeng/dropdown';
-import { InputSwitchModule } from 'primeng/inputswitch';
+import { SelectModule } from 'primeng/select';
+import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { Observable } from 'rxjs';
@@ -38,24 +38,23 @@ const USER_FIELD_MAP: Record<string, string> = {
 };
 
 @Component({
-  selector: 'app-user-form',
-  standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    TranslatePipe,
-    ButtonModule,
-    CardModule,
-    DropdownModule,
-    InputSwitchModule,
-    InputTextModule,
-    PasswordModule,
-    PageHeaderComponent,
-    LoadingStateComponent,
-    ErrorStateComponent,
-    FieldErrorComponent,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './user-form.component.html',
+    selector: 'app-user-form',
+    imports: [
+        ReactiveFormsModule,
+        TranslatePipe,
+        ButtonModule,
+        CardModule,
+        SelectModule,
+        ToggleSwitchModule,
+        InputTextModule,
+        PasswordModule,
+        PageHeaderComponent,
+        LoadingStateComponent,
+        ErrorStateComponent,
+        FieldErrorComponent,
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './user-form.component.html'
 })
 export class UserFormComponent implements OnInit {
   private readonly api = inject(CompanyUserService);

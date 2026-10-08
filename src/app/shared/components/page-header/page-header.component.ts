@@ -5,18 +5,17 @@ import { ButtonModule } from 'primeng/button';
 export interface PageHeaderAction {
   label: string;
   icon?: string;
-  severity?: 'success' | 'info' | 'warning' | 'danger' | 'help' | 'primary' | 'secondary' | 'contrast';
+  severity?: 'success' | 'info' | 'warn' | 'danger' | 'help' | 'primary' | 'secondary' | 'contrast';
   onClick: () => void;
   disabled?: boolean;
 }
 
 @Component({
-  selector: 'app-page-header',
-  standalone: true,
-  imports: [TranslatePipe, ButtonModule],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './page-header.component.html',
-  styleUrl: './page-header.component.scss',
+    selector: 'app-page-header',
+    imports: [TranslatePipe, ButtonModule],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './page-header.component.html',
+    styleUrl: './page-header.component.scss'
 })
 export class PageHeaderComponent {
   @Input() title = '';

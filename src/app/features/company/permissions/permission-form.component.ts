@@ -4,9 +4,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { DropdownModule } from 'primeng/dropdown';
+import { SelectModule } from 'primeng/select';
 import { InputTextModule } from 'primeng/inputtext';
-import { InputTextareaModule } from 'primeng/inputtextarea';
+import { TextareaModule } from 'primeng/textarea';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { AppError } from '../../../core/errors/app-error';
 import { LanguageService } from '../../../core/services/language.service';
@@ -22,24 +22,23 @@ import { PermissionGroupService } from '../permission-groups/permission-group.se
 import { PermissionService } from './permission.service';
 
 @Component({
-  selector: 'app-permission-form',
-  standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    TranslatePipe,
-    ButtonModule,
-    CardModule,
-    DropdownModule,
-    InputTextModule,
-    InputTextareaModule,
-    MultiSelectModule,
-    PageHeaderComponent,
-    LoadingStateComponent,
-    ErrorStateComponent,
-    FieldErrorComponent,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './permission-form.component.html',
+    selector: 'app-permission-form',
+    imports: [
+        ReactiveFormsModule,
+        TranslatePipe,
+        ButtonModule,
+        CardModule,
+        SelectModule,
+        InputTextModule,
+        TextareaModule,
+        MultiSelectModule,
+        PageHeaderComponent,
+        LoadingStateComponent,
+        ErrorStateComponent,
+        FieldErrorComponent,
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './permission-form.component.html'
 })
 export class PermissionFormComponent implements OnInit {
   private readonly api = inject(PermissionService);

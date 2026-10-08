@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ConfirmationService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { Subject, debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
@@ -20,21 +22,22 @@ import { Department } from '../company.models';
 import { DepartmentService } from './department.service';
 
 @Component({
-  selector: 'app-department-list',
-  standalone: true,
-  imports: [
-    TranslatePipe,
-    TableModule,
-    ButtonModule,
-    InputTextModule,
-    PageHeaderComponent,
-    EmptyStateComponent,
-    ErrorStateComponent,
-    LocalizedNamePipe,
-    UserNamePipe,
-  ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './department-list.component.html',
+    selector: 'app-department-list',
+    imports: [
+        TranslatePipe,
+        TableModule,
+        ButtonModule,
+        InputTextModule,
+    IconFieldModule,
+    InputIconModule,
+        PageHeaderComponent,
+        EmptyStateComponent,
+        ErrorStateComponent,
+        LocalizedNamePipe,
+        UserNamePipe,
+    ],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    templateUrl: './department-list.component.html'
 })
 export class DepartmentListComponent implements OnInit {
   private readonly api = inject(DepartmentService);
