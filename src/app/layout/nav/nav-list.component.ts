@@ -118,7 +118,8 @@ export class NavListComponent {
   }
 
   private expandActiveGroup(url: string): void {
-    for (const item of this.items()) {
+    // All items, not just the visible ones: a module-gated group appears only once the subscription loads.
+    for (const item of NAV_ITEMS) {
       if (item.children && (url === item.routerLink || url.startsWith(`${item.routerLink}/`))) {
         this.expanded.update((current) => new Set(current).add(item.routerLink));
       }

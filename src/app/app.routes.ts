@@ -45,9 +45,7 @@ export const routes: Routes = [
       {
         path: 'inventory',
         canActivate: [companyMemberGuard],
-        loadComponent: () =>
-          import('./features/inventory/inventory-page.component').then((m) => m.InventoryPageComponent),
-        data: { titleKey: 'nav.inventory' },
+        loadChildren: () => import('./features/inventory/inventory.routes').then((m) => m.INVENTORY_ROUTES),
       },
       {
         path: 'sales',

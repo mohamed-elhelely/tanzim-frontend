@@ -1,3 +1,4 @@
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { Router, provideRouter } from '@angular/router';
 import { provideTranslateService } from '@ngx-translate/core';
@@ -6,14 +7,14 @@ import { SubscriptionService } from '../../core/subscription/subscription.servic
 import { NavListComponent } from './nav-list.component';
 
 describe('NavListComponent', () => {
-  async function render(url: string, role = 'COMPANY', modules: string[] = ['location', 'inventory']) {
+  async function render(url: string, role = 'COMPANY', modules: string[] = ['location', 'inventory'], subscription?: object) {
     TestBed.configureTestingModule({
       imports: [NavListComponent],
       providers: [
         provideRouter([{ path: '**', children: [] }]),
         provideTranslateService(),
         { provide: AuthService, useValue: { role: () => role } },
-        { provide: SubscriptionService, useValue: { allows: (code: string) => modules.includes(code) } },
+        { provide: SubscriptionService, useValue: subscription ?? { allows: (code: string) => modules.includes(code) } },
       ],
     });
     await TestBed.inject(Router).navigateByUrl(url);
@@ -71,5 +72,14 @@ describe('NavListComponent', () => {
     const without = await render('/dashboard', 'EMPLOYEE', []);
     expect(without.nativeElement.textContent).not.toContain('nav.locations');
     expect(links(without)).toContain('/sales');
+  });
+
+  it('expands a module group opened by URL once the subscription loads', async () => {
+    const loaded = signal(false);
+    const fixture = await render('/inventory/products', 'COMPANY', [], { allows: () => loaded() });
+    expect(links(fixture)).not.toContain('/inventory/products');
+    loaded.set(true);
+    fixture.detectChanges();
+    expect(links(fixture)).toContain('/inventory/products');
   });
 });
