@@ -4,7 +4,7 @@ import { envelope, provideApiTesting } from '../../testing/api-testing';
 import { CityService } from './cities/city.service';
 import { CountryService } from './countries/country.service';
 import { DistrictService } from './districts/district.service';
-import { LocationService } from './location.service';
+import { LocationService } from './sites/location.service';
 import { RegionService } from './regions/region.service';
 
 describe('location resource services', () => {

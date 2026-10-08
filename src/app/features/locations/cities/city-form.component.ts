@@ -14,7 +14,7 @@ import { FieldErrorComponent } from '../../../shared/components/field-error/fiel
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { localizedName } from '../../../shared/pipes/localized-name.pipe';
-import { applyServerErrors, errorTitleKey } from '../../../shared/utils/server-errors';
+import { errorTitleKey, handleSaveError } from '../../../shared/utils/server-errors';
 import { SelectOption } from '../../company/company.models';
 import { CityPayload, Region } from '../locations.models';
 import { RegionService } from '../regions/region.service';
@@ -28,21 +28,21 @@ const TIMEZONE_OPTIONS: Array<{ value: string; label: string }> = [
 ].map((zone) => ({ value: zone, label: zone }));
 
 @Component({
-    selector: 'app-city-form',
-    imports: [
-        ReactiveFormsModule,
-        TranslatePipe,
-        ButtonModule,
-        CardModule,
-        SelectModule,
-        InputTextModule,
-        PageHeaderComponent,
-        LoadingStateComponent,
-        ErrorStateComponent,
-        FieldErrorComponent,
-    ],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    templateUrl: './city-form.component.html'
+  selector: 'app-city-form',
+  imports: [
+    ReactiveFormsModule,
+    TranslatePipe,
+    ButtonModule,
+    CardModule,
+    SelectModule,
+    InputTextModule,
+    PageHeaderComponent,
+    LoadingStateComponent,
+    ErrorStateComponent,
+    FieldErrorComponent,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './city-form.component.html',
 })
 export class CityFormComponent implements OnInit {
   private readonly api = inject(CityService);
@@ -137,12 +137,6 @@ export class CityFormComponent implements OnInit {
 
   private onSaveError(error: AppError): void {
     this.saving.set(false);
-    if (error.status === 0 || error.status === 401 || error.status >= 500) {
-      return; // already shown by the global error handling
-    }
-    this.formErrors.set(applyServerErrors(this.form, error));
-    if (Object.keys(error.errors ?? {}).length === 0) {
-      this.notifications.error(error.message);
-    }
+    this.formErrors.set(handleSaveError(this.form, error, this.notifications));
   }
 }

@@ -17,54 +17,7 @@ const ACTIVE_CLASSES = '!bg-primary-600 !text-white shadow-md shadow-primary-950
   selector: 'app-nav-list',
   imports: [RouterLink, RouterLinkActive, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    <nav class="flex flex-col gap-1 px-3 pb-4 pt-2">
-      @for (item of items(); track item.routerLink) {
-        @if (item.children) {
-          <button
-            type="button"
-            [class]="linkClasses + ' w-full' + (isActiveGroup(item) ? ' !text-white' : '')"
-            [attr.aria-expanded]="isExpanded(item)"
-            (click)="toggle(item)"
-          >
-            <i [class]="item.icon + ' text-base'"></i>
-            <span class="flex-1 whitespace-nowrap text-start">{{ item.labelKey | translate }}</span>
-            <i
-              class="pi text-xs"
-              [class.pi-chevron-down]="isExpanded(item)"
-              [class.pi-chevron-right]="!isExpanded(item) && direction() === 'ltr'"
-              [class.pi-chevron-left]="!isExpanded(item) && direction() === 'rtl'"
-            ></i>
-          </button>
-          @if (isExpanded(item)) {
-            <div class="ms-5 flex flex-col gap-0.5 border-s border-white/10 ps-2">
-              @for (child of item.children; track child.routerLink) {
-                <a
-                  [routerLink]="child.routerLink"
-                  [routerLinkActive]="activeClasses"
-                  [class]="linkClasses"
-                  (click)="itemSelected.emit()"
-                >
-                  <i [class]="child.icon + ' text-sm'"></i>
-                  <span class="whitespace-nowrap">{{ child.labelKey | translate }}</span>
-                </a>
-              }
-            </div>
-          }
-        } @else {
-          <a
-            [routerLink]="item.routerLink"
-            [routerLinkActive]="activeClasses"
-            [class]="linkClasses"
-            (click)="itemSelected.emit()"
-          >
-            <i [class]="item.icon + ' text-base'"></i>
-            <span class="whitespace-nowrap">{{ item.labelKey | translate }}</span>
-          </a>
-        }
-      }
-    </nav>
-  `,
+  templateUrl: './nav-list.component.html',
 })
 export class NavListComponent {
   private readonly router = inject(Router);

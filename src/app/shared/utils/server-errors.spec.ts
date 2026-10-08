@@ -1,6 +1,7 @@
 import { FormControl, FormGroup } from '@angular/forms';
 import { AppError } from '../../core/errors/app-error';
-import { applyServerErrors, errorTitleKey } from './server-errors';
+import { NotificationService } from '../../core/services/notification.service';
+import { applyServerErrors, errorTitleKey, handleSaveError } from './server-errors';
 
 function makeForm() {
   return new FormGroup({
@@ -49,5 +50,36 @@ describe('errorTitleKey', () => {
     expect(errorTitleKey(error({}, 403))).toBe('common.forbidden');
     expect(errorTitleKey(error({}, 500))).toBe('common.error');
     expect(errorTitleKey(null)).toBe('common.error');
+  });
+});
+
+describe('handleSaveError', () => {
+  const notifications = () => jasmine.createSpyObj<NotificationService>('NotificationService', ['error']);
+
+  it('puts field errors on controls and returns the rest for the alert', () => {
+    const form = new FormGroup({ name: new FormControl('') });
+    const notify = notifications();
+    const messages = handleSaveError(
+      form,
+      { status: 400, message: 'Invalid', errors: { name: ['Taken'], non_field_errors: ['Nope'] } },
+      notify,
+    );
+    expect(form.controls.name.errors?.['serverError']).toBe('Taken');
+    expect(messages).toEqual(['Nope']);
+    expect(notify.error).not.toHaveBeenCalled();
+  });
+
+  it('toasts a 4xx without field errors', () => {
+    const notify = notifications();
+    handleSaveError(new FormGroup({}), { status: 403, message: 'Forbidden', errors: {} }, notify);
+    expect(notify.error).toHaveBeenCalledWith('Forbidden');
+  });
+
+  it('ignores network, 401 and 5xx errors (already shown by the interceptors)', () => {
+    const notify = notifications();
+    for (const status of [0, 401, 500]) {
+      expect(handleSaveError(new FormGroup({}), { status, message: 'x', errors: { a: ['b'] } }, notify)).toEqual([]);
+    }
+    expect(notify.error).not.toHaveBeenCalled();
   });
 });

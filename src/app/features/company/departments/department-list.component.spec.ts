@@ -56,19 +56,19 @@ describe('DepartmentListComponent', () => {
   it('sends paging and ordering from the table', () => {
     const fixture = create();
     expectList({}, [makeDepartment()], 30);
-    fixture.componentInstance.onLazyLoad({ first: 20, rows: 10, sortField: 'name_en', sortOrder: -1 });
+    fixture.componentInstance.table.onLazyLoad({ first: 20, rows: 10, sortField: 'name_en', sortOrder: -1 });
     expectList({ page: '3', page_size: '10', ordering: '-name_en' }, []);
   });
 
   it('debounces search and restarts from page 1', fakeAsync(() => {
     const fixture = create();
     expectList({}, [makeDepartment()], 30);
-    fixture.componentInstance.onLazyLoad({ first: 10, rows: 10 });
+    fixture.componentInstance.table.onLazyLoad({ first: 10, rows: 10 });
     expectList({ page: '2' }, []);
 
-    fixture.componentInstance.onSearch('sa');
+    fixture.componentInstance.table.onSearch('sa');
     tick(100);
-    fixture.componentInstance.onSearch('sales ');
+    fixture.componentInstance.table.onSearch('sales ');
     tick(300);
 
     expectList({ page: '1', search: 'sales' }, [makeDepartment()]);
@@ -86,8 +86,8 @@ describe('DepartmentListComponent', () => {
   it('cancels the older list request when a newer one starts', () => {
     const fixture = create();
     httpMock.expectOne((r) => r.url === URL).flush(envelope([makeDepartment()], 30));
-    fixture.componentInstance.onLazyLoad({ first: 10, rows: 10 });
-    fixture.componentInstance.onLazyLoad({ first: 20, rows: 10 });
+    fixture.componentInstance.table.onLazyLoad({ first: 10, rows: 10 });
+    fixture.componentInstance.table.onLazyLoad({ first: 20, rows: 10 });
 
     const requests = httpMock.match((r) => r.url === URL);
     expect(requests.length).toBe(2);
@@ -120,7 +120,7 @@ describe('DepartmentListComponent', () => {
     acceptConfirmations();
     const fixture = create();
     expectList({}, [makeDepartment()], 11);
-    fixture.componentInstance.onLazyLoad({ first: 10, rows: 10 });
+    fixture.componentInstance.table.onLazyLoad({ first: 10, rows: 10 });
     expectList({ page: '2' }, [makeDepartment({ id: 15 })], 11);
 
     fixture.componentInstance.confirmDelete(makeDepartment({ id: 15 }));

@@ -10,12 +10,12 @@ export interface PageHeaderAction {
   disabled?: boolean;
 }
 
+/** Page title with an optional back link (forms) and action buttons (lists). Texts are translation keys. */
 @Component({
-    selector: 'app-page-header',
-    imports: [TranslatePipe, ButtonModule],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    templateUrl: './page-header.component.html',
-    styleUrl: './page-header.component.scss'
+  selector: 'app-page-header',
+  imports: [TranslatePipe, ButtonModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './page-header.component.html',
 })
 export class PageHeaderComponent {
   @Input() title = '';

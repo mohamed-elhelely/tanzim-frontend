@@ -57,10 +57,10 @@ describe('CountryListComponent', () => {
   it('sends paging, ordering and a debounced search', fakeAsync(() => {
     const fixture = create();
     expectList({}, [makeCountry()], 30);
-    fixture.componentInstance.onLazyLoad({ first: 20, rows: 10, sortField: 'name_en', sortOrder: -1 });
+    fixture.componentInstance.table.onLazyLoad({ first: 20, rows: 10, sortField: 'name_en', sortOrder: -1 });
     expectList({ page: '3', page_size: '10', ordering: '-name_en' }, []);
 
-    fixture.componentInstance.onSearch('ca ');
+    fixture.componentInstance.table.onSearch('ca ');
     tick(300);
     expectList({ page: '1', search: 'ca' }, [makeCountry()]);
   }));
@@ -85,7 +85,7 @@ describe('CountryListComponent', () => {
     acceptConfirmations();
     const fixture = create();
     expectList({}, [makeCountry()], 11);
-    fixture.componentInstance.onLazyLoad({ first: 10, rows: 10 });
+    fixture.componentInstance.table.onLazyLoad({ first: 10, rows: 10 });
     expectList({ page: '2' }, [makeCountry({ id: 15 })], 11);
 
     fixture.componentInstance.confirmDelete(makeCountry({ id: 15 }));

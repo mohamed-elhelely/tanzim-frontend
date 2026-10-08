@@ -14,7 +14,7 @@ import { ErrorStateComponent } from '../../../shared/components/error-state/erro
 import { FieldErrorComponent } from '../../../shared/components/field-error/field-error.component';
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
-import { applyServerErrors, errorTitleKey } from '../../../shared/utils/server-errors';
+import { errorTitleKey, handleSaveError } from '../../../shared/utils/server-errors';
 import { SelectOption } from '../../company/company.models';
 import { BrandService } from '../brands/brand.service';
 import { CategoryService } from '../categories/category.service';
@@ -170,12 +170,6 @@ export class ProductFormComponent implements OnInit {
 
   private onSaveError(error: AppError): void {
     this.saving.set(false);
-    if (error.status === 0 || error.status === 401 || error.status >= 500) {
-      return; // already shown by the global error handling
-    }
-    this.formErrors.set(applyServerErrors(this.form, error));
-    if (Object.keys(error.errors ?? {}).length === 0) {
-      this.notifications.error(error.message);
-    }
+    this.formErrors.set(handleSaveError(this.form, error, this.notifications));
   }
 }

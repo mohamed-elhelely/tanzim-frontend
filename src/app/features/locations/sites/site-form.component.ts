@@ -17,33 +17,33 @@ import { FieldErrorComponent } from '../../../shared/components/field-error/fiel
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { Named, localizedName } from '../../../shared/pipes/localized-name.pipe';
-import { applyServerErrors, errorTitleKey } from '../../../shared/utils/server-errors';
+import { errorTitleKey, handleSaveError } from '../../../shared/utils/server-errors';
 import { NamedRef, SelectOption } from '../../company/company.models';
 import { CityService } from '../cities/city.service';
 import { CountryService } from '../countries/country.service';
 import { DistrictService } from '../districts/district.service';
-import { LocationService } from '../location.service';
 import { City, District, LOCATION_TYPES, LocationPayload, LocationType, Region } from '../locations.models';
 import { RegionService } from '../regions/region.service';
+import { LocationService } from './location.service';
 
 /** A company location ("site"): an address under Country → Region → City → District. */
 @Component({
-    selector: 'app-site-form',
-    imports: [
-        ReactiveFormsModule,
-        TranslatePipe,
-        ButtonModule,
-        CardModule,
-        SelectModule,
-        ToggleSwitchModule,
-        InputTextModule,
-        PageHeaderComponent,
-        LoadingStateComponent,
-        ErrorStateComponent,
-        FieldErrorComponent,
-    ],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    templateUrl: './site-form.component.html'
+  selector: 'app-site-form',
+  imports: [
+    ReactiveFormsModule,
+    TranslatePipe,
+    ButtonModule,
+    CardModule,
+    SelectModule,
+    ToggleSwitchModule,
+    InputTextModule,
+    PageHeaderComponent,
+    LoadingStateComponent,
+    ErrorStateComponent,
+    FieldErrorComponent,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './site-form.component.html',
 })
 export class SiteFormComponent implements OnInit {
   private readonly api = inject(LocationService);
@@ -207,12 +207,6 @@ export class SiteFormComponent implements OnInit {
 
   private onSaveError(error: AppError): void {
     this.saving.set(false);
-    if (error.status === 0 || error.status === 401 || error.status >= 500) {
-      return; // already shown by the global error handling
-    }
-    this.formErrors.set(applyServerErrors(this.form, error));
-    if (Object.keys(error.errors ?? {}).length === 0) {
-      this.notifications.error(error.message);
-    }
+    this.formErrors.set(handleSaveError(this.form, error, this.notifications));
   }
 }

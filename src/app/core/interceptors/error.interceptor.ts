@@ -8,6 +8,7 @@ import { NotificationService } from '../services/notification.service';
 const NETWORK_ERROR_STATUS = 0;
 const SERVER_ERROR_MIN_STATUS = 500;
 
+/** Converts every HTTP error to AppError and toasts network and 5xx errors, so screens only handle 4xx. */
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const injector = inject(Injector);
 

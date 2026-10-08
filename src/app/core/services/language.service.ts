@@ -5,9 +5,8 @@ export type AppLanguage = 'en' | 'ar';
 
 const STORAGE_KEY = 'tanzim.lang';
 
-@Injectable({
-  providedIn: 'root',
-})
+/** Current language (en/ar), saved in localStorage. Switching also sets <html lang/dir> for RTL. */
+@Injectable({ providedIn: 'root' })
 export class LanguageService {
   private readonly translate = inject(TranslateService);
 

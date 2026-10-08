@@ -15,28 +15,28 @@ import { FieldErrorComponent } from '../../../shared/components/field-error/fiel
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { localizedName } from '../../../shared/pipes/localized-name.pipe';
-import { applyServerErrors, errorTitleKey } from '../../../shared/utils/server-errors';
+import { errorTitleKey, handleSaveError } from '../../../shared/utils/server-errors';
 import { NamedRef, RolePayload, SelectOption } from '../company.models';
 import { PermissionGroupService } from '../permission-groups/permission-group.service';
 import { RoleService } from './role.service';
 
 @Component({
-    selector: 'app-role-form',
-    imports: [
-        ReactiveFormsModule,
-        TranslatePipe,
-        ButtonModule,
-        CardModule,
-        ToggleSwitchModule,
-        InputTextModule,
-        MultiSelectModule,
-        PageHeaderComponent,
-        LoadingStateComponent,
-        ErrorStateComponent,
-        FieldErrorComponent,
-    ],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    templateUrl: './role-form.component.html'
+  selector: 'app-role-form',
+  imports: [
+    ReactiveFormsModule,
+    TranslatePipe,
+    ButtonModule,
+    CardModule,
+    ToggleSwitchModule,
+    InputTextModule,
+    MultiSelectModule,
+    PageHeaderComponent,
+    LoadingStateComponent,
+    ErrorStateComponent,
+    FieldErrorComponent,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './role-form.component.html',
 })
 export class RoleFormComponent implements OnInit {
   private readonly api = inject(RoleService);
@@ -125,12 +125,6 @@ export class RoleFormComponent implements OnInit {
 
   private onSaveError(error: AppError): void {
     this.saving.set(false);
-    if (error.status === 0 || error.status === 401 || error.status >= 500) {
-      return; // already shown by the global error handling
-    }
-    this.formErrors.set(applyServerErrors(this.form, error));
-    if (Object.keys(error.errors ?? {}).length === 0) {
-      this.notifications.error(error.message);
-    }
+    this.formErrors.set(handleSaveError(this.form, error, this.notifications));
   }
 }

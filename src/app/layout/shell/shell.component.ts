@@ -12,6 +12,7 @@ import { NavListComponent } from '../nav/nav-list.component';
 import { BrandComponent } from '../sidebar/brand.component';
 import { AppSidebarComponent } from '../sidebar/sidebar.component';
 
+/** Layout for every signed-in page: sidebar (desktop) or drawer (mobile), header, toasts and the confirm dialog. */
 @Component({
   selector: 'app-shell',
   imports: [
@@ -28,7 +29,6 @@ import { AppSidebarComponent } from '../sidebar/sidebar.component';
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './shell.component.html',
-  styleUrl: './shell.component.scss',
 })
 export class ShellComponent {
   readonly language = inject(LanguageService);

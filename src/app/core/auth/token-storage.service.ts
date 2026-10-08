@@ -3,9 +3,8 @@ import { Injectable, signal } from '@angular/core';
 const ACCESS_TOKEN_KEY = 'tanzim.accessToken';
 const REFRESH_TOKEN_KEY = 'tanzim.refreshToken';
 
-@Injectable({
-  providedIn: 'root',
-})
+/** JWT access/refresh tokens, kept in localStorage so a reload stays signed in. */
+@Injectable({ providedIn: 'root' })
 export class TokenStorageService {
   private readonly access = signal<string | null>(localStorage.getItem(ACCESS_TOKEN_KEY));
   private readonly refresh = signal<string | null>(localStorage.getItem(REFRESH_TOKEN_KEY));
@@ -27,9 +26,5 @@ export class TokenStorageService {
     this.refresh.set(null);
     localStorage.removeItem(ACCESS_TOKEN_KEY);
     localStorage.removeItem(REFRESH_TOKEN_KEY);
-  }
-
-  hasAccessToken(): boolean {
-    return this.access() !== null;
   }
 }

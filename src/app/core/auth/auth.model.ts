@@ -1,3 +1,4 @@
+/** Login role from POST /api/login/ (see AuthService). */
 export type AuthRole = 'ADMIN' | 'COMPANY' | 'EMPLOYEE';
 
 export interface AuthUser {

@@ -17,9 +17,12 @@ interface StoredUser {
   role: AuthRole;
 }
 
-@Injectable({
-  providedIn: 'root',
-})
+/**
+ * The signed-in user. Login stores the tokens and builds `AuthUser` from the login response plus the
+ * decoded JWT (company_id, company_role, is_company_admin). `role` drives the menu and the route guards:
+ * ADMIN = platform admin (no company), COMPANY = company admin, EMPLOYEE = everyone else.
+ */
+@Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = inject(API_BASE_URL);

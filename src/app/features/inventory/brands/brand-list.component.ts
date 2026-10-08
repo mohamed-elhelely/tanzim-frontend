@@ -1,58 +1,44 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { ConfirmationService } from 'primeng/api';
+import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
-import { TableLazyLoadEvent, TableModule } from 'primeng/table';
-import { Subject, debounceTime, distinctUntilChanged, Subscription } from 'rxjs';
-import { AppError } from '../../../core/errors/app-error';
-import { NotificationService } from '../../../core/services/notification.service';
+import { TableModule } from 'primeng/table';
+import { ConfirmService } from '../../../core/services/confirm.service';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
 import { PageHeaderAction, PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
+import { ServerTable } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { Brand } from '../inventory.models';
 import { BrandService } from './brand.service';
 
 @Component({
-    selector: 'app-brand-list',
-    imports: [
-        TranslatePipe,
-        TableModule,
-        ButtonModule,
-        InputTextModule,
+  selector: 'app-brand-list',
+  imports: [
+    TranslatePipe,
+    TableModule,
+    ButtonModule,
+    InputTextModule,
     IconFieldModule,
     InputIconModule,
-        PageHeaderComponent,
-        EmptyStateComponent,
-        ErrorStateComponent,
-        StatusBadgeComponent,
-    ],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    templateUrl: './brand-list.component.html'
+    PageHeaderComponent,
+    EmptyStateComponent,
+    ErrorStateComponent,
+    StatusBadgeComponent,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './brand-list.component.html',
 })
 export class BrandListComponent implements OnInit {
   private readonly api = inject(BrandService);
   private readonly router = inject(Router);
-  private readonly confirmation = inject(ConfirmationService);
-  private readonly notifications = inject(NotificationService);
-  private readonly translate = inject(TranslateService);
-  private readonly search$ = new Subject<string>();
-  private searchTerm = '';
-  private ordering?: string;
-  private listRequest?: Subscription;
+  private readonly confirm = inject(ConfirmService);
 
-  readonly rows = signal<Brand[]>([]);
-  readonly total = signal(0);
-  readonly first = signal(0);
-  readonly pageSize = signal(10);
-  readonly loading = signal(false);
-  readonly error = signal<AppError | null>(null);
+  readonly table = new ServerTable<Brand>((query) => this.api.list(query));
   readonly errorTitleKey = errorTitleKey;
 
   readonly headerActions: PageHeaderAction[] = [
@@ -63,53 +49,8 @@ export class BrandListComponent implements OnInit {
     },
   ];
 
-  constructor() {
-    this.search$.pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed()).subscribe((term) => {
-      this.searchTerm = term;
-      this.first.set(0);
-      this.load();
-    });
-  }
-
   ngOnInit(): void {
-    this.load();
-  }
-
-  onLazyLoad(event: TableLazyLoadEvent): void {
-    this.first.set(event.first ?? 0);
-    this.pageSize.set(event.rows ?? this.pageSize());
-    const field = typeof event.sortField === 'string' ? event.sortField : undefined;
-    this.ordering = field ? `${event.sortOrder === -1 ? '-' : ''}${field}` : undefined;
-    this.load();
-  }
-
-  onSearch(term: string): void {
-    this.search$.next(term.trim());
-  }
-
-  load(): void {
-    this.loading.set(true);
-    this.error.set(null);
-    // Cancel the previous request so a slower, older response can't overwrite newer results.
-    this.listRequest?.unsubscribe();
-    this.listRequest = this.api
-      .list({
-        page: Math.floor(this.first() / this.pageSize()) + 1,
-        pageSize: this.pageSize(),
-        search: this.searchTerm || undefined,
-        ordering: this.ordering,
-      })
-      .subscribe({
-        next: (page) => {
-          this.rows.set(page.items);
-          this.total.set(page.total);
-          this.loading.set(false);
-        },
-        error: (error: AppError) => {
-          this.error.set(error);
-          this.loading.set(false);
-        },
-      });
+    this.table.load();
   }
 
   edit(row: Brand): void {
@@ -117,32 +58,6 @@ export class BrandListComponent implements OnInit {
   }
 
   confirmDelete(row: Brand): void {
-    this.confirmation.confirm({
-      key: 'app-confirm',
-      header: this.translate.instant('common.confirm'),
-      message: this.translate.instant('common.confirmDelete', { name: row.name }),
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel: this.translate.instant('common.delete'),
-      rejectLabel: this.translate.instant('common.cancel'),
-      acceptButtonStyleClass: 'p-button-danger',
-      accept: () => this.delete(row),
-    });
-  }
-
-  private delete(row: Brand): void {
-    this.api.remove(row.id).subscribe({
-      next: () => {
-        this.notifications.success(this.translate.instant('common.deleted'));
-        if (this.rows().length === 1 && this.first() >= this.pageSize()) {
-          this.first.update((first) => first - this.pageSize());
-        }
-        this.load();
-      },
-      error: (error: AppError) => {
-        if (error.status >= 400 && error.status < 500 && error.status !== 401) {
-          this.notifications.error(error.message);
-        }
-      },
-    });
+    this.confirm.confirmDelete(row.name, () => this.api.remove(row.id), () => this.table.afterDelete());
   }
 }

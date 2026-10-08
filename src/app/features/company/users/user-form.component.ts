@@ -17,7 +17,7 @@ import { FieldErrorComponent } from '../../../shared/components/field-error/fiel
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { localizedName } from '../../../shared/pipes/localized-name.pipe';
-import { applyServerErrors, errorTitleKey } from '../../../shared/utils/server-errors';
+import { errorTitleKey, handleSaveError } from '../../../shared/utils/server-errors';
 import { CompanyUserPayload, NamedRef, SelectOption } from '../company.models';
 import { DepartmentService } from '../departments/department.service';
 import { RoleService } from '../roles/role.service';
@@ -38,23 +38,23 @@ const USER_FIELD_MAP: Record<string, string> = {
 };
 
 @Component({
-    selector: 'app-user-form',
-    imports: [
-        ReactiveFormsModule,
-        TranslatePipe,
-        ButtonModule,
-        CardModule,
-        SelectModule,
-        ToggleSwitchModule,
-        InputTextModule,
-        PasswordModule,
-        PageHeaderComponent,
-        LoadingStateComponent,
-        ErrorStateComponent,
-        FieldErrorComponent,
-    ],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    templateUrl: './user-form.component.html'
+  selector: 'app-user-form',
+  imports: [
+    ReactiveFormsModule,
+    TranslatePipe,
+    ButtonModule,
+    CardModule,
+    SelectModule,
+    ToggleSwitchModule,
+    InputTextModule,
+    PasswordModule,
+    PageHeaderComponent,
+    LoadingStateComponent,
+    ErrorStateComponent,
+    FieldErrorComponent,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './user-form.component.html',
 })
 export class UserFormComponent implements OnInit {
   private readonly api = inject(CompanyUserService);
@@ -185,12 +185,6 @@ export class UserFormComponent implements OnInit {
 
   private onSaveError(error: AppError): void {
     this.saving.set(false);
-    if (error.status === 0 || error.status === 401 || error.status >= 500) {
-      return; // already shown by the global error handling
-    }
-    this.formErrors.set(applyServerErrors(this.form, error, USER_FIELD_MAP));
-    if (Object.keys(error.errors ?? {}).length === 0) {
-      this.notifications.error(error.message);
-    }
+    this.formErrors.set(handleSaveError(this.form, error, this.notifications, USER_FIELD_MAP));
   }
 }

@@ -15,8 +15,8 @@ import { FieldErrorComponent } from '../../../shared/components/field-error/fiel
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { localizedName } from '../../../shared/pipes/localized-name.pipe';
-import { applyServerErrors, errorTitleKey } from '../../../shared/utils/server-errors';
-import { LocationService } from '../../locations/location.service';
+import { errorTitleKey, handleSaveError } from '../../../shared/utils/server-errors';
+import { LocationService } from '../../locations/sites/location.service';
 import { NamedRef, SelectOption, TeamPayload } from '../company.models';
 import { DepartmentService } from '../departments/department.service';
 import { CompanyUserService } from '../users/company-user.service';
@@ -25,22 +25,22 @@ import { TeamService } from './team.service';
 export type LocationState = 'loading' | 'ready' | 'forbidden' | 'empty' | 'error';
 
 @Component({
-    selector: 'app-team-form',
-    imports: [
-        ReactiveFormsModule,
-        TranslatePipe,
-        ButtonModule,
-        CardModule,
-        SelectModule,
-        InputTextModule,
-        MultiSelectModule,
-        PageHeaderComponent,
-        LoadingStateComponent,
-        ErrorStateComponent,
-        FieldErrorComponent,
-    ],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    templateUrl: './team-form.component.html'
+  selector: 'app-team-form',
+  imports: [
+    ReactiveFormsModule,
+    TranslatePipe,
+    ButtonModule,
+    CardModule,
+    SelectModule,
+    InputTextModule,
+    MultiSelectModule,
+    PageHeaderComponent,
+    LoadingStateComponent,
+    ErrorStateComponent,
+    FieldErrorComponent,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './team-form.component.html',
 })
 export class TeamFormComponent implements OnInit {
   private readonly api = inject(TeamService);
@@ -152,12 +152,6 @@ export class TeamFormComponent implements OnInit {
 
   private onSaveError(error: AppError): void {
     this.saving.set(false);
-    if (error.status === 0 || error.status === 401 || error.status >= 500) {
-      return; // already shown by the global error handling
-    }
-    this.formErrors.set(applyServerErrors(this.form, error));
-    if (Object.keys(error.errors ?? {}).length === 0) {
-      this.notifications.error(error.message);
-    }
+    this.formErrors.set(handleSaveError(this.form, error, this.notifications));
   }
 }

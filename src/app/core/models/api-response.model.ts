@@ -1,3 +1,4 @@
+/** The backend wraps every response: { success, data, metadata, error }. */
 export interface ApiMeta {
   timestamp: string;
   version: string;

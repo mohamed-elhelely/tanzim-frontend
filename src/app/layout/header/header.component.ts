@@ -16,12 +16,12 @@ interface RouteInfo {
   sectionKey: string;
 }
 
+/** Top bar: breadcrumb from the route data (titleKey) and the nav group, language and theme toggles, user menu. */
 @Component({
   selector: 'app-header',
   imports: [TranslatePipe, ButtonModule, MenuModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './header.component.html',
-  styleUrl: './header.component.scss',
 })
 export class AppHeaderComponent {
   @Output() menuToggle = new EventEmitter<void>();
