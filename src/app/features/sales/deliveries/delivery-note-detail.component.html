@@ -1,0 +1,163 @@
+@if (loadError(); as err) {
+  <app-page-header title="sales.deliveries.title" [showBack]="true" backLabel="common.backToList" (back)="goBack()"></app-page-header>
+  <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403 && err.status !== 404" (retry)="load()"></app-error-state>
+} @else if (note(); as note) {
+  <app-page-header
+    [title]="note.delivery_number"
+    [subtitle]="note.customer_name"
+    [showBack]="true"
+    backLabel="common.backToList"
+    [actions]="actions()"
+    (back)="goBack()"
+  ></app-page-header>
+
+  <div class="flex max-w-6xl flex-col gap-4">
+    <dl class="grid grid-cols-2 gap-3 md:grid-cols-4">
+      <div class="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+        <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.status' | translate }}</dt>
+        <dd class="mt-1">
+          <app-status-badge
+            [value]="'sales.deliveryStatuses.' + note.status | translate"
+            [severity]="statusSeverity[note.status]"
+          ></app-status-badge>
+        </dd>
+      </div>
+      <div class="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+        <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.orderNumber' | translate }}</dt>
+        <dd class="mt-1 text-sm font-semibold">
+          <a
+            [routerLink]="['/sales/orders', note.sales_order]"
+            class="font-mono text-primary-600 hover:underline dark:text-primary-300"
+            dir="ltr"
+          >{{ note.sales_order_number }}</a>
+        </dd>
+      </div>
+      <div class="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+        <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.warehouse' | translate }}</dt>
+        <dd class="mt-1 text-sm font-semibold">{{ note.warehouse_name }}</dd>
+      </div>
+      <div class="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+        <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.shippingMethod' | translate }}</dt>
+        <dd class="mt-1 text-sm font-semibold">{{ 'sales.shippingMethods.' + note.shipping_method | translate }}</dd>
+      </div>
+    </dl>
+
+    <p-card>
+      <dl class="grid grid-cols-2 gap-x-6 gap-y-3 text-sm md:grid-cols-4">
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.carrier' | translate }}</dt>
+          <dd class="mt-0.5">{{ note.carrier || '—' }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.trackingNumber' | translate }}</dt>
+          <dd class="mt-0.5 font-mono" dir="ltr">{{ note.tracking_number || '—' }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.shippedDate' | translate }}</dt>
+          <dd class="mt-0.5" dir="ltr">{{ note.shipped_date || '—' }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.deliveredDate' | translate }}</dt>
+          <dd class="mt-0.5" dir="ltr">{{ note.delivered_date || '—' }}</dd>
+        </div>
+        <div class="col-span-2">
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.notes' | translate }}</dt>
+          <dd class="mt-0.5 whitespace-pre-line">{{ note.notes || '—' }}</dd>
+        </div>
+        <div class="col-span-2">
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.createdBy' | translate }}</dt>
+          <dd class="mt-0.5">{{ note.created_by_name || '—' }}</dd>
+        </div>
+      </dl>
+    </p-card>
+
+    <p-card>
+      <h3 class="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'sales.sections.lines' | translate }}</h3>
+      <div class="overflow-x-auto">
+        <p-table [value]="note.lines" dataKey="id" size="small">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>{{ 'sales.fields.sku' | translate }}</th>
+              <th>{{ 'sales.fields.item' | translate }}</th>
+              <th class="text-end">{{ 'sales.fields.quantityDelivered' | translate }}</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-line>
+            <tr>
+              <td class="whitespace-nowrap font-mono text-xs" dir="ltr">{{ line.sku }}</td>
+              <td class="font-medium">{{ line.product_name }}</td>
+              <td class="text-end">{{ line.quantity_delivered | number: '1.0-3' }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </p-card>
+  </div>
+
+  <p-dialog
+    [header]="(carrierDialog() === 'ship' ? 'sales.actions.handToCarrier' : 'sales.actions.editDetails') | translate"
+    [visible]="carrierDialog() !== null"
+    (visibleChange)="!$event && carrierDialog.set(null)"
+    [modal]="true"
+    [dismissableMask]="true"
+    [style]="{ width: '32rem', maxWidth: 'calc(100vw - 2rem)' }"
+  >
+    <div class="flex flex-col gap-4">
+      @if (carrierDialog() === 'details') {
+        <div class="flex flex-col gap-1">
+          <label for="dn_method" class="text-sm font-medium">{{ 'sales.fields.shippingMethod' | translate }}</label>
+          <p-select
+            inputId="dn_method"
+            [(ngModel)]="form.shipping_method"
+            [options]="methodOptions"
+            optionLabel="label"
+            optionValue="value"
+            styleClass="w-full"
+            appendTo="body"
+          >
+            <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
+            <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
+          </p-select>
+        </div>
+      }
+      <div class="flex flex-col gap-1">
+        <label for="dn_carrier" class="text-sm font-medium">{{ 'sales.fields.carrier' | translate }}</label>
+        <input pInputText id="dn_carrier" [(ngModel)]="form.carrier" maxlength="100" class="w-full" />
+      </div>
+      <div class="flex flex-col gap-1">
+        <label for="dn_tracking" class="text-sm font-medium">{{ 'sales.fields.trackingNumber' | translate }}</label>
+        <input pInputText id="dn_tracking" [(ngModel)]="form.tracking_number" maxlength="100" dir="ltr" class="w-full" />
+      </div>
+      @if (carrierDialog() === 'details') {
+        <div class="flex flex-col gap-1">
+          <label for="dn_notes" class="text-sm font-medium">{{ 'sales.fields.notes' | translate }}</label>
+          <textarea pTextarea id="dn_notes" [(ngModel)]="form.notes" rows="3" class="w-full"></textarea>
+        </div>
+      }
+    </div>
+    <ng-template pTemplate="footer">
+      <p-button
+        [label]="'common.cancel' | translate"
+        severity="secondary"
+        [outlined]="true"
+        (onClick)="carrierDialog.set(null)"
+      ></p-button>
+      <p-button
+        [label]="(carrierDialog() === 'ship' ? 'sales.actions.handToCarrier' : 'common.save') | translate"
+        [loading]="saving()"
+        [disabled]="saving()"
+        (onClick)="saveCarrier()"
+      ></p-button>
+    </ng-template>
+  </p-dialog>
+
+  <app-reason-dialog
+    header="sales.actions.markFailed"
+    confirmLabel="sales.actions.markFailed"
+    [visible]="failDialogOpen()"
+    (visibleChange)="failDialogOpen.set($event)"
+    (confirmed)="onFailConfirmed($event)"
+  ></app-reason-dialog>
+} @else {
+  <app-loading-state></app-loading-state>
+}

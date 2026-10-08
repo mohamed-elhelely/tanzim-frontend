@@ -67,14 +67,20 @@ export class ConfirmService {
     });
   }
 
-  /** Runs an action without asking (e.g. after a dialog collected its input), with the same toasts. */
-  runAction<T>(run: () => Observable<T>, success: string, onDone: (result: T) => void): void {
+  /**
+   * Runs an action without asking (e.g. after a dialog collected its input), with the same toasts.
+   * `onError` lets a dialog stop its spinner; the message is already shown.
+   */
+  runAction<T>(run: () => Observable<T>, success: string, onDone: (result: T) => void, onError?: (error: AppError) => void): void {
     run().subscribe({
       next: (result) => {
         this.notifications.success(this.translate.instant(success));
         onDone(result);
       },
-      error: (error: AppError) => this.showClientError(error),
+      error: (error: AppError) => {
+        this.showClientError(error);
+        onError?.(error);
+      },
     });
   }
 

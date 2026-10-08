@@ -75,6 +75,9 @@ export const NAV_ITEMS: NavItem[] = [
     roles: COMPANY_ROLES,
     children: [
       { labelKey: 'nav.salesOrders', icon: 'pi pi-file', routerLink: '/sales/orders' },
+      { labelKey: 'nav.deliveries', icon: 'pi pi-truck', routerLink: '/sales/deliveries' },
+      { labelKey: 'nav.salesInvoices', icon: 'pi pi-receipt', routerLink: '/sales/invoices' },
+      { labelKey: 'nav.payments', icon: 'pi pi-wallet', routerLink: '/sales/payments' },
       { labelKey: 'nav.customers', icon: 'pi pi-users', routerLink: '/sales/customers' },
     ],
   },

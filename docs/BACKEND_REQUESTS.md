@@ -120,4 +120,16 @@ Company admin: admin@testcompany.com / testpass123.
 13. DELETE /api/sales/customers/{id}/ soft-deletes a customer that still has open orders (confirmed/picking/shipped),
    so the customer disappears from the list while its orders still point to it. Refuse with 400 while the customer
    has open orders (or unpaid invoices).
+
+14. POST /api/sales/sales-invoices/create_from_order/ can be called again for an order that already has an invoice,
+   which bills the same shipped lines twice (reproduced: INV-2026-00001 and INV-2026-00002 for SO-2026-00004).
+   Refuse when the order (or the given delivery note) already has an invoice that isn't cancelled. The frontend
+   only offers "Create invoice" while there is none.
+
+15. Invoices drop the order's `shipping_cost` and `discount_amount`: SO-2026-00001 totals 312.00 (260 + 27 tax +
+   25 shipping) but its invoice totals 287.00. Carry both onto the invoice in create_sales_invoice (and include
+   them in SalesInvoice.calculate_totals), or tell us if shipping is meant to be billed separately.
+
+16. `amount_due` (sales invoices) is serialized as a JSON number (`ReadOnlyField` over a Decimal property) while every
+   other amount is a decimal string. Use `DecimalField(read_only=True, max_digits=19, decimal_places=4)`.
 ```
