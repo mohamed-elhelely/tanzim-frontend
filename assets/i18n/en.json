@@ -56,7 +56,10 @@
     "regions": "Regions",
     "cities": "Cities",
     "districts": "Districts",
-    "companies": "Companies"
+    "companies": "Companies",
+    "products": "Products",
+    "categories": "Categories",
+    "brands": "Brands"
   },
   "auth": {
     "login": "Login",
@@ -279,6 +282,59 @@
       "taxId": "Letters, digits and hyphens only.",
       "phone": "International format: + then 8–15 digits, e.g. +966501234567.",
       "adminEmail": "An admin account is created for this address and its login details are emailed to it."
+    }
+  },
+  "inventory": {
+    "products": {
+      "title": "Products",
+      "new": "New product",
+      "edit": "Edit product"
+    },
+    "categories": {
+      "title": "Categories",
+      "new": "New category",
+      "edit": "Edit category"
+    },
+    "brands": {
+      "title": "Brands",
+      "new": "New brand",
+      "edit": "Edit brand"
+    },
+    "fields": {
+      "id": "ID",
+      "name": "Name",
+      "description": "Description",
+      "parent": "Parent category",
+      "isActive": "Active",
+      "productType": "Type",
+      "category": "Category",
+      "brand": "Brand",
+      "defaultUom": "Unit of measure",
+      "valuationMethod": "Valuation method",
+      "batchTracked": "Batch tracked",
+      "serialTracked": "Serial tracked",
+      "hasExpiry": "Has expiry date",
+      "shelfLifeDays": "Shelf life (days)",
+      "purchasable": "Can be purchased",
+      "sellable": "Can be sold"
+    },
+    "sections": {
+      "tracking": "Tracking",
+      "availability": "Availability"
+    },
+    "productTypes": {
+      "simple": "Simple",
+      "variant": "With variants",
+      "bundle": "Bundle",
+      "service": "Service"
+    },
+    "valuation": {
+      "average": "Weighted average",
+      "fifo": "FIFO (first in, first out)",
+      "lifo": "LIFO (last in, first out)"
+    },
+    "hints": {
+      "shelfLifeDays": "A whole number of days, 1 or more."
     }
   }
 }
