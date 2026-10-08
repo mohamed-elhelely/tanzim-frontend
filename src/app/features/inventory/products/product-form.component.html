@@ -1,0 +1,178 @@
+<app-page-header
+  [title]="isEdit ? 'inventory.products.edit' : 'inventory.products.new'"
+  [showBack]="true"
+  backLabel="common.backToList"
+  (back)="goBack()"
+></app-page-header>
+
+@if (loadError(); as err) {
+  <app-error-state [title]="errorTitleKey(err)" [showRetry]="false"></app-error-state>
+} @else if (loading()) {
+  <app-loading-state></app-loading-state>
+} @else {
+  <p-card styleClass="max-w-5xl">
+    <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-6" novalidate>
+      @if (formErrors().length) {
+        <div
+          role="alert"
+          class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300"
+        >
+          @for (message of formErrors(); track $index) {
+            <p>{{ message }}</p>
+          }
+        </div>
+      }
+
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div class="flex flex-col gap-1">
+          <label for="name" class="text-sm font-medium">{{ 'inventory.fields.name' | translate }} *</label>
+          <input pInputText id="name" formControlName="name" class="w-full" />
+          <app-field-error [control]="form.controls.name"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="product_type" class="text-sm font-medium">{{ 'inventory.fields.productType' | translate }} *</label>
+          <p-select
+            inputId="product_type"
+            formControlName="product_type"
+            [options]="productTypeOptions"
+            optionLabel="label"
+            optionValue="value"
+            [placeholder]="'common.select' | translate"
+            styleClass="w-full"
+            appendTo="body"
+          >
+            <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
+            <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
+          </p-select>
+          <app-field-error [control]="form.controls.product_type"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="category" class="text-sm font-medium">{{ 'inventory.fields.category' | translate }}</label>
+          <p-select
+            inputId="category"
+            formControlName="category"
+            [options]="categoryOptions()"
+            optionLabel="label"
+            optionValue="value"
+            [filter]="true"
+            [showClear]="true"
+            [placeholder]="'common.select' | translate"
+            styleClass="w-full"
+            appendTo="body"
+          ></p-select>
+          <app-field-error [control]="form.controls.category"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="brand" class="text-sm font-medium">{{ 'inventory.fields.brand' | translate }}</label>
+          <p-select
+            inputId="brand"
+            formControlName="brand"
+            [options]="brandOptions()"
+            optionLabel="label"
+            optionValue="value"
+            [filter]="true"
+            [showClear]="true"
+            [placeholder]="'common.select' | translate"
+            styleClass="w-full"
+            appendTo="body"
+          ></p-select>
+          <app-field-error [control]="form.controls.brand"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="default_uom" class="text-sm font-medium">{{ 'inventory.fields.defaultUom' | translate }} *</label>
+          <input pInputText id="default_uom" formControlName="default_uom" class="w-full" placeholder="each" />
+          <app-field-error [control]="form.controls.default_uom"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="valuation_method" class="text-sm font-medium">{{ 'inventory.fields.valuationMethod' | translate }} *</label>
+          <p-select
+            inputId="valuation_method"
+            formControlName="valuation_method"
+            [options]="valuationOptions"
+            optionLabel="label"
+            optionValue="value"
+            [placeholder]="'common.select' | translate"
+            styleClass="w-full"
+            appendTo="body"
+          >
+            <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
+            <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
+          </p-select>
+          <app-field-error [control]="form.controls.valuation_method"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1 md:col-span-2">
+          <label for="description" class="text-sm font-medium">{{ 'inventory.fields.description' | translate }}</label>
+          <textarea pTextarea id="description" formControlName="description" rows="3" class="w-full"></textarea>
+          <app-field-error [control]="form.controls.description"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-3 md:col-span-2">
+          <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'inventory.sections.tracking' | translate }}</h3>
+          <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <div class="flex items-center gap-3">
+              <p-toggleswitch inputId="is_batch_tracked" formControlName="is_batch_tracked"></p-toggleswitch>
+              <label for="is_batch_tracked" class="text-sm font-medium">{{ 'inventory.fields.batchTracked' | translate }}</label>
+            </div>
+            <div class="flex items-center gap-3">
+              <p-toggleswitch inputId="is_serial_tracked" formControlName="is_serial_tracked"></p-toggleswitch>
+              <label for="is_serial_tracked" class="text-sm font-medium">{{ 'inventory.fields.serialTracked' | translate }}</label>
+            </div>
+            <div class="flex items-center gap-3">
+              <p-toggleswitch inputId="has_expiry" formControlName="has_expiry"></p-toggleswitch>
+              <label for="has_expiry" class="text-sm font-medium">{{ 'inventory.fields.hasExpiry' | translate }}</label>
+            </div>
+          </div>
+        </div>
+
+        @if (form.controls.has_expiry.value) {
+          <div class="flex flex-col gap-1">
+            <label for="shelf_life_days" class="text-sm font-medium">{{ 'inventory.fields.shelfLifeDays' | translate }}</label>
+            <input pInputText id="shelf_life_days" type="number" min="1" formControlName="shelf_life_days" class="w-full" />
+            <app-field-error [control]="form.controls.shelf_life_days" patternKey="inventory.hints.shelfLifeDays"></app-field-error>
+          </div>
+        }
+
+        <div class="flex flex-col gap-3 md:col-span-2">
+          <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'inventory.sections.availability' | translate }}</h3>
+          <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <div class="flex items-center gap-3">
+              <p-toggleswitch inputId="is_active" formControlName="is_active"></p-toggleswitch>
+              <label for="is_active" class="text-sm font-medium">{{ 'inventory.fields.isActive' | translate }}</label>
+            </div>
+            <div class="flex items-center gap-3">
+              <p-toggleswitch inputId="is_purchasable" formControlName="is_purchasable"></p-toggleswitch>
+              <label for="is_purchasable" class="text-sm font-medium">{{ 'inventory.fields.purchasable' | translate }}</label>
+            </div>
+            <div class="flex items-center gap-3">
+              <p-toggleswitch inputId="is_sellable" formControlName="is_sellable"></p-toggleswitch>
+              <label for="is_sellable" class="text-sm font-medium">{{ 'inventory.fields.sellable' | translate }}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 border-t border-gray-100 pt-5 dark:border-gray-800">
+        <p-button
+          type="button"
+          [label]="'common.cancel' | translate"
+          severity="secondary"
+          [outlined]="true"
+          (onClick)="goBack()"
+        ></p-button>
+        <p-button
+          type="submit"
+          [label]="'common.save' | translate"
+          icon="pi pi-check"
+          [loading]="saving()"
+          [disabled]="saving()"
+        ></p-button>
+      </div>
+    </form>
+  </p-card>
+}
