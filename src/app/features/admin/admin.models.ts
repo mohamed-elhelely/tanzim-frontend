@@ -26,7 +26,8 @@ export interface TenantCompanyPayload {
   tax_id: string;
   is_active: boolean;
   email: string;
-  phone: string;
+  /** Left out when empty: the backend rejects a blank phone and has no way to clear one. */
+  phone?: string;
   address: string;
   timezone: string;
   primary_color: string;

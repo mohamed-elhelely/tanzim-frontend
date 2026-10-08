@@ -49,7 +49,9 @@ describe('TenantCompanyFormComponent', () => {
     component.submit();
 
     const req = httpMock.expectOne((r) => r.url === URL && r.method === 'POST');
-    expect(req.request.body).toEqual({ ...VALID, name: 'Acme Trading', domain: 'acme.example' });
+    const { phone, ...withoutPhone } = VALID;
+    expect(phone).toBe('');
+    expect(req.request.body).toEqual({ ...withoutPhone, name: 'Acme Trading', domain: 'acme.example' });
     req.flush(envelope(makeTenantCompany()), { status: 201, statusText: 'Created' });
     expect(router.navigate).toHaveBeenCalledWith(['/admin/companies']);
   });
@@ -89,6 +91,7 @@ describe('TenantCompanyFormComponent', () => {
     component.submit();
     const req = httpMock.expectOne((r) => r.url === `${URL}1/` && r.method === 'PATCH');
     expect(req.request.body.is_active).toBeFalse();
+    expect(req.request.body.phone).toBe('+966501234567');
     req.flush(envelope(makeTenantCompany()));
     expect(router.navigate).toHaveBeenCalledWith(['/admin/companies']);
   });
