@@ -1,0 +1,110 @@
+@if (loadError(); as err) {
+  <app-page-header title="inventory.adjustments.title" [showBack]="true" backLabel="common.backToList" (back)="goBack()"></app-page-header>
+  <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403 && err.status !== 404" (retry)="load()"></app-error-state>
+} @else if (adjustment(); as adjustment) {
+  <app-page-header
+    [title]="adjustment.adjustment_number"
+    [subtitle]="adjustment.warehouse.name"
+    [showBack]="true"
+    backLabel="common.backToList"
+    [actions]="actions()"
+    (back)="goBack()"
+  ></app-page-header>
+
+  <div class="flex max-w-6xl flex-col gap-4">
+    <dl class="grid grid-cols-2 gap-3 md:grid-cols-4">
+      <div class="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+        <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'inventory.fields.status' | translate }}</dt>
+        <dd class="mt-1">
+          <app-status-badge
+            [value]="'inventory.adjustmentStatuses.' + adjustment.status | translate"
+            [severity]="statusSeverity[adjustment.status]"
+          ></app-status-badge>
+        </dd>
+      </div>
+      <div class="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+        <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'inventory.adjustments.reason' | translate }}</dt>
+        <dd class="mt-1 text-sm font-semibold">{{ 'inventory.adjustmentReasons.' + adjustment.reason | translate }}</dd>
+      </div>
+      <div class="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+        <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'inventory.ledger.date' | translate }}</dt>
+        <dd class="mt-1 text-sm font-semibold" dir="ltr">{{ adjustment.adjustment_date | date: 'yyyy-MM-dd' }}</dd>
+      </div>
+      <div class="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+        <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'inventory.adjustments.value' | translate }}</dt>
+        <dd class="mt-1 text-sm font-semibold" dir="ltr">{{ totalValue() | number: '1.2-2' }}</dd>
+      </div>
+    </dl>
+
+    <p-card>
+      <dl class="grid grid-cols-2 gap-x-6 gap-y-3 text-sm md:grid-cols-4">
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'inventory.ledger.by' | translate }}</dt>
+          <dd class="mt-0.5">{{ (adjustment.created_by | userName) || '—' }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'inventory.adjustments.approvedBy' | translate }}</dt>
+          <dd class="mt-0.5">{{ (adjustment.approved_by | userName) || '—' }}</dd>
+        </div>
+        @if (adjustment.notes) {
+          <div class="col-span-2">
+            <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'inventory.fields.notes' | translate }}</dt>
+            <dd class="mt-0.5 whitespace-pre-line">{{ adjustment.notes }}</dd>
+          </div>
+        }
+      </dl>
+    </p-card>
+
+    <p-card>
+      <h3 class="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'inventory.movements.lines' | translate }}</h3>
+      <div class="overflow-x-auto">
+        <p-table [value]="lines()" dataKey="id" size="small">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>{{ 'inventory.fields.sku' | translate }}</th>
+              <th>{{ 'inventory.fields.variant' | translate }}</th>
+              <th class="text-end">{{ 'inventory.adjustments.current' | translate }}</th>
+              <th class="text-end">{{ 'inventory.adjustments.newQuantity' | translate }}</th>
+              <th class="text-end">{{ 'inventory.adjustments.difference' | translate }}</th>
+              <th class="text-end">{{ 'inventory.fields.unitCost' | translate }}</th>
+              <th>{{ 'inventory.fields.notes' | translate }}</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-line>
+            <tr>
+              <td class="whitespace-nowrap font-mono text-xs" dir="ltr">{{ line.product_variant.sku }}</td>
+              <td class="font-medium">{{ line.product_variant.name }}</td>
+              <td class="text-end" dir="ltr">{{ line.current_quantity | number: '1.0-3' }}</td>
+              <td class="text-end" dir="ltr">{{ line.new_quantity | number: '1.0-3' }}</td>
+              <td
+                class="text-end font-semibold"
+                [class.text-green-600]="+line.difference > 0"
+                [class.text-red-600]="+line.difference < 0"
+                dir="ltr"
+              >
+                {{ +line.difference > 0 ? '+' : '' }}{{ line.difference | number: '1.0-3' }}
+              </td>
+              <td class="text-end" dir="ltr">{{ line.unit_cost ? (line.unit_cost | number: '1.2-4') : '—' }}</td>
+              <td class="text-sm">{{ line.notes || '—' }}</td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="7" class="py-6 text-center text-sm text-gray-500 dark:text-gray-400">{{ 'inventory.movements.noLines' | translate }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </p-card>
+  </div>
+
+  <app-reason-dialog
+    header="inventory.movements.reject"
+    confirmLabel="inventory.movements.reject"
+    [visible]="rejectDialogOpen()"
+    (visibleChange)="rejectDialogOpen.set($event)"
+    (confirmed)="onRejectConfirmed($event)"
+  ></app-reason-dialog>
+} @else {
+  <app-loading-state></app-loading-state>
+}

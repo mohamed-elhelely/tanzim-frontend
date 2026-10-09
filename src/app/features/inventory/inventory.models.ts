@@ -351,7 +351,7 @@ export interface StockLedgerEntry {
   created_at: string;
   created_by: UserRef | null;
   product_variant: VariantRef;
-  warehouse: { id: number; name: string; code: string };
+  warehouse: WarehouseRef;
   bin: { id: number; name: string; code: string } | null;
   batch: { id: number; batch_number: string } | null;
   serial_number: { id: number; serial_number: string } | null;
@@ -369,7 +369,7 @@ export interface StockLedgerEntry {
 export interface StockReservation {
   id: number;
   product_variant: VariantRef;
-  warehouse: { id: number; name: string; code: string };
+  warehouse: WarehouseRef;
   quantity: string;
   reference_type: string;
   is_released: boolean;
@@ -392,3 +392,125 @@ export const LEDGER_TYPE_SEVERITY: Record<LedgerTransactionType, Severity> = {
   repair: 'secondary',
   write_off: 'danger',
 };
+
+// Stock movements: transfers between warehouses and adjustments (API_REFERENCE.md → "Inventory — stock movements").
+// Lines are their own resource, loaded with ?transfer= / ?adjustment=.
+
+export interface WarehouseRef {
+  id: number;
+  name: string;
+  code: string;
+}
+
+export const TRANSFER_STATUSES = ['draft', 'pending_approval', 'approved', 'in_transit', 'partial', 'received', 'cancelled'] as const;
+export type TransferStatus = (typeof TRANSFER_STATUSES)[number];
+
+export const TRANSFER_STATUS_SEVERITY: Record<TransferStatus, Severity> = {
+  draft: 'secondary',
+  pending_approval: 'warn',
+  approved: 'info',
+  in_transit: 'warn',
+  partial: 'info',
+  received: 'success',
+  cancelled: 'danger',
+};
+
+export interface StockTransfer {
+  id: number;
+  transfer_number: string;
+  status: TransferStatus;
+  source_warehouse: WarehouseRef;
+  destination_warehouse: WarehouseRef;
+  requested_by: UserRef | null;
+  /** YYYY-MM-DD */
+  requested_date: string;
+  expected_delivery_date: string | null;
+  shipped_date: string | null;
+  received_date: string | null;
+  carrier: string;
+  tracking_number: string;
+  notes: string;
+  created_at: string;
+}
+
+export interface StockTransferPayload {
+  source_warehouse: number;
+  destination_warehouse: number;
+  expected_delivery_date: string | null;
+  notes: string;
+}
+
+export interface StockTransferLine {
+  id: number;
+  product_variant: VariantRef;
+  quantity_requested: string;
+  quantity_shipped: string;
+  quantity_received: string;
+  notes: string;
+}
+
+export interface StockTransferLinePayload {
+  transfer: number;
+  product_variant: number;
+  quantity_requested: string;
+  notes: string;
+}
+
+/** Ship and receive take per-line quantities; without them the backend moves everything outstanding. */
+export interface MovementQuantity {
+  line_id: number;
+  quantity: string;
+}
+
+/** Adjustments have no "rejected" status: rejecting sends them back to draft. */
+export const ADJUSTMENT_STATUSES = ['draft', 'pending', 'approved', 'posted'] as const;
+export type AdjustmentStatus = (typeof ADJUSTMENT_STATUSES)[number];
+
+export const ADJUSTMENT_STATUS_SEVERITY: Record<AdjustmentStatus, Severity> = {
+  draft: 'secondary',
+  pending: 'warn',
+  approved: 'info',
+  posted: 'success',
+};
+
+export const ADJUSTMENT_REASONS = ['count', 'damage', 'expiry', 'return', 'sample', 'theft', 'correction', 'write_off'] as const;
+export type AdjustmentReason = (typeof ADJUSTMENT_REASONS)[number];
+
+export interface StockAdjustment {
+  id: number;
+  adjustment_number: string;
+  status: AdjustmentStatus;
+  reason: AdjustmentReason;
+  warehouse: WarehouseRef;
+  adjustment_date: string;
+  created_by: UserRef | null;
+  approved_by: UserRef | null;
+  notes: string;
+}
+
+export interface StockAdjustmentPayload {
+  warehouse: number;
+  reason: AdjustmentReason;
+  notes: string;
+}
+
+/** `difference` (new − current) and `total_cost` are computed by the backend. */
+export interface StockAdjustmentLine {
+  id: number;
+  product_variant: VariantRef;
+  current_quantity: string;
+  new_quantity: string;
+  difference: string;
+  unit_cost: string | null;
+  total_cost: string | null;
+  notes: string;
+}
+
+export interface StockAdjustmentLinePayload {
+  adjustment: number;
+  product_variant: number;
+  current_quantity: string;
+  new_quantity: string;
+  unit_cost: string | null;
+  notes: string;
+}

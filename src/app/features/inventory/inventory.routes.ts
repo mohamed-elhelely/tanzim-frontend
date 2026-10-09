@@ -148,4 +148,44 @@ export const INVENTORY_ROUTES: Routes = [
     loadComponent: () => import('./stock-ledger/stock-ledger-list.component').then((m) => m.StockLedgerListComponent),
     data: { titleKey: 'inventory.ledger.title' },
   },
+  {
+    path: 'transfers',
+    loadComponent: () => import('./transfers/stock-transfer-list.component').then((m) => m.StockTransferListComponent),
+    data: { titleKey: 'inventory.transfers.title' },
+  },
+  {
+    path: 'transfers/new',
+    loadComponent: () => import('./transfers/stock-transfer-form.component').then((m) => m.StockTransferFormComponent),
+    data: { titleKey: 'inventory.transfers.new' },
+  },
+  {
+    path: 'transfers/:id',
+    loadComponent: () => import('./transfers/stock-transfer-detail.component').then((m) => m.StockTransferDetailComponent),
+    data: { titleKey: 'inventory.transfers.detail' },
+  },
+  {
+    path: 'transfers/:id/edit',
+    loadComponent: () => import('./transfers/stock-transfer-form.component').then((m) => m.StockTransferFormComponent),
+    data: { titleKey: 'inventory.transfers.edit' },
+  },
+  {
+    path: 'adjustments',
+    loadComponent: () => import('./adjustments/stock-adjustment-list.component').then((m) => m.StockAdjustmentListComponent),
+    data: { titleKey: 'inventory.adjustments.title' },
+  },
+  {
+    path: 'adjustments/new',
+    loadComponent: () => import('./adjustments/stock-adjustment-form.component').then((m) => m.StockAdjustmentFormComponent),
+    data: { titleKey: 'inventory.adjustments.new' },
+  },
+  {
+    path: 'adjustments/:id',
+    loadComponent: () => import('./adjustments/stock-adjustment-detail.component').then((m) => m.StockAdjustmentDetailComponent),
+    data: { titleKey: 'inventory.adjustments.detail' },
+  },
+  {
+    path: 'adjustments/:id/edit',
+    loadComponent: () => import('./adjustments/stock-adjustment-form.component').then((m) => m.StockAdjustmentFormComponent),
+    data: { titleKey: 'inventory.adjustments.edit' },
+  },
 ];

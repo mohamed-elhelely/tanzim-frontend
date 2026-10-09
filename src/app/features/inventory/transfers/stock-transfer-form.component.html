@@ -1,0 +1,168 @@
+<app-page-header
+  [title]="isEdit ? 'inventory.transfers.edit' : 'inventory.transfers.new'"
+  [showBack]="true"
+  [backLabel]="isEdit ? 'common.back' : 'common.backToList'"
+  (back)="goBack()"
+></app-page-header>
+
+@if (loadError(); as err) {
+  <app-error-state [title]="errorTitleKey(err)" [showRetry]="false"></app-error-state>
+} @else if (notDraft()) {
+  <app-error-state title="inventory.transfers.onlyDrafts" [showRetry]="false"></app-error-state>
+} @else if (loading()) {
+  <app-loading-state></app-loading-state>
+} @else {
+  <form [formGroup]="form" (ngSubmit)="submit()" class="flex max-w-6xl flex-col gap-4" novalidate>
+    @if (formErrors().length) {
+      <div
+        role="alert"
+        class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300"
+      >
+        @for (message of formErrors(); track $index) {
+          <p>{{ message }}</p>
+        }
+      </div>
+    }
+
+    <p-card>
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div class="flex flex-col gap-1">
+          <label for="source_warehouse" class="text-sm font-medium">{{ 'inventory.transfers.from' | translate }} *</label>
+          <p-select
+            inputId="source_warehouse"
+            formControlName="source_warehouse"
+            [options]="warehouseOptions()"
+            optionLabel="label"
+            optionValue="value"
+            [filter]="true"
+            filterBy="label"
+            [placeholder]="'common.select' | translate"
+            styleClass="w-full"
+            appendTo="body"
+          ></p-select>
+          <app-field-error [control]="form.controls.source_warehouse"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="destination_warehouse" class="text-sm font-medium">{{ 'inventory.transfers.to' | translate }} *</label>
+          <p-select
+            inputId="destination_warehouse"
+            formControlName="destination_warehouse"
+            [options]="warehouseOptions()"
+            optionLabel="label"
+            optionValue="value"
+            [filter]="true"
+            filterBy="label"
+            [placeholder]="'common.select' | translate"
+            styleClass="w-full"
+            appendTo="body"
+          ></p-select>
+          <app-field-error [control]="form.controls.destination_warehouse"></app-field-error>
+          @if (form.hasError('sameWarehouse') && form.controls.destination_warehouse.touched) {
+            <small class="text-xs text-red-600 dark:text-red-400">{{ 'inventory.transfers.sameWarehouse' | translate }}</small>
+          }
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="expected_delivery_date" class="text-sm font-medium">{{ 'inventory.transfers.expectedDate' | translate }}</label>
+          <input pInputText id="expected_delivery_date" type="date" formControlName="expected_delivery_date" class="w-full" />
+        </div>
+
+        <div class="flex flex-col gap-1 md:col-span-2">
+          <label for="notes" class="text-sm font-medium">{{ 'inventory.fields.notes' | translate }}</label>
+          <textarea pTextarea id="notes" formControlName="notes" rows="2" class="w-full"></textarea>
+        </div>
+      </div>
+    </p-card>
+
+    <p-card>
+      <div class="mb-3 flex items-center justify-between gap-2">
+        <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'inventory.movements.lines' | translate }} *</h3>
+        <p-button
+          type="button"
+          [label]="'inventory.movements.addLine' | translate"
+          icon="pi pi-plus"
+          severity="secondary"
+          [outlined]="true"
+          size="small"
+          (onClick)="addLine()"
+        ></p-button>
+      </div>
+      <div class="overflow-x-auto" formArrayName="lines">
+        <table class="w-full min-w-[40rem] text-sm">
+          <thead>
+            <tr class="border-b border-gray-200 text-xs text-gray-500 dark:border-gray-800 dark:text-gray-400">
+              <th class="w-8 py-2 text-start font-medium">#</th>
+              <th class="py-2 text-start font-medium">{{ 'inventory.movements.item' | translate }} *</th>
+              <th class="w-32 py-2 text-start font-medium">{{ 'inventory.fields.quantity' | translate }} *</th>
+              <th class="w-56 py-2 text-start font-medium">{{ 'inventory.fields.notes' | translate }}</th>
+              <th class="w-10 py-2"></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (line of lines.controls; track line; let i = $index) {
+              <tr [formGroupName]="i" class="border-b border-gray-100 align-top dark:border-gray-800">
+                <td class="py-2 pt-4 text-gray-500">{{ i + 1 }}</td>
+                <td class="py-2 pe-2">
+                  <p-select
+                    formControlName="product_variant"
+                    [options]="items()"
+                    optionLabel="label"
+                    optionValue="value"
+                    [filter]="true"
+                    filterBy="label"
+                    [placeholder]="'common.select' | translate"
+                    [ariaLabel]="'inventory.movements.item' | translate"
+                    styleClass="w-full"
+                    appendTo="body"
+                  ></p-select>
+                  <app-field-error [control]="line.controls.product_variant"></app-field-error>
+                  @if (onHandAt(i); as available) {
+                    <small class="text-xs text-gray-500 dark:text-gray-400">
+                      {{ 'inventory.movements.onHandAtSource' | translate }}: <span dir="ltr">{{ available | number: '1.0-3' }}</span>
+                    </small>
+                  } @else if (onHandAt(i) === 0) {
+                    <small class="text-xs text-amber-600 dark:text-amber-400">{{ 'inventory.movements.noneAtSource' | translate }}</small>
+                  }
+                </td>
+                <td class="py-2 pe-2">
+                  <input
+                    pInputText
+                    formControlName="quantity_requested"
+                    dir="ltr"
+                    inputmode="decimal"
+                    [attr.aria-label]="'inventory.fields.quantity' | translate"
+                    class="w-full"
+                  />
+                  <app-field-error [control]="line.controls.quantity_requested" patternKey="inventory.hints.decimal3"></app-field-error>
+                </td>
+                <td class="py-2 pe-2">
+                  <input pInputText formControlName="notes" [attr.aria-label]="'inventory.fields.notes' | translate" class="w-full" />
+                </td>
+                <td class="py-2">
+                  <p-button
+                    type="button"
+                    icon="pi pi-trash"
+                    severity="danger"
+                    [text]="true"
+                    [rounded]="true"
+                    [ariaLabel]="'inventory.movements.removeLine' | translate"
+                    (onClick)="removeLine(i)"
+                  ></p-button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      @if (lines.length === 0 && lines.touched) {
+        <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ 'inventory.movements.needLine' | translate }}</p>
+      }
+    </p-card>
+
+    <div class="flex justify-end gap-2">
+      <p-button type="button" [label]="'common.cancel' | translate" severity="secondary" [outlined]="true" (onClick)="goBack()"></p-button>
+      <p-button type="submit" [label]="'common.save' | translate" icon="pi pi-check" [loading]="saving()" [disabled]="saving()"></p-button>
+    </div>
+  </form>
+}

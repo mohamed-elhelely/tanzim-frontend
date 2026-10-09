@@ -68,6 +68,8 @@ export const NAV_ITEMS: NavItem[] = [
       { labelKey: 'nav.supplierProducts', icon: 'pi pi-list', routerLink: '/inventory/supplier-products' },
       { labelKey: 'nav.stockLevels', icon: 'pi pi-chart-bar', routerLink: '/inventory/stock' },
       { labelKey: 'nav.stockLedger', icon: 'pi pi-history', routerLink: '/inventory/stock-ledger' },
+      { labelKey: 'nav.transfers', icon: 'pi pi-arrow-right-arrow-left', routerLink: '/inventory/transfers' },
+      { labelKey: 'nav.adjustments', icon: 'pi pi-sliders-h', routerLink: '/inventory/adjustments' },
     ],
   },
   {

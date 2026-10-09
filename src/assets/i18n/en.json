@@ -80,7 +80,9 @@
     "supplierPayments": "Supplier payments",
     "debitNotes": "Debit notes",
     "stockLevels": "Stock levels",
-    "stockLedger": "Stock ledger"
+    "stockLedger": "Stock ledger",
+    "transfers": "Transfers",
+    "adjustments": "Adjustments"
   },
   "auth": {
     "login": "Login",
@@ -395,7 +397,8 @@
       "effectiveFrom": "Effective from",
       "effectiveTo": "Effective to",
       "manager": "Manager",
-      "quantity": "Quantity"
+      "quantity": "Quantity",
+      "status": "Status"
     },
     "sections": {
       "tracking": "Tracking",
@@ -528,6 +531,117 @@
       "reservation_release": "Reservation released",
       "initial": "Opening stock",
       "repair": "Repair"
+    },
+    "movements": {
+      "lines": "Items",
+      "item": "Item",
+      "addLine": "Add item",
+      "removeLine": "Remove item",
+      "needLine": "Add at least one item.",
+      "noLines": "No items.",
+      "onHandAtSource": "On hand at the source",
+      "noneAtSource": "None on hand at the source",
+      "submit": "Submit for approval",
+      "approve": "Approve",
+      "reject": "Send back",
+      "cancel": "Cancel",
+      "toasts": {
+        "submitted": "Submitted for approval.",
+        "approved": "Approved.",
+        "rejected": "Sent back to draft.",
+        "cancelled": "Cancelled."
+      }
+    },
+    "transfers": {
+      "title": "Stock transfers",
+      "subtitle": "Move stock between warehouses: approve, ship, then receive.",
+      "new": "New transfer",
+      "edit": "Edit transfer",
+      "detail": "Transfer",
+      "search": "Search number, carrier or tracking",
+      "number": "Transfer no.",
+      "from": "From",
+      "to": "To",
+      "requestedDate": "Requested",
+      "expectedDate": "Expected",
+      "shippedDate": "Shipped on",
+      "receivedDate": "Received on",
+      "requestedBy": "Requested by",
+      "carrier": "Carrier",
+      "trackingNumber": "Tracking no.",
+      "requested": "Requested",
+      "shipped": "Shipped",
+      "received": "Received",
+      "outstanding": "Outstanding",
+      "ship": "Ship",
+      "receive": "Receive",
+      "shipHint": "Stock leaves the source warehouse now. Ship less than requested if needed.",
+      "receiveHint": "Stock enters the destination warehouse. Receive part now and the rest later if needed.",
+      "moveQuantity": "Enter quantities up to what is outstanding, and at least one above zero.",
+      "sameWarehouse": "Choose a different warehouse than the source.",
+      "onlyDrafts": "Only draft transfers can be edited.",
+      "empty": "No transfers yet",
+      "confirm": {
+        "submit": "Send this transfer for approval? It can't be edited after that.",
+        "approve": "Approve this transfer so it can ship?",
+        "cancel": "Cancel this transfer?"
+      },
+      "toasts": {
+        "shipped": "Transfer shipped.",
+        "received": "Items received."
+      }
+    },
+    "transferStatuses": {
+      "draft": "Draft",
+      "pending_approval": "Pending approval",
+      "approved": "Approved",
+      "in_transit": "In transit",
+      "partial": "Partly received",
+      "received": "Received",
+      "cancelled": "Cancelled"
+    },
+    "adjustments": {
+      "title": "Stock adjustments",
+      "subtitle": "Correct stock after counts, damage or theft: approve, then post.",
+      "new": "New adjustment",
+      "edit": "Edit adjustment",
+      "detail": "Adjustment",
+      "search": "Search number or notes",
+      "number": "Adjustment no.",
+      "reason": "Reason",
+      "linesHint": "Enter what the warehouse should hold; the difference is posted.",
+      "current": "Current",
+      "newQuantity": "New quantity",
+      "difference": "Difference",
+      "value": "Value",
+      "approvedBy": "Approved by",
+      "post": "Post to stock",
+      "onlyDrafts": "Only draft adjustments can be edited.",
+      "empty": "No adjustments yet",
+      "confirm": {
+        "submit": "Send this adjustment for approval? It can't be edited after that.",
+        "approve": "Approve this adjustment?",
+        "post": "Post the differences to stock? This changes the stock levels."
+      },
+      "toasts": {
+        "posted": "Posted to stock."
+      }
+    },
+    "adjustmentStatuses": {
+      "draft": "Draft",
+      "pending": "Pending approval",
+      "approved": "Approved",
+      "posted": "Posted"
+    },
+    "adjustmentReasons": {
+      "count": "Count variance",
+      "damage": "Damage",
+      "expiry": "Expired",
+      "return": "Customer return",
+      "sample": "Sample",
+      "theft": "Theft",
+      "correction": "System correction",
+      "write_off": "Write-off"
     }
   },
   "notifications": {

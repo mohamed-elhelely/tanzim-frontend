@@ -1,0 +1,183 @@
+<app-page-header
+  [title]="isEdit ? 'inventory.adjustments.edit' : 'inventory.adjustments.new'"
+  [showBack]="true"
+  [backLabel]="isEdit ? 'common.back' : 'common.backToList'"
+  (back)="goBack()"
+></app-page-header>
+
+@if (loadError(); as err) {
+  <app-error-state [title]="errorTitleKey(err)" [showRetry]="false"></app-error-state>
+} @else if (notDraft()) {
+  <app-error-state title="inventory.adjustments.onlyDrafts" [showRetry]="false"></app-error-state>
+} @else if (loading()) {
+  <app-loading-state></app-loading-state>
+} @else {
+  <form [formGroup]="form" (ngSubmit)="submit()" class="flex max-w-6xl flex-col gap-4" novalidate>
+    @if (formErrors().length) {
+      <div
+        role="alert"
+        class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300"
+      >
+        @for (message of formErrors(); track $index) {
+          <p>{{ message }}</p>
+        }
+      </div>
+    }
+
+    <p-card>
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div class="flex flex-col gap-1">
+          <label for="warehouse" class="text-sm font-medium">{{ 'inventory.fields.warehouse' | translate }} *</label>
+          <p-select
+            inputId="warehouse"
+            formControlName="warehouse"
+            [options]="warehouseOptions()"
+            optionLabel="label"
+            optionValue="value"
+            [filter]="true"
+            filterBy="label"
+            [placeholder]="'common.select' | translate"
+            styleClass="w-full"
+            appendTo="body"
+          ></p-select>
+          <app-field-error [control]="form.controls.warehouse"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <label for="reason" class="text-sm font-medium">{{ 'inventory.adjustments.reason' | translate }} *</label>
+          <p-select
+            inputId="reason"
+            formControlName="reason"
+            [options]="reasonOptions"
+            optionLabel="label"
+            optionValue="value"
+            styleClass="w-full"
+            appendTo="body"
+          >
+            <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
+            <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
+          </p-select>
+          <app-field-error [control]="form.controls.reason"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1 md:col-span-2">
+          <label for="notes" class="text-sm font-medium">{{ 'inventory.fields.notes' | translate }}</label>
+          <textarea pTextarea id="notes" formControlName="notes" rows="2" class="w-full"></textarea>
+        </div>
+      </div>
+    </p-card>
+
+    <p-card>
+      <div class="mb-3 flex items-center justify-between gap-2">
+        <div>
+          <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'inventory.movements.lines' | translate }} *</h3>
+          <p class="text-xs text-gray-500 dark:text-gray-400">{{ 'inventory.adjustments.linesHint' | translate }}</p>
+        </div>
+        <p-button
+          type="button"
+          [label]="'inventory.movements.addLine' | translate"
+          icon="pi pi-plus"
+          severity="secondary"
+          [outlined]="true"
+          size="small"
+          (onClick)="addLine()"
+        ></p-button>
+      </div>
+      <div class="overflow-x-auto" formArrayName="lines">
+        <table class="w-full min-w-[52rem] text-sm">
+          <thead>
+            <tr class="border-b border-gray-200 text-xs text-gray-500 dark:border-gray-800 dark:text-gray-400">
+              <th class="w-8 py-2 text-start font-medium">#</th>
+              <th class="py-2 text-start font-medium">{{ 'inventory.movements.item' | translate }} *</th>
+              <th class="w-24 py-2 text-end font-medium">{{ 'inventory.adjustments.current' | translate }}</th>
+              <th class="w-28 py-2 text-start font-medium">{{ 'inventory.adjustments.newQuantity' | translate }} *</th>
+              <th class="w-24 py-2 text-end font-medium">{{ 'inventory.adjustments.difference' | translate }}</th>
+              <th class="w-28 py-2 text-start font-medium">{{ 'inventory.fields.unitCost' | translate }}</th>
+              <th class="w-44 py-2 text-start font-medium">{{ 'inventory.fields.notes' | translate }}</th>
+              <th class="w-10 py-2"></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (line of lines.controls; track line; let i = $index) {
+              <tr [formGroupName]="i" class="border-b border-gray-100 align-top dark:border-gray-800">
+                <td class="py-2 pt-4 text-gray-500">{{ i + 1 }}</td>
+                <td class="py-2 pe-2">
+                  <p-select
+                    formControlName="product_variant"
+                    [options]="items()"
+                    optionLabel="label"
+                    optionValue="value"
+                    [filter]="true"
+                    filterBy="label"
+                    [placeholder]="'common.select' | translate"
+                    [ariaLabel]="'inventory.movements.item' | translate"
+                    (onChange)="onItemChange(i, $event.value)"
+                    styleClass="w-full"
+                    appendTo="body"
+                  ></p-select>
+                  <app-field-error [control]="line.controls.product_variant"></app-field-error>
+                </td>
+                <td class="py-2 pe-2 pt-4 text-end text-gray-500 dark:text-gray-400" dir="ltr">
+                  {{ line.controls.current_quantity.value | number: '1.0-3' }}
+                </td>
+                <td class="py-2 pe-2">
+                  <input
+                    pInputText
+                    formControlName="new_quantity"
+                    dir="ltr"
+                    inputmode="decimal"
+                    [attr.aria-label]="'inventory.adjustments.newQuantity' | translate"
+                    class="w-full"
+                  />
+                  <app-field-error [control]="line.controls.new_quantity" patternKey="inventory.hints.decimal3"></app-field-error>
+                </td>
+                <td class="py-2 pe-2 pt-4 text-end font-semibold" dir="ltr">
+                  @if (differenceAt(i); as difference) {
+                    <span [class]="difference > 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'">
+                      {{ difference > 0 ? '+' : '' }}{{ difference | number: '1.0-3' }}
+                    </span>
+                  } @else {
+                    <span class="text-gray-400">0</span>
+                  }
+                </td>
+                <td class="py-2 pe-2">
+                  <input
+                    pInputText
+                    formControlName="unit_cost"
+                    dir="ltr"
+                    inputmode="decimal"
+                    [attr.aria-label]="'inventory.fields.unitCost' | translate"
+                    class="w-full"
+                  />
+                  <app-field-error [control]="line.controls.unit_cost" patternKey="inventory.hints.decimal4"></app-field-error>
+                </td>
+                <td class="py-2 pe-2">
+                  <input pInputText formControlName="notes" [attr.aria-label]="'inventory.fields.notes' | translate" class="w-full" />
+                </td>
+                <td class="py-2">
+                  <p-button
+                    type="button"
+                    icon="pi pi-trash"
+                    severity="danger"
+                    [text]="true"
+                    [rounded]="true"
+                    [ariaLabel]="'inventory.movements.removeLine' | translate"
+                    (onClick)="removeLine(i)"
+                  ></p-button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      @if (lines.length === 0 && lines.touched) {
+        <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ 'inventory.movements.needLine' | translate }}</p>
+      }
+    </p-card>
+
+    <div class="flex justify-end gap-2">
+      <p-button type="button" [label]="'common.cancel' | translate" severity="secondary" [outlined]="true" (onClick)="goBack()"></p-button>
+      <p-button type="submit" [label]="'common.save' | translate" icon="pi pi-check" [loading]="saving()" [disabled]="saving()"></p-button>
+    </div>
+  </form>
+}

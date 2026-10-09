@@ -1,0 +1,69 @@
+<app-page-header title="inventory.transfers.title" subtitle="inventory.transfers.subtitle" [actions]="headerActions"></app-page-header>
+
+@if (table.error(); as err) {
+  <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403" (retry)="table.load()"></app-error-state>
+} @else {
+  <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
+    <div class="flex items-center gap-3 border-b border-gray-100 p-4 dark:border-gray-800">
+      <p-iconfield class="w-full sm:w-80">
+        <p-inputicon class="pi pi-search"></p-inputicon>
+        <input
+          pInputText
+          type="search"
+          [placeholder]="'inventory.transfers.search' | translate"
+          (input)="table.onSearch($any($event.target).value)"
+          class="w-full"
+        />
+      </p-iconfield>
+    </div>
+    <div class="overflow-x-auto">
+      <p-table
+        [value]="table.rows()"
+        [lazy]="true"
+        [lazyLoadOnInit]="false"
+        (onLazyLoad)="table.onLazyLoad($event)"
+        [paginator]="true"
+        [first]="table.first()"
+        [rows]="table.pageSize()"
+        [totalRecords]="table.total()"
+        [rowsPerPageOptions]="[10, 25, 50]"
+        [loading]="table.loading()"
+        dataKey="id"
+        size="small"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="transfer_number">{{ 'inventory.transfers.number' | translate }} <p-sortIcon field="transfer_number"></p-sortIcon></th>
+            <th>{{ 'inventory.transfers.from' | translate }}</th>
+            <th>{{ 'inventory.transfers.to' | translate }}</th>
+            <th>{{ 'inventory.fields.status' | translate }}</th>
+            <th pSortableColumn="requested_date">{{ 'inventory.transfers.requestedDate' | translate }} <p-sortIcon field="requested_date"></p-sortIcon></th>
+            <th>{{ 'inventory.transfers.expectedDate' | translate }}</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-row>
+          <tr class="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50" (click)="open(row)" (keydown.enter)="open(row)" tabindex="0">
+            <td class="whitespace-nowrap font-mono text-xs font-semibold" dir="ltr">{{ row.transfer_number }}</td>
+            <td class="whitespace-nowrap">{{ row.source_warehouse?.name }}</td>
+            <td class="whitespace-nowrap">
+              <i class="pi pi-arrow-right me-1 text-xs text-gray-400 rtl:rotate-180"></i>{{ row.destination_warehouse?.name }}
+            </td>
+            <td>
+              <app-status-badge
+                [value]="'inventory.transferStatuses.' + row.status | translate"
+                [severity]="statusSeverity(row.status)"
+              ></app-status-badge>
+            </td>
+            <td class="whitespace-nowrap" dir="ltr">{{ row.requested_date }}</td>
+            <td class="whitespace-nowrap" dir="ltr">{{ row.expected_delivery_date || '—' }}</td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="6"><app-empty-state icon="pi-arrow-right-arrow-left" title="inventory.transfers.empty"></app-empty-state></td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+}

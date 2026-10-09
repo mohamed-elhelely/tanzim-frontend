@@ -1,0 +1,168 @@
+@if (loadError(); as err) {
+  <app-page-header title="inventory.transfers.title" [showBack]="true" backLabel="common.backToList" (back)="goBack()"></app-page-header>
+  <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403 && err.status !== 404" (retry)="load()"></app-error-state>
+} @else if (transfer(); as transfer) {
+  <app-page-header
+    [title]="transfer.transfer_number"
+    [subtitle]="transfer.source_warehouse.name + ' → ' + transfer.destination_warehouse.name"
+    [showBack]="true"
+    backLabel="common.backToList"
+    [actions]="actions()"
+    (back)="goBack()"
+  ></app-page-header>
+
+  <div class="flex max-w-6xl flex-col gap-4">
+    <dl class="grid grid-cols-2 gap-3 md:grid-cols-4">
+      <div class="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+        <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'inventory.fields.status' | translate }}</dt>
+        <dd class="mt-1">
+          <app-status-badge
+            [value]="'inventory.transferStatuses.' + transfer.status | translate"
+            [severity]="statusSeverity[transfer.status]"
+          ></app-status-badge>
+        </dd>
+      </div>
+      <div class="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+        <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'inventory.transfers.from' | translate }}</dt>
+        <dd class="mt-1 text-sm font-semibold">{{ transfer.source_warehouse.name }}</dd>
+      </div>
+      <div class="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+        <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'inventory.transfers.to' | translate }}</dt>
+        <dd class="mt-1 text-sm font-semibold">{{ transfer.destination_warehouse.name }}</dd>
+      </div>
+      <div class="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+        <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'inventory.transfers.requestedBy' | translate }}</dt>
+        <dd class="mt-1 text-sm font-semibold">{{ (transfer.requested_by | userName) || '—' }}</dd>
+      </div>
+    </dl>
+
+    <p-card>
+      <dl class="grid grid-cols-2 gap-x-6 gap-y-3 text-sm md:grid-cols-4">
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'inventory.transfers.requestedDate' | translate }}</dt>
+          <dd class="mt-0.5" dir="ltr">{{ transfer.requested_date }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'inventory.transfers.expectedDate' | translate }}</dt>
+          <dd class="mt-0.5" dir="ltr">{{ transfer.expected_delivery_date || '—' }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'inventory.transfers.shippedDate' | translate }}</dt>
+          <dd class="mt-0.5" dir="ltr">{{ transfer.shipped_date || '—' }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'inventory.transfers.receivedDate' | translate }}</dt>
+          <dd class="mt-0.5" dir="ltr">{{ transfer.received_date || '—' }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'inventory.transfers.carrier' | translate }}</dt>
+          <dd class="mt-0.5">{{ transfer.carrier || '—' }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'inventory.transfers.trackingNumber' | translate }}</dt>
+          <dd class="mt-0.5" dir="ltr">{{ transfer.tracking_number || '—' }}</dd>
+        </div>
+        @if (transfer.notes) {
+          <div class="col-span-2">
+            <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'inventory.fields.notes' | translate }}</dt>
+            <dd class="mt-0.5 whitespace-pre-line">{{ transfer.notes }}</dd>
+          </div>
+        }
+      </dl>
+    </p-card>
+
+    <p-card>
+      <h3 class="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'inventory.movements.lines' | translate }}</h3>
+      <div class="overflow-x-auto">
+        <p-table [value]="lines()" dataKey="id" size="small">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>{{ 'inventory.fields.sku' | translate }}</th>
+              <th>{{ 'inventory.fields.variant' | translate }}</th>
+              <th class="text-end">{{ 'inventory.transfers.requested' | translate }}</th>
+              <th class="text-end">{{ 'inventory.transfers.shipped' | translate }}</th>
+              <th class="text-end">{{ 'inventory.transfers.received' | translate }}</th>
+              <th>{{ 'inventory.fields.notes' | translate }}</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-line>
+            <tr>
+              <td class="whitespace-nowrap font-mono text-xs" dir="ltr">{{ line.product_variant.sku }}</td>
+              <td class="font-medium">{{ line.product_variant.name }}</td>
+              <td class="text-end" dir="ltr">{{ line.quantity_requested | number: '1.0-3' }}</td>
+              <td class="text-end" dir="ltr">{{ line.quantity_shipped | number: '1.0-3' }}</td>
+              <td class="text-end" dir="ltr">{{ line.quantity_received | number: '1.0-3' }}</td>
+              <td class="text-sm">{{ line.notes || '—' }}</td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="6" class="py-6 text-center text-sm text-gray-500 dark:text-gray-400">{{ 'inventory.movements.noLines' | translate }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </p-card>
+  </div>
+
+  <app-reason-dialog
+    header="inventory.movements.reject"
+    confirmLabel="inventory.movements.reject"
+    [visible]="rejectDialogOpen()"
+    (visibleChange)="rejectDialogOpen.set($event)"
+    (confirmed)="onRejectConfirmed($event)"
+  ></app-reason-dialog>
+
+  <p-dialog
+    [header]="(dialog() === 'ship' ? 'inventory.transfers.ship' : 'inventory.transfers.receive') | translate"
+    [visible]="dialog() !== null"
+    (visibleChange)="!$event && dialog.set(null)"
+    [modal]="true"
+    [dismissableMask]="true"
+    [style]="{ width: '40rem', maxWidth: 'calc(100vw - 2rem)' }"
+  >
+    <p class="mb-3 text-sm text-gray-600 dark:text-gray-300">
+      {{ (dialog() === 'ship' ? 'inventory.transfers.shipHint' : 'inventory.transfers.receiveHint') | translate }}
+    </p>
+    <div class="flex flex-col gap-2">
+      @for (row of moveRows; track row.lineId) {
+        <div class="flex items-center justify-between gap-3">
+          <label [for]="'move_' + row.lineId" class="text-sm">
+            <span class="font-medium">{{ row.label }}</span>
+            <span class="block text-xs text-gray-500 dark:text-gray-400">
+              {{ 'inventory.transfers.outstanding' | translate }}: <span dir="ltr">{{ row.outstanding | number: '1.0-3' }}</span>
+            </span>
+          </label>
+          <input pInputText [id]="'move_' + row.lineId" [(ngModel)]="row.quantity" dir="ltr" inputmode="decimal" class="w-28" />
+        </div>
+      }
+    </div>
+    @if (dialog() === 'ship') {
+      <div class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <div class="flex flex-col gap-1">
+          <label for="carrier" class="text-sm font-medium">{{ 'inventory.transfers.carrier' | translate }}</label>
+          <input pInputText id="carrier" [(ngModel)]="carrier" class="w-full" />
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="tracking_number" class="text-sm font-medium">{{ 'inventory.transfers.trackingNumber' | translate }}</label>
+          <input pInputText id="tracking_number" [(ngModel)]="trackingNumber" dir="ltr" class="w-full" />
+        </div>
+      </div>
+    }
+    @if (dialogError(); as key) {
+      <p role="alert" class="mt-3 text-sm text-red-600">{{ key | translate }}</p>
+    }
+    <ng-template pTemplate="footer">
+      <p-button [label]="'common.cancel' | translate" severity="secondary" [outlined]="true" (onClick)="dialog.set(null)"></p-button>
+      <p-button
+        [label]="(dialog() === 'ship' ? 'inventory.transfers.ship' : 'inventory.transfers.receive') | translate"
+        [icon]="dialog() === 'ship' ? 'pi pi-truck' : 'pi pi-inbox'"
+        [loading]="saving()"
+        [disabled]="saving()"
+        (onClick)="submitMove()"
+      ></p-button>
+    </ng-template>
+  </p-dialog>
+} @else {
+  <app-loading-state></app-loading-state>
+}
