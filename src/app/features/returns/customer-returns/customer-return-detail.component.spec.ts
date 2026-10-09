@@ -43,9 +43,9 @@ describe('CustomerReturnDetailComponent', () => {
   afterEach(() => httpMock.verify());
 
   it('offers the next step of the workflow', () => {
-    expect(labels(setup())).toEqual(['returns.actions.approve', 'common.delete']);
+    expect(labels(setup())).toEqual(['returns.actions.approve', 'returns.actions.reject', 'common.delete']);
     TestBed.resetTestingModule();
-    expect(labels(setup({ status: 'approved' }))).toEqual(['returns.actions.receive']);
+    expect(labels(setup({ status: 'approved' }))).toEqual(['returns.actions.receive', 'returns.actions.reject']);
     TestBed.resetTestingModule();
     expect(labels(setup({ status: 'received' }))).toEqual(['returns.actions.inspect']);
     TestBed.resetTestingModule();
@@ -58,14 +58,30 @@ describe('CustomerReturnDetailComponent', () => {
     expect(labels(setup({ status: 'closed', refund_method: 'refund', total_items_accepted: '1.000' }))).toEqual([]);
   });
 
-  it('approves', () => {
-    const fixture = setup();
+  it('approves, keeping the order number the action response leaves out', () => {
+    const fixture = setup({ sales_order: 3, sales_order_number: 'SO-2026-00003' });
     run(fixture, 'returns.actions.approve');
-    httpMock.expectOne(`${URL}1/approve/`).flush(envelope(makeCustomerReturn({ status: 'approved' })));
-    expect(fixture.componentInstance.rma()?.status).toBe('approved');
+    const { sales_order_number: _omitted, ...response } = makeCustomerReturn({ status: 'approved', sales_order: 3 });
+    httpMock.expectOne(`${URL}1/approve/`).flush(envelope(response));
+    expect(fixture.componentInstance.rma()).toEqual(jasmine.objectContaining({ status: 'approved', sales_order_number: 'SO-2026-00003' }));
   });
 
-  it('receives the entered quantities, then reads the return again (stale lines in the response)', () => {
+  it('rejects with the reason entered', () => {
+    const fixture = setup();
+    run(fixture, 'returns.actions.reject');
+    const component = fixture.componentInstance;
+    expect(component.rejectDialogOpen()).toBeTrue();
+    component.onRejectConfirmed('Outside the return window');
+    const req = httpMock.expectOne(`${URL}1/reject/`);
+    expect(req.request.body).toEqual({ reason: 'Outside the return window' });
+    req.flush(envelope(makeCustomerReturn({ status: 'rejected', rejection_reason: 'Outside the return window', rejected_date: '2026-10-09T10:00:00Z' })));
+    fixture.detectChanges();
+    expect(component.rejectDialogOpen()).toBeFalse();
+    expect(component.actions()).toEqual([]);
+    expect(fixture.nativeElement.textContent).toContain('Outside the return window');
+  });
+
+  it('receives the entered quantities and shows the updated lines from the response', () => {
     const fixture = setup({ status: 'approved' });
     run(fixture, 'returns.actions.receive');
     const component = fixture.componentInstance;
@@ -77,8 +93,7 @@ describe('CustomerReturnDetailComponent', () => {
     component.submitReceive();
     const req = httpMock.expectOne(`${URL}1/receive/`);
     expect(req.request.body).toEqual({ lines: [{ line_id: 1, quantity_received: '1' }] });
-    req.flush(envelope(makeCustomerReturn({ status: 'received' })));
-    httpMock.expectOne(`${URL}1/`).flush(envelope(makeCustomerReturn({ status: 'received', lines: [makeReturnLine({ quantity_received: '1.000' })] })));
+    req.flush(envelope(makeCustomerReturn({ status: 'received', lines: [makeReturnLine({ quantity_received: '1.000' })] })));
     expect(component.dialog()).toBeNull();
     expect(component.rma()?.lines[0].quantity_received).toBe('1.000');
   });
@@ -102,7 +117,7 @@ describe('CustomerReturnDetailComponent', () => {
       defect_description: 'Screen flickers',
     });
     req.flush(envelope(makeCustomerReturn({ status: 'inspected' })));
-    httpMock.expectOne(`${URL}1/`).flush(envelope(makeCustomerReturn({ status: 'inspected' })));
+    expect(component.rma()?.status).toBe('inspected');
   });
 
   it('closes with the refund amount (defaulting to the accepted value)', () => {
@@ -113,7 +128,7 @@ describe('CustomerReturnDetailComponent', () => {
     const req = httpMock.expectOne(`${URL}1/close/`);
     expect(req.request.body).toEqual({ refund_amount: '100.00' });
     req.flush(envelope(makeCustomerReturn({ status: 'closed' })));
-    httpMock.expectOne(`${URL}1/`).flush(envelope(makeCustomerReturn({ status: 'closed' })));
+    expect(fixture.componentInstance.rma()?.status).toBe('closed');
   });
 
   it('opens the replacement order after creating it', () => {

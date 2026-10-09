@@ -76,7 +76,7 @@ describe('ProductVariantFormComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('inventory.hints.decimal4');
   });
 
-  it('loads attributes into rows on edit and leaves the unreturned weight unit out of the PATCH', () => {
+  it('loads attributes into rows and the weight unit on edit', () => {
     const component = setup('1').componentInstance;
     flushProducts();
     httpMock.expectOne(`${URL}1/`).flush(envelope(makeVariant()));
@@ -88,7 +88,7 @@ describe('ProductVariantFormComponent', () => {
     component.submit();
     const req = httpMock.expectOne((r) => r.url === `${URL}1/` && r.method === 'PATCH');
     expect(req.request.body.attributes).toEqual({ color: 'red' });
-    expect('weight_uom' in req.request.body).toBeFalse();
+    expect(req.request.body.weight_uom).toBe('kg');
     req.flush(envelope(makeVariant()));
   });
 

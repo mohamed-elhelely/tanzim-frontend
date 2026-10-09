@@ -55,8 +55,8 @@ interface FreeRow {
 
 /**
  * New customer return. With an order, the shipped lines are listed and the user enters how many come back;
- * without one, items are picked freely. ⚠️ The backend doesn't cap the quantity by what was shipped
- * (BACKEND_REQUESTS 17), so this screen does.
+ * without one, items are picked freely. Quantities are capped by what was shipped; the backend also subtracts
+ * what earlier returns already requested and answers under the line if that is exceeded.
  */
 @Component({
   selector: 'app-customer-return-form',

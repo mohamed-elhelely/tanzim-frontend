@@ -22,7 +22,6 @@ describe('BinListComponent', () => {
     const fixture = TestBed.createComponent(BinListComponent);
     fixture.detectChanges();
     httpMock.expectOne((r) => r.url === URL && r.params.get('page') === '1').flush(envelope([makeBin()], 1));
-    httpMock.expectOne((r) => r.url === URL && r.params.get('dropdown') === 'true').flush(envelope([{ id: 1, name: 'x', code: 'C-1' }]));
     fixture.detectChanges();
     expect(fixture.nativeElement.textContent).toContain('Zone A');
     expect(fixture.nativeElement.textContent).toContain('Bin 1');
@@ -32,7 +31,6 @@ describe('BinListComponent', () => {
     const fixture = TestBed.createComponent(BinListComponent);
     fixture.detectChanges();
     httpMock.expectOne((r) => r.url === URL && r.params.has('page')).flush(envelope([], 0));
-    httpMock.expectOne((r) => r.url === URL && r.params.get('dropdown') === 'true').flush(envelope([{ id: 1, name: 'x', code: 'C-1' }]));
     fixture.componentInstance.edit(makeBin({ id: 4 }));
     expect(TestBed.inject(Router).navigate).toHaveBeenCalledWith(['/inventory/bins', 4, 'edit']);
   });

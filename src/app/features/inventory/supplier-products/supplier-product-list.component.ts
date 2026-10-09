@@ -1,3 +1,4 @@
+import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -19,6 +20,7 @@ import { SupplierProductService } from './supplier-product.service';
 @Component({
   selector: 'app-supplier-product-list',
   imports: [
+    DecimalPipe,
     TranslatePipe,
     TableModule,
     ButtonModule,
@@ -33,7 +35,6 @@ import { SupplierProductService } from './supplier-product.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './supplier-product-list.component.html',
 })
-/** ⚠️ The list endpoint returns only supplier, variant and preferred (no cost or dates; BACKEND_REQUESTS item 2). */
 export class SupplierProductListComponent implements OnInit {
   private readonly api = inject(SupplierProductService);
   private readonly router = inject(Router);

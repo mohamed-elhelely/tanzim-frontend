@@ -76,7 +76,7 @@ function today(): string {
 /**
  * Create or edit a draft sales order with its lines.
  * 🧠 Saving sends every line: the backend deletes the order's lines and recreates them (line ids change).
- * Only drafts are editable; the backend doesn't enforce that on PATCH (BACKEND_REQUESTS 12), so this screen does.
+ * Only drafts are editable (the backend refuses the rest).
  */
 @Component({
   selector: 'app-sales-order-form',

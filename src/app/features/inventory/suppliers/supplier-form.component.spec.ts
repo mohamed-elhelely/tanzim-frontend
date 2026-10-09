@@ -55,22 +55,36 @@ describe('SupplierFormComponent', () => {
     expect(text).toContain('inventory.hints.currency');
   });
 
-  it('on edit, sends only the returned fields plus what the user changed', () => {
+  it('loads every saved field on edit and sends them all back', () => {
     const component = setup('1').componentInstance;
     httpMock.expectOne(`${URL}1/`).flush(envelope(makeSupplier()));
-    expect(component.form.controls.currency.value).toBe('');
+    expect(component.form.controls.currency.value).toBe('AED');
     component.form.controls.email.setValue('sales@gulf.example');
-    component.form.controls.email.markAsDirty();
     component.submit();
     const req = httpMock.expectOne((r) => r.url === `${URL}1/` && r.method === 'PATCH');
     expect(req.request.body).toEqual({
       name: 'Gulf Supply',
       supplier_type: 'distributor',
+      tax_id: 'TX-1',
+      contact_person: 'Omar',
       email: 'sales@gulf.example',
+      phone: '0101',
+      mobile: '',
+      website: '',
+      address_line1: '',
+      address_line2: '',
+      city: 'Dubai',
+      state: '',
+      postal_code: '',
+      country: 'UAE',
+      payment_terms: 'Net 30',
+      currency: 'AED',
       credit_limit: '5000.00',
       lead_time_days: 7,
+      reliability_score: 0.9,
       is_preferred: true,
       is_active: true,
+      notes: '',
     });
     req.flush(envelope(makeSupplier()));
   });

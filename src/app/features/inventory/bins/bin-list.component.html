@@ -45,7 +45,7 @@
         </ng-template>
         <ng-template pTemplate="body" let-row>
           <tr>
-            <td>{{ codes().get(row.id) }}</td>
+            <td>{{ row.code }}</td>
             <td class="font-medium">{{ row.name }}</td>
             <td>{{ row.zone?.warehouse?.name }} › {{ row.zone?.name }}</td>
             <td>

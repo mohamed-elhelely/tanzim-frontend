@@ -127,6 +127,8 @@
         <dd class="text-end">{{ invoice.subtotal | number: '1.2-2' }}</dd>
         <dt class="text-gray-500 dark:text-gray-400">{{ 'sales.fields.tax' | translate }}</dt>
         <dd class="text-end">{{ invoice.tax_amount | number: '1.2-2' }}</dd>
+        <dt class="text-gray-500 dark:text-gray-400">{{ 'sales.fields.shippingCost' | translate }}</dt>
+        <dd class="text-end">{{ invoice.shipping_cost | number: '1.2-2' }}</dd>
         <dt class="text-gray-500 dark:text-gray-400">{{ 'sales.fields.orderDiscount' | translate }}</dt>
         <dd class="text-end"><span dir="ltr">−{{ invoice.discount_amount | number: '1.2-2' }}</span></dd>
         <div class="col-span-2 mt-1 flex justify-between gap-6 border-t border-gray-200 pt-1 font-semibold dark:border-gray-800">

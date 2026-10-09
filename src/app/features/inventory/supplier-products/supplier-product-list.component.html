@@ -38,6 +38,8 @@
             <th>{{ 'inventory.fields.sku' | translate }}</th>
             <th>{{ 'inventory.fields.variant' | translate }}</th>
             <th>{{ 'inventory.fields.product' | translate }}</th>
+            <th class="text-end">{{ 'inventory.fields.unitCost' | translate }}</th>
+            <th>{{ 'inventory.fields.effectiveFrom' | translate }}</th>
             <th>{{ 'inventory.fields.isPreferred' | translate }}</th>
             <th class="text-end">{{ 'common.actions' | translate }}</th>
           </tr>
@@ -49,6 +51,8 @@
             <td class="font-mono text-sm">{{ row.product_variant?.sku }}</td>
             <td>{{ row.product_variant?.name }}</td>
             <td>{{ row.product_variant?.product?.name }}</td>
+            <td class="whitespace-nowrap text-end" dir="ltr">{{ row.unit_cost | number: '1.2-4' }} {{ row.currency }}</td>
+            <td class="whitespace-nowrap" dir="ltr">{{ row.effective_from }}{{ row.effective_to ? ' → ' + row.effective_to : '' }}</td>
             <td>
               @if (row.is_preferred) {
                 <app-status-badge [value]="'common.yes' | translate" severity="warn"></app-status-badge>

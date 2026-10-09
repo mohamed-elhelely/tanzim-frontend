@@ -75,7 +75,7 @@ describe('SalesOrderDetailComponent', () => {
     expect(labels(fixture)).not.toContain('sales.actions.ship');
   });
 
-  it("doesn't offer a second invoice while one isn't cancelled (BACKEND_REQUESTS 14)", () => {
+  it("doesn't offer a second invoice while one isn't cancelled", () => {
     expect(labels(setup('delivered', [makeInvoice({ status: 'issued' })]))).not.toContain('sales.actions.createInvoice');
     TestBed.resetTestingModule();
     expect(labels(setup('delivered', [makeInvoice({ status: 'cancelled' })]))).toContain('sales.actions.createInvoice');

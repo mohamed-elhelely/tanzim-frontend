@@ -391,7 +391,8 @@
       "maxOrderQty": "Max order qty",
       "isPrimary": "Primary supplier",
       "effectiveFrom": "Effective from",
-      "effectiveTo": "Effective to"
+      "effectiveTo": "Effective to",
+      "manager": "Manager"
     },
     "sections": {
       "tracking": "Tracking",
@@ -416,7 +417,6 @@
     },
     "hints": {
       "shelfLifeDays": "A whole number of days, 1 or more.",
-      "partialData": "The server doesn't return some of this record's details yet (such as contact and address), so they show empty. Leave a field empty to keep its saved value, or type a new value to replace it.",
       "decimal": "A number, e.g. 100 or 12.5.",
       "whole": "A whole number, 0 or more.",
       "reliability": "A number from 0 to 1, e.g. 0.8.",
@@ -850,7 +850,8 @@
       "condition": "Condition",
       "disposition": "Outcome",
       "quantity": "Qty",
-      "unitCost": "Unit cost"
+      "unitCost": "Unit cost",
+      "rejectionReason": "Rejected"
     },
     "sections": {
       "items": "Items"
@@ -866,7 +867,9 @@
       "createReplacement": "Create replacement order",
       "markShipped": "Mark shipped",
       "confirmReceipt": "Supplier confirmed",
-      "raiseDebitNote": "Raise debit note"
+      "raiseDebitNote": "Raise debit note",
+      "reject": "Reject",
+      "closeSupplier": "Close with refund"
     },
     "confirm": {
       "approve": "Approve this return? The customer can then send the items back.",
@@ -884,7 +887,8 @@
       "replacementCreated": "Replacement order created.",
       "shipped": "Marked as shipped.",
       "receiptConfirmed": "Receipt confirmed.",
-      "debitNoteCreated": "Draft debit note created."
+      "debitNoteCreated": "Draft debit note created.",
+      "rejected": "Return rejected."
     },
     "hints": {
       "searchCustomer": "Search by return no., customer or order",
@@ -901,7 +905,8 @@
       "inspectQuantity": "Accepted quantities must be between 0 and the received amount.",
       "refundDefault": "Defaults to the accepted value. Leave empty to use it.",
       "refundAmount": "Enter a valid amount.",
-      "freeLine": "Each item needs a product and a quantity greater than 0."
+      "freeLine": "Each item needs a product and a quantity greater than 0.",
+      "supplierRefundDefault": "Defaults to the value of the returned lines. Enter what the supplier actually refunded."
     }
   },
   "accounting": {
@@ -1051,7 +1056,7 @@
       "notBalanced": "Not balanced",
       "allocations": "Optional: which of the supplier's invoices this pays.",
       "noAllocations": "Not allocated to invoices.",
-      "noSupplierInvoices": "No supplier invoices yet.",
+      "noSupplierInvoices": "No open invoices for this supplier.",
       "overAllocated": "more than the payment amount",
       "paymentVoided": "This payment was voided.",
       "noteCancelled": "This debit note was cancelled.",

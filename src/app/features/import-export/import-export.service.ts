@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable, catchError, map, throwError } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { BaseApiService } from '../../core/api/base-api.service';
-import { AppError } from '../../core/errors/app-error';
 import { Paginated } from '../../core/models/api-response.model';
 import { DataTask, ExportFormat, ImportResult } from './import-export.models';
 
@@ -25,19 +24,6 @@ export function fileToDataUri(file: File): Promise<string> {
   });
 }
 
-/**
- * ⚠️ Header problems come back as `errors.error = "[ErrorDetail(string='Missing required headers: …', …)]"`
- * (BACKEND_REQUESTS 23): pull the sentence out so the user can read it.
- */
-export function readableImportError(error: AppError): AppError {
-  const raw = (error.errors as Record<string, unknown> | undefined)?.['error'];
-  if (typeof raw !== 'string') {
-    return error;
-  }
-  const match = /string='([^']*)'/.exec(raw);
-  return { ...error, message: match ? match[1] : raw, errors: {} };
-}
-
 /** Import, export, templates and the background task list (common/base_import_export.py). */
 @Injectable({ providedIn: 'root' })
 export class ImportExportService extends BaseApiService {
@@ -52,10 +38,7 @@ export class ImportExportService extends BaseApiService {
 
   /** `dryRun` validates and previews every row without saving anything. */
   importFile(path: string, file: string, dryRun: boolean): Observable<ImportResult> {
-    return this.post<ImportResult>(`${path}import/`, { file, dry_run: dryRun }).pipe(
-      map((response) => response.data as ImportResult),
-      catchError((error: AppError) => throwError(() => readableImportError(error))),
-    );
+    return this.post<ImportResult>(`${path}import/`, { file, dry_run: dryRun }).pipe(map((response) => response.data as ImportResult));
   }
 
   tasks(page: number, pageSize: number, type: 'import' | 'export' | null): Observable<Paginated<DataTask>> {

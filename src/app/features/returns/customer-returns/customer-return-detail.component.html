@@ -94,6 +94,23 @@
             <dd class="mt-0.5">{{ rma.return_reason_note }}</dd>
           </div>
         }
+        @if (rma.notes) {
+          <div class="col-span-2 md:col-span-4">
+            <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'returns.fields.notes' | translate }}</dt>
+            <dd class="mt-0.5 whitespace-pre-line">{{ rma.notes }}</dd>
+          </div>
+        }
+        @if (rma.status === 'rejected') {
+          <div class="col-span-2 md:col-span-4">
+            <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'returns.fields.rejectionReason' | translate }}</dt>
+            <dd class="mt-0.5">
+              <span dir="ltr">{{ rma.rejected_date | date: 'yyyy-MM-dd' }}</span>
+              @if (rma.rejection_reason) {
+                — {{ rma.rejection_reason }}
+              }
+            </dd>
+          </div>
+        }
       </dl>
     </p-card>
 
@@ -132,6 +149,14 @@
       </div>
     </p-card>
   </div>
+
+  <app-reason-dialog
+    header="returns.actions.reject"
+    confirmLabel="returns.actions.reject"
+    [visible]="rejectDialogOpen()"
+    (visibleChange)="rejectDialogOpen.set($event)"
+    (confirmed)="onRejectConfirmed($event)"
+  ></app-reason-dialog>
 
   <p-dialog
     [header]="'returns.actions.receive' | translate"

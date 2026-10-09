@@ -83,10 +83,6 @@
         <div class="flex flex-col gap-1">
           <label for="weight_uom" class="text-sm font-medium">{{ 'inventory.fields.weightUom' | translate }}</label>
           <input pInputText id="weight_uom" formControlName="weight_uom" dir="ltr" placeholder="kg" class="w-full" />
-          @if (isEdit) {
-            <!-- ⚠️ Not returned by the API: empty here means "keep the saved unit" (see omitPristine). -->
-            <small class="text-xs text-gray-500 dark:text-gray-400">{{ 'inventory.hints.partialData' | translate }}</small>
-          }
           <app-field-error [control]="form.controls.weight_uom"></app-field-error>
         </div>
 

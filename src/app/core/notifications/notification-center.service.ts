@@ -4,7 +4,7 @@ import { environment } from '../../../environments/environment';
 import { BaseApiService } from '../api/base-api.service';
 import { AuthService } from '../auth/auth.service';
 import { TokenStorageService } from '../auth/token-storage.service';
-import { AppNotification, SocketMessage, toAppNotification } from './notification.model';
+import { AppNotification, SocketMessage } from './notification.model';
 
 /** The socket was refused for good (4001 bad token, 4003 wrong user): don't reconnect. */
 const FINAL_CLOSE_CODES = new Set([4001, 4003]);
@@ -126,7 +126,7 @@ export class NotificationCenterService extends BaseApiService {
         break;
       case 'new_notification':
       case 'broadcast_notification': {
-        const notification = toAppNotification(message.notification);
+        const notification = message.notification;
         this.itemsState.update((items) => [notification, ...items.filter((i) => i.id !== notification.id)]);
         if (!notification.is_read) {
           this.unreadState.update((count) => count + 1);

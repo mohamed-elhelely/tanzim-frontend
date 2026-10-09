@@ -1,8 +1,12 @@
 import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
+import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
+import { DialogModule } from 'primeng/dialog';
+import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { AccessService } from '../../../core/auth/access.service';
 import { AppError } from '../../../core/errors/app-error';
@@ -16,14 +20,20 @@ import { DebitNoteService } from '../../accounting/debit-notes/debit-note.servic
 import { SUPPLIER_RETURN_SEVERITY, SupplierReturn } from '../returns.models';
 import { SupplierReturnService } from './supplier-return.service';
 
-/** One supplier return: draft → approve (stock leaves) → shipped → confirmed by the supplier. */
+const MONEY = /^\d+(\.\d{1,4})?$/;
+
+/** One supplier return: draft → approve (stock leaves) → shipped → confirmed by the supplier → closed with the refund. */
 @Component({
   selector: 'app-supplier-return-detail',
   imports: [
     DecimalPipe,
+    FormsModule,
     RouterLink,
     TranslatePipe,
+    ButtonModule,
     CardModule,
+    DialogModule,
+    InputTextModule,
     TableModule,
     PageHeaderComponent,
     LoadingStateComponent,
@@ -45,9 +55,10 @@ export class SupplierReturnDetailComponent implements OnInit {
   readonly loadError = signal<AppError | null>(null);
   readonly errorTitleKey = errorTitleKey;
   readonly statusSeverity = SUPPLIER_RETURN_SEVERITY;
-
-  /** Sum of the lines (the backend's refund_amount stays 0, BACKEND_REQUESTS 19). */
-  readonly linesTotal = computed(() => (this.srn()?.lines ?? []).reduce((sum, line) => sum + Number(line.line_total), 0));
+  readonly closeDialogOpen = signal(false);
+  readonly saving = signal(false);
+  readonly closeError = signal<string | null>(null);
+  refundAmount = '';
 
   readonly actions = computed<PageHeaderAction[]>(() => {
     const srn = this.srn();
@@ -69,6 +80,8 @@ export class SupplierReturnDetailComponent implements OnInit {
         return [{ label: 'returns.actions.markShipped', icon: 'pi pi-truck', onClick: () => this.step('ship') }, ...claim];
       case 'shipped':
         return [{ label: 'returns.actions.confirmReceipt', icon: 'pi pi-flag', onClick: () => this.step('confirmReceipt') }, ...claim];
+      case 'confirmed':
+        return [{ label: 'returns.actions.closeSupplier', icon: 'pi pi-flag', onClick: () => this.openClose() }, ...claim];
       default:
         return claim;
     }
@@ -88,6 +101,32 @@ export class SupplierReturnDetailComponent implements OnInit {
 
   goBack(): void {
     void this.router.navigate(['/returns/supplier']);
+  }
+
+  submitClose(): void {
+    const amount = this.refundAmount.trim();
+    if (amount && !MONEY.test(amount)) {
+      this.closeError.set('returns.hints.refundAmount');
+      return;
+    }
+    this.closeError.set(null);
+    this.saving.set(true);
+    this.confirm.runAction(
+      () => this.api.close(this.id, amount || null),
+      'returns.toasts.closed',
+      (srn) => {
+        this.saving.set(false);
+        this.closeDialogOpen.set(false);
+        this.srn.set(srn);
+      },
+      () => this.saving.set(false),
+    );
+  }
+
+  private openClose(): void {
+    this.refundAmount = Number(this.srn()?.refund_amount ?? 0).toFixed(2);
+    this.closeError.set(null);
+    this.closeDialogOpen.set(true);
   }
 
   private step(name: 'approve' | 'ship' | 'confirmReceipt'): void {

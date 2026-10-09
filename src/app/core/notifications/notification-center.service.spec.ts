@@ -73,10 +73,9 @@ describe('NotificationCenterService', () => {
 
   it('adds pushed notifications on top and counts them', () => {
     const center = start();
-    // The socket names the fields `type` and `timestamp` (the HTTP API says notif_type and created_at).
     FakeSocket.last?.receive({
       type: 'new_notification',
-      notification: { id: 3, title: 'T', message: 'm', type: 'success', timestamp: '2026-10-09T11:00:00Z', is_read: false, data: {} },
+      notification: { id: 3, title: 'T', message: 'm', notif_type: 'success', created_at: '2026-10-09T11:00:00Z', is_read: false, data: {} },
     });
     expect(center.items()[0]).toEqual(jasmine.objectContaining({ id: 3, notif_type: 'success', created_at: '2026-10-09T11:00:00Z' }));
     expect(center.unread()).toBe(2);

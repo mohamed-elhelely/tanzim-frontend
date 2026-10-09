@@ -5,11 +5,18 @@ import { CrudApi } from '../../../core/api/crud-api';
 export interface SupplierInvoiceRef {
   id: number;
   invoice_number: string;
+  supplier: number;
+  due_date: string | null;
+  amount: string;
+  currency: string;
+  status: string;
+  /** What is still unpaid. */
+  open_balance: string;
 }
 
 /**
- * Supplier invoices (procurement). Only used as references for now (payment allocations): the screens wait for the
- * backend to return full read serializers (BACKEND_REQUESTS 2).
+ * Supplier invoices (procurement). `?supplier=` and `?open=true` (payable with an open balance) narrow the list,
+ * e.g. for payment allocations.
  */
 @Injectable({ providedIn: 'root' })
 export class SupplierInvoiceService extends CrudApi<SupplierInvoiceRef, never> {

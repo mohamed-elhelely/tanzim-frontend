@@ -24,8 +24,8 @@ export interface Category extends Audited {
 }
 
 export interface CategoryPayload {
-  name?: string;
-  parent?: number | null;
+  name: string;
+  parent: number | null;
   description: string;
   is_active: boolean;
 }
@@ -87,13 +87,12 @@ export interface ProductPayload {
   is_sellable: boolean;
 }
 
-/** `?dropdown=true` items for warehouses, zones and bins: the only place their `code` is returned. */
+/** `?dropdown=true` items for warehouses, zones and bins. */
 export interface CodedRef extends InventoryRef {
   code: string;
 }
 
 // Warehouses → zones → bins (API_REFERENCE.md → "Inventory — warehouses").
-// ⚠️ The read endpoints return only some fields (no code, contact or address); see omitPristine().
 
 export type WarehouseType = 'central' | 'regional' | 'retail' | 'transit' | 'returns' | 'quarantine';
 export const WAREHOUSE_TYPES: WarehouseType[] = ['central', 'regional', 'retail', 'transit', 'returns', 'quarantine'];
@@ -106,14 +105,24 @@ export interface Warehouse extends Audited {
   is_active: boolean;
   allow_negative_stock: boolean;
   use_bin_locations: boolean;
+  code: string;
+  email: string;
+  phone: string;
+  address_line1: string;
+  address_line2: string;
+  city: string;
+  state: string;
+  postal_code: string;
+  country: string;
 }
 
-/** `manager` is left out: the backend answers 500 whenever it is sent (BACKEND_REQUESTS 15d). */
 export interface WarehousePayload {
   name: string;
   code: string;
   warehouse_type: WarehouseType;
   location: number | null;
+  /** A user of the current company (the login user id). */
+  manager: number | null;
   email: string;
   phone: string;
   address_line1: string;
@@ -131,6 +140,8 @@ export interface Zone extends Audited {
   name: string;
   warehouse: Warehouse;
   is_active: boolean;
+  code: string;
+  description: string;
 }
 
 export interface ZonePayload {
@@ -146,6 +157,10 @@ export interface Bin extends Audited {
   zone: Zone;
   is_active: boolean;
   allow_mixed_products: boolean;
+  code: string;
+  barcode: string;
+  max_capacity: string | null;
+  bin_type: string;
 }
 
 export interface BinPayload {
@@ -171,6 +186,22 @@ export interface Supplier extends Audited {
   is_preferred: boolean;
   lead_time_days: number;
   credit_limit: string | null;
+  tax_id: string;
+  contact_person: string;
+  email: string;
+  phone: string;
+  mobile: string;
+  website: string;
+  address_line1: string;
+  address_line2: string;
+  city: string;
+  state: string;
+  postal_code: string;
+  country: string;
+  payment_terms: string;
+  currency: string;
+  reliability_score: number;
+  notes: string;
 }
 
 export interface SupplierPayload {
@@ -218,6 +249,7 @@ export interface ProductVariant extends Audited {
   standard_cost: string | null;
   standard_price: string | null;
   weight: string | null;
+  weight_uom: string;
   dimensions: unknown;
   is_active: boolean;
 }
@@ -237,12 +269,23 @@ export interface ProductVariantPayload {
 }
 
 // Supplier products: a supplier's price list per variant (API_REFERENCE.md → "Supplier products").
-// ⚠️ The read endpoint returns only supplier, variant and is_preferred; see omitPristine().
 
 export interface SupplierProduct extends Audited {
   supplier: Supplier;
   product_variant: ProductVariant | null;
   is_preferred: boolean;
+  supplier_sku: string;
+  supplier_product_name: string;
+  unit_cost: string;
+  currency: string;
+  min_order_qty: string;
+  max_order_qty: string | null;
+  lead_time_days: number | null;
+  is_primary: boolean;
+  /** YYYY-MM-DD */
+  effective_from: string;
+  effective_to: string | null;
+  notes: string;
 }
 
 export interface SupplierProductPayload {

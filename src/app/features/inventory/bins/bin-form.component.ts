@@ -14,20 +14,12 @@ import { ErrorStateComponent } from '../../../shared/components/error-state/erro
 import { FieldErrorComponent } from '../../../shared/components/field-error/field-error.component';
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
-import { omitPristine } from '../../../shared/utils/omit-pristine';
 import { errorTitleKey, handleSaveError } from '../../../shared/utils/server-errors';
 import { SelectOption } from '../../company/company.models';
-import { BinPayload, CodedRef, Zone } from '../inventory.models';
+import { BinPayload, Zone } from '../inventory.models';
+import { trimZeros } from '../variants/variant-options';
 import { ZoneService } from '../zones/zone.service';
 import { BinService } from './bin.service';
-
-/** ⚠️ Fields the read endpoint doesn't return: shown empty on edit and only sent when changed (see omitPristine). */
-const NOT_RETURNED = [
-  'code',
-  'barcode',
-  'max_capacity',
-  'bin_type',
-] as const;
 
 @Component({
   selector: 'app-bin-form',
@@ -107,10 +99,9 @@ export class BinFormComponent implements OnInit {
       is_active: value.is_active,
       allow_mixed_products: value.allow_mixed_products,
     };
-    const body = omitPristine(payload, this.form, NOT_RETURNED);
     this.saving.set(true);
     this.formErrors.set([]);
-    const request = this.id !== null ? this.api.update(this.id, body) : this.api.create(payload);
+    const request = this.id !== null ? this.api.update(this.id, payload) : this.api.create(payload);
     request.subscribe({
       next: () => {
         this.saving.set(false);
@@ -132,6 +123,10 @@ export class BinFormComponent implements OnInit {
         this.form.patchValue({
           zone: record.zone?.id ?? null,
           name: record.name,
+          code: record.code,
+          barcode: record.barcode,
+          max_capacity: trimZeros(record.max_capacity),
+          bin_type: record.bin_type,
           is_active: record.is_active,
           allow_mixed_products: record.allow_mixed_products,
         });
@@ -141,16 +136,6 @@ export class BinFormComponent implements OnInit {
         this.loadError.set(error);
         this.loading.set(false);
       },
-    });
-    // The code is only returned by the dropdown.
-    this.api.dropdown<CodedRef>().subscribe({
-      next: (items) => {
-        const code = items.find((item) => item.id === id)?.code;
-        if (code) {
-          this.form.controls.code.setValue(code);
-        }
-      },
-      error: () => undefined, // the code stays empty and, being untouched, isn't sent
     });
   }
 
