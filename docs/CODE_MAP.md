@@ -30,6 +30,7 @@ flowchart TD
     shell -->|"/inventory 🔒"| inventory["features/inventory"]
     shell -->|"/notifications"| notif["features/notifications"]
     shell -->|"/billing 🔒"| billing["features/billing"]
+    shell -->|"/analytics 🔒"| analytics["features/analytics"]
 
     subgraph core["core/ (singletons, no UI)"]
         api["api: BaseApiService, CrudApi"]
@@ -251,6 +252,21 @@ API_REFERENCE.md → Accounting; checked against `accounting/serializers.py`.
 | `reports/` | `accounting/v1/reports/<type>/` | 🧠 one viewer for all 8 reports: `REPORT_PARAMS` decides the inputs, `columns`/`rows`/`summary` drive the table and cards; Excel via `getBlob` + `saveFile` |
 | `supplier-payments/` | `accounting/v1/supplier-payments/` | List, record form (allocations ≤ amount; 🧠 picking a supplier loads its open invoices with their balance and clears the allocations), detail with void |
 | `debit-notes/` | `accounting/v1/debit-notes/` | List, form (draft only; returns of the chosen supplier), detail: issue / cancel / delete. Raised from a supplier return too (`fromSupplierReturn`) |
+
+### analytics — `/analytics` (module `inventory`)
+
+Read-only, from `/api/reports/v1/` (API_REFERENCE.md → "Analytics, reports & dashboards"). Charts use chart.js through
+PrimeNG's `p-chart`.
+
+| File | Notes |
+|---|---|
+| `analytics.models.ts` | 🧠 `CHART_SPECS` (how each dashboard chart is drawn) + `fitsSpec` (else a table); `REPORT_PARAMS` / `REQUIRED_PARAMS` / `REPORT_GROUPS` per report; `isMoneyKey`, `isIdKey` |
+| `analytics.service.ts` | Dashboards list/one, report types, run, Excel |
+| `analytics-format.ts` | 🧠 `analyticsLabel` pipe (impure): `<namespace>.<key>`, else the backend's English, else a humanized key; `formatValue` by key (money, %, counts, lists, objects) |
+| `analytics-table.component` | Any rows as a sortable table: report column order or the first row's keys, ids hidden, `flags` as badges (⚠️ text or list, BACKEND_REQUESTS 27) |
+| `analytics-chart.component` | 🧠 chart.js data/options from a spec; rebuilds on theme/language (dark colours, RTL axes), translates series and coded categories |
+| `dashboards/dashboard-page.component` | `/analytics/dashboards/:name`: pills from the API's list, window + warehouse (overview, inventory), alerts, KPI cards with change vs. previous, charts, tables |
+| `reports/report-runner.component` | `/analytics/reports?report=`: grouped picker, per-report inputs, summary cards + nested tables, rows, Excel |
 
 ### import-export — `/import-export`
 

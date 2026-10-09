@@ -1,0 +1,139 @@
+<app-page-header title="analytics.reportsTitle" subtitle="analytics.reportsSubtitle"></app-page-header>
+
+<div class="flex flex-col gap-4">
+  <div class="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+    <div class="flex flex-col flex-wrap gap-4 lg:flex-row lg:items-end">
+      <div class="flex flex-col gap-1">
+        <label for="report_type" class="text-sm font-medium">{{ 'analytics.report' | translate }}</label>
+        <p-select
+          inputId="report_type"
+          [ngModel]="type()"
+          (ngModelChange)="onTypeChange($event)"
+          [options]="groups()"
+          [group]="true"
+          optionGroupChildren="items"
+          optionLabel="name"
+          optionValue="report_type"
+          [filter]="true"
+          filterBy="name"
+          styleClass="w-full lg:w-72"
+          appendTo="body"
+        >
+          <ng-template pTemplate="group" let-group>
+            <span class="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400">{{ group.key | analyticsLabel: 'analytics.groups' }}</span>
+          </ng-template>
+          <ng-template pTemplate="selectedItem" let-option>{{ option.report_type | analyticsLabel: 'analytics.reports' : option.name }}</ng-template>
+          <ng-template pTemplate="item" let-option>{{ option.report_type | analyticsLabel: 'analytics.reports' : option.name }}</ng-template>
+        </p-select>
+      </div>
+
+      @for (field of fields(); track field) {
+        <div class="flex flex-col gap-1">
+          <label [for]="'param_' + field" class="text-sm font-medium">{{ field | analyticsLabel: 'analytics.params' }}</label>
+          @switch (field) {
+            @case ('warehouse') {
+              <p-select
+                [inputId]="'param_' + field"
+                [(ngModel)]="params.warehouse"
+                [options]="warehouseOptions()"
+                optionLabel="label"
+                optionValue="value"
+                [showClear]="true"
+                [placeholder]="'inventory.stock.allWarehouses' | translate"
+                styleClass="w-full lg:w-56"
+                appendTo="body"
+              ></p-select>
+            }
+            @case ('period') {
+              <p-select
+                [inputId]="'param_' + field"
+                [(ngModel)]="params.period"
+                [options]="periodOptions"
+                optionLabel="label"
+                optionValue="value"
+                [showClear]="true"
+                [placeholder]="'analytics.periods.month' | translate"
+                styleClass="w-full lg:w-36"
+                appendTo="body"
+              >
+                <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
+                <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
+              </p-select>
+            }
+            @case ('method') {
+              <p-select
+                [inputId]="'param_' + field"
+                [(ngModel)]="params.method"
+                [options]="methodOptions"
+                optionLabel="label"
+                optionValue="value"
+                [showClear]="true"
+                [placeholder]="'inventory.valuationMethods.AVERAGE' | translate"
+                styleClass="w-full lg:w-44"
+                appendTo="body"
+              >
+                <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
+                <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
+              </p-select>
+            }
+            @case ('limit') {
+              <input pInputText [id]="'param_' + field" type="number" min="1" [(ngModel)]="params.limit" dir="ltr" class="w-full lg:w-24" />
+            }
+            @case ('days_ahead') {
+              <input pInputText [id]="'param_' + field" type="number" min="1" [(ngModel)]="params.days_ahead" placeholder="30" dir="ltr" class="w-full lg:w-24" />
+            }
+            @case ('inactive_days') {
+              <input pInputText [id]="'param_' + field" type="number" min="1" [(ngModel)]="params.inactive_days" placeholder="90" dir="ltr" class="w-full lg:w-24" />
+            }
+            @default {
+              <input pInputText [id]="'param_' + field" type="date" [(ngModel)]="params[field]" class="w-full lg:w-44" />
+            }
+          }
+        </div>
+      }
+
+      <div class="flex flex-wrap gap-2">
+        <p-button [label]="'analytics.run' | translate" icon="pi pi-play" [loading]="running()" (onClick)="run()"></p-button>
+        <p-button
+          [label]="'inventory.stock.exportXlsx' | translate"
+          icon="pi pi-file-excel"
+          severity="secondary"
+          [outlined]="true"
+          [loading]="exporting()"
+          (onClick)="exportXlsx()"
+        ></p-button>
+      </div>
+    </div>
+    @if (missing(); as param) {
+      <p role="alert" class="mt-3 text-sm text-red-600 dark:text-red-400">
+        {{ 'analytics.required' | translate: { field: (param | analyticsLabel: 'analytics.params') } }}
+      </p>
+    }
+  </div>
+
+  @if (error(); as err) {
+    <app-error-state [title]="errorTitleKey(err)" [message]="err.message" [showRetry]="false"></app-error-state>
+  } @else if (result(); as report) {
+    @if (summaryValues().length) {
+      <dl class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+        @for (entry of summaryValues(); track entry[0]) {
+          <div class="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+            <dt class="text-xs text-gray-500 dark:text-gray-400">{{ entry[0] | analyticsLabel }}</dt>
+            <dd class="mt-1 text-sm font-semibold"><span dir="ltr">{{ format(entry[0], entry[1]) }}</span></dd>
+          </div>
+        }
+      </dl>
+    }
+
+    @for (table of summaryTables(); track table.key) {
+      <p-card>
+        <h3 class="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-200">{{ table.key | analyticsLabel }}</h3>
+        <app-analytics-table [rows]="table.rows"></app-analytics-table>
+      </p-card>
+    }
+
+    <p-card>
+      <app-analytics-table [rows]="report.rows" [columns]="report.columns" [paginate]="true"></app-analytics-table>
+    </p-card>
+  }
+</div>
