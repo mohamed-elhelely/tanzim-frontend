@@ -22,7 +22,8 @@ You are continuing work on Tanzim, a bilingual (English/Arabic, RTL) ERP. Two re
 - main also has the code-structure cleanup (#9) and Step 8 (warehouses, zones, bins, suppliers; #10).
 - main also has Step 9 (access control from /me), Step 10 (fixed workarounds dropped).
 - main also has Step 11 (variants + supplier price list).
-- main also has Step 12 (notifications + billing, #14), Step 13 (customers + sales orders, #16) Step 14 (deliveries, invoices, payments, #17) Step 15 (returns, #18) Step 16 (accounting ledger, #19) Step 17 (accounting reports and payables, #20) Step 18 (import / export; spec 2026-10-09-import-export-design.md) Step 19 (backend fixes 0–23 verified, workarounds dropped; #23; spec 2026-10-09-verify-backend-fixes-design.md) and Step 20 (stock levels + stock ledger; spec 2026-10-09-stock-levels-ledger-design.md).
+- main also has Step 12 (notifications + billing, #14), Step 13 (customers + sales orders, #16) Step 14 (deliveries, invoices, payments, #17) Step 15 (returns, #18) Step 16 (accounting ledger, #19) Step 17 (accounting reports and payables, #20) Step 18 (import / export; spec 2026-10-09-import-export-design.md) Step 19 (backend fixes 0–23 verified, workarounds dropped; #23; spec 2026-10-09-verify-backend-fixes-design.md) and Step 20 (stock levels + stock ledger; spec 2026-10-09-stock-levels-ledger-design.md) and Analytics (dashboards + reports viewer, chart.js; spec 2026-10-09-analytics-dashboards-design.md).
+- Step 21 (transfers + adjustments) is built and walked through on branch claude/stock-movements (WIP commit fcfb1e2, pushed, no PR): still needs unit tests, a spec and docs, then a PR. Backend PR 0Mustafa37/Tanzim#20 (line filters by document) is merged, so its lines load with ?transfer= / ?adjustment=. Known nit: the adjustment form's "Current" and "New quantity" headers run together.
 - Local machine (Windows, D:/tanzim): backend in backend/Tanzim (venv, daphne on :8000 via start-tanzim.ps1; daphne doesn't reload, restart it after a backend pull). `setup_plans` now creates the `accounting` Module; Test Company's subscription has location, inventory and accounting (clear the cache after changing modules).
 - Test data (local DB): warehouses MAIN (zone ZA, bin B1) and BR1; suppliers Nile Supplies and Delta Metals; product Hammer with variants HAM-S / HAM-L, 50 units each in MAIN (posted through a stock adjustment, the API way now); customer Delta Trading, orders, a delivered and invoiced order; customer and supplier returns; supplier invoices NS-INV-001/002, DM-INV-001 (set to `matched` in the shell: matching needs a PO + receipt); a staff user staff@tanzim.test and an employee without permissions (passwords set in the shell; reset them there if needed).
 - `ng serve` on Windows sometimes misses a file change and keeps serving the old chunk: touch the file or restart it.
@@ -43,8 +44,9 @@ You are continuing work on Tanzim, a bilingual (English/Arabic, RTL) ERP. Two re
 ## Known backend issues (raise, don't work around silently)
 - docs/BACKEND_REQUESTS.md: items 0–23 verified fixed on 2026-10-09 (backend master 0a78259, "Fixed" table). Open:
   24 (nothing sets a sales invoice `overdue`), 25 (category export writes the parent as "1.0"; return action
-  responses omit `sales_order_number`, worked around in the customer-return detail) and 26 (stock ledger and
-  reservation filters, a stock-level endpoint).
+  responses omit `sales_order_number`, worked around in the customer-return detail), 26 (stock ledger and
+  reservation filters, a stock-level endpoint), 27 (analytics labels/alerts English-only, `flags` as text) and 28
+  (no opening-stock path: adjustments credit cost of sales).
 - The backend's own list is "Known issues" at the end of docs/API_REFERENCE.md.
 
 ## Running and verifying locally
@@ -53,8 +55,9 @@ You are continuing work on Tanzim, a bilingual (English/Arabic, RTL) ERP. Two re
 - Before calling UI work done: screenshot the changed screens in English, Arabic (RTL), dark mode and 390px mobile, and check the console has no errors.
 
 ## Next steps (the owner asked to work through them in order, one branch + PR per step, merging each)
-1. Step 21 — stock movements: transfers, adjustments (and their confirm/cancel workflows).
+1. Step 21 — finish branch claude/stock-movements (tests, spec, docs), PR and merge.
 2. Step 22 — procurement: purchase orders, goods receipts, supplier invoices (screens beyond the dropdown ref service).
+   Analytics follow-ups: saved reports and schedules screens; the full EN/AR/dark/390 px walk of the dashboards was paused by the owner.
 3. Then the test campaign: the backend is writing `manage.py seed_test_campaign` (4 companies, ~18 test accounts,
    18 months of data, docs/TEST_ACCOUNTS.md with an expectation matrix). When it lands, run Playwright walks per account
    against the matrix, cross-check numbers between screens and reports, EN/AR/dark/390px, and write a findings report.

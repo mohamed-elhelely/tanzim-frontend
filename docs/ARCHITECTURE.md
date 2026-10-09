@@ -192,6 +192,7 @@ backend problems added to `docs/BACKEND_REQUESTS.md`; [CODE_MAP.md](CODE_MAP.md)
 | 18 | Import / export: every supported resource, dry-run check before import, task history |
 | 19 | Verified backend fixes 0–23 against the API; dropped their workarounds (`omitPristine`, socket mapping, message unwrapping, …) |
 | 20 | Inventory stock levels (valuation report + reservations) and the stock ledger |
+| — | Analytics: seven role dashboards and the reports viewer (30 reports), charts with chart.js |
 
 ### Next — features (in order)
 
@@ -214,4 +215,5 @@ backend problems added to `docs/BACKEND_REQUESTS.md`; [CODE_MAP.md](CODE_MAP.md)
 | `ServerTable` is a plain class, not a base component | Composition is easier to follow than inheritance; the component still owns its template and actions |
 | (removed in step 18) One placeholder page for unbuilt sections | Every section is built now |
 | Subscription loading fails open | The backend still answers 403; hiding everything on a network blip would be worse |
+| chart.js (via PrimeNG `p-chart`) for charts | The owner chose it over hand-made SVG for tooltips and legends; it's the one chart dependency |
 | Edit forms send every field (PATCH with the full body) | Every read endpoint returns the full object since step 19, so what the form shows is what is saved |

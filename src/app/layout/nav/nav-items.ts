@@ -94,6 +94,17 @@ export const NAV_ITEMS: NavItem[] = [
     ],
   },
   {
+    labelKey: 'nav.analytics',
+    icon: 'pi pi-chart-line',
+    routerLink: '/analytics',
+    module: 'inventory',
+    roles: COMPANY_ROLES,
+    children: [
+      { labelKey: 'nav.dashboards', icon: 'pi pi-th-large', routerLink: '/analytics/dashboards' },
+      { labelKey: 'nav.reports', icon: 'pi pi-chart-bar', routerLink: '/analytics/reports' },
+    ],
+  },
+  {
     labelKey: 'nav.accounting',
     icon: 'pi pi-calculator',
     routerLink: '/accounting',

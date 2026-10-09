@@ -1,0 +1,119 @@
+<app-page-header title="analytics.dashboardsTitle" subtitle="analytics.dashboardsSubtitle"></app-page-header>
+
+<div class="flex flex-col gap-4">
+  <nav class="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1" [attr.aria-label]="'analytics.dashboardsTitle' | translate">
+    @for (item of available(); track item.dashboard) {
+      <a
+        [routerLink]="['/analytics/dashboards', item.dashboard]"
+        routerLinkActive="!border-primary-500 !bg-primary-50 !text-primary-700 dark:!bg-primary-950 dark:!text-primary-200"
+        class="whitespace-nowrap rounded-full border border-gray-200 bg-white px-4 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-200 dark:hover:bg-gray-800"
+      >
+        {{ item.dashboard | analyticsLabel: 'analytics.dashboards' : item.title }}
+      </a>
+    }
+  </nav>
+
+  <div class="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+    <div class="flex flex-col flex-wrap gap-4 sm:flex-row sm:items-end">
+      <div class="flex flex-col gap-1">
+        <label for="start_date" class="text-sm font-medium">{{ 'analytics.labels.start_date' | translate }}</label>
+        <input pInputText id="start_date" type="date" [(ngModel)]="startDate" class="w-full sm:w-44" />
+      </div>
+      <div class="flex flex-col gap-1">
+        <label for="end_date" class="text-sm font-medium">{{ 'analytics.labels.end_date' | translate }}</label>
+        <input pInputText id="end_date" type="date" [(ngModel)]="endDate" class="w-full sm:w-44" />
+      </div>
+      @if (showWarehouse()) {
+        <div class="flex flex-col gap-1">
+          <label for="warehouse" class="text-sm font-medium">{{ 'analytics.labels.warehouse' | translate }}</label>
+          <p-select
+            inputId="warehouse"
+            [(ngModel)]="warehouse"
+            [options]="warehouseOptions()"
+            optionLabel="label"
+            optionValue="value"
+            [showClear]="true"
+            [placeholder]="'inventory.stock.allWarehouses' | translate"
+            styleClass="w-full sm:w-60"
+            appendTo="body"
+          ></p-select>
+        </div>
+      }
+      <p-button [label]="'analytics.show' | translate" icon="pi pi-refresh" [loading]="loading()" (onClick)="load()"></p-button>
+    </div>
+  </div>
+
+  @if (error(); as err) {
+    <app-error-state [title]="errorTitleKey(err)" [message]="err.message" [showRetry]="err.status !== 403" (retry)="load()"></app-error-state>
+  } @else if (dashboard(); as board) {
+    @if (board.alerts.length) {
+      <ul class="flex flex-col gap-2" role="list">
+        @for (alert of board.alerts; track $index) {
+          <li
+            class="flex items-center gap-3 rounded-xl border p-3 text-sm"
+            [class]="
+              alert.level === 'critical'
+                ? 'border-rose-200 bg-rose-50 text-rose-800 dark:border-rose-900 dark:bg-rose-950 dark:text-rose-200'
+                : 'border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-200'
+            "
+          >
+            <i class="pi" [class.pi-exclamation-circle]="alert.level === 'critical'" [class.pi-exclamation-triangle]="alert.level !== 'critical'"></i>
+            <span class="flex-1" dir="auto">{{ alert.message }}</span>
+            @if (alert.count !== null) {
+              <span class="rounded-full bg-white/70 px-2 py-0.5 font-semibold dark:bg-black/30" dir="ltr">{{ alert.count }}</span>
+            }
+          </li>
+        }
+      </ul>
+    }
+
+    <dl class="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5">
+      @for (kpi of board.kpis; track kpi.key) {
+        <div class="flex flex-col gap-1 rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ kpi.key | analyticsLabel: 'analytics.labels' : kpi.label }}</dt>
+          <dd class="text-lg font-semibold">
+            <span dir="ltr">{{ kpiValue(kpi) }}</span>
+            @if (kpi.unit === 'days' && kpi.value !== null) {
+              <span class="ms-1 text-xs font-normal text-gray-500 dark:text-gray-400">{{ 'analytics.daysShort' | translate }}</span>
+            }
+          </dd>
+          @if (hasChange(kpi)) {
+            <dd>
+              <span class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium" [class]="changeClass(kpi)" dir="ltr">
+                <i class="pi text-[10px]" [class.pi-arrow-up]="(kpi.change_percent ?? 0) > 0" [class.pi-arrow-down]="(kpi.change_percent ?? 0) < 0"></i>
+                {{ kpi.change_percent | number: '1.0-1' }}%
+              </span>
+              <span class="ms-1 text-xs text-gray-500 dark:text-gray-400">{{ 'analytics.vsPrevious' | translate }}</span>
+            </dd>
+          }
+        </div>
+      }
+    </dl>
+
+    @if (charts().length) {
+      <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        @for (chart of charts(); track chart.name) {
+          <p-card>
+            <h3 class="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-200">{{ chart.name | analyticsLabel: 'analytics.charts' }}</h3>
+            @if (chart.spec; as spec) {
+              <app-analytics-chart [spec]="spec" [rows]="chart.rows" [ariaLabel]="chart.name | analyticsLabel: 'analytics.charts'"></app-analytics-chart>
+            } @else if (chart.rows.length) {
+              <app-analytics-table [rows]="chart.rows"></app-analytics-table>
+            } @else {
+              <p class="py-10 text-center text-sm text-gray-500 dark:text-gray-400">{{ 'analytics.noData' | translate }}</p>
+            }
+          </p-card>
+        }
+      </div>
+    }
+
+    @for (table of tables(); track table.name) {
+      <p-card>
+        <h3 class="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-200">{{ table.name | analyticsLabel: 'analytics.tables' }}</h3>
+        <app-analytics-table [rows]="table.rows"></app-analytics-table>
+      </p-card>
+    }
+  } @else if (loading()) {
+    <app-loading-state></app-loading-state>
+  }
+</div>

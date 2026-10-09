@@ -6,7 +6,7 @@ It lists what the frontend still needs from the backend. Remove items as they sh
 History: the first round (current-user endpoint, enforced permissions, `is_staff`, company and location fixes,
 product variants, workflow actions, import, WebSocket token, export parameters, the password-hash leak) shipped on
 2026-10-08 and was verified from the frontend on 2026-10-09. The second round (items 0–23, backend master c6509d9)
-was verified against the running API on 2026-10-09; see "Fixed" below. Items 24–26 are open.
+was verified against the running API on 2026-10-09; see "Fixed" below. Items 24–28 are open.
 
 ```text
 You are working on the backend of Tanzim, a bilingual (English/Arabic) multi-tenant ERP.
@@ -54,6 +54,21 @@ Company admin: admin@testcompany.com / testpass123.
      variant, optionally one warehouse) and computes reserved/available itself. A stock-level list with
      on hand, reserved and available per variant × warehouse (paged, searchable, with the same filters) would
      replace both.
+
+27. Analytics (reports/v1, PR #21) is English-only where the screen can't translate it:
+   - dashboard `alerts[].message` has no key: add a `code` (e.g. `orders_past_required_date`) and keep `count`, so the
+     frontend can show it in Arabic;
+   - KPI `label` and category `label`s (order pipeline, inspections by source, NCR severity) are English; the KPI
+     `key` is enough for KPIs (the frontend translates by key), but categories need their code in every row (the
+     pipeline has `status`, the others should have theirs, e.g. `source_type`, `severity`, already there for some);
+   - `customer_health` rows send `flags` as comma-separated text ("inactive,overdue"), while the reference documents a
+     list. Send a list (the frontend accepts both).
+
+28. Opening stock: there is no proper way to load it. A stock adjustment with a positive difference credits 5200
+   Inventory Adjustments (a cost-of-sales account), so loading 2 × 2,000 of opening stock through an adjustment made
+   cost of sales −3,960 and the gross margin 1,860 % on the finance dashboard and the income statement. Either add an
+   opening-stock path (e.g. reason `initial`, posting against an opening-balance equity account) or tell us how
+   opening stock is meant to be entered.
 ```
 
 ## Fixed (verified against the API on 2026-10-09, backend master 0a78259)
