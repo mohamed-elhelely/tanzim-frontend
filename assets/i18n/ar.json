@@ -22,7 +22,6 @@
     "yes": "نعم",
     "no": "لا",
     "actions": "إجراءات",
-    "comingSoon": "ما زلنا نعمل على هذا القسم، وسيتوفر في تحديث قادم.",
     "new": "جديد",
     "saved": "تم الحفظ بنجاح.",
     "deleted": "تم الحذف بنجاح.",
@@ -31,7 +30,6 @@
     "confirmDelete": "حذف \"{{name}}\"؟ لا يمكن التراجع عن ذلك.",
     "select": "اختر…",
     "backToList": "العودة إلى القائمة",
-    "comingSoonBadge": "قريبًا",
     "backToDashboard": "العودة للوحة التحكم",
     "viewAll": "عرض الكل",
     "reasonOptional": "السبب (اختياري)"
@@ -73,7 +71,14 @@
     "salesInvoices": "فواتير المبيعات",
     "payments": "المدفوعات",
     "customerReturns": "مرتجعات العملاء",
-    "supplierReturns": "مرتجعات الموردين"
+    "supplierReturns": "مرتجعات الموردين",
+    "accounting": "المحاسبة",
+    "journalEntries": "القيود اليومية",
+    "accounts": "دليل الحسابات",
+    "fiscalYears": "السنوات المالية",
+    "accountingReports": "التقارير",
+    "supplierPayments": "مدفوعات الموردين",
+    "debitNotes": "الإشعارات المدينة"
   },
   "auth": {
     "login": "تسجيل الدخول",
@@ -860,14 +865,16 @@
       "close": "إغلاق واسترداد",
       "createReplacement": "إنشاء أمر استبدال",
       "markShipped": "تعيين كمشحون",
-      "confirmReceipt": "أكّد المورد"
+      "confirmReceipt": "أكّد المورد",
+      "raiseDebitNote": "إنشاء إشعار مدين"
     },
     "confirm": {
       "approve": "اعتماد هذا المرتجع؟ يمكن للعميل بعدها إرسال الأصناف.",
       "approveSupplier": "اعتماد مرتجع المورد هذا؟ ستخرج الأصناف من مخزون المستودع.",
       "createReplacement": "إنشاء أمر بيع جديد للأصناف المقبولة؟",
       "markShipped": "تعيين هذا المرتجع كمشحون إلى المورد؟",
-      "confirmReceipt": "هل أكّد المورد استلام الأصناف؟"
+      "confirmReceipt": "هل أكّد المورد استلام الأصناف؟",
+      "raiseDebitNote": "إنشاء إشعار مدين مسودة لمطالبة المورد بقيمة هذا المرتجع؟"
     },
     "toasts": {
       "approved": "تم اعتماد المرتجع.",
@@ -876,7 +883,8 @@
       "closed": "تم إغلاق المرتجع.",
       "replacementCreated": "تم إنشاء أمر الاستبدال.",
       "shipped": "تم التعيين كمشحون.",
-      "receiptConfirmed": "تم تأكيد الاستلام."
+      "receiptConfirmed": "تم تأكيد الاستلام.",
+      "debitNoteCreated": "تم إنشاء إشعار مدين مسودة."
     },
     "hints": {
       "searchCustomer": "ابحث برقم المرتجع أو العميل أو الأمر",
@@ -894,6 +902,356 @@
       "refundDefault": "القيمة الافتراضية هي القيمة المقبولة. اتركه فارغًا لاستخدامها.",
       "refundAmount": "أدخل مبلغًا صحيحًا.",
       "freeLine": "كل صنف يحتاج منتجًا وكمية أكبر من 0."
+    }
+  },
+  "accounting": {
+    "accounts": {
+      "title": "دليل الحسابات",
+      "new": "حساب جديد",
+      "edit": "تعديل الحساب",
+      "addDefaults": "إضافة الحسابات الافتراضية الناقصة"
+    },
+    "entries": {
+      "title": "القيود اليومية",
+      "new": "قيد يومية جديد",
+      "edit": "تعديل القيد",
+      "detail": "قيد يومية",
+      "backToEntry": "العودة إلى القيد"
+    },
+    "years": {
+      "title": "السنوات المالية",
+      "subtitle": "أغلق الفترات لمنع الترحيل إليها، وأغلق السنة لنقل نتيجتها إلى الأرباح المحتجزة.",
+      "new": "سنة مالية جديدة"
+    },
+    "accountTypes": {
+      "asset": "أصول",
+      "liability": "خصوم",
+      "equity": "حقوق ملكية",
+      "revenue": "إيرادات",
+      "cost_of_sales": "تكلفة المبيعات",
+      "expense": "مصروفات"
+    },
+    "entryStatuses": {
+      "draft": "مسودة",
+      "posted": "مُرحّل"
+    },
+    "periodStatuses": {
+      "open": "مفتوحة",
+      "closed": "مغلقة"
+    },
+    "origins": {
+      "manual": "يدوي",
+      "automatic": "تلقائي"
+    },
+    "fields": {
+      "account": "الحساب",
+      "accountType": "النوع",
+      "kind": "التصنيف",
+      "isActive": "نشط",
+      "code": "الرمز",
+      "name": "الاسم",
+      "parent": "الحساب الأب",
+      "isGroup": "حساب تجميعي",
+      "description": "الوصف",
+      "entryNumber": "رقم القيد",
+      "date": "التاريخ",
+      "origin": "المصدر",
+      "status": "الحالة",
+      "amount": "المبلغ",
+      "reference": "المرجع",
+      "postedAt": "تاريخ الترحيل",
+      "debit": "مدين",
+      "credit": "دائن",
+      "total": "الإجمالي",
+      "from": "من",
+      "to": "إلى",
+      "startDate": "تاريخ البداية",
+      "endDate": "تاريخ النهاية",
+      "closedAt": "أُغلقت في",
+      "paymentNumber": "رقم الدفعة",
+      "noteNumber": "رقم الإشعار",
+      "supplier": "المورد",
+      "paymentMethod": "طريقة الدفع",
+      "notes": "ملاحظات",
+      "allocated": "المخصص",
+      "unallocated": "غير المخصص",
+      "voidedAt": "تاريخ الإلغاء",
+      "supplierInvoice": "فاتورة المورد",
+      "supplierReturn": "مرتجع المورد",
+      "supplierReference": "مرجع المورد",
+      "subtotal": "المجموع الفرعي",
+      "tax": "الضريبة",
+      "reason": "السبب",
+      "issuedAt": "تاريخ الإصدار"
+    },
+    "sections": {
+      "lines": "البنود",
+      "allocations": "التخصيص على الفواتير"
+    },
+    "actions": {
+      "post": "ترحيل",
+      "reverse": "عكس القيد",
+      "addLine": "إضافة بند",
+      "removeLine": "حذف البند",
+      "balance": "موازنة آخر بند",
+      "saveDraft": "حفظ كمسودة",
+      "saveAndPost": "حفظ وترحيل",
+      "closeYear": "إغلاق السنة",
+      "closePeriod": "إغلاق الفترة",
+      "reopen": "إعادة فتح",
+      "addAllocation": "إضافة فاتورة",
+      "recordPayment": "تسجيل الدفعة",
+      "void": "إلغاء الدفعة",
+      "issue": "إصدار",
+      "cancelNote": "إلغاء الإشعار"
+    },
+    "confirm": {
+      "addDefaults": "إضافة أي حساب افتراضي ناقص من الدليل؟ لن تتغير الحسابات الموجودة.",
+      "post": "ترحيل هذا القيد؟ لا يمكن تعديل القيود المرحّلة، فقط عكسها.",
+      "closeYear": "إغلاق {{name}}؟ ستُغلق كل فتراتها وتنتقل النتيجة إلى الأرباح المحتجزة.",
+      "reopenYear": "إعادة فتح {{name}}؟ سيتم عكس قيد الإغلاق.",
+      "closePeriod": "إغلاق {{name}}؟ لن يمكن الترحيل إليها بعد ذلك.",
+      "reopenPeriod": "إعادة فتح {{name}}؟",
+      "issueNote": "إصدار هذا الإشعار المدين؟ سيتم ترحيله ولا يمكن بعدها إلا إلغاؤه."
+    },
+    "toasts": {
+      "defaultsChecked": "تم فحص الحسابات الافتراضية.",
+      "posted": "تم ترحيل القيد.",
+      "reversed": "تم إنشاء القيد العكسي.",
+      "yearCreated": "تم إنشاء السنة المالية وفتراتها.",
+      "yearClosed": "تم إغلاق السنة المالية.",
+      "periodClosed": "تم إغلاق الفترة.",
+      "reopened": "تمت إعادة الفتح.",
+      "paymentRecorded": "تم تسجيل الدفعة.",
+      "paymentVoided": "تم إلغاء الدفعة.",
+      "noteIssued": "تم إصدار الإشعار المدين.",
+      "noteCancelled": "تم إلغاء الإشعار المدين."
+    },
+    "hints": {
+      "searchAccounts": "ابحث بالرمز أو الاسم",
+      "group": "تجميعي",
+      "posting": "ترحيل",
+      "system": "نظامي",
+      "systemAccount": "هذا حساب نظامي يرحّل إليه التطبيق تلقائيًا، لذا لا يمكن تغيير نوعه ولا حذفه (يمكن إيقافه بدلًا من ذلك).",
+      "topLevel": "المستوى الأعلى",
+      "parent": "الحسابات التجميعية من نفس النوع فقط.",
+      "isGroup": "الحسابات التجميعية لتنظيم الدليل فقط؛ يتم الترحيل إلى الحسابات التابعة لها.",
+      "onlyDraftEditable": "لا يمكن تعديل إلا القيود المسودة. تُصحَّح القيود المرحّلة بعكسها.",
+      "oneSide": "أدخل مبلغًا مدينًا أو دائنًا فقط.",
+      "balanced": "متوازن",
+      "difference": "الفرق",
+      "mustBalance": "يجب أن يتساوى المدين والدائن، مع بندين على الأقل.",
+      "reversed": "معكوس",
+      "reversedBy": "تم عكس هذا القيد.",
+      "reversalOf": "هذا القيد يعكس قيدًا آخر.",
+      "reverse": "يُنشئ قيدًا مرحّلًا جديدًا مع تبديل المدين والدائن.",
+      "reverseDate": "اتركه فارغًا لاستخدام تاريخ اليوم.",
+      "newYear": "تُنشأ الفترات الشهرية تلقائيًا. لا يمكن تغيير التواريخ لاحقًا.",
+      "yearDates": "اختر تاريخ بداية وتاريخ نهاية بعده.",
+      "notBalanced": "غير متوازن",
+      "allocations": "اختياري: فواتير المورد التي تسددها هذه الدفعة.",
+      "noAllocations": "غير مخصصة على فواتير.",
+      "noSupplierInvoices": "لا توجد فواتير موردين بعد.",
+      "overAllocated": "أكثر من مبلغ الدفعة",
+      "paymentVoided": "تم إلغاء هذه الدفعة.",
+      "noteCancelled": "تم إلغاء هذا الإشعار المدين.",
+      "onlyDraftNote": "لا يمكن تعديل إلا الإشعارات المسودة.",
+      "optional": "اختياري"
+    },
+    "reports": {
+      "trial_balance": "ميزان المراجعة",
+      "income_statement": "قائمة الدخل",
+      "balance_sheet": "الميزانية العمومية",
+      "general_ledger": "دفتر الأستاذ العام",
+      "customer_statement": "كشف حساب عميل",
+      "supplier_statement": "كشف حساب مورد",
+      "receivables_aging": "أعمار الذمم المدينة",
+      "payables_aging": "أعمار الذمم الدائنة",
+      "title": "التقارير المحاسبية",
+      "subtitle": "من القيود المرحّلة. يمكن تنزيل أي تقرير بصيغة Excel.",
+      "report": "التقرير",
+      "run": "تشغيل",
+      "exportXlsx": "Excel",
+      "pick": "اختر {{field}} أولًا."
+    },
+    "reportParams": {
+      "start_date": "من",
+      "end_date": "إلى",
+      "as_of_date": "حتى تاريخ",
+      "account": "الحساب",
+      "customer": "العميل",
+      "supplier": "المورد"
+    },
+    "reportColumns": {
+      "code": "الرمز",
+      "name": "الحساب",
+      "account_type": "النوع",
+      "opening_debit": "مدين افتتاحي",
+      "opening_credit": "دائن افتتاحي",
+      "debit": "مدين",
+      "credit": "دائن",
+      "closing_debit": "مدين ختامي",
+      "closing_credit": "دائن ختامي",
+      "section": "القسم",
+      "amount": "المبلغ",
+      "date": "التاريخ",
+      "entry_number": "القيد",
+      "description": "الوصف",
+      "reference": "المرجع",
+      "balance": "الرصيد",
+      "customer": "العميل",
+      "supplier": "المورد",
+      "current": "جاري",
+      "days_1_30": "1–30 يومًا",
+      "days_31_60": "31–60 يومًا",
+      "days_61_90": "61–90 يومًا",
+      "over_90": "أكثر من 90 يومًا",
+      "total": "الإجمالي",
+      "credits": "أرصدة دائنة",
+      "net": "الصافي",
+      "start_date": "من",
+      "end_date": "إلى",
+      "total_opening_debit": "مدين افتتاحي",
+      "total_opening_credit": "دائن افتتاحي",
+      "total_debit": "إجمالي المدين",
+      "total_credit": "إجمالي الدائن",
+      "total_closing_debit": "مدين ختامي",
+      "total_closing_credit": "دائن ختامي",
+      "is_balanced": "متوازن",
+      "total_revenue": "الإيرادات",
+      "total_cost_of_sales": "تكلفة المبيعات",
+      "gross_profit": "مجمل الربح",
+      "total_expenses": "المصروفات",
+      "net_income": "صافي الدخل",
+      "as_of_date": "حتى تاريخ",
+      "total_assets": "الأصول",
+      "total_liabilities": "الخصوم",
+      "total_equity": "حقوق الملكية",
+      "total_liabilities_and_equity": "الخصوم وحقوق الملكية",
+      "account": "الحساب",
+      "opening_balance": "الرصيد الافتتاحي",
+      "closing_balance": "الرصيد الختامي"
+    },
+    "payments": {
+      "title": "مدفوعات الموردين",
+      "new": "دفعة مورد جديدة",
+      "detail": "دفعة مورد"
+    },
+    "notes": {
+      "title": "الإشعارات المدينة",
+      "subtitle": "مطالبات على الموردين (مرتجعات، زيادات في الفواتير). الإصدار يرحّلها.",
+      "new": "إشعار مدين جديد",
+      "edit": "تعديل الإشعار المدين",
+      "detail": "إشعار مدين",
+      "backToNote": "العودة إلى الإشعار"
+    },
+    "paymentStatuses": {
+      "completed": "مكتملة",
+      "voided": "ملغاة"
+    },
+    "noteStatuses": {
+      "draft": "مسودة",
+      "issued": "صادر",
+      "cancelled": "ملغى"
+    }
+  },
+  "importExport": {
+    "title": "الاستيراد / التصدير",
+    "subtitle": "استيراد البيانات وتصديرها بملفات CSV أو Excel.",
+    "resources": {
+      "department": "الأقسام",
+      "team": "الفرق",
+      "location": "مواقع الشركة",
+      "country": "الدول",
+      "region": "المناطق",
+      "city": "المدن",
+      "district": "الأحياء",
+      "product": "المنتجات",
+      "productVariant": "متغيرات المنتجات",
+      "productAttribute": "خصائص المنتجات",
+      "category": "الفئات",
+      "brand": "العلامات التجارية",
+      "warehouse": "المستودعات",
+      "zone": "المناطق التخزينية",
+      "bin": "مواقع التخزين",
+      "supplier": "الموردون",
+      "supplierProduct": "قائمة أسعار الموردين",
+      "batch": "الدفعات",
+      "serialNumber": "الأرقام التسلسلية"
+    },
+    "groups": {
+      "company": "الشركة",
+      "locations": "المواقع",
+      "inventory": "المخزون"
+    },
+    "export": {
+      "title": "التصدير",
+      "hint": "يُنزّل كل السجلات من هذا النوع الخاصة بشركتك."
+    },
+    "import": {
+      "title": "الاستيراد",
+      "hint": "ابدأ من القالب، واملأ الصفوف، ثم افحص الملف قبل استيراده."
+    },
+    "check": {
+      "title": "فحص الملف"
+    },
+    "history": {
+      "title": "آخر عمليات الاستيراد والتصدير"
+    },
+    "stats": {
+      "new": "جديد",
+      "updated": "تحديث",
+      "errors": "أخطاء",
+      "skipped": "متجاهَل",
+      "warnings": "تحذيرات"
+    },
+    "taskTypes": {
+      "import": "استيراد",
+      "export": "تصدير"
+    },
+    "taskStatuses": {
+      "pending": "في الانتظار",
+      "processing": "قيد المعالجة",
+      "completed": "مكتمل",
+      "failed": "فشل"
+    },
+    "fields": {
+      "resource": "البيانات",
+      "format": "الصيغة",
+      "row": "الصف",
+      "result": "النتيجة",
+      "data": "البيانات",
+      "message": "الرسالة",
+      "date": "التاريخ",
+      "type": "النوع",
+      "model": "نوع البيانات",
+      "status": "الحالة",
+      "rows": "الصفوف",
+      "by": "بواسطة"
+    },
+    "actions": {
+      "export": "تصدير",
+      "template": "تنزيل القالب",
+      "chooseFile": "اختر ملف CSV أو Excel",
+      "changeFile": "اختر ملفًا آخر",
+      "removeFile": "إزالة الملف",
+      "check": "فحص الملف",
+      "import": "استيراد",
+      "download": "تنزيل"
+    },
+    "hints": {
+      "pickResource": "اختر ما تريد استيراده أو تصديره",
+      "noResources": "لا يوجد شيء متاح لحسابك.",
+      "fileType": "اختر ملفًا بامتداد ‎.csv أو ‎.xlsx.",
+      "fileSize": "حجم الملف أكبر من 5 ميجابايت.",
+      "unreadable": "تعذّرت قراءة الملف.",
+      "checkFirst": "افحص الملف أولًا؛ يُفعَّل الاستيراد عندما لا يكون في أي صف أخطاء.",
+      "fixErrors": "صحّح الصفوف التي بها أخطاء في ملفك، ثم افحصه مرة أخرى.",
+      "readyToImport": "لا توجد أخطاء. يمكنك استيراد الملف.",
+      "imported": "تم الاستيراد: {{new}} جديد، {{updated}} تحديث."
+    },
+    "toasts": {
+      "imported": "تم استيراد {{count}} صف."
     }
   }
 }
