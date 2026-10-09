@@ -305,3 +305,90 @@ export interface SupplierProductPayload {
   effective_to: string | null;
   notes: string;
 }
+
+// Stock: levels from the inventory valuation report, movements from the stock ledger
+// (API_REFERENCE.md → "Inventory — stock"; reports/v1 → inventory_valuation).
+
+export const VALUATION_REPORT_METHODS = ['AVERAGE', 'FIFO', 'LIFO'] as const;
+export type ValuationReportMethod = (typeof VALUATION_REPORT_METHODS)[number];
+
+/** One variant's stock in the inventory_valuation report (numbers, not decimal strings). */
+export interface StockLevelRow {
+  variant_id: number;
+  sku: string;
+  product: string;
+  quantity: number;
+  unit_cost: number;
+  total_value: number;
+}
+
+export interface StockValuation {
+  report_type: 'inventory_valuation';
+  method: ValuationReportMethod;
+  columns: string[];
+  rows: StockLevelRow[];
+  summary: { total_quantity: number; total_value: number; items: number };
+}
+
+export const LEDGER_TRANSACTION_TYPES = [
+  'receipt',
+  'issue',
+  'transfer_out',
+  'transfer_in',
+  'adjustment',
+  'return',
+  'write_off',
+  'reservation',
+  'reservation_release',
+  'initial',
+  'repair',
+] as const;
+export type LedgerTransactionType = (typeof LEDGER_TRANSACTION_TYPES)[number];
+
+/** A ledger row: written by the inventory services, read-only in the API. Positive quantities come in. */
+export interface StockLedgerEntry {
+  id: number;
+  created_at: string;
+  created_by: UserRef | null;
+  product_variant: VariantRef;
+  warehouse: { id: number; name: string; code: string };
+  bin: { id: number; name: string; code: string } | null;
+  batch: { id: number; batch_number: string } | null;
+  serial_number: { id: number; serial_number: string } | null;
+  transaction_type: LedgerTransactionType;
+  quantity: string;
+  unit_cost: string | null;
+  total_cost: string | null;
+  /** The source document's model name, e.g. "DeliveryNote"; `notes` names the document. */
+  reference_type: string;
+  reference_id: string | null;
+  notes: string;
+}
+
+/** Stock held for a document (e.g. a confirmed sales order) until it ships or is released. */
+export interface StockReservation {
+  id: number;
+  product_variant: VariantRef;
+  warehouse: { id: number; name: string; code: string };
+  quantity: string;
+  reference_type: string;
+  is_released: boolean;
+  reserved_at: string;
+  expires_at: string | null;
+}
+
+export type Severity = 'success' | 'secondary' | 'info' | 'warn' | 'danger';
+
+export const LEDGER_TYPE_SEVERITY: Record<LedgerTransactionType, Severity> = {
+  receipt: 'success',
+  initial: 'success',
+  transfer_in: 'info',
+  return: 'info',
+  issue: 'warn',
+  transfer_out: 'warn',
+  adjustment: 'secondary',
+  reservation: 'secondary',
+  reservation_release: 'secondary',
+  repair: 'secondary',
+  write_off: 'danger',
+};

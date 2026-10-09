@@ -1,0 +1,89 @@
+<app-page-header title="inventory.ledger.title" subtitle="inventory.ledger.subtitle"></app-page-header>
+
+@if (table.error(); as err) {
+  <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403" (retry)="table.load()"></app-error-state>
+} @else {
+  <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
+    <div class="flex items-center gap-3 border-b border-gray-100 p-4 dark:border-gray-800">
+      <p-iconfield class="w-full sm:w-80">
+        <p-inputicon class="pi pi-search"></p-inputicon>
+        <input
+          pInputText
+          type="search"
+          [placeholder]="'inventory.ledger.search' | translate"
+          (input)="table.onSearch($any($event.target).value)"
+          class="w-full"
+        />
+      </p-iconfield>
+    </div>
+    <div class="overflow-x-auto">
+      <p-table
+        [value]="table.rows()"
+        [lazy]="true"
+        [lazyLoadOnInit]="false"
+        (onLazyLoad)="table.onLazyLoad($event)"
+        [paginator]="true"
+        [first]="table.first()"
+        [rows]="table.pageSize()"
+        [totalRecords]="table.total()"
+        [rowsPerPageOptions]="[10, 25, 50]"
+        [loading]="table.loading()"
+        dataKey="id"
+        size="small"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="created_at">{{ 'inventory.ledger.date' | translate }} <p-sortIcon field="created_at"></p-sortIcon></th>
+            <th>{{ 'inventory.ledger.type' | translate }}</th>
+            <th>{{ 'inventory.fields.sku' | translate }}</th>
+            <th>{{ 'inventory.fields.variant' | translate }}</th>
+            <th>{{ 'inventory.fields.warehouse' | translate }}</th>
+            <th class="text-end">{{ 'inventory.fields.quantity' | translate }}</th>
+            <th class="text-end">{{ 'inventory.fields.unitCost' | translate }}</th>
+            <th class="text-end">{{ 'inventory.ledger.totalCost' | translate }}</th>
+            <th>{{ 'inventory.ledger.reference' | translate }}</th>
+            <th>{{ 'inventory.ledger.by' | translate }}</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-row>
+          <tr>
+            <td class="whitespace-nowrap" dir="ltr">{{ row.created_at | date: 'yyyy-MM-dd HH:mm' }}</td>
+            <td class="whitespace-nowrap">
+              <app-status-badge
+                [value]="'inventory.ledgerTypes.' + row.transaction_type | translate"
+                [severity]="typeSeverity(row.transaction_type)"
+              ></app-status-badge>
+            </td>
+            <td class="whitespace-nowrap font-mono text-sm" dir="ltr">{{ row.product_variant?.sku }}</td>
+            <td>{{ row.product_variant?.name }}</td>
+            <td class="whitespace-nowrap">
+              {{ row.warehouse?.name }}
+              @if (row.bin) {
+                <span class="text-xs text-gray-500 dark:text-gray-400"> › {{ row.bin.name }}</span>
+              }
+            </td>
+            <td
+              class="whitespace-nowrap text-end font-semibold"
+              [class.text-green-600]="isInbound(row)"
+              [class.dark:text-green-400]="isInbound(row)"
+              [class.text-red-600]="!isInbound(row)"
+              [class.dark:text-red-400]="!isInbound(row)"
+              dir="ltr"
+            >
+              {{ isInbound(row) ? '+' : '' }}{{ row.quantity | number: '1.0-3' }}
+            </td>
+            <td class="whitespace-nowrap text-end" dir="ltr">{{ row.unit_cost ? (row.unit_cost | number: '1.2-4') : '—' }}</td>
+            <td class="whitespace-nowrap text-end" dir="ltr">{{ row.total_cost ? (row.total_cost | number: '1.2-2') : '—' }}</td>
+            <td class="min-w-48 text-sm">{{ row.notes || row.reference_type || '—' }}</td>
+            <td class="whitespace-nowrap text-sm">{{ row.created_by | userName }}</td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="10"><app-empty-state icon="pi-history" title="inventory.ledger.empty"></app-empty-state></td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+}

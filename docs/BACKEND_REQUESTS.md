@@ -6,7 +6,7 @@ It lists what the frontend still needs from the backend. Remove items as they sh
 History: the first round (current-user endpoint, enforced permissions, `is_staff`, company and location fixes,
 product variants, workflow actions, import, WebSocket token, export parameters, the password-hash leak) shipped on
 2026-10-08 and was verified from the frontend on 2026-10-09. The second round (items 0–23, backend master c6509d9)
-was verified against the running API on 2026-10-09; see "Fixed" below. Items 24–25 are open.
+was verified against the running API on 2026-10-09; see "Fixed" below. Items 24–26 are open.
 
 ```text
 You are working on the backend of Tanzim, a bilingual (English/Arabic) multi-tenant ERP.
@@ -43,6 +43,17 @@ Company admin: admin@testcompany.com / testpass123.
    - the customer-return action responses (approve, reject, receive, inspect, close) don't include
      `sales_order_number`, which the retrieve response has. Use the same serializer. The frontend keeps the number
      it loaded.
+
+26. Stock screens need filters and a stock-level endpoint:
+   - GET /api/inventory/v1/stock-ledger/ only supports search (reference_type, reference_id) and ordering. Add
+     exact-match filters `product_variant`, `warehouse`, `transaction_type` and a `created_at` range
+     (`date_from`, `date_to`), so a variant's or a warehouse's movements can be listed.
+   - GET /api/inventory/v1/stock-reservation/ can't be filtered either; add `is_released`, `product_variant`,
+     `warehouse`. The stock-levels screen reads every reservation to sum the open ones.
+   - There is no current-stock endpoint: the frontend uses reports/v1/run/inventory_valuation/ for on hand (per
+     variant, optionally one warehouse) and computes reserved/available itself. A stock-level list with
+     on hand, reserved and available per variant × warehouse (paged, searchable, with the same filters) would
+     replace both.
 ```
 
 ## Fixed (verified against the API on 2026-10-09, backend master 0a78259)

@@ -22,10 +22,11 @@ You are continuing work on Tanzim, a bilingual (English/Arabic, RTL) ERP. Two re
 - main also has the code-structure cleanup (#9) and Step 8 (warehouses, zones, bins, suppliers; #10).
 - main also has Step 9 (access control from /me), Step 10 (fixed workarounds dropped).
 - main also has Step 11 (variants + supplier price list).
-- main also has Step 12 (notifications + billing, #14), Step 13 (customers + sales orders, #16) Step 14 (deliveries, invoices, payments, #17) Step 15 (returns, #18) Step 16 (accounting ledger, #19) Step 17 (accounting reports and payables, #20) Step 18 (import / export; spec 2026-10-09-import-export-design.md) and Step 19 (backend fixes 0–23 verified, workarounds dropped; spec 2026-10-09-verify-backend-fixes-design.md).
+- main also has Step 12 (notifications + billing, #14), Step 13 (customers + sales orders, #16) Step 14 (deliveries, invoices, payments, #17) Step 15 (returns, #18) Step 16 (accounting ledger, #19) Step 17 (accounting reports and payables, #20) Step 18 (import / export; spec 2026-10-09-import-export-design.md) Step 19 (backend fixes 0–23 verified, workarounds dropped; #23; spec 2026-10-09-verify-backend-fixes-design.md) and Step 20 (stock levels + stock ledger; spec 2026-10-09-stock-levels-ledger-design.md).
 - Local machine (Windows, D:/tanzim): backend in backend/Tanzim (venv, daphne on :8000 via start-tanzim.ps1; daphne doesn't reload, restart it after a backend pull). `setup_plans` now creates the `accounting` Module; Test Company's subscription has location, inventory and accounting (clear the cache after changing modules).
 - Test data (local DB): warehouses MAIN (zone ZA, bin B1) and BR1; suppliers Nile Supplies and Delta Metals; product Hammer with variants HAM-S / HAM-L, 50 units each in MAIN (posted through a stock adjustment, the API way now); customer Delta Trading, orders, a delivered and invoiced order; customer and supplier returns; supplier invoices NS-INV-001/002, DM-INV-001 (set to `matched` in the shell: matching needs a PO + receipt); a staff user staff@tanzim.test and an employee without permissions (passwords set in the shell; reset them there if needed).
 - `ng serve` on Windows sometimes misses a file change and keeps serving the old chunk: touch the file or restart it.
+- The `gh` CLI isn't installed locally: PRs are opened and merged through the GitHub REST API with git's stored credentials (`git credential fill`).
 - Open PR 0Mustafa37/Tanzim#11 (claude/cors-frontend-origins → master): CORS allows http://localhost:4200, https://mohamed-elhelely.github.io and the ngrok header; CORS_EXTRA_ORIGINS env var for more.
 - GitHub Pages (https://mohamed-elhelely.github.io/tanzim-frontend/) was deployed from claude/redesign-ui, which now equals main; redeploy from main from now on (`npm run deploy`, angular-cli-ghpages, baseHref /tanzim-frontend/).
 - Stale branches (delete only if the owner agrees): claude/awesome-hawking-7uf16d, step-4-company-organisation, master (frontend), claude/awesome-lovelace-2bdsqn, claude/redesign-ui, claude/menu-visibility (merged).
@@ -41,8 +42,9 @@ You are continuing work on Tanzim, a bilingual (English/Arabic, RTL) ERP. Two re
 
 ## Known backend issues (raise, don't work around silently)
 - docs/BACKEND_REQUESTS.md: items 0–23 verified fixed on 2026-10-09 (backend master 0a78259, "Fixed" table). Open:
-  24 (nothing sets a sales invoice `overdue`) and 25 (category export writes the parent as "1.0"; return action
-  responses omit `sales_order_number`, worked around in the customer-return detail).
+  24 (nothing sets a sales invoice `overdue`), 25 (category export writes the parent as "1.0"; return action
+  responses omit `sales_order_number`, worked around in the customer-return detail) and 26 (stock ledger and
+  reservation filters, a stock-level endpoint).
 - The backend's own list is "Known issues" at the end of docs/API_REFERENCE.md.
 
 ## Running and verifying locally
@@ -51,13 +53,12 @@ You are continuing work on Tanzim, a bilingual (English/Arabic, RTL) ERP. Two re
 - Before calling UI work done: screenshot the changed screens in English, Arabic (RTL), dark mode and 390px mobile, and check the console has no errors.
 
 ## Next steps (the owner asked to work through them in order, one branch + PR per step, merging each)
-1. Step 20 — inventory stock levels and stock ledger (read), now that item 2 is fixed.
-2. Step 21 — stock movements: transfers, adjustments (and their confirm/cancel workflows).
-3. Step 22 — procurement: purchase orders, goods receipts, supplier invoices (screens beyond the dropdown ref service).
-4. Then the test campaign: the backend is writing `manage.py seed_test_campaign` (4 companies, ~18 test accounts,
+1. Step 21 — stock movements: transfers, adjustments (and their confirm/cancel workflows).
+2. Step 22 — procurement: purchase orders, goods receipts, supplier invoices (screens beyond the dropdown ref service).
+3. Then the test campaign: the backend is writing `manage.py seed_test_campaign` (4 companies, ~18 test accounts,
    18 months of data, docs/TEST_ACCOUNTS.md with an expectation matrix). When it lands, run Playwright walks per account
    against the matrix, cross-check numbers between screens and reports, EN/AR/dark/390px, and write a findings report.
-5. Deploy: GitHub Pages from main (`npm run deploy`).
+4. Deploy: GitHub Pages from main (`npm run deploy`).
 
 Reply to the owner in Egyptian Arabic; keep code, commits and PR text in English.
 ```

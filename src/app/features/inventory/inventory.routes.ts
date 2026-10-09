@@ -138,4 +138,14 @@ export const INVENTORY_ROUTES: Routes = [
     loadComponent: () => import('./supplier-products/supplier-product-form.component').then((m) => m.SupplierProductFormComponent),
     data: { titleKey: 'inventory.supplierProducts.edit' },
   },
+  {
+    path: 'stock',
+    loadComponent: () => import('./stock-levels/stock-levels.component').then((m) => m.StockLevelsComponent),
+    data: { titleKey: 'inventory.stock.title' },
+  },
+  {
+    path: 'stock-ledger',
+    loadComponent: () => import('./stock-ledger/stock-ledger-list.component').then((m) => m.StockLedgerListComponent),
+    data: { titleKey: 'inventory.ledger.title' },
+  },
 ];
