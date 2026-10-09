@@ -213,6 +213,8 @@ marked "client list".
 | `suppliers/` | `inventory/v1/supplier/` | Reliability is 0–1; empty lead time/reliability → 0 |
 | `supplier-invoices/` | `inventory/v1/supplier-invoice/` | Service only so far (`?dropdown=true&supplier=&open=true` with `open_balance` for payment allocations and debit notes) |
 | `supplier-products/` | `inventory/v1/supplier-product/` | The supplier price list (cost, currency, validity dates) |
+| `stock-levels/` | `reports/v1/run/inventory_valuation/`, `inventory/v1/stock-reservation/` | Read only, no form. 🧠 on hand from the valuation report (warehouse, as-of date, method, Excel); reserved/available from open reservations summed in the browser, today only. ⚠️ reads every reservation (no filters, BACKEND_REQUESTS 26). `InventoryReportService`, `StockReservationService` |
+| `stock-ledger/` | `inventory/v1/stock-ledger/` | Read-only server list, newest first by default, search by document type. ⚠️ no variant/warehouse filter (BACKEND_REQUESTS 26) |
 
 ### sales — `/sales` (no module needed)
 

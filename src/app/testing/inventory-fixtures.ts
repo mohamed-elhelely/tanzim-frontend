@@ -4,6 +4,9 @@ import {
   Category,
   Product,
   ProductVariant,
+  StockLedgerEntry,
+  StockReservation,
+  StockValuation,
   Supplier,
   SupplierProduct,
   Warehouse,
@@ -169,6 +172,55 @@ export function makeSupplierProduct(overrides: Partial<SupplierProduct> = {}): S
     effective_from: '2026-01-01',
     effective_to: null,
     notes: '',
+    ...overrides,
+  };
+}
+
+export function makeValuation(overrides: Partial<StockValuation> = {}): StockValuation {
+  return {
+    report_type: 'inventory_valuation',
+    method: 'AVERAGE',
+    columns: ['sku', 'product', 'quantity', 'unit_cost', 'total_value'],
+    rows: [
+      { variant_id: 1, sku: 'PX-RED-128', product: 'Phone X', quantity: 10, unit_cost: 500, total_value: 5000 },
+      { variant_id: 2, sku: 'PX-BLU-256', product: 'Phone X', quantity: 0, unit_cost: 600, total_value: 0 },
+    ],
+    summary: { total_quantity: 10, total_value: 5000, items: 2 },
+    ...overrides,
+  };
+}
+
+export function makeReservation(overrides: Partial<StockReservation> = {}): StockReservation {
+  return {
+    id: 1,
+    product_variant: { id: 1, sku: 'PX-RED-128', name: 'Phone X Red 128' },
+    warehouse: { id: 1, name: 'Main WH', code: 'MAIN' },
+    quantity: '3.000',
+    reference_type: 'SalesOrder',
+    is_released: false,
+    reserved_at: '2026-10-09T10:00:00+03:00',
+    expires_at: null,
+    ...overrides,
+  };
+}
+
+export function makeLedgerEntry(overrides: Partial<StockLedgerEntry> = {}): StockLedgerEntry {
+  return {
+    id: 1,
+    created_at: '2026-10-09T10:00:00+03:00',
+    created_by: { id: 4, email: 'admin@acme.test', first_name: 'Sara', last_name: 'Ali' } as StockLedgerEntry['created_by'],
+    product_variant: { id: 1, sku: 'PX-RED-128', name: 'Phone X Red 128' },
+    warehouse: { id: 1, name: 'Main WH', code: 'MAIN' },
+    bin: null,
+    batch: null,
+    serial_number: null,
+    transaction_type: 'issue',
+    quantity: '-2.000',
+    unit_cost: '500.0000',
+    total_cost: '1000.0000',
+    reference_type: 'DeliveryNote',
+    reference_id: null,
+    notes: 'Delivery Note DN-2026-00001',
     ...overrides,
   };
 }

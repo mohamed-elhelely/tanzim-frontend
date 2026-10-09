@@ -78,7 +78,9 @@
     "fiscalYears": "السنوات المالية",
     "accountingReports": "التقارير",
     "supplierPayments": "مدفوعات الموردين",
-    "debitNotes": "الإشعارات المدينة"
+    "debitNotes": "الإشعارات المدينة",
+    "stockLevels": "أرصدة المخزون",
+    "stockLedger": "سجل حركة المخزون"
   },
   "auth": {
     "login": "تسجيل الدخول",
@@ -392,7 +394,8 @@
       "isPrimary": "المورد الأساسي",
       "effectiveFrom": "ساري من",
       "effectiveTo": "ساري حتى",
-      "manager": "المدير"
+      "manager": "المدير",
+      "quantity": "الكمية"
     },
     "sections": {
       "tracking": "التتبّع",
@@ -475,6 +478,56 @@
       "title": "قائمة أسعار الموردين",
       "new": "سعر جديد",
       "edit": "تعديل السعر"
+    },
+    "stock": {
+      "title": "أرصدة المخزون",
+      "subtitle": "الكمية الموجودة لكل صنف، والمحجوز للطلبات، والمتاح.",
+      "allWarehouses": "كل المخازن",
+      "asOf": "حتى تاريخ (فارغ = اليوم)",
+      "valuedBy": "طريقة التقييم",
+      "show": "عرض",
+      "exportXlsx": "إكسل",
+      "items": "أصناف بالمخزون",
+      "totalQuantity": "إجمالي الكمية",
+      "totalValue": "قيمة المخزون",
+      "searchItems": "ابحث بالكود أو الصنف أو المنتج",
+      "pastDateHint": "المحجوز والمتاح يظهران لتاريخ اليوم فقط.",
+      "onHand": "الموجود",
+      "reserved": "محجوز",
+      "available": "متاح",
+      "value": "القيمة",
+      "outOfStock": "نفد",
+      "empty": "لا يوجد مخزون بعد",
+      "emptyHint": "يدخل المخزون عن طريق الاستلام والتسويات والتحويلات."
+    },
+    "valuationMethods": {
+      "AVERAGE": "متوسط التكلفة",
+      "FIFO": "الوارد أولًا يصرف أولًا",
+      "LIFO": "الوارد أخيرًا يصرف أولًا"
+    },
+    "ledger": {
+      "title": "سجل حركة المخزون",
+      "subtitle": "كل حركة دخول وخروج للمخزون، الأحدث أولًا.",
+      "search": "ابحث بنوع المستند",
+      "date": "التاريخ",
+      "type": "الحركة",
+      "totalCost": "إجمالي التكلفة",
+      "reference": "المستند",
+      "by": "بواسطة",
+      "empty": "لا توجد حركات مخزون بعد"
+    },
+    "ledgerTypes": {
+      "receipt": "استلام",
+      "issue": "صرف",
+      "transfer_out": "تحويل صادر",
+      "transfer_in": "تحويل وارد",
+      "adjustment": "تسوية",
+      "return": "مرتجع",
+      "write_off": "إعدام",
+      "reservation": "حجز",
+      "reservation_release": "فك حجز",
+      "initial": "رصيد افتتاحي",
+      "repair": "إصلاح"
     }
   },
   "notifications": {

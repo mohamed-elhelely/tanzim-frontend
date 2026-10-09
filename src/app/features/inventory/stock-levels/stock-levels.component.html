@@ -1,0 +1,146 @@
+<app-page-header title="inventory.stock.title" subtitle="inventory.stock.subtitle"></app-page-header>
+
+<div class="flex flex-col gap-4">
+  <div class="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+    <div class="flex flex-col flex-wrap gap-4 lg:flex-row lg:items-end">
+      <div class="flex flex-col gap-1">
+        <label for="warehouse" class="text-sm font-medium">{{ 'inventory.fields.warehouse' | translate }}</label>
+        <p-select
+          inputId="warehouse"
+          [(ngModel)]="warehouse"
+          [options]="warehouseOptions()"
+          optionLabel="label"
+          optionValue="value"
+          [showClear]="true"
+          [placeholder]="'inventory.stock.allWarehouses' | translate"
+          styleClass="w-full lg:w-64"
+          appendTo="body"
+        ></p-select>
+      </div>
+      <div class="flex flex-col gap-1">
+        <label for="as_of_date" class="text-sm font-medium">{{ 'inventory.stock.asOf' | translate }}</label>
+        <input pInputText id="as_of_date" type="date" [(ngModel)]="asOfDate" class="w-full lg:w-44" />
+      </div>
+      <div class="flex flex-col gap-1">
+        <label for="method" class="text-sm font-medium">{{ 'inventory.stock.valuedBy' | translate }}</label>
+        <p-select
+          inputId="method"
+          [(ngModel)]="method"
+          [options]="methodOptions"
+          optionLabel="label"
+          optionValue="value"
+          styleClass="w-full lg:w-44"
+          appendTo="body"
+        >
+          <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
+          <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
+        </p-select>
+      </div>
+      <div class="flex flex-wrap gap-2">
+        <p-button [label]="'inventory.stock.show' | translate" icon="pi pi-refresh" [loading]="loading()" (onClick)="run()"></p-button>
+        <p-button
+          [label]="'inventory.stock.exportXlsx' | translate"
+          icon="pi pi-file-excel"
+          severity="secondary"
+          [outlined]="true"
+          [loading]="exporting()"
+          (onClick)="exportXlsx()"
+        ></p-button>
+      </div>
+    </div>
+  </div>
+
+  @if (error(); as err) {
+    <app-error-state [title]="errorTitleKey(err)" [message]="err.message" [showRetry]="err.status !== 403" (retry)="run()"></app-error-state>
+  } @else {
+    @if (report(); as stock) {
+      <dl class="grid grid-cols-1 gap-3 sm:grid-cols-3">
+        <div class="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'inventory.stock.items' | translate }}</dt>
+          <dd class="mt-1 text-lg font-semibold" dir="ltr">{{ stock.summary.items | number }}</dd>
+        </div>
+        <div class="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'inventory.stock.totalQuantity' | translate }}</dt>
+          <dd class="mt-1 text-lg font-semibold" dir="ltr">{{ stock.summary.total_quantity | number: '1.0-3' }}</dd>
+        </div>
+        <div class="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'inventory.stock.totalValue' | translate }}</dt>
+          <dd class="mt-1 text-lg font-semibold" dir="ltr">{{ stock.summary.total_value | number: '1.2-2' }}</dd>
+        </div>
+      </dl>
+    }
+
+    <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
+      <div class="flex flex-col gap-2 border-b border-gray-100 p-4 sm:flex-row sm:items-center sm:justify-between dark:border-gray-800">
+        <p-iconfield class="w-full sm:w-80">
+          <p-inputicon class="pi pi-search"></p-inputicon>
+          <input
+            pInputText
+            type="search"
+            [placeholder]="'inventory.stock.searchItems' | translate"
+            [ngModel]="search()"
+            (ngModelChange)="search.set($event)"
+            class="w-full"
+          />
+        </p-iconfield>
+        @if (!isCurrent()) {
+          <p class="text-xs text-gray-500 dark:text-gray-400">{{ 'inventory.stock.pastDateHint' | translate }}</p>
+        }
+      </div>
+      <div class="overflow-x-auto">
+        <p-table
+          [value]="rows()"
+          [paginator]="true"
+          [rows]="25"
+          [rowsPerPageOptions]="[25, 50, 100]"
+          [loading]="loading()"
+          dataKey="variant_id"
+          sortField="sku"
+          [sortOrder]="1"
+          size="small"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th pSortableColumn="sku">{{ 'inventory.fields.sku' | translate }} <p-sortIcon field="sku"></p-sortIcon></th>
+              <th pSortableColumn="variantName">{{ 'inventory.fields.variant' | translate }} <p-sortIcon field="variantName"></p-sortIcon></th>
+              <th pSortableColumn="product">{{ 'inventory.fields.product' | translate }} <p-sortIcon field="product"></p-sortIcon></th>
+              <th pSortableColumn="quantity" class="text-end">{{ 'inventory.stock.onHand' | translate }} <p-sortIcon field="quantity"></p-sortIcon></th>
+              @if (isCurrent()) {
+                <th class="text-end">{{ 'inventory.stock.reserved' | translate }}</th>
+                <th pSortableColumn="available" class="text-end">{{ 'inventory.stock.available' | translate }} <p-sortIcon field="available"></p-sortIcon></th>
+              }
+              <th class="text-end">{{ 'inventory.fields.unitCost' | translate }}</th>
+              <th pSortableColumn="total_value" class="text-end">{{ 'inventory.stock.value' | translate }} <p-sortIcon field="total_value"></p-sortIcon></th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-row>
+            <tr>
+              <td class="whitespace-nowrap font-mono text-sm" dir="ltr">{{ row.sku }}</td>
+              <td>{{ row.variantName }}</td>
+              <td>{{ row.product }}</td>
+              <td class="whitespace-nowrap text-end font-medium" dir="ltr">
+                @if (row.quantity <= 0) {
+                  <app-status-badge [value]="'inventory.stock.outOfStock' | translate" severity="danger" class="me-2"></app-status-badge>
+                }
+                {{ row.quantity | number: '1.0-3' }}
+              </td>
+              @if (isCurrent()) {
+                <td class="text-end text-gray-500 dark:text-gray-400" dir="ltr">{{ row.reserved | number: '1.0-3' }}</td>
+                <td class="text-end font-medium" dir="ltr">{{ row.available | number: '1.0-3' }}</td>
+              }
+              <td class="text-end" dir="ltr">{{ row.unit_cost | number: '1.2-4' }}</td>
+              <td class="text-end font-medium" dir="ltr">{{ row.total_value | number: '1.2-2' }}</td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td [attr.colspan]="isCurrent() ? 8 : 6">
+                <app-empty-state icon="pi-box" title="inventory.stock.empty" message="inventory.stock.emptyHint"></app-empty-state>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  }
+</div>

@@ -78,7 +78,9 @@
     "fiscalYears": "Fiscal years",
     "accountingReports": "Reports",
     "supplierPayments": "Supplier payments",
-    "debitNotes": "Debit notes"
+    "debitNotes": "Debit notes",
+    "stockLevels": "Stock levels",
+    "stockLedger": "Stock ledger"
   },
   "auth": {
     "login": "Login",
@@ -392,7 +394,8 @@
       "isPrimary": "Primary supplier",
       "effectiveFrom": "Effective from",
       "effectiveTo": "Effective to",
-      "manager": "Manager"
+      "manager": "Manager",
+      "quantity": "Quantity"
     },
     "sections": {
       "tracking": "Tracking",
@@ -475,6 +478,56 @@
       "title": "Supplier price list",
       "new": "New price",
       "edit": "Edit price"
+    },
+    "stock": {
+      "title": "Stock levels",
+      "subtitle": "What is on hand per item, reserved for orders and still available.",
+      "allWarehouses": "All warehouses",
+      "asOf": "As of (empty = today)",
+      "valuedBy": "Valued by",
+      "show": "Show",
+      "exportXlsx": "Excel",
+      "items": "Items in stock",
+      "totalQuantity": "Total quantity",
+      "totalValue": "Stock value",
+      "searchItems": "Search SKU, variant or product",
+      "pastDateHint": "Reserved and available are only shown for today.",
+      "onHand": "On hand",
+      "reserved": "Reserved",
+      "available": "Available",
+      "value": "Value",
+      "outOfStock": "Out of stock",
+      "empty": "No stock yet",
+      "emptyHint": "Stock comes in through receipts, adjustments and transfers."
+    },
+    "valuationMethods": {
+      "AVERAGE": "Average cost",
+      "FIFO": "FIFO",
+      "LIFO": "LIFO"
+    },
+    "ledger": {
+      "title": "Stock ledger",
+      "subtitle": "Every movement in and out of stock, newest first.",
+      "search": "Search by document type",
+      "date": "Date",
+      "type": "Movement",
+      "totalCost": "Total cost",
+      "reference": "Document",
+      "by": "By",
+      "empty": "No stock movements yet"
+    },
+    "ledgerTypes": {
+      "receipt": "Receipt",
+      "issue": "Issue",
+      "transfer_out": "Transfer out",
+      "transfer_in": "Transfer in",
+      "adjustment": "Adjustment",
+      "return": "Return",
+      "write_off": "Write-off",
+      "reservation": "Reservation",
+      "reservation_release": "Reservation released",
+      "initial": "Opening stock",
+      "repair": "Repair"
     }
   },
   "notifications": {

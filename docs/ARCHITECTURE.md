@@ -191,6 +191,7 @@ backend problems added to `docs/BACKEND_REQUESTS.md`; [CODE_MAP.md](CODE_MAP.md)
 | 17 | Accounting: reports viewer (8 reports, Excel), supplier payments, debit notes |
 | 18 | Import / export: every supported resource, dry-run check before import, task history |
 | 19 | Verified backend fixes 0–23 against the API; dropped their workarounds (`omitPristine`, socket mapping, message unwrapping, …) |
+| 20 | Inventory stock levels (valuation report + reservations) and the stock ledger |
 
 ### Next — features (in order)
 
