@@ -7,6 +7,7 @@ import { WarehouseFormComponent } from './warehouse-form.component';
 
 const URL = '/api/inventory/v1/warehouse/';
 const LOCATIONS = '/api/company/v1/location/';
+const USERS = '/api/company/v1/company-user/';
 
 describe('WarehouseFormComponent', () => {
   let httpMock: HttpTestingController;
@@ -30,45 +31,58 @@ describe('WarehouseFormComponent', () => {
 
   afterEach(() => httpMock.verify());
 
-  function flushLocations() {
+  /** The location and manager pickers. */
+  function flushPickers() {
     httpMock.expectOne((r) => r.url === LOCATIONS && r.params.get('dropdown') === 'true').flush(envelope([{ id: 1, name_en: 'Head office', name_ar: 'المقر' }]));
+    httpMock
+      .expectOne((r) => r.url === USERS && r.params.get('dropdown') === 'true')
+      .flush(envelope([{ id: 3, user: { id: 9, email: 'sara@acme.test', first_name: 'Sara', last_name: 'Ali' } }]));
   }
 
-  it('requires a code on create and sends the full body, without a manager', () => {
+  it('requires a code on create and sends the full body', () => {
     const fixture = setup(null);
     const component = fixture.componentInstance;
-    flushLocations();
+    flushPickers();
     component.form.patchValue({ name: 'Main WH', location: 1, city: ' Riyadh ' });
     component.submit();
     fixture.detectChanges();
     httpMock.expectNone((r) => r.method === 'POST');
     expect(fixture.nativeElement.textContent).toContain('validation.required');
 
-    component.form.patchValue({ code: ' WH-01 ' });
+    expect(component.userOptions()).toEqual([{ value: 9, label: 'Sara Ali (sara@acme.test)' }]);
+    component.form.patchValue({ code: ' WH-01 ', manager: 9 });
     component.submit();
     const req = httpMock.expectOne((r) => r.url === URL && r.method === 'POST');
-    expect(req.request.body).toEqual(jasmine.objectContaining({ name: 'Main WH', code: 'WH-01', location: 1, city: 'Riyadh', warehouse_type: 'central' }));
-    expect('manager' in req.request.body).toBeFalse();
+    expect(req.request.body).toEqual(
+      jasmine.objectContaining({ name: 'Main WH', code: 'WH-01', location: 1, manager: 9, city: 'Riyadh', warehouse_type: 'central' }),
+    );
     req.flush(envelope(makeWarehouse()), { status: 201, statusText: 'Created' });
     expect(router.navigate).toHaveBeenCalledWith(['/inventory/warehouses']);
   });
 
-  it('on edit, fills the code from the dropdown and leaves untouched unreturned fields out of the PATCH', () => {
+  it('loads every saved field on edit and sends them all back', () => {
     const component = setup('1').componentInstance;
-    flushLocations();
-    httpMock.expectOne(`${URL}1/`).flush(envelope(makeWarehouse({ use_bin_locations: false })));
-    httpMock.expectOne((r) => r.url === URL && r.params.get('dropdown') === 'true').flush(envelope([{ id: 1, name: 'Main WH', code: 'WH-01' }]));
-    expect(component.form.controls.code.value).toBe('WH-01');
+    flushPickers();
+    httpMock.expectOne(`${URL}1/`).flush(envelope(makeWarehouse({ use_bin_locations: false, manager: { id: 9, email: 'sara@acme.test', first_name: 'Sara', last_name: 'Ali' } as never })));
+    expect(component.form.getRawValue()).toEqual(jasmine.objectContaining({ code: 'MAIN', manager: 9, email: 'wh@acme.test', city: 'Cairo' }));
 
     component.form.controls.phone.setValue('0555');
-    component.form.controls.phone.markAsDirty();
     component.submit();
     const req = httpMock.expectOne((r) => r.url === `${URL}1/` && r.method === 'PATCH');
     expect(req.request.body).toEqual({
       name: 'Main WH',
+      code: 'MAIN',
       warehouse_type: 'central',
       location: 1,
+      manager: 9,
+      email: 'wh@acme.test',
       phone: '0555',
+      address_line1: '1 Nile St',
+      address_line2: '',
+      city: 'Cairo',
+      state: '',
+      postal_code: '',
+      country: 'Egypt',
       is_active: true,
       allow_negative_stock: false,
       use_bin_locations: false,
@@ -79,7 +93,7 @@ describe('WarehouseFormComponent', () => {
   it('shows a duplicate code under the field', () => {
     const fixture = setup(null);
     const component = fixture.componentInstance;
-    flushLocations();
+    flushPickers();
     component.form.patchValue({ name: 'WH2', code: 'WH-01' });
     component.submit();
     httpMock

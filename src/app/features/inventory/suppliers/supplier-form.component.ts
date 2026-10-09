@@ -14,30 +14,9 @@ import { ErrorStateComponent } from '../../../shared/components/error-state/erro
 import { FieldErrorComponent } from '../../../shared/components/field-error/field-error.component';
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
-import { omitPristine } from '../../../shared/utils/omit-pristine';
 import { errorTitleKey, handleSaveError } from '../../../shared/utils/server-errors';
 import { SUPPLIER_TYPES, SupplierPayload, SupplierType } from '../inventory.models';
 import { SupplierService } from './supplier.service';
-
-/** ⚠️ Fields the read endpoint doesn't return: shown empty on edit and only sent when changed (see omitPristine). */
-const NOT_RETURNED = [
-  'tax_id',
-  'contact_person',
-  'email',
-  'phone',
-  'mobile',
-  'website',
-  'address_line1',
-  'address_line2',
-  'city',
-  'state',
-  'postal_code',
-  'country',
-  'payment_terms',
-  'currency',
-  'reliability_score',
-  'notes',
-] as const;
 
 @Component({
   selector: 'app-supplier-form',
@@ -141,10 +120,9 @@ export class SupplierFormComponent implements OnInit {
       is_active: value.is_active,
       notes: value.notes.trim(),
     };
-    const body = omitPristine(payload, this.form, NOT_RETURNED);
     this.saving.set(true);
     this.formErrors.set([]);
-    const request = this.id !== null ? this.api.update(this.id, body) : this.api.create(payload);
+    const request = this.id !== null ? this.api.update(this.id, payload) : this.api.create(payload);
     request.subscribe({
       next: () => {
         this.saving.set(false);
@@ -166,10 +144,26 @@ export class SupplierFormComponent implements OnInit {
         this.form.patchValue({
           name: record.name,
           supplier_type: record.supplier_type,
+          tax_id: record.tax_id,
+          contact_person: record.contact_person,
+          email: record.email,
+          phone: record.phone,
+          mobile: record.mobile,
+          website: record.website,
+          address_line1: record.address_line1,
+          address_line2: record.address_line2,
+          city: record.city,
+          state: record.state,
+          postal_code: record.postal_code,
+          country: record.country,
+          payment_terms: record.payment_terms,
+          currency: record.currency,
           credit_limit: record.credit_limit ?? '',
           lead_time_days: String(record.lead_time_days ?? 0),
+          reliability_score: String(record.reliability_score ?? 0),
           is_preferred: record.is_preferred,
           is_active: record.is_active,
+          notes: record.notes,
         });
         this.loading.set(false);
       },

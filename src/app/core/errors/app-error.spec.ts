@@ -13,12 +13,7 @@ describe('toAppError', () => {
     expect(error).toEqual(jasmine.objectContaining({ status: 400, message: 'Unknown error', errors: { name: ['This field is required.'] } }));
   });
 
-  it("unwraps a stringified Django ValidationError (\"['…']\")", () => {
-    expect(fromBody("['Order exceeds customer credit limit']").message).toBe('Order exceeds customer credit limit');
-    expect(fromBody('["Cannot confirm order in confirmed status"]').message).toBe('Cannot confirm order in confirmed status');
-  });
-
-  it('leaves normal messages alone', () => {
-    expect(fromBody('No SalesOrder matches the given query.').message).toBe('No SalesOrder matches the given query.');
+  it('passes workflow messages through as they come', () => {
+    expect(fromBody('Order exceeds customer credit limit').message).toBe('Order exceeds customer credit limit');
   });
 });

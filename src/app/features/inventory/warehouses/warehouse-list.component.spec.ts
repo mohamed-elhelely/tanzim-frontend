@@ -18,25 +18,15 @@ describe('WarehouseListComponent', () => {
 
   afterEach(() => httpMock.verify());
 
-  it('shows the page, with codes taken from the dropdown (the list has none)', () => {
+  it('shows the page with the code of each row', () => {
     const fixture = TestBed.createComponent(WarehouseListComponent);
     fixture.detectChanges();
-    httpMock.expectOne((r) => r.url === URL && r.params.get('page') === '1').flush(envelope([makeWarehouse()], 1));
-    httpMock.expectOne((r) => r.url === URL && r.params.get('dropdown') === 'true').flush(envelope([{ id: 1, name: 'Main WH', code: 'WH-01' }]));
+    httpMock.expectOne((r) => r.url === URL && r.params.get('page') === '1').flush(envelope([makeWarehouse({ code: 'WH-01' })], 1));
     fixture.detectChanges();
     const text = fixture.nativeElement.textContent;
     expect(text).toContain('WH-01');
     expect(text).toContain('Main WH');
     expect(text).toContain('inventory.warehouseTypes.central');
     expect(text).toContain('Head office');
-  });
-
-  it('still shows the rows when the dropdown fails', () => {
-    const fixture = TestBed.createComponent(WarehouseListComponent);
-    fixture.detectChanges();
-    httpMock.expectOne((r) => r.url === URL && r.params.has('page')).flush(envelope([makeWarehouse()], 1));
-    httpMock.expectOne((r) => r.params.get('dropdown') === 'true').flush(null, { status: 500, statusText: 'Server Error' });
-    fixture.detectChanges();
-    expect(fixture.nativeElement.textContent).toContain('Main WH');
   });
 });

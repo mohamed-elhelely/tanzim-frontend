@@ -289,8 +289,7 @@ export interface SalesInvoiceListItem {
   currency: string;
   total_amount: string;
   amount_paid: string;
-  /** ⚠️ A JSON number here (a model property), while the other amounts are decimal strings. */
-  amount_due: number | string;
+  amount_due: string;
   payment_percentage: number;
   created_at: string;
 }
@@ -313,6 +312,8 @@ export interface SalesInvoiceLine {
 export interface SalesInvoice extends SalesInvoiceListItem {
   subtotal: string;
   tax_amount: string;
+  /** Carried over from the order. */
+  shipping_cost: string;
   discount_amount: string;
   reference: string;
   notes: string;

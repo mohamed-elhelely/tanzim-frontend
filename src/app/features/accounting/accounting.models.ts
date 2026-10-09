@@ -1,7 +1,6 @@
 /**
- * Types for the accounting app (/api/accounting/v1/…), checked against accounting/serializers.py.
- * Not in API_REFERENCE.md yet (BACKEND_REQUESTS 10); the serializers are the contract. Amounts are decimal strings
- * with two decimals.
+ * Types for the accounting app (/api/accounting/v1/…), API_REFERENCE.md → "Accounting", checked against
+ * accounting/serializers.py. Amounts are decimal strings with two decimals.
  */
 
 export type Severity = 'success' | 'secondary' | 'info' | 'warn' | 'danger';

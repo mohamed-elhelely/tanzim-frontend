@@ -52,8 +52,6 @@ export class CategoryFormComponent implements OnInit {
   readonly formErrors = signal<string[]>([]);
   readonly errorTitleKey = errorTitleKey;
   private readonly categories = signal<Category[]>([]);
-  /** Name and parent as loaded; see submit() for why they are only sent when changed. */
-  private loaded: { name: string; parent: number | null } | null = null;
   /** Every category except this one and its descendants, so the tree can't loop. */
   readonly parentOptions = computed<SelectOption[]>(() => {
     const excluded = this.id === null ? new Set<number>() : this.descendantsOf(this.id);
@@ -85,14 +83,12 @@ export class CategoryFormComponent implements OnInit {
       return;
     }
     const value = this.form.getRawValue();
-    const name = value.name.trim();
-    const body: CategoryPayload = { description: value.description.trim(), is_active: value.is_active };
-    // The backend's duplicate check doesn't exclude the record itself, so re-sending an unchanged
-    // name and parent fails with "already exists". Send them only on create or when they change.
-    if (!this.loaded || name !== this.loaded.name || value.parent !== this.loaded.parent) {
-      body.name = name;
-      body.parent = value.parent;
-    }
+    const body: CategoryPayload = {
+      name: value.name.trim(),
+      parent: value.parent,
+      description: value.description.trim(),
+      is_active: value.is_active,
+    };
     this.saving.set(true);
     this.formErrors.set([]);
     const request = this.id !== null ? this.api.update(this.id, body) : this.api.create(body);
@@ -114,7 +110,6 @@ export class CategoryFormComponent implements OnInit {
     this.loading.set(true);
     this.api.retrieve(id).subscribe({
       next: (category) => {
-        this.loaded = { name: category.name, parent: category.parent?.id ?? null };
         this.form.patchValue({
           name: category.name,
           parent: category.parent?.id ?? null,

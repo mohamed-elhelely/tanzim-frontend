@@ -56,18 +56,18 @@ describe('CategoryFormComponent', () => {
     expect(component.parentOptions().map((o) => o.value)).toEqual([1, 4]);
   });
 
-  it('omits an unchanged name and parent on edit (the backend would call it a duplicate)', () => {
+  it('sends the full body on edit, unchanged name and parent included', () => {
     const component = setup('2').componentInstance;
     flushAll();
     httpMock.expectOne(`${URL}2/`).flush(envelope(PHONES));
     component.form.patchValue({ description: 'Mobiles', is_active: false });
     component.submit();
     const req = httpMock.expectOne((r) => r.url === `${URL}2/` && r.method === 'PATCH');
-    expect(req.request.body).toEqual({ description: 'Mobiles', is_active: false });
+    expect(req.request.body).toEqual({ name: 'Phones', parent: 1, description: 'Mobiles', is_active: false });
     req.flush(envelope(PHONES));
   });
 
-  it('sends name and parent when either changes', () => {
+  it('sends a changed parent', () => {
     const component = setup('2').componentInstance;
     flushAll();
     httpMock.expectOne(`${URL}2/`).flush(envelope(PHONES));

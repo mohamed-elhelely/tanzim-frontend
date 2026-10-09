@@ -21,7 +21,7 @@ describe('SalesInvoiceListComponent', () => {
   it('shows invoices with both statuses and the amount due (a number in the API)', () => {
     const fixture = TestBed.createComponent(SalesInvoiceListComponent);
     fixture.detectChanges();
-    httpMock.expectOne((r) => r.url === URL && r.params.get('page') === '1').flush(envelope([makeInvoice({ status: 'issued', amount_due: 187 })], 1));
+    httpMock.expectOne((r) => r.url === URL && r.params.get('page') === '1').flush(envelope([makeInvoice({ status: 'issued', amount_due: '187.0000' })], 1));
     fixture.detectChanges();
     const text = fixture.nativeElement.textContent;
     expect(text).toContain('INV-2026-00001');

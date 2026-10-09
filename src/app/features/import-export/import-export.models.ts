@@ -9,7 +9,7 @@ export interface DataResource {
   group: 'company' | 'locations' | 'inventory';
   /** Shown only with this subscription module. */
   module?: AppModuleCode;
-  /** Shown only with this permission (company resources; the backend itself only checks the login, BACKEND_REQUESTS 22). */
+  /** Shown only with this permission (company resources; the backend checks the same add_/view_ permissions). */
   permission?: string;
 }
 

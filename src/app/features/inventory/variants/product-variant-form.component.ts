@@ -22,15 +22,11 @@ import { ErrorStateComponent } from '../../../shared/components/error-state/erro
 import { FieldErrorComponent } from '../../../shared/components/field-error/field-error.component';
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
-import { omitPristine } from '../../../shared/utils/omit-pristine';
 import { errorTitleKey, handleSaveError } from '../../../shared/utils/server-errors';
 import { SelectOption } from '../../company/company.models';
 import { InventoryRef, ProductVariantPayload } from '../inventory.models';
 import { ProductService } from '../products/product.service';
 import { ProductVariantService } from './product-variant.service';
-
-/** ⚠️ Not returned by the read endpoint: shown empty on edit and only sent when changed (see omitPristine). */
-const NOT_RETURNED = ['weight_uom'] as const;
 
 const DECIMAL_4 = /^\d+(\.\d{1,4})?$/;
 const DECIMAL_3 = /^\d+(\.\d{1,3})?$/;
@@ -140,10 +136,9 @@ export class ProductVariantFormComponent implements OnInit {
       weight_uom: value.weight_uom.trim(),
       is_active: value.is_active,
     };
-    const body = omitPristine(payload, this.form, NOT_RETURNED);
     this.saving.set(true);
     this.formErrors.set([]);
-    const request = this.id !== null ? this.api.update(this.id, body) : this.api.create(payload);
+    const request = this.id !== null ? this.api.update(this.id, payload) : this.api.create(payload);
     request.subscribe({
       next: () => {
         this.saving.set(false);
@@ -171,6 +166,7 @@ export class ProductVariantFormComponent implements OnInit {
           standard_cost: variant.standard_cost ?? '',
           standard_price: variant.standard_price ?? '',
           weight: variant.weight ?? '',
+          weight_uom: variant.weight_uom ?? '',
           is_active: variant.is_active,
         });
         Object.entries(variant.attributes ?? {}).forEach(([key, value]) => this.addAttribute(key, String(value)));

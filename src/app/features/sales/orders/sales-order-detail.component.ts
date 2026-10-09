@@ -99,10 +99,7 @@ export class SalesOrderDetailComponent implements OnInit {
   readonly deliverySeverity = DELIVERY_STATUS_SEVERITY;
   readonly invoiceSeverity = INVOICE_STATUS_SEVERITY;
 
-  /**
-   * ⚠️ The backend lets an order be invoiced again (BACKEND_REQUESTS 14), so "Create invoice" is only offered
-   * while the order has no invoice that isn't cancelled.
-   */
+  /** An order is invoiced once: "Create invoice" only while it has no invoice that isn't cancelled (the backend refuses a second). */
   readonly canInvoice = computed(
     () => this.order()?.status === 'delivered' && !this.invoices().some((invoice) => invoice.status !== 'cancelled'),
   );

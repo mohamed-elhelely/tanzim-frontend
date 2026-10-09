@@ -19,6 +19,11 @@ export class CustomerReturnService extends CrudApi<CustomerReturnListItem, Custo
     return this.action(id, 'approve');
   }
 
+  /** Turns the request down before anything is received (requested or approved). */
+  reject(id: number, reason: string): Observable<CustomerReturn> {
+    return this.action(id, 'reject', { reason });
+  }
+
   receive(id: number, lines: ReceiveLine[]): Observable<CustomerReturn> {
     return this.action(id, 'receive', { lines });
   }

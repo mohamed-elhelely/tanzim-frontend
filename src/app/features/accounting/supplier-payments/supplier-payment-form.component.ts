@@ -1,6 +1,6 @@
 import { DecimalPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormArray, FormControl, FormGroup, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -31,9 +31,8 @@ function today(): string {
 }
 
 /**
- * Record a payment to a supplier, optionally split across their invoices. ⚠️ Supplier invoices can't be filtered by
- * supplier and their read shape is partial (BACKEND_REQUESTS 2, 8), so the picker lists every invoice number and the
- * backend rejects an invoice of another supplier or more than its open balance.
+ * Record a payment to a supplier, optionally split across their invoices. The picker lists the chosen supplier's
+ * invoices that still have an open balance; the backend rejects more than that balance.
  */
 @Component({
   selector: 'app-supplier-payment-form',
@@ -60,11 +59,19 @@ export class SupplierPaymentFormComponent implements OnInit {
   private readonly notifications = inject(NotificationService);
   private readonly translate = inject(TranslateService);
   private readonly fb = inject(NonNullableFormBuilder);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly saving = signal(false);
   readonly formErrors = signal<string[]>([]);
   readonly suppliers = signal<InventoryRef[]>([]);
   readonly invoices = signal<SupplierInvoiceRef[]>([]);
+  /** "SI-7 · 50.00 EGP": the number and what is still open on it. */
+  readonly invoiceOptions = computed(() =>
+    this.invoices().map((invoice) => ({
+      value: invoice.id,
+      label: `${invoice.invoice_number} · ${Number(invoice.open_balance).toFixed(2)} ${invoice.currency}`,
+    })),
+  );
   readonly methodOptions = SUPPLIER_PAYMENT_METHODS.map((method) => ({ value: method, label: `sales.paymentMethods.${method}` }));
 
   readonly form = this.fb.group({
@@ -87,7 +94,17 @@ export class SupplierPaymentFormComponent implements OnInit {
 
   ngOnInit(): void {
     this.suppliersApi.dropdown<InventoryRef>().subscribe({ next: (suppliers) => this.suppliers.set(suppliers), error: () => undefined });
-    this.invoicesApi.dropdown<SupplierInvoiceRef>().subscribe({ next: (invoices) => this.invoices.set(invoices), error: () => undefined });
+    // Allocations belong to one supplier: changing it clears them and reloads that supplier's open invoices.
+    this.form.controls.supplier.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((supplier) => {
+      this.allocations.clear();
+      this.invoices.set([]);
+      if (supplier !== null) {
+        this.invoicesApi.dropdown<SupplierInvoiceRef>({ supplier, open: 'true' }).subscribe({
+          next: (invoices) => this.invoices.set(invoices),
+          error: () => undefined,
+        });
+      }
+    });
   }
 
   addAllocation(): void {

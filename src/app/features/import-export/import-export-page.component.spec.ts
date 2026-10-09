@@ -102,14 +102,14 @@ describe('ImportExportPageComponent', () => {
     expect(notifications.success).toHaveBeenCalled();
   });
 
-  it('shows the header problem as a readable toast', async () => {
+  it('shows the header problem from the error message', async () => {
     const component = setup().componentInstance;
     component.onResourceChange('category');
     component.onFilePicked({ target: { files: [new File(['name\n'], 'cats.csv')], value: '' } } as unknown as Event);
     await component.checkFile();
     httpMock
       .expectOne(IMPORT)
-      .flush(errorEnvelope(400, 'Unknown error', { error: "[ErrorDetail(string='Missing required headers: parent', code='invalid')]" } as never), {
+      .flush(errorEnvelope(400, 'Missing required headers: parent'), {
         status: 400,
         statusText: 'Bad Request',
       });

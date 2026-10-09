@@ -14,28 +14,13 @@ import { ErrorStateComponent } from '../../../shared/components/error-state/erro
 import { FieldErrorComponent } from '../../../shared/components/field-error/field-error.component';
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
-import { omitPristine } from '../../../shared/utils/omit-pristine';
 import { errorTitleKey, handleSaveError } from '../../../shared/utils/server-errors';
 import { SelectOption } from '../../company/company.models';
 import { InventoryRef, SupplierProductPayload, VariantRef } from '../inventory.models';
 import { SupplierService } from '../suppliers/supplier.service';
 import { ProductVariantService } from '../variants/product-variant.service';
+import { trimZeros } from '../variants/variant-options';
 import { SupplierProductService } from './supplier-product.service';
-
-/** ⚠️ The read endpoint returns only supplier, variant and is_preferred; the rest is only sent when changed. */
-const NOT_RETURNED = [
-  'supplier_sku',
-  'supplier_product_name',
-  'unit_cost',
-  'currency',
-  'min_order_qty',
-  'max_order_qty',
-  'lead_time_days',
-  'is_primary',
-  'effective_from',
-  'effective_to',
-  'notes',
-] as const;
 
 const DECIMAL_4 = /^\d+(\.\d{1,4})?$/;
 const DECIMAL_3 = /^\d+(\.\d{1,3})?$/;
@@ -88,15 +73,14 @@ export class SupplierProductFormComponent implements OnInit {
     product_variant: [null as number | null, [Validators.required]],
     supplier_sku: ['', [Validators.maxLength(100)]],
     supplier_product_name: ['', [Validators.maxLength(200)]],
-    // Required on create only: on edit the saved values aren't returned (see NOT_RETURNED).
-    unit_cost: ['', [Validators.pattern(DECIMAL_4)]],
-    currency: ['', [Validators.pattern(/^[A-Za-z]{3}$/)]],
+    unit_cost: ['', [Validators.required, Validators.pattern(DECIMAL_4)]],
+    currency: ['', [Validators.required, Validators.pattern(/^[A-Za-z]{3}$/)]],
     min_order_qty: ['', [Validators.pattern(DECIMAL_3)]],
     max_order_qty: ['', [Validators.pattern(DECIMAL_3)]],
     lead_time_days: ['', [Validators.pattern(/^\d+$/)]],
     is_preferred: [false],
     is_primary: [false],
-    effective_from: [''],
+    effective_from: ['', [Validators.required]],
     effective_to: [''],
     notes: [''],
   });
@@ -115,9 +99,6 @@ export class SupplierProductFormComponent implements OnInit {
     } else {
       // The backend's defaults (currency USD, min qty 1); a price list entry starts today unless changed.
       this.form.patchValue({ currency: 'USD', min_order_qty: '1', effective_from: today() });
-      for (const name of ['unit_cost', 'currency', 'effective_from'] as const) {
-        this.form.controls[name].addValidators(Validators.required);
-      }
     }
   }
 
@@ -144,10 +125,9 @@ export class SupplierProductFormComponent implements OnInit {
       effective_to: value.effective_to || null,
       notes: value.notes.trim(),
     };
-    const body = omitPristine(payload, this.form, NOT_RETURNED);
     this.saving.set(true);
     this.formErrors.set([]);
-    const request = this.id !== null ? this.api.update(this.id, body) : this.api.create(payload);
+    const request = this.id !== null ? this.api.update(this.id, payload) : this.api.create(payload);
     request.subscribe({
       next: () => {
         this.saving.set(false);
@@ -169,7 +149,18 @@ export class SupplierProductFormComponent implements OnInit {
         this.form.patchValue({
           supplier: record.supplier?.id ?? null,
           product_variant: record.product_variant?.id ?? null,
+          supplier_sku: record.supplier_sku,
+          supplier_product_name: record.supplier_product_name,
+          unit_cost: trimZeros(record.unit_cost),
+          currency: record.currency,
+          min_order_qty: trimZeros(record.min_order_qty),
+          max_order_qty: trimZeros(record.max_order_qty),
+          lead_time_days: record.lead_time_days === null ? '' : String(record.lead_time_days),
           is_preferred: record.is_preferred,
+          is_primary: record.is_primary,
+          effective_from: record.effective_from,
+          effective_to: record.effective_to ?? '',
+          notes: record.notes,
         });
         this.loading.set(false);
       },

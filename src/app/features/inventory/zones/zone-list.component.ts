@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
@@ -13,7 +13,7 @@ import { PageHeaderAction, PageHeaderComponent } from '../../../shared/component
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
 import { ServerTable } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
-import { CodedRef, Zone } from '../inventory.models';
+import { Zone } from '../inventory.models';
 import { ZoneService } from './zone.service';
 
 @Component({
@@ -40,8 +40,6 @@ export class ZoneListComponent implements OnInit {
 
   readonly table = new ServerTable<Zone>((query) => this.api.list(query));
   readonly errorTitleKey = errorTitleKey;
-  /** ⚠️ The list endpoint doesn't return `code`; the dropdown does, so codes are looked up by id. */
-  readonly codes = signal<ReadonlyMap<number, string>>(new Map());
 
   readonly headerActions: PageHeaderAction[] = [
     {
@@ -53,10 +51,6 @@ export class ZoneListComponent implements OnInit {
 
   ngOnInit(): void {
     this.table.load();
-    this.api.dropdown<CodedRef>().subscribe({
-      next: (items) => this.codes.set(new Map(items.map((item) => [item.id, item.code]))),
-      error: () => this.codes.set(new Map()),
-    });
   }
 
   edit(row: Zone): void {

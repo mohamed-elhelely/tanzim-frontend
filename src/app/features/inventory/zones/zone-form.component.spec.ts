@@ -45,14 +45,13 @@ describe('ZoneFormComponent', () => {
     req.flush(envelope(makeZone()), { status: 201, statusText: 'Created' });
   });
 
-  it('on edit, keeps an unchanged code and description out of the PATCH', () => {
+  it('loads the code and description on edit and sends them back', () => {
     const component = setup('1').componentInstance;
     flushWarehouses();
     httpMock.expectOne(`${URL}1/`).flush(envelope(makeZone()));
-    httpMock.expectOne((r) => r.url === URL && r.params.get('dropdown') === 'true').flush(envelope([{ id: 1, name: 'Zone A', code: 'Z-A' }]));
     component.submit();
     const req = httpMock.expectOne((r) => r.method === 'PATCH');
-    expect(req.request.body).toEqual({ warehouse: 1, name: 'Zone A', is_active: true });
+    expect(req.request.body).toEqual({ warehouse: 1, name: 'Zone A', code: 'ZA', description: 'Fast movers', is_active: true });
     req.flush(envelope(makeZone()));
   });
 });

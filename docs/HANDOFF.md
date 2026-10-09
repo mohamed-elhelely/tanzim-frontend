@@ -22,9 +22,10 @@ You are continuing work on Tanzim, a bilingual (English/Arabic, RTL) ERP. Two re
 - main also has the code-structure cleanup (#9) and Step 8 (warehouses, zones, bins, suppliers; #10).
 - main also has Step 9 (access control from /me), Step 10 (fixed workarounds dropped).
 - main also has Step 11 (variants + supplier price list).
-- main also has Step 12 (notifications + billing, #14), Step 13 (customers + sales orders, #16) Step 14 (deliveries, invoices, payments, #17) Step 15 (returns, #18) Step 16 (accounting ledger, #19) Step 17 (accounting reports and payables, #20) and Step 18 (import / export; spec 2026-10-09-import-export-design.md).
-- Test data: Test Company's subscription also has the `accounting` SubscriptionModule (added with the shell; clear the cache after changing modules).
-- Test data: two variants have 50 units in Main Warehouse, seeded with the Django shell (the stock ledger is read-only in the API).
+- main also has Step 12 (notifications + billing, #14), Step 13 (customers + sales orders, #16) Step 14 (deliveries, invoices, payments, #17) Step 15 (returns, #18) Step 16 (accounting ledger, #19) Step 17 (accounting reports and payables, #20) Step 18 (import / export; spec 2026-10-09-import-export-design.md) and Step 19 (backend fixes 0–23 verified, workarounds dropped; spec 2026-10-09-verify-backend-fixes-design.md).
+- Local machine (Windows, D:/tanzim): backend in backend/Tanzim (venv, daphne on :8000 via start-tanzim.ps1; daphne doesn't reload, restart it after a backend pull). `setup_plans` now creates the `accounting` Module; Test Company's subscription has location, inventory and accounting (clear the cache after changing modules).
+- Test data (local DB): warehouses MAIN (zone ZA, bin B1) and BR1; suppliers Nile Supplies and Delta Metals; product Hammer with variants HAM-S / HAM-L, 50 units each in MAIN (posted through a stock adjustment, the API way now); customer Delta Trading, orders, a delivered and invoiced order; customer and supplier returns; supplier invoices NS-INV-001/002, DM-INV-001 (set to `matched` in the shell: matching needs a PO + receipt); a staff user staff@tanzim.test and an employee without permissions (passwords set in the shell; reset them there if needed).
+- `ng serve` on Windows sometimes misses a file change and keeps serving the old chunk: touch the file or restart it.
 - Open PR 0Mustafa37/Tanzim#11 (claude/cors-frontend-origins → master): CORS allows http://localhost:4200, https://mohamed-elhelely.github.io and the ngrok header; CORS_EXTRA_ORIGINS env var for more.
 - GitHub Pages (https://mohamed-elhelely.github.io/tanzim-frontend/) was deployed from claude/redesign-ui, which now equals main; redeploy from main from now on (`npm run deploy`, angular-cli-ghpages, baseHref /tanzim-frontend/).
 - Stale branches (delete only if the owner agrees): claude/awesome-hawking-7uf16d, step-4-company-organisation, master (frontend), claude/awesome-lovelace-2bdsqn, claude/redesign-ui, claude/menu-visibility (merged).
@@ -39,12 +40,9 @@ You are continuing work on Tanzim, a bilingual (English/Arabic, RTL) ERP. Two re
 - Commit after each logical step; never include model names in commits or PRs.
 
 ## Known backend issues (raise, don't work around silently)
-- docs/BACKEND_REQUESTS.md lists items 0–23. The backend says all of them are fixed (0Mustafa37/Tanzim master at
-  c6509d9, PRs #15–#18; one commit per item, e.g. 66eba7a "Return every model field from inventory read serializers",
-  7a6e154 "Send 204 responses without a body", 52c449f platform invoice writes, 5668873 company import permissions).
-  Verify each one against the running backend before relying on it; move verified items to a "Fixed" section.
-- Not yet raised: nothing in sales/ ever sets SalesInvoice status `overdue` (only billing has an overdue task, for
-  platform invoices). Add it as item 24.
+- docs/BACKEND_REQUESTS.md: items 0–23 verified fixed on 2026-10-09 (backend master 0a78259, "Fixed" table). Open:
+  24 (nothing sets a sales invoice `overdue`) and 25 (category export writes the parent as "1.0"; return action
+  responses omit `sales_order_number`, worked around in the customer-return detail).
 - The backend's own list is "Known issues" at the end of docs/API_REFERENCE.md.
 
 ## Running and verifying locally
@@ -53,19 +51,13 @@ You are continuing work on Tanzim, a bilingual (English/Arabic, RTL) ERP. Two re
 - Before calling UI work done: screenshot the changed screens in English, Arabic (RTL), dark mode and 390px mobile, and check the console has no errors.
 
 ## Next steps (the owner asked to work through them in order, one branch + PR per step, merging each)
-1. Step 19 — verify the backend fixes and drop the workarounds. Pull backend master, re-run migrations, then for every
-   item in docs/BACKEND_REQUESTS.md: reproduce the old behaviour against the API, confirm it's fixed, remove the matching
-   frontend workaround (search the code for the item number and for comments mentioning the backend, e.g. omitPristine
-   for item 2, the 204-body handling for item 1, re-loading after RMA actions for item 18, `amount_due: number | string`
-   for item 16, the "hide Create invoice" guard for item 14), and update specs/tests. Items that are not really fixed
-   stay open with a note on what still fails. Add item 24 (sales overdue). Update CODE_MAP.md.
-2. Step 20 — inventory stock levels and stock ledger (read), now that item 2 is fixed.
-3. Step 21 — stock movements: transfers, adjustments (and their confirm/cancel workflows).
-4. Step 22 — procurement: purchase orders, goods receipts, supplier invoices (screens beyond the dropdown ref service).
-5. Then the test campaign: the backend is writing `manage.py seed_test_campaign` (4 companies, ~18 test accounts,
+1. Step 20 — inventory stock levels and stock ledger (read), now that item 2 is fixed.
+2. Step 21 — stock movements: transfers, adjustments (and their confirm/cancel workflows).
+3. Step 22 — procurement: purchase orders, goods receipts, supplier invoices (screens beyond the dropdown ref service).
+4. Then the test campaign: the backend is writing `manage.py seed_test_campaign` (4 companies, ~18 test accounts,
    18 months of data, docs/TEST_ACCOUNTS.md with an expectation matrix). When it lands, run Playwright walks per account
    against the matrix, cross-check numbers between screens and reports, EN/AR/dark/390px, and write a findings report.
-6. Deploy: GitHub Pages from main (`npm run deploy`).
+5. Deploy: GitHub Pages from main (`npm run deploy`).
 
 Reply to the owner in Egyptian Arabic; keep code, commits and PR text in English.
 ```

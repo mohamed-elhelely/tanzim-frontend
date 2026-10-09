@@ -43,9 +43,9 @@ describe('SupplierReturnDetailComponent', () => {
 
   afterEach(() => httpMock.verify());
 
-  it('shows the lines and their total', () => {
-    const fixture = setup();
-    expect(fixture.componentInstance.linesTotal()).toBe(20);
+  it('shows the lines and the refund amount', () => {
+    const fixture = setup({ refund_amount: '20.5000' });
+    expect(fixture.nativeElement.textContent).toContain('20.50');
     expect(fixture.nativeElement.textContent).toContain('Phone X');
   });
 
@@ -58,7 +58,25 @@ describe('SupplierReturnDetailComponent', () => {
     httpMock.expectOne(`${URL}1/ship/`).flush(envelope(makeSupplierReturn({ status: 'shipped' })));
     run(fixture, 'returns.actions.confirmReceipt');
     httpMock.expectOne(`${URL}1/confirm_receipt/`).flush(envelope(makeSupplierReturn({ status: 'confirmed' })));
-    expect(fixture.componentInstance.actions()).toEqual([]);
+    expect(fixture.componentInstance.actions().map((a) => a.label)).toEqual(['returns.actions.closeSupplier']);
+  });
+
+  it('closes a confirmed return with the refund received', () => {
+    const fixture = setup({ status: 'confirmed' });
+    const component = fixture.componentInstance;
+    run(fixture, 'returns.actions.closeSupplier');
+    expect(component.refundAmount).toBe('20.00');
+    component.refundAmount = 'abc';
+    component.submitClose();
+    expect(component.closeError()).toBe('returns.hints.refundAmount');
+    component.refundAmount = '18.5';
+    component.submitClose();
+    const req = httpMock.expectOne(`${URL}1/close/`);
+    expect(req.request.body).toEqual({ refund_amount: '18.5' });
+    req.flush(envelope(makeSupplierReturn({ status: 'closed', refund_amount: '18.5000' })));
+    expect(component.srn()?.status).toBe('closed');
+    expect(component.closeDialogOpen()).toBeFalse();
+    expect(component.actions()).toEqual([]);
   });
 
   it('offers "Raise debit note" on approved returns when accounting is on, and opens the draft', () => {

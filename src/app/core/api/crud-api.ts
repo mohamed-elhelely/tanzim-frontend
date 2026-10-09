@@ -63,8 +63,8 @@ export abstract class CrudApi<T, TPayload, TCreated = T> extends BaseApiService 
     );
   }
 
-  dropdown<D>(): Observable<D[]> {
-    return this.get<D[]>(this.path, { params: { dropdown: 'true' } }).pipe(map((response) => response.data ?? []));
+  dropdown<D>(filters: Record<string, string | number> = {}): Observable<D[]> {
+    return this.get<D[]>(this.path, { params: { ...filters, dropdown: 'true' } }).pipe(map((response) => response.data ?? []));
   }
 
   retrieve(id: number): Observable<T> {

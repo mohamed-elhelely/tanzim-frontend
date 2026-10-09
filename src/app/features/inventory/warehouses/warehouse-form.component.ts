@@ -16,25 +16,12 @@ import { FieldErrorComponent } from '../../../shared/components/field-error/fiel
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { localizedName } from '../../../shared/pipes/localized-name.pipe';
-import { omitPristine } from '../../../shared/utils/omit-pristine';
 import { errorTitleKey, handleSaveError } from '../../../shared/utils/server-errors';
 import { NamedRef, SelectOption } from '../../company/company.models';
+import { CompanyUserService } from '../../company/users/company-user.service';
 import { LocationService } from '../../locations/sites/location.service';
-import { CodedRef, WAREHOUSE_TYPES, WarehousePayload, WarehouseType } from '../inventory.models';
+import { WAREHOUSE_TYPES, WarehousePayload, WarehouseType } from '../inventory.models';
 import { WarehouseService } from './warehouse.service';
-
-/** ⚠️ Fields the read endpoint doesn't return: shown empty on edit and only sent when changed (see omitPristine). */
-const NOT_RETURNED = [
-  'code',
-  'email',
-  'phone',
-  'address_line1',
-  'address_line2',
-  'city',
-  'state',
-  'postal_code',
-  'country',
-] as const;
 
 @Component({
   selector: 'app-warehouse-form',
@@ -58,6 +45,7 @@ const NOT_RETURNED = [
 export class WarehouseFormComponent implements OnInit {
   private readonly api = inject(WarehouseService);
   private readonly locationsApi = inject(LocationService);
+  private readonly users = inject(CompanyUserService);
   private readonly router = inject(Router);
   private readonly notifications = inject(NotificationService);
   private readonly translate = inject(TranslateService);
@@ -71,6 +59,7 @@ export class WarehouseFormComponent implements OnInit {
   readonly loadError = signal<AppError | null>(null);
   readonly formErrors = signal<string[]>([]);
   readonly errorTitleKey = errorTitleKey;
+  readonly userOptions = signal<SelectOption[]>([]);
   readonly locationOptions = computed<SelectOption[]>(() =>
     this.locations().map((location) => ({ value: location.id, label: localizedName(location, this.lang()) })),
   );
@@ -79,10 +68,10 @@ export class WarehouseFormComponent implements OnInit {
 
   readonly form = inject(NonNullableFormBuilder).group({
     name: ['', [Validators.required, Validators.maxLength(100)]],
-    // Required on create; on edit it comes from the dropdown and may be missing (see loadWarehouse).
-    code: ['', [Validators.maxLength(20)]],
+    code: ['', [Validators.required, Validators.maxLength(20)]],
     warehouse_type: ['central' as WarehouseType, [Validators.required]],
     location: [null as number | null],
+    manager: [null as number | null],
     email: ['', [Validators.email, Validators.maxLength(254)]],
     phone: ['', [Validators.maxLength(50)]],
     address_line1: ['', [Validators.maxLength(200)]],
@@ -101,10 +90,12 @@ export class WarehouseFormComponent implements OnInit {
       next: (items) => this.locations.set(items),
       error: () => this.locations.set([]),
     });
+    this.users.userOptions().subscribe({
+      next: (options) => this.userOptions.set(options),
+      error: () => this.userOptions.set([]),
+    });
     if (this.id !== null) {
       this.loadWarehouse(this.id);
-    } else {
-      this.form.controls.code.addValidators(Validators.required);
     }
   }
 
@@ -119,6 +110,7 @@ export class WarehouseFormComponent implements OnInit {
       code: value.code.trim(),
       warehouse_type: value.warehouse_type,
       location: value.location,
+      manager: value.manager,
       email: value.email.trim(),
       phone: value.phone.trim(),
       address_line1: value.address_line1.trim(),
@@ -131,10 +123,9 @@ export class WarehouseFormComponent implements OnInit {
       allow_negative_stock: value.allow_negative_stock,
       use_bin_locations: value.use_bin_locations,
     };
-    const body = omitPristine(payload, this.form, NOT_RETURNED);
     this.saving.set(true);
     this.formErrors.set([]);
-    const request = this.id !== null ? this.api.update(this.id, body) : this.api.create(payload);
+    const request = this.id !== null ? this.api.update(this.id, payload) : this.api.create(payload);
     request.subscribe({
       next: () => {
         this.saving.set(false);
@@ -155,8 +146,18 @@ export class WarehouseFormComponent implements OnInit {
       next: (warehouse) => {
         this.form.patchValue({
           name: warehouse.name,
+          code: warehouse.code,
           warehouse_type: warehouse.warehouse_type,
           location: warehouse.location?.id ?? null,
+          manager: warehouse.manager?.id ?? null,
+          email: warehouse.email,
+          phone: warehouse.phone,
+          address_line1: warehouse.address_line1,
+          address_line2: warehouse.address_line2,
+          city: warehouse.city,
+          state: warehouse.state,
+          postal_code: warehouse.postal_code,
+          country: warehouse.country,
           is_active: warehouse.is_active,
           allow_negative_stock: warehouse.allow_negative_stock,
           use_bin_locations: warehouse.use_bin_locations,
@@ -167,16 +168,6 @@ export class WarehouseFormComponent implements OnInit {
         this.loadError.set(error);
         this.loading.set(false);
       },
-    });
-    // The code is only returned by the dropdown.
-    this.api.dropdown<CodedRef>().subscribe({
-      next: (items) => {
-        const code = items.find((item) => item.id === id)?.code;
-        if (code) {
-          this.form.controls.code.setValue(code);
-        }
-      },
-      error: () => undefined, // the code stays empty and, being untouched, isn't sent
     });
   }
 

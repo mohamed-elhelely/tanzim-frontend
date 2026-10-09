@@ -74,10 +74,13 @@ export interface CustomerReturn extends CustomerReturnListItem {
   sales_order_number: string | null;
   customer_number: string;
   return_reason_note: string;
+  notes: string;
   approved_date: string | null;
   received_date: string | null;
   inspected_date: string | null;
   closed_date: string | null;
+  rejected_date: string | null;
+  rejection_reason: string;
   refund_method: RefundMethod | null;
   credit_note_number: string | null;
   replacement_order: number | null;
@@ -136,7 +139,7 @@ export const CUSTOMER_RETURN_SEVERITY: Record<CustomerReturnStatus, Severity> = 
   rejected: 'danger',
 };
 
-// Supplier returns: draft → approved → shipped → confirmed.
+// Supplier returns: draft → approved → shipped → confirmed → closed.
 
 export const SUPPLIER_RETURN_STATUSES = ['draft', 'approved', 'shipped', 'confirmed', 'closed'] as const;
 export type SupplierReturnStatus = (typeof SUPPLIER_RETURN_STATUSES)[number];

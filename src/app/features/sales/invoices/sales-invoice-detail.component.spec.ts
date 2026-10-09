@@ -61,9 +61,9 @@ describe('SalesInvoiceDetailComponent', () => {
     expect(labels(setup({ status: 'issued' }))).toEqual(['sales.actions.recordPayment', 'sales.actions.cancelInvoice']);
     TestBed.resetTestingModule();
     // A paid amount blocks cancelling (refund first).
-    expect(labels(setup({ status: 'issued', amount_paid: '100.0000', amount_due: 187 }))).toEqual(['sales.actions.recordPayment']);
+    expect(labels(setup({ status: 'issued', amount_paid: '100.0000', amount_due: '187.0000' }))).toEqual(['sales.actions.recordPayment']);
     TestBed.resetTestingModule();
-    expect(labels(setup({ status: 'paid', amount_paid: '287.0000', amount_due: 0 }))).toEqual([]);
+    expect(labels(setup({ status: 'paid', amount_paid: '287.0000', amount_due: '0.0000' }))).toEqual([]);
   });
 
   it('saves draft details and reloads', () => {
@@ -99,7 +99,7 @@ describe('SalesInvoiceDetailComponent', () => {
     component.savePayment();
     const req = httpMock.expectOne(`${URL}1/pay/`);
     expect(req.request.body).toEqual(jasmine.objectContaining({ amount: '100', payment_method: 'bank_transfer', reference: 'TRX-1' }));
-    req.flush(envelope(makeInvoice({ status: 'issued', payment_status: 'partial', amount_paid: '100.0000', amount_due: 187 })));
+    req.flush(envelope(makeInvoice({ status: 'issued', payment_status: 'partial', amount_paid: '100.0000', amount_due: '187.0000' })));
     httpMock.expectOne((r) => r.url === PAYMENTS).flush(envelope([makePayment()]));
     expect(component.paymentDialogOpen()).toBeFalse();
     expect(component.payments().length).toBe(1);
@@ -115,7 +115,7 @@ describe('SalesInvoiceDetailComponent', () => {
   });
 
   it('refunds a completed payment and reloads', () => {
-    const fixture = setup({ status: 'paid', amount_paid: '100.0000', amount_due: 0 }, [makePayment()]);
+    const fixture = setup({ status: 'paid', amount_paid: '100.0000', amount_due: '0.0000' }, [makePayment()]);
     expect(fixture.componentInstance.canRefund(makePayment({ status: 'refunded' }))).toBeFalse();
     fixture.componentInstance.refund(makePayment());
     httpMock.expectOne(`${PAYMENTS}1/refund/`).flush(envelope(makePayment({ status: 'refunded' })));

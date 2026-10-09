@@ -12,15 +12,6 @@
 } @else {
   <p-card styleClass="max-w-5xl">
     <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-6" novalidate>
-      @if (isEdit) {
-        <!-- ⚠️ Some fields aren't returned by the API; see omitPristine(). -->
-        <div
-          class="rounded-md border border-sky-200 bg-sky-50 p-3 text-sm text-sky-800 dark:border-sky-900 dark:bg-sky-950 dark:text-sky-200"
-        >
-          {{ 'inventory.hints.partialData' | translate }}
-        </div>
-      }
-
       @if (formErrors().length) {
         <div
           role="alert"

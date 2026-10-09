@@ -116,19 +116,19 @@ Things to know:
 |---|---|---|
 | `api/api.config.ts` | `API_BASE_URL` from `src/environments` | Prod points at the backend's ngrok URL |
 | `api/base-api.service.ts` | Typed `get/post/put/patch/delete` with the base URL; `getBlob` / `postBlob` for file downloads | |
-| `api/crud-api.ts` | Standard calls for one resource; `ListQuery.filters` and `all(filters)` for exact-match filters | 🆕 every resource service extends it |
+| `api/crud-api.ts` | Standard calls for one resource; `ListQuery.filters`, `all(filters)` and `dropdown(filters)` for exact-match filters | 🆕 every resource service extends it |
 | `auth/auth.service.ts` | Signed-in user, login, logout, token refresh | 🧠 role restored from the JWT on reload |
 | `auth/token-storage.service.ts` | Tokens in localStorage | |
 | `auth/access.service.ts` | Permissions, modules and staff flag from GET /me | 🆕 🧠 🔒 see §3 |
 | `auth/auth.guard.ts` | `authGuard`, `guestGuard`, `platformAdminGuard`, `companyMemberGuard`, `permissionGuard` | 🔒 `permissionGuard` reads `route.data.permission` |
-| `errors/app-error.ts` | `AppError` + `toAppError()` | The only error shape in the app. ⚠️ unwraps "['…']" workflow messages (BACKEND_REQUESTS 11) |
+| `errors/app-error.ts` | `AppError` + `toAppError()` | The only error shape in the app |
 | `errors/global-error-handler.ts` | Toast for uncaught non-HTTP errors | |
 | `interceptors/api-headers.interceptor.ts` | `ngrok-skip-browser-warning` for ngrok hosts | ⚠️ ngrok free tier, not a backend bug |
 | `interceptors/auth.interceptor.ts` | Bearer token, refresh on 401 | 🧠 see §2 |
 | `interceptors/loading.interceptor.ts` | Counts requests for the loading bar | |
 | `interceptors/error.interceptor.ts` | → `AppError`, toast for network/5xx | |
 | `models/api-response.model.ts` | Envelope types, `Paginated<T>` | |
-| `notifications/notification-center.service.ts` | Notifications list, unread count, live WebSocket | 🆕 🧠 reconnects with backoff, stops on sign-out; ⚠️ socket field names differ (`toAppNotification`) |
+| `notifications/notification-center.service.ts` | Notifications list, unread count, live WebSocket | 🆕 🧠 reconnects with backoff, stops on sign-out |
 | `services/confirm.service.ts` | `confirmDelete(name, remove, onDeleted)`; `confirmAction()` / `runAction()` for workflow buttons | 🆕 used by every list that deletes and every confirm/ship/issue/cancel action |
 | `services/notification.service.ts` | Toasts | |
 | `services/language.service.ts` | en/ar, sets `<html lang dir>` | |
@@ -148,7 +148,6 @@ Things to know:
 | `shared/table/server-table.ts` | State for server-paged tables | 🆕 🧠 cancels stale requests; steps back a page after deleting the last row |
 | `shared/utils/server-errors.ts` | `applyServerErrors`, `handleSaveError`, `errorTitleKey` | 🆕 🧠 flattens nested backend errors to dotted keys (`user.email`) |
 | `shared/utils/save-file.ts` | Saves a downloaded Blob under a file name | Used by the Excel export |
-| `shared/utils/omit-pristine.ts` | Drops untouched fields from an edit body | 🆕 ⚠️ for read endpoints that don't return every field (BACKEND_REQUESTS 15e) |
 | `shared/components/field-error` | Message under an input (required, email, length, pattern, `greaterThan`, `max`, server) | Not OnPush on purpose (reacts to `touched`) |
 | `shared/components/page-header` | Title, back link, action buttons | |
 | `shared/components/notification-item` | One notification row (bell + page) | Icon/colour by type, unread dot |
@@ -205,15 +204,15 @@ marked "client list".
 | Resource | Endpoint | Notes |
 |---|---|---|
 | `products/` | `inventory/v1/product/` | Enum selects (type, valuation); shelf life only with an expiry date. Each row links to its variants |
-| `variants/` | `inventory/v1/product-variant/` | 🧠 `?product=` filter from the URL (chip + "Show all", reloads on change). 🧠 attributes edited as name/value rows (`FormArray`), sent as an object. `dimensions`/`image` never sent. ⚠️ `weight_uom` not returned → `omitPristine`. `variant-options.ts` (`toItemOption`, `trimZeros`) feeds the item pickers of the sales order and return forms |
-| `categories/` | `inventory/v1/category/` | 🧠 parent picker shows the full path and excludes itself and its descendants. ⚠️ edit sends name/parent only when changed (15a) |
+| `variants/` | `inventory/v1/product-variant/` | 🧠 `?product=` filter from the URL (chip + "Show all", reloads on change). 🧠 attributes edited as name/value rows (`FormArray`), sent as an object. `dimensions`/`image` never sent. `variant-options.ts` (`toItemOption`, `trimZeros`) feeds the item pickers of the sales order and return forms; `trimZeros` also formats decimals loaded into forms |
+| `categories/` | `inventory/v1/category/` | 🧠 parent picker shows the full path and excludes itself and its descendants |
 | `brands/` | `inventory/v1/brand/` | Smallest resource: copy it for new ones |
-| `warehouses/` | `inventory/v1/warehouse/` | ⚠️ code shown from the dropdown (list + edit); contact/address not returned → `omitPristine`; no manager field (backend 500) |
-| `zones/` | `inventory/v1/zone/` | Warehouse picker "Name (CODE)". ⚠️ code/description not returned → `omitPristine` |
-| `bins/` | `inventory/v1/bin/` | 🧠 zone picker from the full zone list, labelled "Warehouse › Zone". ⚠️ code/barcode/capacity/type not returned → `omitPristine` |
-| `suppliers/` | `inventory/v1/supplier/` | Reliability is 0–1; empty lead time/reliability → 0. ⚠️ contact/address/terms not returned → `omitPristine` |
-| `supplier-invoices/` | `inventory/v1/supplier-invoice/` | Service only (`?dropdown=true` references for payment allocations and debit notes); screens wait for BACKEND_REQUESTS 2 |
-| `supplier-products/` | `inventory/v1/supplier-product/` | The supplier price list. ⚠️ read returns only supplier, variant, preferred → list shows those; edit uses `omitPristine` for everything else |
+| `warehouses/` | `inventory/v1/warehouse/` | Manager picker (company users, `CompanyUserService.userOptions`) |
+| `zones/` | `inventory/v1/zone/` | Warehouse picker "Name (CODE)" |
+| `bins/` | `inventory/v1/bin/` | 🧠 zone picker from the full zone list, labelled "Warehouse › Zone" |
+| `suppliers/` | `inventory/v1/supplier/` | Reliability is 0–1; empty lead time/reliability → 0 |
+| `supplier-invoices/` | `inventory/v1/supplier-invoice/` | Service only so far (`?dropdown=true&supplier=&open=true` with `open_balance` for payment allocations and debit notes) |
+| `supplier-products/` | `inventory/v1/supplier-product/` | The supplier price list (cost, currency, validity dates) |
 
 ### sales — `/sales` (no module needed)
 
@@ -223,9 +222,9 @@ Sales endpoints (`/api/sales/…`) return flat ids plus `*_name` fields, a short
 | Resource | Endpoint | Notes |
 |---|---|---|
 | `customers/` | `sales/customers/` | Type filter. `credit_used` never sent; edit shows credit used / available / open orders. Addresses via `address-fields/` |
-| `orders/` (`SalesOrderService`) | `sales/sales-orders/` | List with status filter (delete on drafts only). 🧠 form: lines in a `FormArray`, one item picker over every active variant (sets product + variant + default price), totals previewed with the backend formula (`lineTotal`/`lineTax`), saving replaces all lines. ⚠️ only drafts open in the form (BACKEND_REQUESTS 12). Detail page: lines, totals, its deliveries and invoices, workflow (confirm, ship dialog, mark delivered, create invoice, cancel with reason, duplicate) via `ConfirmService.confirmAction`; 🧠 follows the `:id` param because duplicate navigates to the copy |
+| `orders/` (`SalesOrderService`) | `sales/sales-orders/` | List with status filter (delete on drafts only). 🧠 form: lines in a `FormArray`, one item picker over every active variant (sets product + variant + default price), totals previewed with the backend formula (`lineTotal`/`lineTax`), saving replaces all lines. Only drafts open in the form (the backend refuses the rest). Detail page: lines, totals, its deliveries and invoices, workflow (confirm, ship dialog, mark delivered, create invoice, cancel with reason, duplicate) via `ConfirmService.confirmAction`; 🧠 follows the `:id` param because duplicate navigates to the copy |
 | `deliveries/` | `sales/delivery-notes/` | Created only from an order (Ship dialog on the order page, which issues stock). List + detail; workflow confirm → hand to carrier → delivered / failed (pick-ups skip the carrier); draft details via PATCH, then re-read (the write shape has no names) |
-| `invoices/` | `sales/sales-invoices/` | Created only from a delivered order. Detail: lines, totals, payments; draft details / issue / delete / cancel; record payment (≤ amount due), refund. ⚠️ "Create invoice" hidden while a non-cancelled invoice exists (BACKEND_REQUESTS 14); `amount_due` is a number (16) |
+| `invoices/` | `sales/sales-invoices/` | Created only from a delivered order. Detail: lines, totals, payments; draft details / issue / delete / cancel; record payment (≤ amount due), refund. "Create invoice" only while there is no non-cancelled invoice (the backend refuses a second); totals include shipping |
 | `payments/` (`InvoicePaymentService`) | `sales/invoice-payments/` | Read-only list (method filter) → invoice; `refund(id)` |
 | `address-fields/` | — | `AddressFieldsComponent` + `addressGroup/toAddress/patchAddress`; keys `street, city, state, zip, country` |
 
@@ -235,12 +234,12 @@ Endpoints under `/api/returns/v1/` (the legacy `/api/returns/api/returns/` mount
 
 | Resource | Endpoint | Notes |
 |---|---|---|
-| `customer-returns/` | `returns/v1/customer-returns/` | List (status + reason filters). 🧠 form: from an order's shipped lines (capped, ⚠️ BACKEND_REQUESTS 17) or free item rows; no edit (20). Detail: approve / receive / inspect (outcome → derived restocking decision, `RESTOCKING_FOR`) / close with refund / replacement order. ⚠️ re-reads after each step (18) |
-| `supplier-returns/` | `returns/v1/supplier-returns/` | List, form (items with cost from the standard cost), detail: approve → shipped → confirmed. ⚠️ value = sum of lines (19) |
+| `customer-returns/` | `returns/v1/customer-returns/` | List (status + reason filters). 🧠 form: from an order's shipped lines (capped by shipped; the backend also subtracts earlier returns) or free item rows; no edit yet. Detail: approve / reject (reason) / receive / inspect (outcome → derived restocking decision, `RESTOCKING_FOR`) / close with refund / replacement order. ⚠️ applies each action's response, keeping the loaded `sales_order_number` (BACKEND_REQUESTS 25) |
+| `supplier-returns/` | `returns/v1/supplier-returns/` | List, form (items with cost from the standard cost), detail: approve → shipped → confirmed → close with the refund received |
 
 ### accounting — `/accounting` (module `accounting`)
 
-Built from `accounting/serializers.py` (not in API_REFERENCE.md, BACKEND_REQUESTS 10).
+API_REFERENCE.md → Accounting; checked against `accounting/serializers.py`.
 
 | Resource | Endpoint | Notes |
 |---|---|---|
@@ -248,7 +247,7 @@ Built from `accounting/serializers.py` (not in API_REFERENCE.md, BACKEND_REQUEST
 | `journal-entries/` | `accounting/v1/journal-entries/` | Server list (status, origin, dates; no search). 🧠 form: balanced lines in cents, one side per line, "Balance last line", draft or `post: true`; drafts only. Detail: post / delete / reverse (opens the reversal, follows the route) |
 | `fiscal-years/` | `accounting/v1/fiscal-years/`, `fiscal-periods/{id}/close|reopen/` | One page: years with period tiles; create (periods made by the backend), close/reopen year and periods, delete year |
 | `reports/` | `accounting/v1/reports/<type>/` | 🧠 one viewer for all 8 reports: `REPORT_PARAMS` decides the inputs, `columns`/`rows`/`summary` drive the table and cards; Excel via `getBlob` + `saveFile` |
-| `supplier-payments/` | `accounting/v1/supplier-payments/` | List, record form (allocations ≤ amount; ⚠️ invoice picker lists all invoices, BACKEND_REQUESTS 8), detail with void |
+| `supplier-payments/` | `accounting/v1/supplier-payments/` | List, record form (allocations ≤ amount; 🧠 picking a supplier loads its open invoices with their balance and clears the allocations), detail with void |
 | `debit-notes/` | `accounting/v1/debit-notes/` | List, form (draft only; returns of the chosen supplier), detail: issue / cancel / delete. Raised from a supplier return too (`fromSupplierReturn`) |
 
 ### import-export — `/import-export`
@@ -256,7 +255,7 @@ Built from `accounting/serializers.py` (not in API_REFERENCE.md, BACKEND_REQUEST
 | File | Notes |
 |---|---|
 | `import-export.models.ts` | `DATA_RESOURCES`: every importable resource with its path, group, module / permission |
-| `import-export.service.ts` | export / template blobs, `importFile(dryRun)`, task list. ⚠️ `fileToDataUri` picks the data-URI prefix from the extension (Excel needs `data:@file/…`); `readableImportError` unwraps `ErrorDetail` strings (BACKEND_REQUESTS 23) |
+| `import-export.service.ts` | export / template blobs, `importFile(dryRun)`, task list. ⚠️ `fileToDataUri` picks the data-URI prefix from the extension (Excel needs `data:@file/…`) |
 | `import-export-page.component` | 🧠 grouped picker filtered by module/permission; Check file (dry run, row preview) → Import only without errors; history with type filter and downloads |
 
 ## 7. Cross-feature links
@@ -297,11 +296,9 @@ The places most likely to hide a bug, in the order to check them:
 3. 🧠 `shared/table/server-table.ts` — every list depends on it.
 4. 🧠 `shared/utils/server-errors.ts` — every form depends on it.
 5. 🧠 `features/locations/sites/site-form.component.ts` — cascading pickers that must not clear on load.
-6. 🧠 ⚠️ `features/inventory/categories/category-form.component.ts` — tree rules and the duplicate workaround.
-7. ⚠️ `shared/utils/omit-pristine.ts` and its users (warehouse, zone, bin, supplier, variant, supplier-product forms) — an edit must never
-   send an untouched field the API didn't return.
-8. 🧠 `features/sales/orders/sales-order-form.component.ts` — line rows, product/variant pairing and the totals preview.
-9. ⚠️ Every other workaround marked above: re-check when the backend fixes the matching item.
+6. 🧠 `features/inventory/categories/category-form.component.ts` — tree rules (no cycles in the parent picker).
+7. 🧠 `features/sales/orders/sales-order-form.component.ts` — line rows, product/variant pairing and the totals preview.
+8. ⚠️ Every workaround still marked above: re-check when the backend fixes the matching item.
 
 ## 9. Keeping this map up to date
 

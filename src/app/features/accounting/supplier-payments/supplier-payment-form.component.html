@@ -88,11 +88,11 @@
             <div>
               <p-select
                 formControlName="invoice"
-                [options]="invoices()"
-                optionLabel="invoice_number"
-                optionValue="id"
+                [options]="invoiceOptions()"
+                optionLabel="label"
+                optionValue="value"
                 [filter]="true"
-                filterBy="invoice_number"
+                filterBy="label"
                 [placeholder]="'accounting.fields.supplierInvoice' | translate"
                 [ariaLabel]="'accounting.fields.supplierInvoice' | translate"
                 [emptyMessage]="'accounting.hints.noSupplierInvoices' | translate"

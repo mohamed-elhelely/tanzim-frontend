@@ -48,7 +48,7 @@
         </ng-template>
         <ng-template pTemplate="body" let-row>
           <tr>
-            <td>{{ codes().get(row.id) }}</td>
+            <td>{{ row.code }}</td>
             <td class="font-medium">{{ row.name }}</td>
             <td>{{ 'inventory.warehouseTypes.' + row.warehouse_type | translate }}</td>
             <td>{{ row.location | localizedName: lang() }}</td>

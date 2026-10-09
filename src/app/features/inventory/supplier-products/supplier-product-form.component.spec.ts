@@ -59,15 +59,30 @@ describe('SupplierProductFormComponent', () => {
     req.flush(envelope(makeSupplierProduct()), { status: 201, statusText: 'Created' });
   });
 
-  it('on edit, sends only supplier, variant, preferred and what the user changed', () => {
+  it('loads every saved field on edit (without trailing zeros) and sends them all back', () => {
     const component = setup('1').componentInstance;
     flushDropdowns();
     httpMock.expectOne(`${URL}1/`).flush(envelope(makeSupplierProduct()));
+    expect(component.form.controls.unit_cost.value).toBe('480');
     component.form.controls.unit_cost.setValue('470');
-    component.form.controls.unit_cost.markAsDirty();
     component.submit();
     const req = httpMock.expectOne((r) => r.url === `${URL}1/` && r.method === 'PATCH');
-    expect(req.request.body).toEqual({ supplier: 1, product_variant: 1, unit_cost: '470', is_preferred: true });
+    expect(req.request.body).toEqual({
+      supplier: 1,
+      product_variant: 1,
+      supplier_sku: 'GS-1',
+      supplier_product_name: 'Phone X red',
+      unit_cost: '470',
+      currency: 'AED',
+      min_order_qty: '1',
+      max_order_qty: null,
+      lead_time_days: 5,
+      is_preferred: true,
+      is_primary: true,
+      effective_from: '2026-01-01',
+      effective_to: null,
+      notes: '',
+    });
     req.flush(envelope(makeSupplierProduct()));
   });
 });

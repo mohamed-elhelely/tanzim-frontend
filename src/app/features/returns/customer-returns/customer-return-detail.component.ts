@@ -14,6 +14,7 @@ import { ConfirmService } from '../../../core/services/confirm.service';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
 import { PageHeaderAction, PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
+import { ReasonDialogComponent } from '../../../shared/components/reason-dialog/reason-dialog.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
 import {
@@ -49,7 +50,8 @@ interface InspectRow {
 
 /**
  * One customer return and its workflow: approve → receive (back into stock) → inspect (decide what happens to
- * each item) → close with the refund. A replacement order can be created once inspected.
+ * each item) → close with the refund. A replacement order can be created once inspected; a request can be
+ * rejected until the goods are received.
  */
 @Component({
   selector: 'app-customer-return-detail',
@@ -66,6 +68,7 @@ interface InspectRow {
     SelectModule,
     TableModule,
     PageHeaderComponent,
+    ReasonDialogComponent,
     LoadingStateComponent,
     ErrorStateComponent,
     StatusBadgeComponent,
@@ -82,6 +85,7 @@ export class CustomerReturnDetailComponent implements OnInit {
   readonly rma = signal<CustomerReturn | null>(null);
   readonly loadError = signal<AppError | null>(null);
   readonly dialog = signal<'receive' | 'inspect' | 'close' | null>(null);
+  readonly rejectDialogOpen = signal(false);
   readonly saving = signal(false);
   readonly dialogError = signal<string | null>(null);
   receiveRows: ReceiveRow[] = [];
@@ -101,10 +105,12 @@ export class CustomerReturnDetailComponent implements OnInit {
     switch (rma.status) {
       case 'requested':
         actions.push({ label: 'returns.actions.approve', icon: 'pi pi-check', onClick: () => this.approve() });
+        actions.push({ label: 'returns.actions.reject', icon: 'pi pi-times', severity: 'danger', onClick: () => this.rejectDialogOpen.set(true) });
         actions.push({ label: 'common.delete', icon: 'pi pi-trash', severity: 'secondary', onClick: () => this.remove() });
         break;
       case 'approved':
         actions.push({ label: 'returns.actions.receive', icon: 'pi pi-inbox', onClick: () => this.openReceive() });
+        actions.push({ label: 'returns.actions.reject', icon: 'pi pi-times', severity: 'danger', onClick: () => this.rejectDialogOpen.set(true) });
         break;
       case 'received':
         actions.push({ label: 'returns.actions.inspect', icon: 'pi pi-search', onClick: () => this.openInspect() });
@@ -135,6 +141,17 @@ export class CustomerReturnDetailComponent implements OnInit {
 
   goBack(): void {
     void this.router.navigate(['/returns/customer']);
+  }
+
+  onRejectConfirmed(reason: string): void {
+    this.confirm.runAction(
+      () => this.api.reject(this.id, reason),
+      'returns.toasts.rejected',
+      (rma) => {
+        this.rejectDialogOpen.set(false);
+        this.applyUpdate(rma);
+      },
+    );
   }
 
   submitReceive(): void {
@@ -192,11 +209,10 @@ export class CustomerReturnDetailComponent implements OnInit {
     this.confirm.runAction(
       request,
       success,
-      () => {
+      (rma) => {
         this.saving.set(false);
         this.dialog.set(null);
-        // ⚠️ The action responses carry the lines as they were before the step (BACKEND_REQUESTS 18): read again.
-        this.load();
+        this.applyUpdate(rma);
       },
       () => this.saving.set(false),
     );
@@ -241,8 +257,13 @@ export class CustomerReturnDetailComponent implements OnInit {
       accept: 'returns.actions.approve',
       success: 'returns.toasts.approved',
       run: () => this.api.approve(this.id),
-      onDone: (rma) => this.rma.set(rma),
+      onDone: (rma) => this.applyUpdate(rma),
     });
+  }
+
+  /** Action responses carry the updated return but not `sales_order_number`, so keep the loaded one. */
+  private applyUpdate(rma: CustomerReturn): void {
+    this.rma.update((current) => ({ ...rma, sales_order_number: rma.sales_order_number ?? current?.sales_order_number ?? null }));
   }
 
   private createReplacement(): void {
