@@ -9,7 +9,7 @@ You are continuing work on Tanzim, a bilingual (English/Arabic, RTL) ERP. Two re
 - Frontend: mohamed-elhelely/tanzim-frontend (Angular 21, standalone + signals, PrimeNG 21.1.10, Tailwind 3, ngx-translate, Jasmine/Karma)
 - Backend: 0Mustafa37/Tanzim (Django + DRF, SQLite + Redis locally). API source of truth: docs/API_REFERENCE.md and docs/BUSINESS_LOGIC.md in the backend repo; check the serializers when the docs look stale.
 
-## Current state (2026-10-08)
+## Current state (2026-10-09)
 - main (frontend) has Step 4 (Company & Organisation), Step 5 (Locations) and the redesign (PR mohamed-elhelely/tanzim-frontend#4, merged 2026-10-08). Specs live in docs/superpowers/specs/ (2026-10-07-company-organisation-design.md, 2026-10-07-locations-design.md, each ends with a "Verification results" table).
 - What #4 brought in:
   - Angular 18→21 via ng update, one major at a time.
@@ -39,9 +39,12 @@ You are continuing work on Tanzim, a bilingual (English/Arabic, RTL) ERP. Two re
 - Commit after each logical step; never include model names in commits or PRs.
 
 ## Known backend issues (raise, don't work around silently)
-- The open list, as a prompt for a backend session, is in docs/BACKEND_REQUESTS.md (DELETE 204 with a body; partial
-  inventory read serializers → omitPristine; warehouse manager 500; warehouse code globally unique; category
-  duplicate check on edit; inventory deletes of used records; category cycles; accounting API undocumented).
+- docs/BACKEND_REQUESTS.md lists items 0–23. The backend says all of them are fixed (0Mustafa37/Tanzim master at
+  c6509d9, PRs #15–#18; one commit per item, e.g. 66eba7a "Return every model field from inventory read serializers",
+  7a6e154 "Send 204 responses without a body", 52c449f platform invoice writes, 5668873 company import permissions).
+  Verify each one against the running backend before relying on it; move verified items to a "Fixed" section.
+- Not yet raised: nothing in sales/ ever sets SalesInvoice status `overdue` (only billing has an overdue task, for
+  platform invoices). Add it as item 24.
 - The backend's own list is "Known issues" at the end of docs/API_REFERENCE.md.
 
 ## Running and verifying locally
@@ -50,8 +53,19 @@ You are continuing work on Tanzim, a bilingual (English/Arabic, RTL) ERP. Two re
 - Before calling UI work done: screenshot the changed screens in English, Arabic (RTL), dark mode and 390px mobile, and check the console has no errors.
 
 ## Next steps (the owner asked to work through them in order, one branch + PR per step, merging each)
-1. Inventory stock/movements and procurement (blocked on BACKEND_REQUESTS 2) — ask the owner whether the backend fixed it.
-2. When the backend fixes items, drop the matching workarounds (see the plan in the owner chat: verify each item, remove its workaround, then build stock, movements and procurement).
+1. Step 19 — verify the backend fixes and drop the workarounds. Pull backend master, re-run migrations, then for every
+   item in docs/BACKEND_REQUESTS.md: reproduce the old behaviour against the API, confirm it's fixed, remove the matching
+   frontend workaround (search the code for the item number and for comments mentioning the backend, e.g. omitPristine
+   for item 2, the 204-body handling for item 1, re-loading after RMA actions for item 18, `amount_due: number | string`
+   for item 16, the "hide Create invoice" guard for item 14), and update specs/tests. Items that are not really fixed
+   stay open with a note on what still fails. Add item 24 (sales overdue). Update CODE_MAP.md.
+2. Step 20 — inventory stock levels and stock ledger (read), now that item 2 is fixed.
+3. Step 21 — stock movements: transfers, adjustments (and their confirm/cancel workflows).
+4. Step 22 — procurement: purchase orders, goods receipts, supplier invoices (screens beyond the dropdown ref service).
+5. Then the test campaign: the backend is writing `manage.py seed_test_campaign` (4 companies, ~18 test accounts,
+   18 months of data, docs/TEST_ACCOUNTS.md with an expectation matrix). When it lands, run Playwright walks per account
+   against the matrix, cross-check numbers between screens and reports, EN/AR/dark/390px, and write a findings report.
+6. Deploy: GitHub Pages from main (`npm run deploy`).
 
 Reply to the owner in Egyptian Arabic; keep code, commits and PR text in English.
 ```
