@@ -2,10 +2,6 @@ import { Routes } from '@angular/router';
 import { authGuard, companyMemberGuard, guestGuard, platformAdminGuard } from './core/auth/auth.guard';
 import { ShellComponent } from './layout/shell/shell.component';
 
-/** Sections that aren't built yet share one placeholder page; see ComingSoonPageComponent. */
-const comingSoon = () =>
-  import('./features/coming-soon/coming-soon-page.component').then((m) => m.ComingSoonPageComponent);
-
 export const routes: Routes = [
   {
     path: 'auth',
@@ -82,8 +78,9 @@ export const routes: Routes = [
       {
         path: 'import-export',
         canActivate: [companyMemberGuard],
-        loadComponent: comingSoon,
-        data: { titleKey: 'nav.importExport', icon: 'pi-file-import' },
+        loadComponent: () =>
+          import('./features/import-export/import-export-page.component').then((m) => m.ImportExportPageComponent),
+        data: { titleKey: 'nav.importExport' },
       },
     ],
   },

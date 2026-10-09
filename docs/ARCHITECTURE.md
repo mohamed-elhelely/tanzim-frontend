@@ -189,11 +189,11 @@ backend problems added to `docs/BACKEND_REQUESTS.md`; [CODE_MAP.md](CODE_MAP.md)
 | 15 | Returns: customer returns (RMA workflow, replacement orders) and supplier returns |
 | 16 | Accounting: chart of accounts, journal entries (manual, post, reverse), fiscal years and periods |
 | 17 | Accounting: reports viewer (8 reports, Excel), supplier payments, debit notes |
+| 18 | Import / export: every supported resource, dry-run check before import, task history |
 
 ### Next — features (in order)
 
 1. **Inventory stock and movements** (batches, serials, stock ledger, transfers, adjustments, cycle counts) and **procurement** (requisitions, purchase orders, goods receipts, supplier invoices, approvals). Blocked until the backend returns full read serializers (BACKEND_REQUESTS 2).
-2. **Import / export** screens (the backend has CSV/Excel import and export endpoints with task polling).
 
 ### Next — code health (small, do alongside features)
 
@@ -210,7 +210,7 @@ backend problems added to `docs/BACKEND_REQUESTS.md`; [CODE_MAP.md](CODE_MAP.md)
 |---|---|
 | Explicit list/form components per resource, no config-driven generic screens | Each resource has its own rules and backend quirks; explicit code is easier to read and review |
 | `ServerTable` is a plain class, not a base component | Composition is easier to follow than inheritance; the component still owns its template and actions |
-| One placeholder page for unbuilt sections, driven by route data | Five identical components carried no information |
+| (removed in step 18) One placeholder page for unbuilt sections | Every section is built now |
 | Subscription loading fails open | The backend still answers 403; hiding everything on a network blip would be worse |
 | Category edit omits unchanged name/parent | Backend duplicate check doesn't exclude the record itself (BACKEND_REQUESTS 15a) |
 | Edit forms skip untouched fields the API didn't return (`omitPristine`) | Sending them would blank stored values (BACKEND_REQUESTS 15e) |

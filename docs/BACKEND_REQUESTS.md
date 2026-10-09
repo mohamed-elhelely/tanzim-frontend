@@ -156,4 +156,21 @@ Company admin: admin@testcompany.com / testpass123.
 21. The accepted value of a returned line (`line_value`, then the default refund) is `quantity × unit_price` of the
    order line, ignoring its discount and tax: a line sold at 100 with 10 % off and 15 % tax refunds 100 instead of
    103.50. Tell us if that is intended.
+
+22. Import/export of company data (department, team, country, region, city, district, location;
+   company/apis/imports.py and export.py) only checks IsAuthenticated: an employee without `add_department` can import
+   departments, and anyone can export them. Check the same permissions as the CRUD endpoints (add_* to import,
+   view_* to export). The frontend only lists a company resource when the user has its add_* permission.
+
+23. Import usability (common/base_import_export.py):
+   - every header is required, optional ones included (`Missing required headers: parent, description, is_active`),
+     and the message repeats the list three times;
+   - that error comes back as `errors.error = "[ErrorDetail(string='…', code='invalid')]"` with message
+     "Unknown error"; send the sentence as the message (the frontend extracts it for now);
+   - a category's `parent` must be an id although its header label is "Parent Category Name" and the export writes
+     the id; accept the name (as the label says) or label it as an id;
+   - re-importing an exported file reports every existing row as "Violates unique constraint" instead of
+     updating it, although the stats have an `updated` count; match existing rows and update them;
+   - a malformed file (bad base64) answers 500 instead of 400;
+   - an export with no rows is an empty file without the header row.
 ```
