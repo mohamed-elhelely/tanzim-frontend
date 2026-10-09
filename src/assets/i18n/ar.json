@@ -22,7 +22,6 @@
     "yes": "نعم",
     "no": "لا",
     "actions": "إجراءات",
-    "comingSoon": "ما زلنا نعمل على هذا القسم، وسيتوفر في تحديث قادم.",
     "new": "جديد",
     "saved": "تم الحفظ بنجاح.",
     "deleted": "تم الحذف بنجاح.",
@@ -31,7 +30,6 @@
     "confirmDelete": "حذف \"{{name}}\"؟ لا يمكن التراجع عن ذلك.",
     "select": "اختر…",
     "backToList": "العودة إلى القائمة",
-    "comingSoonBadge": "قريبًا",
     "backToDashboard": "العودة للوحة التحكم",
     "viewAll": "عرض الكل",
     "reasonOptional": "السبب (اختياري)"
@@ -1155,6 +1153,105 @@
       "draft": "مسودة",
       "issued": "صادر",
       "cancelled": "ملغى"
+    }
+  },
+  "importExport": {
+    "title": "الاستيراد / التصدير",
+    "subtitle": "استيراد البيانات وتصديرها بملفات CSV أو Excel.",
+    "resources": {
+      "department": "الأقسام",
+      "team": "الفرق",
+      "location": "مواقع الشركة",
+      "country": "الدول",
+      "region": "المناطق",
+      "city": "المدن",
+      "district": "الأحياء",
+      "product": "المنتجات",
+      "productVariant": "متغيرات المنتجات",
+      "productAttribute": "خصائص المنتجات",
+      "category": "الفئات",
+      "brand": "العلامات التجارية",
+      "warehouse": "المستودعات",
+      "zone": "المناطق التخزينية",
+      "bin": "مواقع التخزين",
+      "supplier": "الموردون",
+      "supplierProduct": "قائمة أسعار الموردين",
+      "batch": "الدفعات",
+      "serialNumber": "الأرقام التسلسلية"
+    },
+    "groups": {
+      "company": "الشركة",
+      "locations": "المواقع",
+      "inventory": "المخزون"
+    },
+    "export": {
+      "title": "التصدير",
+      "hint": "يُنزّل كل السجلات من هذا النوع الخاصة بشركتك."
+    },
+    "import": {
+      "title": "الاستيراد",
+      "hint": "ابدأ من القالب، واملأ الصفوف، ثم افحص الملف قبل استيراده."
+    },
+    "check": {
+      "title": "فحص الملف"
+    },
+    "history": {
+      "title": "آخر عمليات الاستيراد والتصدير"
+    },
+    "stats": {
+      "new": "جديد",
+      "updated": "تحديث",
+      "errors": "أخطاء",
+      "skipped": "متجاهَل",
+      "warnings": "تحذيرات"
+    },
+    "taskTypes": {
+      "import": "استيراد",
+      "export": "تصدير"
+    },
+    "taskStatuses": {
+      "pending": "في الانتظار",
+      "processing": "قيد المعالجة",
+      "completed": "مكتمل",
+      "failed": "فشل"
+    },
+    "fields": {
+      "resource": "البيانات",
+      "format": "الصيغة",
+      "row": "الصف",
+      "result": "النتيجة",
+      "data": "البيانات",
+      "message": "الرسالة",
+      "date": "التاريخ",
+      "type": "النوع",
+      "model": "نوع البيانات",
+      "status": "الحالة",
+      "rows": "الصفوف",
+      "by": "بواسطة"
+    },
+    "actions": {
+      "export": "تصدير",
+      "template": "تنزيل القالب",
+      "chooseFile": "اختر ملف CSV أو Excel",
+      "changeFile": "اختر ملفًا آخر",
+      "removeFile": "إزالة الملف",
+      "check": "فحص الملف",
+      "import": "استيراد",
+      "download": "تنزيل"
+    },
+    "hints": {
+      "pickResource": "اختر ما تريد استيراده أو تصديره",
+      "noResources": "لا يوجد شيء متاح لحسابك.",
+      "fileType": "اختر ملفًا بامتداد ‎.csv أو ‎.xlsx.",
+      "fileSize": "حجم الملف أكبر من 5 ميجابايت.",
+      "unreadable": "تعذّرت قراءة الملف.",
+      "checkFirst": "افحص الملف أولًا؛ يُفعَّل الاستيراد عندما لا يكون في أي صف أخطاء.",
+      "fixErrors": "صحّح الصفوف التي بها أخطاء في ملفك، ثم افحصه مرة أخرى.",
+      "readyToImport": "لا توجد أخطاء. يمكنك استيراد الملف.",
+      "imported": "تم الاستيراد: {{new}} جديد، {{updated}} تحديث."
+    },
+    "toasts": {
+      "imported": "تم استيراد {{count}} صف."
     }
   }
 }

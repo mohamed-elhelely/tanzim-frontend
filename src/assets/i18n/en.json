@@ -22,7 +22,6 @@
     "yes": "Yes",
     "no": "No",
     "actions": "Actions",
-    "comingSoon": "We're still building this section. It will be available in a future update.",
     "new": "New",
     "saved": "Saved successfully.",
     "deleted": "Deleted successfully.",
@@ -31,7 +30,6 @@
     "confirmDelete": "Delete \"{{name}}\"? This cannot be undone.",
     "select": "Select…",
     "backToList": "Back to list",
-    "comingSoonBadge": "Coming soon",
     "backToDashboard": "Back to dashboard",
     "viewAll": "View all",
     "reasonOptional": "Reason (optional)"
@@ -1155,6 +1153,105 @@
       "draft": "Draft",
       "issued": "Issued",
       "cancelled": "Cancelled"
+    }
+  },
+  "importExport": {
+    "title": "Import / Export",
+    "subtitle": "Move data in and out with CSV or Excel files.",
+    "resources": {
+      "department": "Departments",
+      "team": "Teams",
+      "location": "Company locations",
+      "country": "Countries",
+      "region": "Regions",
+      "city": "Cities",
+      "district": "Districts",
+      "product": "Products",
+      "productVariant": "Product variants",
+      "productAttribute": "Product attributes",
+      "category": "Categories",
+      "brand": "Brands",
+      "warehouse": "Warehouses",
+      "zone": "Zones",
+      "bin": "Bins",
+      "supplier": "Suppliers",
+      "supplierProduct": "Supplier price list",
+      "batch": "Batches",
+      "serialNumber": "Serial numbers"
+    },
+    "groups": {
+      "company": "Company",
+      "locations": "Locations",
+      "inventory": "Inventory"
+    },
+    "export": {
+      "title": "Export",
+      "hint": "Downloads every record of this type for your company."
+    },
+    "import": {
+      "title": "Import",
+      "hint": "Start from the template, fill in the rows, then check the file before importing it."
+    },
+    "check": {
+      "title": "File check"
+    },
+    "history": {
+      "title": "Recent imports and exports"
+    },
+    "stats": {
+      "new": "New",
+      "updated": "Updated",
+      "errors": "Errors",
+      "skipped": "Skipped",
+      "warnings": "Warnings"
+    },
+    "taskTypes": {
+      "import": "Import",
+      "export": "Export"
+    },
+    "taskStatuses": {
+      "pending": "Pending",
+      "processing": "Processing",
+      "completed": "Completed",
+      "failed": "Failed"
+    },
+    "fields": {
+      "resource": "Data",
+      "format": "Format",
+      "row": "Row",
+      "result": "Result",
+      "data": "Data",
+      "message": "Message",
+      "date": "Date",
+      "type": "Type",
+      "model": "Data type",
+      "status": "Status",
+      "rows": "Rows",
+      "by": "By"
+    },
+    "actions": {
+      "export": "Export",
+      "template": "Download template",
+      "chooseFile": "Choose a CSV or Excel file",
+      "changeFile": "Choose another file",
+      "removeFile": "Remove file",
+      "check": "Check file",
+      "import": "Import",
+      "download": "Download"
+    },
+    "hints": {
+      "pickResource": "Choose what to import or export",
+      "noResources": "Nothing available for your account.",
+      "fileType": "Choose a .csv or .xlsx file.",
+      "fileSize": "The file is larger than 5 MB.",
+      "unreadable": "The file could not be read.",
+      "checkFirst": "Check the file first; Import is enabled when no row has errors.",
+      "fixErrors": "Fix the rows with errors in your file, then check it again.",
+      "readyToImport": "No errors found. You can import the file.",
+      "imported": "Imported: {{new}} new, {{updated}} updated."
+    },
+    "toasts": {
+      "imported": "{{count}} rows imported."
     }
   }
 }

@@ -1,0 +1,231 @@
+<app-page-header title="importExport.title" subtitle="importExport.subtitle"></app-page-header>
+
+<div class="flex max-w-6xl flex-col gap-4">
+  <p-card>
+    <div class="flex flex-col gap-1 sm:max-w-sm">
+      <label for="resource" class="text-sm font-medium">{{ 'importExport.fields.resource' | translate }}</label>
+      <p-select
+        inputId="resource"
+        [ngModel]="selectedKey()"
+        (ngModelChange)="onResourceChange($event)"
+        [options]="resourceOptions()"
+        [group]="true"
+        optionGroupLabel="label"
+        optionGroupChildren="items"
+        optionLabel="label"
+        optionValue="value"
+        [placeholder]="'importExport.hints.pickResource' | translate"
+        [emptyMessage]="'importExport.hints.noResources' | translate"
+        styleClass="w-full"
+        appendTo="body"
+      >
+        <ng-template pTemplate="group" let-group>
+          <span class="text-xs font-semibold uppercase text-gray-500">{{ group.label | translate }}</span>
+        </ng-template>
+        <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
+        <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
+      </p-select>
+    </div>
+  </p-card>
+
+  @if (selected(); as resource) {
+    <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+      <p-card styleClass="h-full">
+        <h2 class="mb-1 flex items-center gap-2 font-semibold"><i class="pi pi-download text-primary-600"></i>{{ 'importExport.export.title' | translate }}</h2>
+        <p class="mb-4 text-sm text-gray-500 dark:text-gray-400">{{ 'importExport.export.hint' | translate }}</p>
+        <div class="flex flex-wrap items-center gap-3">
+          <p-selectbutton [options]="formatOptions" [(ngModel)]="format" optionLabel="label" optionValue="value" [allowEmpty]="false" [ariaLabel]="'importExport.fields.format' | translate"></p-selectbutton>
+          <p-button [label]="'importExport.actions.export' | translate" icon="pi pi-download" [loading]="exporting()" (onClick)="exportData()"></p-button>
+        </div>
+      </p-card>
+
+      <p-card styleClass="h-full lg:col-span-2">
+        <h2 class="mb-1 flex items-center gap-2 font-semibold"><i class="pi pi-upload text-primary-600"></i>{{ 'importExport.import.title' | translate }}</h2>
+        <p class="mb-4 text-sm text-gray-500 dark:text-gray-400">{{ 'importExport.import.hint' | translate }}</p>
+
+        <div class="flex flex-wrap items-center gap-3">
+          <p-button
+            [label]="'importExport.actions.template' | translate"
+            icon="pi pi-file-excel"
+            severity="secondary"
+            [outlined]="true"
+            [loading]="downloadingTemplate()"
+            (onClick)="downloadTemplate()"
+          ></p-button>
+          <label
+            class="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-dashed border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:border-primary-500 hover:text-primary-600 focus-within:ring-2 focus-within:ring-primary-500 dark:border-gray-700 dark:text-gray-200"
+          >
+            <i class="pi pi-paperclip"></i>
+            {{ (file() ? 'importExport.actions.changeFile' : 'importExport.actions.chooseFile') | translate }}
+            <input type="file" accept=".csv,.xlsx" class="sr-only" (change)="onFilePicked($event)" />
+          </label>
+          @if (file(); as picked) {
+            <span class="flex items-center gap-2 text-sm">
+              <span class="font-medium" dir="ltr">{{ picked.name }}</span>
+              <p-button icon="pi pi-times" [text]="true" [rounded]="true" size="small" [ariaLabel]="'importExport.actions.removeFile' | translate" (onClick)="clearFile()"></p-button>
+            </span>
+          }
+        </div>
+        @if (fileError(); as key) {
+          <p role="alert" class="mt-2 text-sm text-red-600">{{ key | translate }}</p>
+        }
+
+        @if (file()) {
+          <div class="mt-4 flex flex-wrap gap-2">
+            <p-button
+              [label]="'importExport.actions.check' | translate"
+              icon="pi pi-search"
+              severity="secondary"
+              [loading]="checking()"
+              [disabled]="importing()"
+              (onClick)="checkFile()"
+            ></p-button>
+            <p-button
+              [label]="'importExport.actions.import' | translate"
+              icon="pi pi-upload"
+              [loading]="importing()"
+              [disabled]="!canImport() || checking()"
+              (onClick)="importFile()"
+            ></p-button>
+          </div>
+          @if (!check()) {
+            <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">{{ 'importExport.hints.checkFirst' | translate }}</p>
+          }
+        }
+
+        @if (lastImport(); as done) {
+          <div role="status" class="mt-4 rounded-md border border-green-200 bg-green-50 p-3 text-sm text-green-800 dark:border-green-900 dark:bg-green-950 dark:text-green-200">
+            {{ 'importExport.hints.imported' | translate: { new: done.stats.new, updated: done.stats.updated } }}
+          </div>
+        }
+      </p-card>
+    </div>
+
+    @if (check(); as result) {
+      <p-card>
+        <div class="mb-3 flex flex-wrap items-center gap-2">
+          <h2 class="me-2 font-semibold">{{ 'importExport.check.title' | translate }}</h2>
+          <app-status-badge [value]="('importExport.stats.new' | translate) + ': ' + result.stats.new" severity="success"></app-status-badge>
+          <app-status-badge [value]="('importExport.stats.updated' | translate) + ': ' + result.stats.updated" severity="info"></app-status-badge>
+          <app-status-badge [value]="('importExport.stats.errors' | translate) + ': ' + result.stats.errors" [severity]="result.stats.errors ? 'danger' : 'secondary'"></app-status-badge>
+          <app-status-badge [value]="('importExport.stats.skipped' | translate) + ': ' + result.stats.skipped" severity="secondary"></app-status-badge>
+        </div>
+        @if (result.stats.errors) {
+          <p class="mb-3 text-sm text-red-600">{{ 'importExport.hints.fixErrors' | translate }}</p>
+        } @else if (canImport()) {
+          <p class="mb-3 text-sm text-green-700 dark:text-green-400">{{ 'importExport.hints.readyToImport' | translate }}</p>
+        }
+        <div class="overflow-x-auto">
+          <p-table [value]="result.preview ?? []" size="small" [paginator]="(result.preview?.length ?? 0) > 20" [rows]="20">
+            <ng-template pTemplate="header">
+              <tr>
+                <th class="w-16">{{ 'importExport.fields.row' | translate }}</th>
+                <th class="w-32">{{ 'importExport.fields.result' | translate }}</th>
+                <th>{{ 'importExport.fields.data' | translate }}</th>
+                <th>{{ 'importExport.fields.message' | translate }}</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-row>
+              <tr>
+                <td>{{ row.row }}</td>
+                <td>
+                  <app-status-badge [value]="'importExport.stats.' + row.status | translate" [severity]="rowSeverity(row.status)"></app-status-badge>
+                </td>
+                <td class="max-w-md truncate text-xs text-gray-600 dark:text-gray-300" dir="auto">{{ rowSummary(row.data) }}</td>
+                <td class="text-sm" [class.text-red-600]="row.error">{{ row.error || row.warning || '—' }}</td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td colspan="4"><app-empty-state icon="pi-file"></app-empty-state></td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </p-card>
+    }
+  }
+
+  <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
+    <div class="flex flex-col gap-3 border-b border-gray-100 p-4 sm:flex-row sm:items-center sm:justify-between dark:border-gray-800">
+      <h2 class="font-semibold">{{ 'importExport.history.title' | translate }}</h2>
+      <p-select
+        [(ngModel)]="taskType"
+        (ngModelChange)="onTaskTypeChange()"
+        [options]="typeOptions"
+        optionLabel="label"
+        optionValue="value"
+        [showClear]="true"
+        [placeholder]="'importExport.fields.type' | translate"
+        [ariaLabel]="'importExport.fields.type' | translate"
+        styleClass="w-full sm:w-44"
+        appendTo="body"
+      >
+        <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
+        <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
+      </p-select>
+    </div>
+    @if (tasks.error(); as err) {
+      <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403" (retry)="tasks.load()"></app-error-state>
+    } @else {
+      <div class="overflow-x-auto">
+        <p-table
+          [value]="tasks.rows()"
+          [lazy]="true"
+          [lazyLoadOnInit]="false"
+          (onLazyLoad)="tasks.onLazyLoad($event)"
+          [paginator]="true"
+          [first]="tasks.first()"
+          [rows]="tasks.pageSize()"
+          [totalRecords]="tasks.total()"
+          [rowsPerPageOptions]="[10, 25, 50]"
+          [loading]="tasks.loading()"
+          dataKey="task_id"
+          size="small"
+        >
+          <ng-template pTemplate="header">
+            <tr>
+              <th>{{ 'importExport.fields.date' | translate }}</th>
+              <th>{{ 'importExport.fields.type' | translate }}</th>
+              <th>{{ 'importExport.fields.model' | translate }}</th>
+              <th>{{ 'importExport.fields.status' | translate }}</th>
+              <th class="text-end">{{ 'importExport.fields.rows' | translate }}</th>
+              <th>{{ 'importExport.fields.message' | translate }}</th>
+              <th>{{ 'importExport.fields.by' | translate }}</th>
+              <th class="text-end">{{ 'common.actions' | translate }}</th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-task>
+            <tr>
+              <td class="whitespace-nowrap" dir="ltr">{{ task.created_at | date: 'yyyy-MM-dd HH:mm' }}</td>
+              <td>{{ 'importExport.taskTypes.' + task.task_type | translate }}</td>
+              <td class="font-mono text-xs" dir="ltr">{{ modelName(task.resource) }}</td>
+              <td>
+                <app-status-badge [value]="'importExport.taskStatuses.' + task.status | translate" [severity]="taskSeverity(task.status)"></app-status-badge>
+              </td>
+              <td class="whitespace-nowrap text-end" dir="ltr">
+                @if (task.total_rows !== null) {
+                  {{ task.success_rows ?? 0 }} / {{ task.total_rows }}
+                } @else {
+                  —
+                }
+              </td>
+              <td class="max-w-sm truncate text-xs text-red-600" [title]="taskErrors(task)">{{ taskErrors(task) }}</td>
+              <td class="whitespace-nowrap">{{ task.created_by_name || '—' }}</td>
+              <td class="text-end">
+                @if (task.download_url) {
+                  <p-button icon="pi pi-download" [text]="true" [rounded]="true" [ariaLabel]="'importExport.actions.download' | translate" (onClick)="downloadTask(task)"></p-button>
+                }
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="8"><app-empty-state icon="pi-history"></app-empty-state></td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    }
+  </div>
+</div>

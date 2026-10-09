@@ -28,7 +28,6 @@ flowchart TD
     shell -->|"/company (companyMemberGuard) 🔒"| company["features/company"]
     shell -->|"/locations 🔒"| locations["features/locations"]
     shell -->|"/inventory 🔒"| inventory["features/inventory"]
-    shell -->|"/sales /returns /import-export"| soon["features/coming-soon"]
     shell -->|"/notifications"| notif["features/notifications"]
     shell -->|"/billing 🔒"| billing["features/billing"]
 
@@ -116,7 +115,7 @@ Things to know:
 | File | Purpose | Notes |
 |---|---|---|
 | `api/api.config.ts` | `API_BASE_URL` from `src/environments` | Prod points at the backend's ngrok URL |
-| `api/base-api.service.ts` | Typed `get/post/put/patch/delete` with the base URL; `getBlob` for file downloads | |
+| `api/base-api.service.ts` | Typed `get/post/put/patch/delete` with the base URL; `getBlob` / `postBlob` for file downloads | |
 | `api/crud-api.ts` | Standard calls for one resource; `ListQuery.filters` and `all(filters)` for exact-match filters | 🆕 every resource service extends it |
 | `auth/auth.service.ts` | Signed-in user, login, logout, token refresh | 🧠 role restored from the JWT on reload |
 | `auth/token-storage.service.ts` | Tokens in localStorage | |
@@ -165,13 +164,12 @@ Things to know:
 Every resource below has a `*.service.ts`, a list and a form unless noted. Lists use `ServerTable` unless
 marked "client list".
 
-### auth, dashboard, coming-soon
+### auth, dashboard, notifications, billing
 
 | Path | Notes |
 |---|---|
 | `auth/login/` | Split-screen login, language/theme toggles |
 | `dashboard/` | 🧠 🔒 platform counts for staff; for company users every card, setup step and quick action is gated by a permission or module (`Gate`). Counts are requested after /me answers, only for the visible cards. Reads services from company, locations and admin |
-| `coming-soon/` | 🆕 one placeholder page for every unbuilt section, title and icon from route data |
 | `notifications/` | `/notifications` for every signed-in user: All/Unread, mark all read (one request each) |
 | `billing/` | `/billing` (company admins in the menu): subscription card + read-only invoices with a details dialog. `BillingService` reads `subscriptions/current/` and `subscriptions/invoices/` |
 
@@ -252,6 +250,14 @@ Built from `accounting/serializers.py` (not in API_REFERENCE.md, BACKEND_REQUEST
 | `reports/` | `accounting/v1/reports/<type>/` | 🧠 one viewer for all 8 reports: `REPORT_PARAMS` decides the inputs, `columns`/`rows`/`summary` drive the table and cards; Excel via `getBlob` + `saveFile` |
 | `supplier-payments/` | `accounting/v1/supplier-payments/` | List, record form (allocations ≤ amount; ⚠️ invoice picker lists all invoices, BACKEND_REQUESTS 8), detail with void |
 | `debit-notes/` | `accounting/v1/debit-notes/` | List, form (draft only; returns of the chosen supplier), detail: issue / cancel / delete. Raised from a supplier return too (`fromSupplierReturn`) |
+
+### import-export — `/import-export`
+
+| File | Notes |
+|---|---|
+| `import-export.models.ts` | `DATA_RESOURCES`: every importable resource with its path, group, module / permission |
+| `import-export.service.ts` | export / template blobs, `importFile(dryRun)`, task list. ⚠️ `fileToDataUri` picks the data-URI prefix from the extension (Excel needs `data:@file/…`); `readableImportError` unwraps `ErrorDetail` strings (BACKEND_REQUESTS 23) |
+| `import-export-page.component` | 🧠 grouped picker filtered by module/permission; Check file (dry run, row preview) → Import only without errors; history with type filter and downloads |
 
 ## 7. Cross-feature links
 
