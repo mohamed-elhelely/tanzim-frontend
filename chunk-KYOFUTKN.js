@@ -1,1 +1,0 @@
-import{a as p}from"./chunk-DO5ECA6F.js";import{K as e,ha as o}from"./chunk-OQLJUSBZ.js";var i=class r extends p{path="inventory/v1/supplier-product/";static \u0275fac=(()=>{let t;return function(a){return(t||(t=o(r)))(a||r)}})();static \u0275prov=e({token:r,factory:r.\u0275fac,providedIn:"root"})};export{i as a};

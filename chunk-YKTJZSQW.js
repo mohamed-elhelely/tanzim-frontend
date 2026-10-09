@@ -1,1 +1,0 @@
-var e=["simple","variant","bundle","service"],t=["average","fifo","lifo"],r=["central","regional","retail","transit","returns","quarantine"],n=["manufacturer","distributor","wholesaler","retailer","service"];export{e as a,t as b,r as c,n as d};
