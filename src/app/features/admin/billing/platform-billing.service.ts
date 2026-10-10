@@ -71,8 +71,9 @@ export class AdminInvoiceService extends CrudApi<AdminInvoice, Partial<AdminInvo
     return this.action(`${this.detailPath(id)}issue/`);
   }
 
-  addPayment(id: number, body: InvoicePaymentPayload): Observable<AdminInvoice> {
-    return this.action(`${this.detailPath(id)}add_payment/`, body);
+  /** Answers with the new payment (not the invoice, unlike the other actions): reload the invoice after it. */
+  addPayment(id: number, body: InvoicePaymentPayload): Observable<PlatformPayment> {
+    return this.post<PlatformPayment>(`${this.detailPath(id)}add_payment/`, body).pipe(map((r) => r.data as PlatformPayment));
   }
 
   markPaid(id: number): Observable<AdminInvoice> {

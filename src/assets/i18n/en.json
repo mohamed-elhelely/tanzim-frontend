@@ -431,7 +431,8 @@
         "recordPayment": "Record",
         "amountDueHint": "Amount due: {{amount}}",
         "cancel": "Cancel invoice",
-        "cancelled": "Invoice cancelled."
+        "cancelled": "Invoice cancelled.",
+        "paymentRecorded": "Payment recorded."
       },
       "payments": {
         "title": "Platform payments",

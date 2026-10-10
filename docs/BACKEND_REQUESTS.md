@@ -6,7 +6,7 @@ It lists what the frontend still needs from the backend. Remove items as they sh
 History: the first round (current-user endpoint, enforced permissions, `is_staff`, company and location fixes,
 product variants, workflow actions, import, WebSocket token, export parameters, the password-hash leak) shipped on
 2026-10-08 and was verified from the frontend on 2026-10-09. The second round (items 0–23, backend master c6509d9)
-was verified against the running API on 2026-10-09; see "Fixed" below. Items 24–29 are open; item 30 shipped on 2026-10-10 (backend a9bccfe).
+was verified against the running API on 2026-10-09; see "Fixed" below. Items 24–29 and 31 are open; item 30 shipped on 2026-10-10 (backend a9bccfe).
 
 ```text
 You are working on the backend of Tanzim, a bilingual (English/Arabic) multi-tenant ERP.
@@ -74,6 +74,12 @@ Company admin: admin@testcompany.com / testpass123.
    the profile screen can't show the middle name, preferred name, phone or timezone it is about to edit. The frontend
    loads them with an empty `PATCH {}` (which saves nothing and answers with every field). Add `GET` to
    `MeProfileAPIView` returning the same fields.
+
+
+31. Docs only: API_REFERENCE says `POST /api/subscriptions/v1/invoices/{id}/add_payment/` returns the invoice, but
+   it returns the new payment (`PaymentSerializer`, 201). `mark_paid` and the other invoice actions do return the
+   invoice. Fix the reference (or return the invoice, which would match the other actions); the frontend reloads
+   the invoice after a payment, so either works.
 
 ```
 

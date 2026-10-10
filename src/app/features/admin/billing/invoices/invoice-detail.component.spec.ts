@@ -73,6 +73,18 @@ describe('InvoiceDetailComponent', () => {
     expect(fixture.componentInstance.actions().find((action) => action.label === 'admin.billing.invoices.issue')?.disabled).toBeFalse();
   });
 
+  it('records a payment, then reloads the invoice (add_payment answers with the payment)', () => {
+    const fixture = setup(invoice({ status: 'issued', can_edit: false, can_add_payment: true, amount_due: '30.00', total: '30.00' }));
+    fixture.componentInstance.openPayment();
+    fixture.componentInstance.paymentForm.patchValue({ amount: '10.00' });
+    fixture.componentInstance.savePayment();
+    httpMock.expectOne(`${URL}add_payment/`).flush(envelope({ id: 1, invoice: 5, amount: '10.00', status: 'completed' }), { status: 201, statusText: 'Created' });
+    httpMock.expectOne(URL).flush(envelope(invoice({ status: 'partially_paid', can_add_payment: true, amount_paid: '10.00', amount_due: '20.00' })));
+    fixture.detectChanges();
+    expect(fixture.componentInstance.paymentOpen()).toBeFalse();
+    expect(fixture.componentInstance.invoice()?.amount_due).toBe('20.00');
+  });
+
   it('records a payment and shows a backend refusal under the amount', () => {
     const fixture = setup(invoice({ status: 'issued', can_edit: false, can_add_payment: true, amount_due: '30.00', total: '30.00' }));
     const labels = fixture.componentInstance.actions().map((action) => action.label);
