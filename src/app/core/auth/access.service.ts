@@ -3,12 +3,14 @@ import { Observable, catchError, finalize, map, of, shareReplay } from 'rxjs';
 import { BaseApiService } from '../api/base-api.service';
 import { AuthService } from './auth.service';
 import { CurrentUser } from './auth.model';
+import { codenameModule, moduleCodename } from './permission-catalog';
 
 type LoadState = 'idle' | 'loading' | 'ready' | 'error';
 
 /**
  * What the signed-in user may see and do, from GET /api/company/v1/me/: permission codenames, the company's
- * subscription modules and the platform-staff flag. Loaded once per sign-in (by the shell and by guards).
+ * subscription modules, the platform-staff flag and the user's and company's branding. Loaded once per sign-in
+ * (by the shell and by guards); `update()` applies a profile or branding change without reloading.
  *
  * While loading, `can()` and `hasModule()` answer false so gated menus don't flash in and out.
  * If /me fails they answer true (fail open): the backend still refuses with 403, and hiding everything
@@ -23,6 +25,8 @@ export class AccessService extends BaseApiService {
 
   /** Platform staff. /me wins over the token, which older sessions issued without `is_staff`. */
   readonly isStaff = computed(() => this.me()?.is_staff ?? this.auth.user()?.isStaff ?? false);
+  /** The /me payload (null until it answers): user picture, company name, logo and colors. */
+  readonly current = this.me.asReadonly();
   /** True once /me answered (or failed); guards wait for this. */
   readonly settled = computed(() => this.state() === 'ready' || this.state() === 'error');
 
@@ -63,20 +67,38 @@ export class AccessService extends BaseApiService {
     return this.request$;
   }
 
+  /** Merges a change the user just saved (profile picture, company logo…) so the header follows at once. */
+  update(change: (me: CurrentUser) => CurrentUser): void {
+    const me = this.me();
+    if (me) {
+      this.me.set(change(me));
+    }
+  }
+
   private reset(): void {
     this.me.set(null);
     this.state.set('idle');
     this.request$ = null;
   }
 
-  /** e.g. `can('add_department')`. Only the company resources are permission-gated by the backend. */
+  /**
+   * e.g. `can('add_department')`. Like the backend, a CRUD codename also needs its module's feature permission
+   * (`add_salesorder` needs `access_sales` too); `can('access_sales')` checks the module alone.
+   */
   can(codename: string): boolean {
     const state = this.state();
     if (state === 'error') {
       return true;
     }
     const me = this.me();
-    return state === 'ready' && !!me && (me.has_full_access || me.permissions.includes(codename));
+    if (state !== 'ready' || !me) {
+      return false;
+    }
+    if (me.has_full_access) {
+      return true;
+    }
+    const module = codenameModule(codename);
+    return me.permissions.includes(codename) && (!module || me.permissions.includes(moduleCodename(module)));
   }
 
   /** e.g. `hasModule('inventory')`. */

@@ -1,0 +1,64 @@
+<app-form-layout title="admin.billing.invoices.new" (back)="goBack()">
+  <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-6" novalidate>
+    @if (formErrors().length) {
+      <div
+        role="alert"
+        class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300"
+      >
+        @for (message of formErrors(); track $index) {
+          <p>{{ message }}</p>
+        }
+      </div>
+    }
+    @if (!hasSubscriptions()) {
+      <div
+        role="note"
+        class="rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-200"
+      >
+        {{ 'admin.billing.invoices.noSubscriptions' | translate }}
+      </div>
+    }
+
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div class="flex flex-col gap-1 md:col-span-2">
+        <label for="subscription" class="text-sm font-medium">{{ 'admin.billing.fields.subscription' | translate }} *</label>
+        <p-select
+          inputId="subscription"
+          formControlName="subscription"
+          [options]="subscriptionOptions()"
+          optionLabel="label"
+          optionValue="value"
+          [filter]="true"
+          [placeholder]="'common.select' | translate"
+          styleClass="w-full"
+          appendTo="body"
+        ></p-select>
+        <app-field-error [control]="form.controls.subscription"></app-field-error>
+      </div>
+      <div class="flex flex-col gap-1">
+        <label for="due_date" class="text-sm font-medium">{{ 'billing.fields.dueDate' | translate }}</label>
+        <input pInputText id="due_date" type="date" formControlName="due_date" class="w-full" />
+        <app-field-error [control]="form.controls.due_date"></app-field-error>
+      </div>
+      <div class="flex flex-col gap-1">
+        <label for="tax_rate" class="text-sm font-medium">{{ 'admin.billing.fields.taxRate' | translate }}</label>
+        <input pInputText id="tax_rate" formControlName="tax_rate" dir="ltr" inputmode="decimal" placeholder="14" class="w-full" />
+        <app-field-error [control]="form.controls.tax_rate" patternKey="admin.billing.hints.money"></app-field-error>
+      </div>
+      <div class="flex flex-col gap-1">
+        <label for="discount" class="text-sm font-medium">{{ 'admin.billing.fields.discount' | translate }}</label>
+        <input pInputText id="discount" formControlName="discount" dir="ltr" inputmode="decimal" class="w-full" />
+        <app-field-error [control]="form.controls.discount" patternKey="admin.billing.hints.money"></app-field-error>
+      </div>
+      <div class="flex flex-col gap-1 md:col-span-2">
+        <label for="notes" class="text-sm font-medium">{{ 'admin.billing.fields.notes' | translate }}</label>
+        <textarea pTextarea id="notes" formControlName="notes" rows="2" class="w-full"></textarea>
+      </div>
+    </div>
+
+    <div class="flex justify-end gap-2 border-t border-gray-100 pt-5 dark:border-gray-800">
+      <p-button type="button" [label]="'common.cancel' | translate" severity="secondary" [outlined]="true" (onClick)="goBack()"></p-button>
+      <p-button type="submit" [label]="'admin.billing.invoices.createDraft' | translate" icon="pi pi-check" [loading]="saving()" [disabled]="saving()"></p-button>
+    </div>
+  </form>
+</app-form-layout>

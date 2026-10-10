@@ -10,7 +10,7 @@
 } @else if (loading()) {
   <app-loading-state></app-loading-state>
 } @else {
-  <p-card styleClass="max-w-5xl">
+  <p-card>
     <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-6" novalidate>
       @if (formErrors().length) {
         <div
@@ -23,7 +23,7 @@
         </div>
       }
 
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         <div class="flex flex-col gap-1">
           <label for="name_en" class="text-sm font-medium">{{ 'company.fields.nameEn' | translate }} *</label>
           <input pInputText id="name_en" formControlName="name_en" class="w-full" />
@@ -36,9 +36,9 @@
           <app-field-error [control]="form.controls.name_ar"></app-field-error>
         </div>
 
-        <div class="flex flex-col gap-1 md:col-span-2">
+        <div class="flex flex-col gap-1 md:col-span-2 xl:col-span-3">
           <label for="permission_groups" class="text-sm font-medium">
-            {{ 'company.fields.permissionGroups' | translate }} *
+            {{ 'company.fields.permissionGroups' | translate }}
           </label>
           <p-multiSelect
             inputId="permission_groups"
@@ -53,6 +53,13 @@
             appendTo="body"
           ></p-multiSelect>
           <app-field-error [control]="form.controls.permission_groups"></app-field-error>
+        </div>
+
+        <div class="flex flex-col gap-1 md:col-span-2 xl:col-span-3">
+          <span class="text-sm font-medium">{{ 'company.fields.singlePermissions' | translate }}</span>
+          <p class="text-xs text-gray-500 dark:text-gray-400">{{ 'company.roles.singlePermissionsHint' | translate }}</p>
+          <app-permission-picker formControlName="permissions"></app-permission-picker>
+          <app-field-error [control]="form.controls.permissions"></app-field-error>
         </div>
 
         <div class="flex items-center gap-3">

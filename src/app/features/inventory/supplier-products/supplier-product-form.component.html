@@ -10,7 +10,7 @@
 } @else if (loading()) {
   <app-loading-state></app-loading-state>
 } @else {
-  <p-card styleClass="max-w-5xl">
+  <p-card>
     <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-6" novalidate>
       @if (formErrors().length) {
         <div
@@ -23,7 +23,7 @@
         </div>
       }
 
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         <div class="flex flex-col gap-1">
           <label for="supplier" class="text-sm font-medium">{{ 'inventory.fields.supplier' | translate }} *</label>
           <p-select
@@ -68,7 +68,7 @@
           <app-field-error [control]="form.controls.supplier_product_name"></app-field-error>
         </div>
 
-        <h3 class="text-sm font-semibold text-gray-700 md:col-span-2 dark:text-gray-200">{{ 'inventory.sections.pricing' | translate }}</h3>
+        <h3 class="text-sm font-semibold text-gray-700 md:col-span-2 xl:col-span-3 dark:text-gray-200">{{ 'inventory.sections.pricing' | translate }}</h3>
 
         <div class="flex flex-col gap-1">
           <label for="unit_cost" class="text-sm font-medium">{{ 'inventory.fields.unitCost' | translate }}{{ isEdit ? '' : ' *' }}</label>
@@ -100,7 +100,7 @@
           <app-field-error [control]="form.controls.lead_time_days" patternKey="inventory.hints.whole"></app-field-error>
         </div>
 
-        <h3 class="text-sm font-semibold text-gray-700 md:col-span-2 dark:text-gray-200">{{ 'inventory.sections.validity' | translate }}</h3>
+        <h3 class="text-sm font-semibold text-gray-700 md:col-span-2 xl:col-span-3 dark:text-gray-200">{{ 'inventory.sections.validity' | translate }}</h3>
 
         <div class="flex flex-col gap-1">
           <label for="effective_from" class="text-sm font-medium">{{ 'inventory.fields.effectiveFrom' | translate }}{{ isEdit ? '' : ' *' }}</label>
@@ -115,7 +115,7 @@
           <app-field-error [control]="form.controls.effective_to"></app-field-error>
         </div>
 
-        <div class="flex flex-col gap-3 md:col-span-2">
+        <div class="flex flex-col gap-3 md:col-span-2 xl:col-span-3">
           <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'inventory.sections.settings' | translate }}</h3>
           <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
             <div class="flex items-center gap-3">
@@ -129,7 +129,7 @@
           </div>
         </div>
 
-        <div class="flex flex-col gap-1 md:col-span-2">
+        <div class="flex flex-col gap-1 md:col-span-2 xl:col-span-3">
           <label for="notes" class="text-sm font-medium">{{ 'inventory.fields.notes' | translate }}</label>
           <textarea pTextarea id="notes" formControlName="notes" rows="3" class="w-full"></textarea>
           <app-field-error [control]="form.controls.notes"></app-field-error>

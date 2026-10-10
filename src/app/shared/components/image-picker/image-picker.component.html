@@ -1,0 +1,43 @@
+<div class="flex items-center gap-4">
+  <div
+    class="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden border border-gray-200 bg-gray-50 text-xl font-bold text-primary-700 dark:border-gray-700 dark:bg-gray-800 dark:text-primary-200"
+    [class.rounded-full]="shape() === 'circle'"
+    [class.rounded-xl]="shape() === 'square'"
+  >
+    @if (shown(); as src) {
+      <img [src]="src" alt="" class="h-full w-full" [class.object-cover]="shape() === 'circle'" [class.object-contain]="shape() === 'square'" />
+    } @else if (placeholder()) {
+      <span>{{ placeholder() }}</span>
+    } @else {
+      <i class="pi pi-image text-2xl text-gray-400"></i>
+    }
+  </div>
+
+  <div class="flex flex-col gap-2">
+    @if (!disabled()) {
+      <div class="flex flex-wrap gap-2">
+        <label
+          class="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 focus-within:ring-2 focus-within:ring-primary-500 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-800"
+        >
+          <i class="pi pi-upload text-xs"></i>
+          {{ 'imagePicker.choose' | translate }}
+          <input type="file" accept="image/*" class="sr-only" (change)="onPicked($event)" />
+        </label>
+        @if (shown()) {
+          <p-button
+            type="button"
+            [label]="'imagePicker.remove' | translate"
+            icon="pi pi-trash"
+            severity="danger"
+            [text]="true"
+            size="small"
+            (onClick)="remove()"
+          ></p-button>
+        }
+      </div>
+    }
+    <p class="text-xs" [class]="tooLarge() ? 'text-red-600 dark:text-red-400' : 'text-gray-500 dark:text-gray-400'">
+      {{ (tooLarge() ? 'imagePicker.tooLarge' : 'imagePicker.hint') | translate }}
+    </p>
+  </div>
+</div>

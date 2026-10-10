@@ -7,6 +7,9 @@ import { AccessService } from '../../../core/auth/access.service';
 import { envelope, errorEnvelope, provideApiTesting } from '../../../testing/api-testing';
 import { makeDepartment } from '../../../testing/company-fixtures';
 import { DepartmentListComponent } from './department-list.component';
+import { EMPTY } from 'rxjs';
+import { FormDialogService } from '../../../shared/forms/form-dialog.service';
+import { DepartmentFormComponent } from './department-form.component';
 
 const URL = '/api/company/v1/departments/';
 
@@ -102,11 +105,12 @@ describe('DepartmentListComponent', () => {
     requests[1].flush(envelope([], 30));
   });
 
-  it('opens the edit page', () => {
+  it('opens the edit form in a dialog', () => {
     const fixture = create();
     expectList({}, [makeDepartment()]);
+    const open = spyOn(TestBed.inject(FormDialogService), 'open').and.returnValue(EMPTY);
     fixture.componentInstance.edit(makeDepartment());
-    expect(router.navigate).toHaveBeenCalledWith(['/company/departments', 5, 'edit']);
+    expect(open).toHaveBeenCalledWith(DepartmentFormComponent, { header: 'company.departments.edit', id: 5 });
   });
 
   it('deletes after confirmation and reloads', () => {

@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject } from '@angular/core';
-import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -16,7 +15,9 @@ import { LocalizedNamePipe } from '../../../shared/pipes/localized-name.pipe';
 import { userName } from '../../../shared/pipes/user-name.pipe';
 import { ServerTable } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
+import { FormDialogService } from '../../../shared/forms/form-dialog.service';
 import { Team } from '../company.models';
+import { TeamFormComponent } from './team-form.component';
 import { TeamService } from './team.service';
 
 @Component({
@@ -38,7 +39,7 @@ import { TeamService } from './team.service';
 })
 export class TeamListComponent implements OnInit {
   private readonly api = inject(TeamService);
-  private readonly router = inject(Router);
+  private readonly formDialog = inject(FormDialogService);
   private readonly confirm = inject(ConfirmService);
   private readonly access = inject(AccessService);
 
@@ -53,7 +54,7 @@ export class TeamListComponent implements OnInit {
   readonly canDelete = computed(() => this.access.can('delete_team'));
 
   readonly headerActions = computed<PageHeaderAction[]>(() =>
-    this.canAdd() ? [{ label: 'company.teams.new', icon: 'pi pi-plus', onClick: () => void this.router.navigate(['/company/teams/new']) }] : [],
+    this.canAdd() ? [{ label: 'company.teams.new', icon: 'pi pi-plus', onClick: () => this.openForm() }] : [],
   );
 
   ngOnInit(): void {
@@ -64,8 +65,15 @@ export class TeamListComponent implements OnInit {
     return (row.leads ?? []).map((lead) => userName(lead)).join(', ');
   }
 
+  /** Create (no id) or edit in a dialog over the list; the list reloads after a save. */
+  openForm(id?: number): void {
+    this.formDialog
+      .open(TeamFormComponent, { header: id ? 'company.teams.edit' : 'company.teams.new', id })
+      .subscribe(() => this.table.load());
+  }
+
   edit(row: Team): void {
-    void this.router.navigate(['/company/teams', row.id, 'edit']);
+    this.openForm(row.id);
   }
 
   confirmDelete(row: Team): void {

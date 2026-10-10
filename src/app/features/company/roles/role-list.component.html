@@ -55,7 +55,14 @@
                 <app-status-badge [value]="'common.yes' | translate" severity="warn"></app-status-badge>
               }
             </td>
-            <td>{{ groupNames(row) }}</td>
+            <td>
+              {{ groupNames(row) }}
+              @if (row.permissions?.length) {
+                <span class="ms-1 whitespace-nowrap text-xs text-gray-500 dark:text-gray-400">
+                  {{ 'company.roles.plusPermissions' | translate: { count: row.permissions.length } }}
+                </span>
+              }
+            </td>
             @if (canEdit() || canDelete()) {
               <td class="whitespace-nowrap text-end">
                 @if (canEdit()) {

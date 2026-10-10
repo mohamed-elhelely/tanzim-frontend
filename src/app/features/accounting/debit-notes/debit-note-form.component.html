@@ -12,7 +12,7 @@
 } @else if (notDraft()) {
   <app-error-state title="accounting.hints.onlyDraftNote" [showRetry]="false"></app-error-state>
 } @else {
-  <p-card styleClass="max-w-3xl">
+  <p-card>
     <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-6" novalidate>
       @if (formErrors().length) {
         <div
@@ -24,7 +24,7 @@
           }
         </div>
       }
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         <div class="flex flex-col gap-1">
           <label for="supplier" class="text-sm font-medium">{{ 'accounting.fields.supplier' | translate }} *</label>
           <p-select
@@ -90,11 +90,11 @@
           <input pInputText id="tax_amount" formControlName="tax_amount" dir="ltr" inputmode="decimal" class="w-full" />
           <app-field-error [control]="form.controls.tax_amount" patternKey="inventory.hints.decimal"></app-field-error>
         </div>
-        <div class="flex flex-col gap-1 md:col-span-2">
+        <div class="flex flex-col gap-1 md:col-span-2 xl:col-span-3">
           <label for="supplier_reference" class="text-sm font-medium">{{ 'accounting.fields.supplierReference' | translate }}</label>
           <input pInputText id="supplier_reference" formControlName="supplier_reference" dir="ltr" class="w-full" />
         </div>
-        <div class="flex flex-col gap-1 md:col-span-2">
+        <div class="flex flex-col gap-1 md:col-span-2 xl:col-span-3">
           <label for="reason" class="text-sm font-medium">{{ 'accounting.fields.reason' | translate }}</label>
           <textarea pTextarea id="reason" formControlName="reason" rows="2" class="w-full"></textarea>
         </div>

@@ -8,10 +8,10 @@ import { AuthService } from '../../core/auth/auth.service';
 import { LanguageService } from '../../core/services/language.service';
 import { NAV_ITEMS, NavItem } from './nav-items';
 
-// The navigation always sits on the dark indigo sidebar (desktop) or drawer (mobile).
+// The navigation always sits on the dark sidebar (desktop) or drawer (mobile), in the secondary brand color.
 const LINK_CLASSES =
-  'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-primary-200 transition-colors hover:bg-white/5 hover:text-white';
-const ACTIVE_CLASSES = '!bg-primary-600 !text-white shadow-md shadow-primary-950/40';
+  'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-secondary-200 transition-colors hover:bg-white/5 hover:text-white';
+const ACTIVE_CLASSES = '!bg-primary-600 !text-white shadow-md shadow-secondary-950/40';
 
 @Component({
   selector: 'app-nav-list',

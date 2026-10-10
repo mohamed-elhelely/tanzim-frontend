@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
-import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -13,7 +12,9 @@ import { PageHeaderAction, PageHeaderComponent } from '../../../shared/component
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
 import { ServerTable } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
+import { FormDialogService } from '../../../shared/forms/form-dialog.service';
 import { Zone } from '../inventory.models';
+import { ZoneFormComponent } from './zone-form.component';
 import { ZoneService } from './zone.service';
 
 @Component({
@@ -35,7 +36,7 @@ import { ZoneService } from './zone.service';
 })
 export class ZoneListComponent implements OnInit {
   private readonly api = inject(ZoneService);
-  private readonly router = inject(Router);
+  private readonly formDialog = inject(FormDialogService);
   private readonly confirm = inject(ConfirmService);
 
   readonly table = new ServerTable<Zone>((query) => this.api.list(query));
@@ -45,7 +46,7 @@ export class ZoneListComponent implements OnInit {
     {
       label: 'inventory.zones.new',
       icon: 'pi pi-plus',
-      onClick: () => void this.router.navigate(['/inventory/zones/new']),
+      onClick: () => this.openForm(),
     },
   ];
 
@@ -53,8 +54,15 @@ export class ZoneListComponent implements OnInit {
     this.table.load();
   }
 
+  /** Create (no id) or edit in a dialog over the list; the list reloads after a save. */
+  openForm(id?: number): void {
+    this.formDialog
+      .open(ZoneFormComponent, { header: id ? 'inventory.zones.edit' : 'inventory.zones.new', id })
+      .subscribe(() => this.table.load());
+  }
+
   edit(row: Zone): void {
-    void this.router.navigate(['/inventory/zones', row.id, 'edit']);
+    this.openForm(row.id);
   }
 
   confirmDelete(row: Zone): void {

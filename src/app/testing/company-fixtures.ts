@@ -31,7 +31,7 @@ export function makeDepartment(overrides: Partial<Department> = {}): Department 
 }
 
 export function makeRole(overrides: Partial<Role> = {}): Role {
-  return { id: 3, name_en: 'Sales Manager', name_ar: null, is_admin: false, permission_groups: [], ...overrides };
+  return { id: 3, name_en: 'Sales Manager', name_ar: null, is_admin: false, permission_groups: [], permissions: [], ...overrides };
 }
 
 export function makePermissionGroup(overrides: Partial<PermissionGroup> = {}): PermissionGroup {
@@ -41,6 +41,7 @@ export function makePermissionGroup(overrides: Partial<PermissionGroup> = {}): P
     name_ar: null,
     description: '',
     is_core: false,
+    permissions: [],
     created_by: null,
     updated_by: null,
     ...overrides,

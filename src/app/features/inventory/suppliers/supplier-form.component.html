@@ -10,7 +10,7 @@
 } @else if (loading()) {
   <app-loading-state></app-loading-state>
 } @else {
-  <p-card styleClass="max-w-5xl">
+  <p-card>
     <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-6" novalidate>
       @if (formErrors().length) {
         <div
@@ -23,7 +23,7 @@
         </div>
       }
 
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         <div class="flex flex-col gap-1">
           <label for="name" class="text-sm font-medium">{{ 'inventory.fields.name' | translate }} *</label>
           <input pInputText id="name" formControlName="name" class="w-full" />
@@ -55,7 +55,7 @@
           <app-field-error [control]="form.controls.tax_id"></app-field-error>
         </div>
 
-        <h3 class="text-sm font-semibold text-gray-700 md:col-span-2 dark:text-gray-200">{{ 'inventory.sections.contact' | translate }}</h3>
+        <h3 class="text-sm font-semibold text-gray-700 md:col-span-2 xl:col-span-3 dark:text-gray-200">{{ 'inventory.sections.contact' | translate }}</h3>
 
         <div class="flex flex-col gap-1">
           <label for="contact_person" class="text-sm font-medium">{{ 'inventory.fields.contactPerson' | translate }}</label>
@@ -87,7 +87,7 @@
           <app-field-error [control]="form.controls.website" patternKey="inventory.hints.website"></app-field-error>
         </div>
 
-        <h3 class="text-sm font-semibold text-gray-700 md:col-span-2 dark:text-gray-200">{{ 'inventory.sections.address' | translate }}</h3>
+        <h3 class="text-sm font-semibold text-gray-700 md:col-span-2 xl:col-span-3 dark:text-gray-200">{{ 'inventory.sections.address' | translate }}</h3>
 
         <div class="flex flex-col gap-1">
           <label for="address_line1" class="text-sm font-medium">{{ 'inventory.fields.addressLine1' | translate }}</label>
@@ -125,7 +125,7 @@
           <app-field-error [control]="form.controls.country"></app-field-error>
         </div>
 
-        <h3 class="text-sm font-semibold text-gray-700 md:col-span-2 dark:text-gray-200">{{ 'inventory.sections.terms' | translate }}</h3>
+        <h3 class="text-sm font-semibold text-gray-700 md:col-span-2 xl:col-span-3 dark:text-gray-200">{{ 'inventory.sections.terms' | translate }}</h3>
 
         <div class="flex flex-col gap-1">
           <label for="payment_terms" class="text-sm font-medium">{{ 'inventory.fields.paymentTerms' | translate }}</label>
@@ -157,7 +157,7 @@
           <app-field-error [control]="form.controls.reliability_score" patternKey="inventory.hints.reliability"></app-field-error>
         </div>
 
-        <div class="flex flex-col gap-3 md:col-span-2">
+        <div class="flex flex-col gap-3 md:col-span-2 xl:col-span-3">
           <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'inventory.sections.settings' | translate }}</h3>
           <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
             <div class="flex items-center gap-3">
@@ -171,7 +171,7 @@
           </div>
         </div>
 
-        <div class="flex flex-col gap-1 md:col-span-2">
+        <div class="flex flex-col gap-1 md:col-span-2 xl:col-span-3">
           <label for="notes" class="text-sm font-medium">{{ 'inventory.fields.notes' | translate }}</label>
           <textarea pTextarea id="notes" formControlName="notes" rows="3" class="w-full"></textarea>
           <app-field-error [control]="form.controls.notes"></app-field-error>

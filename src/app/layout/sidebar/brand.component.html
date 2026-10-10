@@ -1,11 +1,22 @@
 <a routerLink="/dashboard" class="flex h-16 items-center gap-3 px-5">
-  <span
-    class="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-primary-400 to-primary-600 text-white shadow-lg shadow-primary-900/40"
-  >
-    <i class="pi pi-box text-base"></i>
-  </span>
-  <span class="flex flex-col leading-tight">
-    <span class="text-base font-bold text-white">{{ 'app.name' | translate }}</span>
-    <span class="text-xs text-primary-300">{{ 'app.tagline' | translate }}</span>
+  @if (company()?.logo; as logo) {
+    <span class="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white p-0.5 shadow-lg shadow-secondary-950/40">
+      <img [src]="logo" alt="" class="h-full w-full object-contain" />
+    </span>
+  } @else {
+    <span
+      class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-primary-400 to-primary-600 text-white shadow-lg shadow-secondary-950/40"
+    >
+      <i class="pi pi-box text-base"></i>
+    </span>
+  }
+  <span class="flex min-w-0 flex-col leading-tight">
+    @if (company(); as c) {
+      <span class="truncate text-base font-bold text-white">{{ c.name }}</span>
+      <span class="text-xs text-secondary-300">{{ 'app.name' | translate }}</span>
+    } @else {
+      <span class="text-base font-bold text-white">{{ 'app.name' | translate }}</span>
+      <span class="text-xs text-secondary-300">{{ 'app.tagline' | translate }}</span>
+    }
   </span>
 </a>

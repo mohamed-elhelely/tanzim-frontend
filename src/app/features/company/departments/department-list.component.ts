@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject } from '@angular/core';
-import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -16,7 +15,9 @@ import { LocalizedNamePipe } from '../../../shared/pipes/localized-name.pipe';
 import { UserNamePipe } from '../../../shared/pipes/user-name.pipe';
 import { ServerTable } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
+import { FormDialogService } from '../../../shared/forms/form-dialog.service';
 import { Department } from '../company.models';
+import { DepartmentFormComponent } from './department-form.component';
 import { DepartmentService } from './department.service';
 
 @Component({
@@ -39,7 +40,7 @@ import { DepartmentService } from './department.service';
 })
 export class DepartmentListComponent implements OnInit {
   private readonly api = inject(DepartmentService);
-  private readonly router = inject(Router);
+  private readonly formDialog = inject(FormDialogService);
   private readonly confirm = inject(ConfirmService);
   private readonly access = inject(AccessService);
 
@@ -54,15 +55,22 @@ export class DepartmentListComponent implements OnInit {
   readonly canDelete = computed(() => this.access.can('delete_department'));
 
   readonly headerActions = computed<PageHeaderAction[]>(() =>
-    this.canAdd() ? [{ label: 'company.departments.new', icon: 'pi pi-plus', onClick: () => void this.router.navigate(['/company/departments/new']) }] : [],
+    this.canAdd() ? [{ label: 'company.departments.new', icon: 'pi pi-plus', onClick: () => this.openForm() }] : [],
   );
 
   ngOnInit(): void {
     this.table.load();
   }
 
+  /** Create (no id) or edit in a dialog over the list; the list reloads after a save. */
+  openForm(id?: number): void {
+    this.formDialog
+      .open(DepartmentFormComponent, { header: id ? 'company.departments.edit' : 'company.departments.new', id })
+      .subscribe(() => this.table.load());
+  }
+
   edit(row: Department): void {
-    void this.router.navigate(['/company/departments', row.id, 'edit']);
+    this.openForm(row.id);
   }
 
   confirmDelete(row: Department): void {

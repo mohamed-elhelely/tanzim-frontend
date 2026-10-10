@@ -5,6 +5,9 @@ import { Confirmation, ConfirmationService } from 'primeng/api';
 import { envelope, provideApiTesting } from '../../../testing/api-testing';
 import { makePermission } from '../../../testing/company-fixtures';
 import { PermissionListComponent } from './permission-list.component';
+import { EMPTY } from 'rxjs';
+import { FormDialogService } from '../../../shared/forms/form-dialog.service';
+import { PermissionFormComponent } from './permission-form.component';
 
 const URL = '/api/company/v1/permissions/';
 
@@ -63,11 +66,12 @@ describe('PermissionListComponent', () => {
     requests[1].flush(envelope([], 30));
   });
 
-  it('opens the edit page', () => {
+  it('opens the edit form in a dialog', () => {
     const fixture = create();
     httpMock.expectOne((r) => r.url === URL).flush(envelope([makePermission()], 1));
+    const open = spyOn(TestBed.inject(FormDialogService), 'open').and.returnValue(EMPTY);
     fixture.componentInstance.edit(makePermission());
-    expect(router.navigate).toHaveBeenCalledWith(['/company/permissions', 6, 'edit']);
+    expect(open).toHaveBeenCalledWith(PermissionFormComponent, { header: 'company.permissions.edit', id: 6 });
   });
 
   it('deletes after confirmation and reloads', () => {

@@ -1,0 +1,61 @@
+<app-page-header title="admin.billing.plans.title" subtitle="admin.billing.plans.subtitle" [actions]="headerActions"></app-page-header>
+
+@if (error(); as err) {
+  <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403" (retry)="load()"></app-error-state>
+} @else {
+  <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
+    <div class="overflow-x-auto">
+      <p-table [value]="plans()" [loading]="loading()" dataKey="id" size="small">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>{{ 'admin.billing.fields.name' | translate }}</th>
+            <th>{{ 'admin.billing.fields.billingPeriod' | translate }}</th>
+            <th class="text-end">{{ 'admin.billing.fields.basePrice' | translate }}</th>
+            <th class="text-end">{{ 'admin.billing.fields.maxUsers' | translate }}</th>
+            <th class="text-end">{{ 'admin.billing.fields.trialDays' | translate }}</th>
+            <th>{{ 'admin.billing.fields.includedModules' | translate }}</th>
+            <th class="text-end">{{ 'common.actions' | translate }}</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-plan>
+          <tr>
+            <td>
+              <span class="font-medium">{{ plan.name }}</span>
+              @if (plan.is_featured) {
+                <app-status-badge class="ms-2" [value]="'admin.billing.fields.featured' | translate" severity="warn" icon="pi pi-star"></app-status-badge>
+              }
+            </td>
+            <td>{{ 'admin.billing.periods.' + plan.billing_period | translate }}</td>
+            <td class="text-end" dir="ltr">{{ plan.base_price | number: '1.2-2' }}</td>
+            <td class="text-end">{{ plan.max_users ?? ('admin.billing.hints.unlimited' | translate) }}</td>
+            <td class="text-end">{{ plan.trial_days }}</td>
+            <td class="max-w-xs truncate">
+              {{ moduleNames(plan) || '—' }}
+              @if (plan.addon_modules.length) {
+                <span class="ms-1 text-xs text-gray-500 dark:text-gray-400">
+                  {{ 'admin.billing.plans.addons' | translate: { count: plan.addon_modules.length } }}
+                </span>
+              }
+            </td>
+            <td class="whitespace-nowrap text-end">
+              <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" [ariaLabel]="'common.edit' | translate" (onClick)="openForm(plan.id)"></p-button>
+              <p-button
+                icon="pi pi-trash"
+                severity="danger"
+                [text]="true"
+                [rounded]="true"
+                [ariaLabel]="'common.delete' | translate"
+                (onClick)="confirmDelete(plan)"
+              ></p-button>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="7"><app-empty-state icon="pi-tags"></app-empty-state></td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+}

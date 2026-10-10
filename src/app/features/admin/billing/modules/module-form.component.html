@@ -1,0 +1,56 @@
+<app-form-layout [title]="isEdit ? 'admin.billing.modules.edit' : 'admin.billing.modules.new'" (back)="goBack()">
+  @if (loadError(); as err) {
+    <app-error-state [title]="errorTitleKey(err)" [showRetry]="false"></app-error-state>
+  } @else if (loading()) {
+    <app-loading-state></app-loading-state>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-6" novalidate>
+      @if (formErrors().length) {
+        <div
+          role="alert"
+          class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300"
+        >
+          @for (message of formErrors(); track $index) {
+            <p>{{ message }}</p>
+          }
+        </div>
+      }
+
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div class="flex flex-col gap-1">
+          <label for="name" class="text-sm font-medium">{{ 'admin.billing.fields.name' | translate }} *</label>
+          <input pInputText id="name" formControlName="name" class="w-full" />
+          <app-field-error [control]="form.controls.name"></app-field-error>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="code" class="text-sm font-medium">{{ 'admin.billing.fields.code' | translate }} *</label>
+          <input pInputText id="code" formControlName="code" dir="ltr" placeholder="inventory" class="w-full font-mono" />
+          <app-field-error [control]="form.controls.code" patternKey="admin.billing.hints.code"></app-field-error>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="price_per_user" class="text-sm font-medium">{{ 'admin.billing.fields.pricePerUser' | translate }} *</label>
+          <input pInputText id="price_per_user" formControlName="price_per_user" dir="ltr" inputmode="decimal" class="w-full" />
+          <app-field-error [control]="form.controls.price_per_user" patternKey="admin.billing.hints.money"></app-field-error>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="icon" class="text-sm font-medium">{{ 'admin.billing.fields.icon' | translate }}</label>
+          <input pInputText id="icon" formControlName="icon" dir="ltr" placeholder="pi-box" class="w-full font-mono" />
+          <app-field-error [control]="form.controls.icon"></app-field-error>
+        </div>
+        <div class="flex items-center gap-3">
+          <p-toggleswitch inputId="is_active" formControlName="is_active"></p-toggleswitch>
+          <label for="is_active" class="text-sm font-medium">{{ 'admin.billing.fields.active' | translate }}</label>
+        </div>
+        <div class="flex flex-col gap-1 md:col-span-2">
+          <label for="description" class="text-sm font-medium">{{ 'admin.billing.fields.description' | translate }}</label>
+          <textarea pTextarea id="description" formControlName="description" rows="3" class="w-full"></textarea>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 border-t border-gray-100 pt-5 dark:border-gray-800">
+        <p-button type="button" [label]="'common.cancel' | translate" severity="secondary" [outlined]="true" (onClick)="goBack()"></p-button>
+        <p-button type="submit" [label]="'common.save' | translate" icon="pi pi-check" [loading]="saving()" [disabled]="saving()"></p-button>
+      </div>
+    </form>
+  }
+</app-form-layout>

@@ -83,7 +83,15 @@
     "stockLedger": "سجل حركة المخزون",
     "analytics": "التحليلات",
     "dashboards": "لوحات المتابعة",
-    "reports": "التقارير"
+    "reports": "التقارير",
+    "companyProfile": "ملف الشركة",
+    "platformBilling": "الاشتراكات",
+    "subscriptions": "اشتراكات الشركات",
+    "plans": "الخطط",
+    "billingModules": "الوحدات",
+    "platformInvoices": "الفواتير",
+    "platformPayments": "المدفوعات",
+    "billingReports": "التقارير"
   },
   "auth": {
     "login": "تسجيل الدخول",
@@ -190,7 +198,9 @@
       "groups": "المجموعات",
       "companyAdmin": "مسؤول الشركة",
       "departmentManager": "مدير قسم",
-      "teamLead": "قائد فريق"
+      "teamLead": "قائد فريق",
+      "permissions": "الصلاحيات",
+      "singlePermissions": "صلاحيات فردية"
     },
     "users": {
       "title": "المستخدمون",
@@ -212,17 +222,34 @@
     "roles": {
       "title": "الأدوار",
       "new": "دور جديد",
-      "edit": "تعديل دور"
+      "edit": "تعديل دور",
+      "singlePermissionsHint": "تُمنح بالإضافة إلى مجموعات الصلاحيات أعلاه.",
+      "plusPermissions": "+ {{count}} صلاحية"
     },
     "permissionGroups": {
       "title": "مجموعات الصلاحيات",
       "new": "مجموعة صلاحيات جديدة",
-      "edit": "تعديل مجموعة صلاحيات"
+      "edit": "تعديل مجموعة صلاحيات",
+      "system": "نظام",
+      "coreReadOnly": "هذه مجموعة نظام: تتبع قائمة الصلاحيات تلقائيًا ولا يمكن تعديلها. أنشئ مجموعة خاصة بك لاختيار صلاحيات أخرى."
     },
     "permissions": {
       "title": "الصلاحيات",
       "new": "صلاحية جديدة",
-      "edit": "تعديل صلاحية"
+      "edit": "تعديل صلاحية",
+      "system": "نظام"
+    },
+    "profile": {
+      "title": "ملف الشركة",
+      "subtitle": "الشعار وألوان العلامة التجارية",
+      "readOnly": "يمكنك عرض الهوية البصرية دون تعديلها.",
+      "logo": "الشعار",
+      "primaryColor": "اللون الأساسي",
+      "secondaryColor": "اللون الثانوي",
+      "colorFormat": "استخدم لونًا سداسيًا مثل #1A2B3C.",
+      "preview": "معاينة",
+      "previewHint": "شكل الشعار والألوان معًا.",
+      "sampleButton": "زر تجريبي"
     }
   },
   "locations": {
@@ -310,6 +337,128 @@
       "taxId": "حروف وأرقام وشرطات فقط.",
       "phone": "بالصيغة الدولية: + ثم من 8 إلى 15 رقمًا، مثل ‎+966501234567.",
       "adminEmail": "يُنشأ حساب مسؤول لهذا البريد وتُرسل إليه بيانات الدخول."
+    },
+    "billing": {
+      "periods": {
+        "monthly": "شهري",
+        "quarterly": "ربع سنوي",
+        "yearly": "سنوي"
+      },
+      "fields": {
+        "name": "الاسم",
+        "billingPeriod": "دورة الفوترة",
+        "basePrice": "السعر الأساسي",
+        "maxUsers": "أقصى عدد مستخدمين",
+        "trialDays": "أيام التجربة",
+        "featured": "مميزة",
+        "description": "الوصف",
+        "includedModules": "الوحدات المضمنة",
+        "code": "الرمز",
+        "pricePerUser": "السعر لكل مستخدم",
+        "icon": "الأيقونة",
+        "active": "نشط",
+        "inactive": "غير نشط",
+        "status": "الحالة",
+        "company": "الشركة",
+        "plan": "الخطة",
+        "startDate": "تاريخ البدء",
+        "endDate": "تاريخ الانتهاء",
+        "trialEndDate": "نهاية التجربة",
+        "subscription": "الاشتراك",
+        "taxRate": "نسبة الضريبة (%)",
+        "discount": "الخصم",
+        "notes": "ملاحظات",
+        "paidDate": "تاريخ السداد",
+        "paymentMethod": "طريقة الدفع",
+        "module": "الوحدة",
+        "amount": "المبلغ",
+        "transactionId": "رقم العملية",
+        "paidAt": "التاريخ",
+        "refunded": "المسترد",
+        "net": "الصافي"
+      },
+      "hints": {
+        "money": "أدخل مبلغًا بحد أقصى رقمين عشريين.",
+        "wholeNumber": "أدخل رقمًا صحيحًا.",
+        "unlimited": "غير محدود",
+        "code": "حروف إنجليزية صغيرة وأرقام و _ (مثل inventory)."
+      },
+      "plans": {
+        "title": "الخطط",
+        "subtitle": "الخطط التي تشترك فيها الشركات",
+        "new": "خطة جديدة",
+        "edit": "تعديل الخطة",
+        "addons": "+ {{count}} إضافات"
+      },
+      "modules": {
+        "title": "الوحدات",
+        "subtitle": "وحدات النظام وسعر كل منها للمستخدم",
+        "new": "وحدة جديدة",
+        "edit": "تعديل الوحدة"
+      },
+      "subscriptions": {
+        "title": "اشتراكات الشركات",
+        "subtitle": "خطة كل شركة ومدتها وعدد مستخدميها ووحداتها",
+        "new": "اشتراك جديد",
+        "edit": "تعديل الاشتراك",
+        "manageModules": "الوحدات",
+        "moduleEnabled": "تم تفعيل الوحدة.",
+        "moduleDisabled": "تم إيقاف الوحدة.",
+        "modulesHint": "يمكن تفعيل الوحدات على الاشتراكات النشطة فقط، ويسري التغيير على الشركة فورًا."
+      },
+      "invoices": {
+        "title": "فواتير المنصة",
+        "subtitle": "الفواتير الصادرة لكل الشركات",
+        "new": "فاتورة جديدة",
+        "detail": "الفاتورة",
+        "createDraft": "إنشاء مسودة",
+        "draftCreated": "تم إنشاء المسودة. أضف البنود ثم أصدرها.",
+        "noSubscriptions": "لا توجد اشتراكات للفوترة بعد: ما زال الباك إند لا يعرض اشتراكات كل الشركات للمشرف.",
+        "items": "البنود",
+        "addItem": "إضافة بند",
+        "editItem": "تعديل البند",
+        "noItems": "أضف بندًا واحدًا على الأقل قبل الإصدار.",
+        "issue": "إصدار",
+        "issued": "تم إصدار الفاتورة.",
+        "confirmIssue": "إصدار الفاتورة {{number}}؟ لن يمكن تعديل بنودها بعد ذلك.",
+        "markPaid": "تحديد كمدفوعة",
+        "paid": "تم تحديد الفاتورة كمدفوعة.",
+        "confirmMarkPaid": "تسجيل المتبقي {{amount}} على {{number}} كمدفوع؟",
+        "addPayment": "تسجيل دفعة",
+        "recordPayment": "تسجيل",
+        "amountDueHint": "المبلغ المستحق: {{amount}}",
+        "cancel": "إلغاء الفاتورة",
+        "cancelled": "تم إلغاء الفاتورة."
+      },
+      "payments": {
+        "title": "مدفوعات المنصة",
+        "subtitle": "المدفوعات على فواتير المنصة من كل الشركات",
+        "refund": "استرداد",
+        "refunded": "تم تسجيل الاسترداد.",
+        "refundOf": "الفاتورة {{number}} — يمكن استرداد حتى {{amount}}."
+      },
+      "paymentStatus": {
+        "pending": "قيد الانتظار",
+        "completed": "مكتملة",
+        "failed": "فشلت",
+        "refunded": "مستردة",
+        "partially_refunded": "مستردة جزئيًا"
+      },
+      "reports": {
+        "title": "تقارير الفوترة",
+        "subtitle": "الإيرادات والفواتير المستحقة والأرصدة",
+        "revenue": "الإيرادات الشهرية",
+        "year": "السنة",
+        "invoiced": "المفوتر",
+        "paid": "المدفوع",
+        "outstanding": "المستحق",
+        "invoiceCount": "عدد الفواتير",
+        "noRevenue": "لا توجد فواتير في هذه السنة.",
+        "outstandingInvoices": "الفواتير المستحقة",
+        "daysOverdue": "أيام التأخير",
+        "balances": "الأرصدة حسب الاشتراك",
+        "overdueCount": "متأخرة"
+      }
     }
   },
   "inventory": {
@@ -1581,7 +1730,10 @@
       "overdue_purchase_orders": "أوامر شراء متأخرة",
       "webhook_endpoints": "نقاط Webhook",
       "webhook_deliveries": "إرسالات Webhook",
-      "webhook_success_rate_percent": "نجاح Webhook ٪"
+      "webhook_success_rate_percent": "نجاح Webhook ٪",
+      "total_paid": "المدفوع",
+      "total_outstanding": "المستحق",
+      "total_invoiced": "المفوتر"
     },
     "charts": {
       "activity_by_user": "النشاط حسب المستخدم",
@@ -1696,5 +1848,129 @@
       "administration": "الإدارة",
       "other": "أخرى"
     }
+  },
+  "permissionCatalog": {
+    "selected": "{{count}} محددة",
+    "selectAll": "تحديد الكل",
+    "clearAll": "إلغاء الكل",
+    "access": "الوصول إلى الوحدة",
+    "accessHint": "مطلوب قبل فتح أي شاشة في هذه الوحدة.",
+    "resource": "الشاشة",
+    "others": "صلاحيات أخرى",
+    "actions": {
+      "view": "عرض",
+      "add": "إضافة",
+      "change": "تعديل",
+      "delete": "حذف"
+    },
+    "modules": {
+      "company": "الشركة",
+      "location": "المواقع",
+      "inventory": "المخزون",
+      "quality": "الجودة",
+      "assembly": "التجميع",
+      "sales": "المبيعات",
+      "returns": "المرتجعات",
+      "accounting": "المحاسبة",
+      "reports": "التقارير",
+      "integrations": "التكاملات"
+    },
+    "resources": {
+      "company": "ملف الشركة",
+      "department": "الأقسام",
+      "team": "الفرق",
+      "role": "الأدوار",
+      "permissiongroup": "مجموعات الصلاحيات",
+      "permission": "الصلاحيات",
+      "companyuser": "مستخدمو الشركة",
+      "country": "الدول",
+      "region": "المناطق",
+      "city": "المدن",
+      "district": "الأحياء",
+      "location": "المواقع",
+      "category": "الفئات",
+      "brand": "العلامات التجارية",
+      "product": "المنتجات",
+      "productattribute": "خصائص المنتجات",
+      "productattributevalue": "قيم خصائص المنتجات",
+      "productvariant": "متغيرات المنتجات",
+      "productbom": "قوائم المواد",
+      "warehouse": "المستودعات",
+      "zone": "المناطق التخزينية",
+      "bin": "الرفوف",
+      "batch": "الدفعات",
+      "serialnumber": "الأرقام التسلسلية",
+      "stockledger": "سجل حركة المخزون",
+      "stocksnapshot": "لقطات المخزون",
+      "stockreservation": "حجوزات المخزون",
+      "stockalert": "تنبيهات المخزون",
+      "stocktransfer": "تحويلات المخزون",
+      "stockadjustment": "تسويات المخزون",
+      "cyclecount": "الجرد الدوري",
+      "supplier": "الموردون",
+      "supplierproduct": "منتجات الموردين",
+      "purchaserequisition": "طلبات الشراء",
+      "purchaseorder": "أوامر الشراء",
+      "goodsreceipt": "إيصالات الاستلام",
+      "supplierinvoice": "فواتير الموردين",
+      "approvalworkflow": "مسارات الموافقة",
+      "approvalrequest": "طلبات الموافقة",
+      "reorderpolicy": "سياسات إعادة الطلب",
+      "reordersuggestion": "اقتراحات إعادة الطلب",
+      "demandforecast": "توقعات الطلب",
+      "qualityinspection": "فحوصات الجودة",
+      "nonconformancereport": "تقارير عدم المطابقة",
+      "quarantinerecord": "سجلات الحجر",
+      "workorder": "أوامر العمل",
+      "customer": "العملاء",
+      "salesorder": "أوامر البيع",
+      "deliverynote": "إذونات التسليم",
+      "salesinvoice": "فواتير البيع",
+      "invoicepayment": "مدفوعات الفواتير",
+      "salesaudittrail": "سجل تدقيق المبيعات",
+      "customerreturn": "مرتجعات العملاء",
+      "supplierreturn": "مرتجعات الموردين",
+      "account": "الحسابات",
+      "journalentry": "قيود اليومية",
+      "fiscalyear": "السنوات المالية",
+      "fiscalperiod": "الفترات المالية",
+      "supplierpayment": "مدفوعات الموردين",
+      "debitnote": "إشعارات الخصم",
+      "accountingreport": "التقارير المحاسبية",
+      "report": "التقارير",
+      "dashboard": "لوحات المعلومات",
+      "savedreport": "التقارير المحفوظة",
+      "reportschedule": "جداول التقارير",
+      "webhook": "الويب هوك"
+    }
+  },
+  "imagePicker": {
+    "choose": "اختر صورة",
+    "remove": "إزالة",
+    "hint": "PNG أو JPEG، حتى 5 ميجابايت.",
+    "tooLarge": "حجم الصورة أكبر من 5 ميجابايت."
+  },
+  "profile": {
+    "title": "ملفي الشخصي",
+    "myProfile": "ملفي الشخصي",
+    "subtitle": "بياناتك وصورتك وكلمة المرور",
+    "details": "البيانات الشخصية",
+    "picture": "الصورة الشخصية",
+    "fields": {
+      "firstName": "الاسم الأول",
+      "middleName": "الاسم الأوسط",
+      "lastName": "اسم العائلة",
+      "preferredName": "الاسم المفضل",
+      "phone": "رقم الهاتف",
+      "timezone": "المنطقة الزمنية",
+      "currentPassword": "كلمة المرور الحالية",
+      "newPassword": "كلمة المرور الجديدة",
+      "confirmPassword": "تأكيد كلمة المرور الجديدة"
+    },
+    "changePassword": "تغيير كلمة المرور",
+    "passwordHint": "8 أحرف على الأقل، ليست أرقامًا فقط، ومختلفة عن الحالية. ستظل مسجلًا الدخول.",
+    "passwordMismatch": "كلمتا المرور غير متطابقتين.",
+    "updatePassword": "تحديث كلمة المرور",
+    "passwordChanged": "تم تغيير كلمة المرور."
   }
 }

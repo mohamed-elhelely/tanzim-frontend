@@ -5,6 +5,9 @@ import { Confirmation, ConfirmationService } from 'primeng/api';
 import { envelope, errorEnvelope, provideApiTesting } from '../../../testing/api-testing';
 import { makeDistrict } from '../../../testing/location-fixtures';
 import { DistrictListComponent } from './district-list.component';
+import { EMPTY } from 'rxjs';
+import { FormDialogService } from '../../../shared/forms/form-dialog.service';
+import { DistrictFormComponent } from './district-form.component';
 
 const URL = '/api/company/v1/district/';
 
@@ -74,11 +77,12 @@ describe('DistrictListComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('common.forbidden');
   });
 
-  it('opens the edit page', () => {
+  it('opens the edit form in a dialog', () => {
     const fixture = create();
     expectList({}, [makeDistrict()]);
+    const open = spyOn(TestBed.inject(FormDialogService), 'open').and.returnValue(EMPTY);
     fixture.componentInstance.edit(makeDistrict());
-    expect(router.navigate).toHaveBeenCalledWith(['/locations/districts', 4, 'edit']);
+    expect(open).toHaveBeenCalledWith(DistrictFormComponent, { header: 'locations.districts.edit', id: 4 });
   });
 
   it('deletes after confirmation and goes back a page when the page empties', () => {

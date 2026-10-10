@@ -1,0 +1,133 @@
+<app-page-header title="admin.billing.payments.title" subtitle="admin.billing.payments.subtitle"></app-page-header>
+
+@if (table.error(); as err) {
+  <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403" (retry)="table.load()"></app-error-state>
+} @else {
+  <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
+    <div class="flex flex-col gap-3 border-b border-gray-100 p-4 sm:flex-row sm:items-center dark:border-gray-800">
+      <p-select
+        [(ngModel)]="company"
+        (ngModelChange)="onFilterChange()"
+        [options]="companyOptions()"
+        optionLabel="label"
+        optionValue="value"
+        [filter]="true"
+        [showClear]="true"
+        [placeholder]="'admin.billing.fields.company' | translate"
+        [ariaLabel]="'admin.billing.fields.company' | translate"
+        styleClass="w-full sm:w-64"
+        appendTo="body"
+      ></p-select>
+    </div>
+    <div class="overflow-x-auto">
+      <p-table
+        [value]="table.rows()"
+        [lazy]="true"
+        [lazyLoadOnInit]="false"
+        (onLazyLoad)="table.onLazyLoad($event)"
+        [paginator]="true"
+        [first]="table.first()"
+        [rows]="table.pageSize()"
+        [totalRecords]="table.total()"
+        [rowsPerPageOptions]="[10, 25, 50]"
+        [loading]="table.loading()"
+        dataKey="id"
+        size="small"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th>{{ 'billing.fields.number' | translate }}</th>
+            <th>{{ 'admin.billing.fields.paidAt' | translate }}</th>
+            <th>{{ 'admin.billing.fields.status' | translate }}</th>
+            <th>{{ 'admin.billing.fields.paymentMethod' | translate }}</th>
+            <th>{{ 'admin.billing.fields.transactionId' | translate }}</th>
+            <th class="text-end">{{ 'admin.billing.fields.amount' | translate }}</th>
+            <th class="text-end">{{ 'admin.billing.fields.refunded' | translate }}</th>
+            <th class="text-end">{{ 'admin.billing.fields.net' | translate }}</th>
+            <th class="text-end">{{ 'common.actions' | translate }}</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-row>
+          <tr>
+            <td>
+              <a [routerLink]="['/admin/billing/invoices', row.invoice]" class="font-mono text-primary-600 hover:underline dark:text-primary-300" dir="ltr">{{
+                row.invoice_number
+              }}</a>
+            </td>
+            <td class="whitespace-nowrap" dir="ltr">{{ (row.paid_at || row.created_at) | date: 'yyyy-MM-dd HH:mm' }}</td>
+            <td>
+              <app-status-badge [value]="'admin.billing.paymentStatus.' + row.status | translate" [severity]="severity[row.status]"></app-status-badge>
+            </td>
+            <td>{{ row.payment_method_detail?.display || '—' }}</td>
+            <td class="font-mono text-xs" dir="ltr">{{ row.transaction_id || '—' }}</td>
+            <td class="text-end" dir="ltr">{{ row.amount | number: '1.2-2' }}</td>
+            <td class="text-end" dir="ltr">{{ row.refunded_amount | number: '1.2-2' }}</td>
+            <td class="text-end font-medium" dir="ltr">{{ row.net_amount | number: '1.2-2' }}</td>
+            <td class="whitespace-nowrap text-end">
+              @if (canRefund(row)) {
+                <p-button
+                  [label]="'admin.billing.payments.refund' | translate"
+                  icon="pi pi-replay"
+                  severity="secondary"
+                  [text]="true"
+                  size="small"
+                  (onClick)="openRefund(row)"
+                ></p-button>
+              }
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="9"><app-empty-state icon="pi-wallet"></app-empty-state></td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+}
+
+<p-dialog
+  [visible]="refunding() !== null"
+  (visibleChange)="!$event && refunding.set(null)"
+  [modal]="true"
+  [header]="'admin.billing.payments.refund' | translate"
+  [style]="{ width: '32rem' }"
+  [breakpoints]="{ '640px': '100vw' }"
+  appendTo="body"
+>
+  @if (refunding(); as payment) {
+    <form [formGroup]="refundForm" (ngSubmit)="saveRefund()" class="flex flex-col gap-4" novalidate>
+      <p class="text-sm text-gray-500 dark:text-gray-400">
+        {{ 'admin.billing.payments.refundOf' | translate: { number: payment.invoice_number, amount: (payment.net_amount | number: '1.2-2') } }}
+      </p>
+      @if (refundErrors().length) {
+        <div role="alert" class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300">
+          @for (message of refundErrors(); track $index) {
+            <p>{{ message }}</p>
+          }
+        </div>
+      }
+      <div class="flex flex-col gap-1">
+        <label for="refund_amount" class="text-sm font-medium">{{ 'admin.billing.fields.amount' | translate }} *</label>
+        <input pInputText id="refund_amount" formControlName="amount" dir="ltr" inputmode="decimal" class="w-full" />
+        <app-field-error [control]="refundForm.controls.amount" patternKey="admin.billing.hints.money"></app-field-error>
+      </div>
+      <div class="flex flex-col gap-1">
+        <label for="refund_reason" class="text-sm font-medium">{{ 'common.reasonOptional' | translate }}</label>
+        <textarea pTextarea id="refund_reason" formControlName="reason" rows="2" class="w-full"></textarea>
+      </div>
+      <div class="flex justify-end gap-2 border-t border-gray-100 pt-4 dark:border-gray-800">
+        <p-button type="button" [label]="'common.cancel' | translate" severity="secondary" [outlined]="true" (onClick)="refunding.set(null)"></p-button>
+        <p-button
+          type="submit"
+          [label]="'admin.billing.payments.refund' | translate"
+          icon="pi pi-replay"
+          severity="danger"
+          [loading]="refundSaving()"
+          [disabled]="refundSaving()"
+        ></p-button>
+      </div>
+    </form>
+  }
+</p-dialog>

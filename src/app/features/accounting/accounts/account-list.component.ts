@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -15,7 +14,9 @@ import { ErrorStateComponent } from '../../../shared/components/error-state/erro
 import { PageHeaderAction, PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
+import { FormDialogService } from '../../../shared/forms/form-dialog.service';
 import { ACCOUNT_TYPES, ACCOUNT_TYPE_SEVERITY, Account, AccountType } from '../accounting.models';
+import { AccountFormComponent } from './account-form.component';
 import { AccountService } from './account.service';
 
 export interface AccountRow extends Account {
@@ -65,7 +66,7 @@ export function toTree(accounts: Account[]): AccountRow[] {
 })
 export class AccountListComponent implements OnInit {
   private readonly api = inject(AccountService);
-  private readonly router = inject(Router);
+  private readonly formDialog = inject(FormDialogService);
   private readonly confirm = inject(ConfirmService);
 
   readonly accounts = signal<Account[]>([]);
@@ -91,7 +92,7 @@ export class AccountListComponent implements OnInit {
 
   readonly headerActions: PageHeaderAction[] = [
     { label: 'accounting.accounts.addDefaults', icon: 'pi pi-sync', severity: 'secondary', onClick: () => this.addDefaults() },
-    { label: 'accounting.accounts.new', icon: 'pi pi-plus', onClick: () => void this.router.navigate(['/accounting/accounts/new']) },
+    { label: 'accounting.accounts.new', icon: 'pi pi-plus', onClick: () => this.openForm() },
   ];
 
   ngOnInit(): void {
@@ -117,8 +118,15 @@ export class AccountListComponent implements OnInit {
     return ACCOUNT_TYPE_SEVERITY[type] ?? 'secondary';
   }
 
+  /** Create (no id) or edit in a dialog over the list; the list reloads after a save. */
+  openForm(id?: number): void {
+    this.formDialog
+      .open(AccountFormComponent, { header: id ? 'accounting.accounts.edit' : 'accounting.accounts.new', id })
+      .subscribe(() => this.load());
+  }
+
   edit(row: Account): void {
-    void this.router.navigate(['/accounting/accounts', row.id, 'edit']);
+    this.openForm(row.id);
   }
 
   confirmDelete(row: Account): void {

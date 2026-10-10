@@ -4,7 +4,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { AppError } from '../../../core/errors/app-error';
@@ -15,6 +14,7 @@ import { LoadingStateComponent } from '../../../shared/components/loading-state/
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { errorTitleKey, handleSaveError } from '../../../shared/utils/server-errors';
 import { PermissionGroupPayload } from '../company.models';
+import { PermissionPickerComponent } from '../permissions/permission-picker.component';
 import { PermissionGroupService } from './permission-group.service';
 
 @Component({
@@ -24,13 +24,13 @@ import { PermissionGroupService } from './permission-group.service';
     TranslatePipe,
     ButtonModule,
     CardModule,
-    ToggleSwitchModule,
     InputTextModule,
     TextareaModule,
     PageHeaderComponent,
     LoadingStateComponent,
     ErrorStateComponent,
     FieldErrorComponent,
+    PermissionPickerComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './permission-group-form.component.html',
@@ -46,6 +46,8 @@ export class PermissionGroupFormComponent implements OnInit {
   readonly loading = signal(false);
   readonly saving = signal(false);
   readonly loadError = signal<AppError | null>(null);
+  /** System groups (Full Access, Read Only…) are shown read-only: the backend refuses changes with 403. */
+  readonly isCore = signal(false);
   readonly formErrors = signal<string[]>([]);
   readonly errorTitleKey = errorTitleKey;
 
@@ -53,7 +55,7 @@ export class PermissionGroupFormComponent implements OnInit {
     name_en: ['', [Validators.required, Validators.maxLength(100)]],
     name_ar: ['', [Validators.maxLength(100)]],
     description: [''],
-    is_core: [false],
+    permissions: [[] as number[]],
   });
 
   ngOnInit(): void {
@@ -63,6 +65,9 @@ export class PermissionGroupFormComponent implements OnInit {
   }
 
   submit(): void {
+    if (this.isCore()) {
+      return;
+    }
     if (this.form.invalid || this.saving()) {
       this.form.markAllAsTouched();
       return;
@@ -72,7 +77,7 @@ export class PermissionGroupFormComponent implements OnInit {
       name_en: value.name_en.trim(),
       name_ar: value.name_ar.trim() || null,
       description: value.description.trim(),
-      is_core: value.is_core,
+      permissions: value.permissions,
     };
     this.saving.set(true);
     this.formErrors.set([]);
@@ -99,8 +104,12 @@ export class PermissionGroupFormComponent implements OnInit {
           name_en: group.name_en,
           name_ar: group.name_ar ?? '',
           description: group.description ?? '',
-          is_core: group.is_core,
+          permissions: (group.permissions ?? []).map((p) => p.id),
         });
+        if (group.is_core) {
+          this.isCore.set(true);
+          this.form.disable();
+        }
         this.loading.set(false);
       },
       error: (error: AppError) => {

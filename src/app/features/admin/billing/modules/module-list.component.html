@@ -1,0 +1,59 @@
+<app-page-header title="admin.billing.modules.title" subtitle="admin.billing.modules.subtitle" [actions]="headerActions"></app-page-header>
+
+@if (error(); as err) {
+  <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403" (retry)="load()"></app-error-state>
+} @else {
+  <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
+    <div class="overflow-x-auto">
+      <p-table [value]="modules()" [loading]="loading()" dataKey="id" size="small">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>{{ 'admin.billing.fields.name' | translate }}</th>
+            <th>{{ 'admin.billing.fields.code' | translate }}</th>
+            <th class="text-end">{{ 'admin.billing.fields.pricePerUser' | translate }}</th>
+            <th>{{ 'admin.billing.fields.status' | translate }}</th>
+            <th>{{ 'admin.billing.fields.description' | translate }}</th>
+            <th class="text-end">{{ 'common.actions' | translate }}</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-module>
+          <tr>
+            <td>
+              <span class="inline-flex items-center gap-2 font-medium">
+                @if (module.icon) {
+                  <i [class]="'pi ' + module.icon + ' text-gray-500'"></i>
+                }
+                {{ module.name }}
+              </span>
+            </td>
+            <td class="font-mono text-sm" dir="ltr">{{ module.code }}</td>
+            <td class="text-end" dir="ltr">{{ module.price_per_user | number: '1.2-2' }}</td>
+            <td>
+              <app-status-badge
+                [value]="(module.is_active ? 'admin.billing.fields.active' : 'admin.billing.fields.inactive') | translate"
+                [severity]="module.is_active ? 'success' : 'secondary'"
+              ></app-status-badge>
+            </td>
+            <td class="max-w-xs truncate">{{ module.description || '—' }}</td>
+            <td class="whitespace-nowrap text-end">
+              <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" [ariaLabel]="'common.edit' | translate" (onClick)="openForm(module.id)"></p-button>
+              <p-button
+                icon="pi pi-trash"
+                severity="danger"
+                [text]="true"
+                [rounded]="true"
+                [ariaLabel]="'common.delete' | translate"
+                (onClick)="confirmDelete(module)"
+              ></p-button>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="6"><app-empty-state icon="pi-th-large"></app-empty-state></td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+}

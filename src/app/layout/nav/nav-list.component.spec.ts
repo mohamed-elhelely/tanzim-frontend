@@ -5,16 +5,18 @@ import { provideTranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../core/auth/auth.service';
 import { AccessService } from '../../core/auth/access.service';
 import { NavListComponent } from './nav-list.component';
+import { NAV_ITEMS } from './nav-items';
 
 describe('NavListComponent', () => {
-  const ALL_COMPANY = ['view_companyuser', 'view_department', 'view_team', 'view_role', 'view_permissiongroup', 'view_permission'];
+  /** Every permission the menu asks for. */
+  const ALL = NAV_ITEMS.flatMap((item) => [item, ...(item.children ?? [])]).flatMap((item) => (item.permission ? [item.permission] : []));
 
   async function render(
     url: string,
     role = 'COMPANY',
     modules: string[] = ['location', 'inventory'],
     access?: object,
-    permissions: string[] = ALL_COMPANY,
+    permissions: string[] = ALL,
   ) {
     TestBed.configureTestingModule({
       imports: [NavListComponent],
@@ -73,10 +75,17 @@ describe('NavListComponent', () => {
     expect(links(await render('/dashboard', 'ADMIN'))).toContain('/admin/companies');
   });
 
-  it('shows platform admins only the dashboard, Companies and their notifications', async () => {
+  it('shows platform admins the dashboard, Companies, the Subscriptions group and their notifications', async () => {
     const fixture = await render('/dashboard', 'ADMIN');
     expect(links(fixture)).toEqual(['/dashboard', '/admin/companies', '/notifications']);
-    expect(fixture.nativeElement.querySelector('button[aria-expanded]')).toBeNull();
+    const groups = Array.from(fixture.nativeElement.querySelectorAll('button[aria-expanded]')) as HTMLButtonElement[];
+    expect(groups.map((button) => button.textContent?.trim())).toEqual(['nav.platformBilling']);
+  });
+
+  it('expands the Subscriptions group on a platform billing page', async () => {
+    const fixture = await render('/admin/billing/invoices/3', 'ADMIN');
+    expect(links(fixture)).toContain('/admin/billing/subscriptions');
+    expect(links(fixture)).toContain('/admin/billing/reports');
   });
 
   it('hides sections whose subscription module is off', async () => {
@@ -100,11 +109,17 @@ describe('NavListComponent', () => {
   });
 
   it('shows only the company screens the user may view, and drops an empty group', async () => {
-    const fixture = await render('/company/teams', 'EMPLOYEE', [], undefined, ['view_team']);
+    const fixture = await render('/company/teams', 'EMPLOYEE', [], undefined, ['access_company', 'view_team']);
     expect(links(fixture).filter((href) => href.startsWith('/company'))).toEqual(['/company/teams']);
     TestBed.resetTestingModule();
     const none = await render('/dashboard', 'EMPLOYEE', [], undefined, []);
     expect(none.nativeElement.textContent).not.toContain('nav.company');
+  });
+
+  it("hides a module's group without its access_ permission", async () => {
+    const fixture = await render('/dashboard', 'EMPLOYEE', ['location', 'inventory'], undefined, ALL.filter((code) => code !== 'access_sales'));
+    expect(fixture.nativeElement.textContent).not.toContain('nav.sales');
+    expect(fixture.nativeElement.textContent).toContain('nav.returns');
   });
 
   it('shows Companies to platform staff only, not to every user without a company', async () => {

@@ -4,6 +4,9 @@ import { Router } from '@angular/router';
 import { envelope, provideApiTesting } from '../../../testing/api-testing';
 import { makeBin } from '../../../testing/inventory-fixtures';
 import { BinListComponent } from './bin-list.component';
+import { EMPTY } from 'rxjs';
+import { FormDialogService } from '../../../shared/forms/form-dialog.service';
+import { BinFormComponent } from './bin-form.component';
 
 const URL = '/api/inventory/v1/bin/';
 
@@ -27,11 +30,12 @@ describe('BinListComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('Bin 1');
   });
 
-  it('opens the edit page', () => {
+  it('opens the edit form in a dialog', () => {
     const fixture = TestBed.createComponent(BinListComponent);
     fixture.detectChanges();
     httpMock.expectOne((r) => r.url === URL && r.params.has('page')).flush(envelope([], 0));
+    const open = spyOn(TestBed.inject(FormDialogService), 'open').and.returnValue(EMPTY);
     fixture.componentInstance.edit(makeBin({ id: 4 }));
-    expect(TestBed.inject(Router).navigate).toHaveBeenCalledWith(['/inventory/bins', 4, 'edit']);
+    expect(open).toHaveBeenCalledWith(BinFormComponent, { header: 'inventory.bins.edit', id: 4 });
   });
 });

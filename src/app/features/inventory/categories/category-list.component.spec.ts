@@ -4,6 +4,9 @@ import { Router } from '@angular/router';
 import { envelope, provideApiTesting } from '../../../testing/api-testing';
 import { makeCategory } from '../../../testing/inventory-fixtures';
 import { CategoryListComponent } from './category-list.component';
+import { EMPTY } from 'rxjs';
+import { FormDialogService } from '../../../shared/forms/form-dialog.service';
+import { CategoryFormComponent } from './category-form.component';
 
 const URL = '/api/inventory/v1/category/';
 
@@ -29,11 +32,12 @@ describe('CategoryListComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('Electronics');
   });
 
-  it('opens the edit page', () => {
+  it('opens the edit form in a dialog', () => {
     const fixture = TestBed.createComponent(CategoryListComponent);
     fixture.detectChanges();
     httpMock.expectOne((r) => r.url === URL).flush(envelope([], 0));
+    const open = spyOn(TestBed.inject(FormDialogService), 'open').and.returnValue(EMPTY);
     fixture.componentInstance.edit(makeCategory({ id: 4 }));
-    expect(TestBed.inject(Router).navigate).toHaveBeenCalledWith(['/inventory/categories', 4, 'edit']);
+    expect(open).toHaveBeenCalledWith(CategoryFormComponent, { header: 'inventory.categories.edit', id: 4 });
   });
 });

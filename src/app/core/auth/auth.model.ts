@@ -40,16 +40,17 @@ export interface AccessTokenPayload {
 
 /** GET /api/company/v1/me/: everything the UI needs to decide what to show. */
 export interface CurrentUser {
-  user: { id: number; email: string; first_name: string; last_name: string };
+  user: { id: number; email: string; first_name: string; last_name: string; profile_picture: string | null };
   is_staff: boolean;
-  company: { id: number; name: string } | null;
+  /** Branding: `logo` is an absolute URL, colors are `#RRGGBB`. */
+  company: { id: number; name: string; logo: string | null; primary_color: string; secondary_color: string } | null;
   role: { id: number; name_en: string; name_ar: string | null; is_admin: boolean } | null;
   is_company_admin: boolean;
   is_department_manager: boolean;
   is_team_lead: boolean;
   /** Company admins and admin roles: every permission counts as granted. */
   has_full_access: boolean;
-  /** Codenames like `view_department`, `add_team` (only the company resources are permission-gated). */
+  /** Codenames like `view_department`, `add_team`, and module feature permissions like `access_sales`. */
   permissions: string[];
   /** Module codes of the company's active subscription, e.g. `inventory`, `location`. */
   modules: string[];

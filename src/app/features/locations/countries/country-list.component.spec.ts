@@ -5,6 +5,9 @@ import { Confirmation, ConfirmationService } from 'primeng/api';
 import { envelope, errorEnvelope, provideApiTesting } from '../../../testing/api-testing';
 import { makeCountry } from '../../../testing/location-fixtures';
 import { CountryListComponent } from './country-list.component';
+import { EMPTY } from 'rxjs';
+import { FormDialogService } from '../../../shared/forms/form-dialog.service';
+import { CountryFormComponent } from './country-form.component';
 
 const URL = '/api/company/v1/country/';
 
@@ -74,11 +77,12 @@ describe('CountryListComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('common.forbidden');
   });
 
-  it('opens the edit page', () => {
+  it('opens the edit form in a dialog', () => {
     const fixture = create();
     expectList({}, [makeCountry()]);
+    const open = spyOn(TestBed.inject(FormDialogService), 'open').and.returnValue(EMPTY);
     fixture.componentInstance.edit(makeCountry());
-    expect(router.navigate).toHaveBeenCalledWith(['/locations/countries', 1, 'edit']);
+    expect(open).toHaveBeenCalledWith(CountryFormComponent, { header: 'locations.countries.edit', id: 1 });
   });
 
   it('deletes after confirmation and goes back a page when the page empties', () => {

@@ -4,6 +4,7 @@ import { permissionGuard } from '../../core/auth/auth.guard';
 /**
  * Lazy routes under /company. Each resource adds its list, new and edit routes below.
  * `data.permission` is checked by permissionGuard: view_ for the list, add_ for new, change_ for edit.
+ * The parent route (app.routes.ts) needs `access_company` first.
  */
 export const COMPANY_ROUTES: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'users' },
@@ -27,6 +28,13 @@ export const COMPANY_ROUTES: Routes = [
     loadComponent: () =>
       import('./departments/department-form.component').then((m) => m.DepartmentFormComponent),
     data: { titleKey: 'company.departments.edit', permission: 'change_department' },
+  },
+  {
+    path: 'profile',
+    canActivate: [permissionGuard],
+    loadComponent: () =>
+      import('./company-profile/company-profile.component').then((m) => m.CompanyProfileComponent),
+    data: { titleKey: 'company.profile.title', permission: 'view_company' },
   },
   {
     path: 'permission-groups',

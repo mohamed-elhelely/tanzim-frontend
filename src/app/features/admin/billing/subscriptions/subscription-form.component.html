@@ -1,0 +1,105 @@
+<app-form-layout [title]="isEdit ? 'admin.billing.subscriptions.edit' : 'admin.billing.subscriptions.new'" (back)="goBack()">
+  @if (loadError(); as err) {
+    <app-error-state [title]="errorTitleKey(err)" [showRetry]="false"></app-error-state>
+  } @else if (loading()) {
+    <app-loading-state></app-loading-state>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-6" novalidate>
+      @if (formErrors().length) {
+        <div
+          role="alert"
+          class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300"
+        >
+          @for (message of formErrors(); track $index) {
+            <p>{{ message }}</p>
+          }
+        </div>
+      }
+
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div class="flex flex-col gap-1">
+          <label for="company" class="text-sm font-medium">{{ 'admin.billing.fields.company' | translate }} *</label>
+          <p-select
+            inputId="company"
+            formControlName="company"
+            [options]="companyOptions()"
+            optionLabel="label"
+            optionValue="value"
+            [filter]="true"
+            [placeholder]="'common.select' | translate"
+            styleClass="w-full"
+            appendTo="body"
+          ></p-select>
+          <app-field-error [control]="form.controls.company"></app-field-error>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="plan" class="text-sm font-medium">{{ 'admin.billing.fields.plan' | translate }} *</label>
+          <p-select
+            inputId="plan"
+            formControlName="plan"
+            [options]="planOptions()"
+            optionLabel="label"
+            optionValue="value"
+            [placeholder]="'common.select' | translate"
+            styleClass="w-full"
+            appendTo="body"
+          ></p-select>
+          <app-field-error [control]="form.controls.plan"></app-field-error>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="status" class="text-sm font-medium">{{ 'admin.billing.fields.status' | translate }}</label>
+          <p-select
+            inputId="status"
+            formControlName="status"
+            [options]="statusOptions"
+            optionLabel="label"
+            optionValue="value"
+            styleClass="w-full"
+            appendTo="body"
+          >
+            <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
+            <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
+          </p-select>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="billing_email" class="text-sm font-medium">{{ 'billing.billingEmail' | translate }} *</label>
+          <input pInputText id="billing_email" type="email" formControlName="billing_email" dir="ltr" class="w-full" />
+          <app-field-error [control]="form.controls.billing_email"></app-field-error>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="start_date" class="text-sm font-medium">{{ 'admin.billing.fields.startDate' | translate }} *</label>
+          <input pInputText id="start_date" type="date" formControlName="start_date" class="w-full" />
+          <app-field-error [control]="form.controls.start_date"></app-field-error>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="end_date" class="text-sm font-medium">{{ 'admin.billing.fields.endDate' | translate }} *</label>
+          <input pInputText id="end_date" type="date" formControlName="end_date" class="w-full" />
+          <app-field-error [control]="form.controls.end_date"></app-field-error>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="trial_end_date" class="text-sm font-medium">{{ 'admin.billing.fields.trialEndDate' | translate }}</label>
+          <input pInputText id="trial_end_date" type="date" formControlName="trial_end_date" class="w-full" />
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="next_billing_date" class="text-sm font-medium">{{ 'billing.nextBilling' | translate }} *</label>
+          <input pInputText id="next_billing_date" type="date" formControlName="next_billing_date" class="w-full" />
+          <app-field-error [control]="form.controls.next_billing_date"></app-field-error>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="licensed_users" class="text-sm font-medium">{{ 'billing.licensedUsers' | translate }} *</label>
+          <input pInputText id="licensed_users" formControlName="licensed_users" dir="ltr" inputmode="numeric" class="w-full" />
+          <app-field-error [control]="form.controls.licensed_users" patternKey="admin.billing.hints.wholeNumber"></app-field-error>
+        </div>
+        <div class="flex items-center gap-3 md:pt-6">
+          <p-toggleswitch inputId="auto_renew" formControlName="auto_renew"></p-toggleswitch>
+          <label for="auto_renew" class="text-sm font-medium">{{ 'billing.autoRenew' | translate }}</label>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 border-t border-gray-100 pt-5 dark:border-gray-800">
+        <p-button type="button" [label]="'common.cancel' | translate" severity="secondary" [outlined]="true" (onClick)="goBack()"></p-button>
+        <p-button type="submit" [label]="'common.save' | translate" icon="pi pi-check" [loading]="saving()" [disabled]="saving()"></p-button>
+      </div>
+    </form>
+  }
+</app-form-layout>

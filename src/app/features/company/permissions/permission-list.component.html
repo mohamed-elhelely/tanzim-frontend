@@ -46,13 +46,18 @@
         <ng-template pTemplate="body" let-row>
           <tr>
             <td>{{ row.id }}</td>
-            <td class="font-mono text-sm">{{ row.codename }}</td>
+            <td class="font-mono text-sm">
+              {{ row.codename }}
+              @if (isSystem(row)) {
+                <app-status-badge class="ms-1" [value]="'company.permissions.system' | translate" severity="secondary" icon="pi pi-lock"></app-status-badge>
+              }
+            </td>
             <td>{{ row.name }}</td>
             <td>{{ row.permission_type }}</td>
             <td>{{ groupNames(row) }}</td>
             @if (canEdit() || canDelete()) {
               <td class="whitespace-nowrap text-end">
-                @if (canEdit()) {
+                @if (canEdit() && !isSystem(row)) {
                   <p-button
                     icon="pi pi-pencil"
                     [text]="true"
@@ -61,7 +66,7 @@
                     (onClick)="edit(row)"
                   ></p-button>
                 }
-                @if (canDelete()) {
+                @if (canDelete() && !isSystem(row)) {
                   <p-button
                     icon="pi pi-trash"
                     severity="danger"

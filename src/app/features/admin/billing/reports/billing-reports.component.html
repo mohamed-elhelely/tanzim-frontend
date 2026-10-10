@@ -1,0 +1,130 @@
+<app-page-header title="admin.billing.reports.title" subtitle="admin.billing.reports.subtitle"></app-page-header>
+
+<div class="flex flex-col gap-4">
+  <p-card>
+    <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <h2 class="text-base font-semibold text-gray-900 dark:text-gray-100">{{ 'admin.billing.reports.revenue' | translate }}</h2>
+      <p-select
+        [(ngModel)]="year"
+        (ngModelChange)="loadRevenue()"
+        [options]="yearOptions"
+        optionLabel="label"
+        optionValue="value"
+        [ariaLabel]="'admin.billing.reports.year' | translate"
+        styleClass="w-full sm:w-32"
+        appendTo="body"
+      ></p-select>
+    </div>
+
+    @if (revenueError(); as err) {
+      <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403" (retry)="loadRevenue()"></app-error-state>
+    } @else if (revenue() === null) {
+      <app-loading-state></app-loading-state>
+    } @else {
+      <dl class="mb-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <div class="rounded-xl border border-gray-200 p-3 dark:border-gray-800">
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'admin.billing.reports.invoiced' | translate }}</dt>
+          <dd class="mt-1 text-lg font-semibold" dir="ltr">{{ totals().invoiced | number: '1.2-2' }}</dd>
+        </div>
+        <div class="rounded-xl border border-gray-200 p-3 dark:border-gray-800">
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'admin.billing.reports.paid' | translate }}</dt>
+          <dd class="mt-1 text-lg font-semibold text-emerald-600 dark:text-emerald-400" dir="ltr">{{ totals().paid | number: '1.2-2' }}</dd>
+        </div>
+        <div class="rounded-xl border border-gray-200 p-3 dark:border-gray-800">
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'admin.billing.reports.outstanding' | translate }}</dt>
+          <dd class="mt-1 text-lg font-semibold text-amber-600 dark:text-amber-400" dir="ltr">{{ totals().outstanding | number: '1.2-2' }}</dd>
+        </div>
+        <div class="rounded-xl border border-gray-200 p-3 dark:border-gray-800">
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'admin.billing.reports.invoiceCount' | translate }}</dt>
+          <dd class="mt-1 text-lg font-semibold">{{ totals().invoices }}</dd>
+        </div>
+      </dl>
+      @if (chartRows().length) {
+        <div class="h-72">
+          <app-analytics-chart [spec]="chartSpec" [rows]="chartRows()" [ariaLabel]="'admin.billing.reports.revenue' | translate"></app-analytics-chart>
+        </div>
+      } @else {
+        <app-empty-state icon="pi-chart-bar" message="admin.billing.reports.noRevenue"></app-empty-state>
+      }
+    }
+  </p-card>
+
+  <div class="grid grid-cols-1 gap-4 xl:grid-cols-2">
+    <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
+      <h2 class="border-b border-gray-100 p-4 text-sm font-semibold text-gray-900 dark:border-gray-800 dark:text-gray-100">
+        {{ 'admin.billing.reports.outstandingInvoices' | translate }}
+      </h2>
+      @if (outstandingError(); as err) {
+        <app-error-state [title]="errorTitleKey(err)" [showRetry]="false"></app-error-state>
+      } @else {
+        <div class="overflow-x-auto">
+          <p-table [value]="outstanding() ?? []" [loading]="outstanding() === null" dataKey="id" size="small">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>{{ 'billing.fields.number' | translate }}</th>
+                <th>{{ 'admin.billing.fields.company' | translate }}</th>
+                <th>{{ 'billing.fields.dueDate' | translate }}</th>
+                <th class="text-end">{{ 'admin.billing.reports.daysOverdue' | translate }}</th>
+                <th class="text-end">{{ 'billing.fields.amountDue' | translate }}</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-row>
+              <tr>
+                <td>
+                  <a [routerLink]="['/admin/billing/invoices', row.id]" class="font-mono text-primary-600 hover:underline dark:text-primary-300" dir="ltr">{{
+                    row.invoice_number
+                  }}</a>
+                  <app-status-badge class="ms-2" [value]="'billing.invoiceStatus.' + row.status | translate" [severity]="severity[row.status]"></app-status-badge>
+                </td>
+                <td>{{ row.company_name }}</td>
+                <td class="whitespace-nowrap" dir="ltr">{{ row.due_date }}</td>
+                <td class="text-end" [class.text-red-600]="row.days_overdue > 0">{{ row.days_overdue }}</td>
+                <td class="text-end font-medium" dir="ltr">{{ row.amount_due | number: '1.2-2' }}</td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td colspan="5"><app-empty-state icon="pi-check-circle"></app-empty-state></td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      }
+    </div>
+
+    <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
+      <h2 class="border-b border-gray-100 p-4 text-sm font-semibold text-gray-900 dark:border-gray-800 dark:text-gray-100">
+        {{ 'admin.billing.reports.balances' | translate }}
+      </h2>
+      @if (balancesError(); as err) {
+        <app-error-state [title]="errorTitleKey(err)" [showRetry]="false"></app-error-state>
+      } @else {
+        <div class="overflow-x-auto">
+          <p-table [value]="balances() ?? []" [loading]="balances() === null" dataKey="subscription_id" size="small">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>{{ 'admin.billing.fields.company' | translate }}</th>
+                <th>{{ 'admin.billing.fields.plan' | translate }}</th>
+                <th class="text-end">{{ 'admin.billing.reports.overdueCount' | translate }}</th>
+                <th class="text-end">{{ 'admin.billing.reports.outstanding' | translate }}</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-row>
+              <tr>
+                <td class="font-medium">{{ row.company_name }}</td>
+                <td>{{ row.plan_name }}</td>
+                <td class="text-end" [class.text-red-600]="row.overdue_count > 0">{{ row.overdue_count }}</td>
+                <td class="text-end font-medium" dir="ltr">{{ row.total_outstanding | number: '1.2-2' }}</td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td colspan="4"><app-empty-state icon="pi-check-circle"></app-empty-state></td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      }
+    </div>
+  </div>
+</div>

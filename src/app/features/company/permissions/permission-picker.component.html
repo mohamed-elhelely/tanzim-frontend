@@ -1,0 +1,125 @@
+@if (loading()) {
+  <app-loading-state></app-loading-state>
+} @else {
+  <div class="flex flex-col gap-2">
+    <p class="text-xs text-gray-500 dark:text-gray-400">
+      {{ 'permissionCatalog.selected' | translate: { count: selectedCount() } }}
+    </p>
+
+    @for (module of modules(); track module.code) {
+      <section class="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-800">
+        <div class="flex items-center gap-2 bg-gray-50 px-3 py-2 dark:bg-gray-800/60">
+          <button
+            type="button"
+            class="flex min-w-0 flex-1 items-center gap-2 text-start text-sm font-semibold text-gray-900 dark:text-gray-100"
+            [attr.aria-expanded]="isExpanded(module)"
+            (click)="toggleExpanded(module)"
+          >
+            @if (isExpanded(module)) {
+              <i class="pi pi-chevron-down text-xs text-gray-400"></i>
+            } @else {
+              <i class="pi pi-chevron-right text-xs text-gray-400 rtl:rotate-180"></i>
+            }
+            <span class="truncate">{{ module.labelKey | translate }}</span>
+            <span
+              class="rounded-full px-2 py-0.5 text-xs font-medium"
+              [class]="
+                countIn(module)
+                  ? 'bg-primary-100 text-primary-700 dark:bg-primary-500/15 dark:text-primary-300'
+                  : 'bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-300'
+              "
+            >
+              {{ countIn(module) }} / {{ module.ids.length }}
+            </span>
+          </button>
+          @if (!disabled()) {
+            <button
+              type="button"
+              class="shrink-0 text-xs font-medium text-primary-600 hover:underline dark:text-primary-300"
+              (click)="toggleModule(module)"
+            >
+              {{ (countIn(module) === module.ids.length ? 'permissionCatalog.clearAll' : 'permissionCatalog.selectAll') | translate }}
+            </button>
+          }
+        </div>
+
+        @if (isExpanded(module)) {
+          <div class="flex flex-col gap-3 p-3">
+            @if (module.accessId !== null) {
+              <label class="flex items-start gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  class="mt-0.5 h-4 w-4 shrink-0 accent-primary-600"
+                  [checked]="isSelected(module.accessId)"
+                  [disabled]="disabled()"
+                  (change)="toggle(module.accessId)"
+                />
+                <span>
+                  <span class="font-medium text-gray-900 dark:text-gray-100">{{ 'permissionCatalog.access' | translate }}</span>
+                  <span class="block text-xs text-gray-500 dark:text-gray-400">{{ 'permissionCatalog.accessHint' | translate }}</span>
+                </span>
+              </label>
+            }
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="text-xs text-gray-500 dark:text-gray-400">
+                    <th class="py-1 pe-2 text-start font-medium">{{ 'permissionCatalog.resource' | translate }}</th>
+                    @for (action of actions; track action) {
+                      <th class="w-16 px-1 py-1 text-center font-medium">{{ 'permissionCatalog.actions.' + action | translate }}</th>
+                    }
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (row of module.rows; track row.resource) {
+                    <tr class="border-t border-gray-100 dark:border-gray-800">
+                      <td class="py-1.5 pe-2 text-gray-800 dark:text-gray-200">{{ row.labelKey | translate }}</td>
+                      @for (id of row.cells; track $index) {
+                        <td class="px-1 py-1.5 text-center">
+                          @if (id !== null) {
+                            <input
+                              type="checkbox"
+                              class="h-4 w-4 accent-primary-600"
+                              [checked]="isSelected(id)"
+                              [disabled]="disabled()"
+                              [attr.aria-label]="(row.labelKey | translate) + ' — ' + ('permissionCatalog.actions.' + actions[$index] | translate)"
+                              (change)="toggle(id)"
+                            />
+                          }
+                        </td>
+                      }
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        }
+      </section>
+    }
+
+    @if (others().length) {
+      <section class="rounded-xl border border-gray-200 p-3 dark:border-gray-800">
+        <h3 class="mb-2 text-sm font-semibold text-gray-900 dark:text-gray-100">{{ 'permissionCatalog.others' | translate }}</h3>
+        <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+          @for (option of others(); track option.id) {
+            <label class="flex items-start gap-2 text-sm">
+              <input
+                type="checkbox"
+                class="mt-0.5 h-4 w-4 shrink-0 accent-primary-600"
+                [checked]="isSelected(option.id)"
+                [disabled]="disabled()"
+                (change)="toggle(option.id)"
+              />
+              <span>
+                <span class="text-gray-900 dark:text-gray-100">{{ option.name }}</span>
+                <span class="block font-mono text-xs text-gray-500 dark:text-gray-400">{{ option.codename }}</span>
+              </span>
+            </label>
+          }
+        </div>
+      </section>
+    }
+  </div>
+}

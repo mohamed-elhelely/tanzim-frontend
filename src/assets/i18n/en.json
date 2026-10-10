@@ -83,7 +83,15 @@
     "stockLedger": "Stock ledger",
     "analytics": "Analytics",
     "dashboards": "Dashboards",
-    "reports": "Reports"
+    "reports": "Reports",
+    "companyProfile": "Company profile",
+    "platformBilling": "Subscriptions",
+    "subscriptions": "Company subscriptions",
+    "plans": "Plans",
+    "billingModules": "Modules",
+    "platformInvoices": "Invoices",
+    "platformPayments": "Payments",
+    "billingReports": "Reports"
   },
   "auth": {
     "login": "Login",
@@ -190,7 +198,9 @@
       "groups": "Groups",
       "companyAdmin": "Company admin",
       "departmentManager": "Department manager",
-      "teamLead": "Team lead"
+      "teamLead": "Team lead",
+      "permissions": "Permissions",
+      "singlePermissions": "Single permissions"
     },
     "users": {
       "title": "Users",
@@ -212,17 +222,34 @@
     "roles": {
       "title": "Roles",
       "new": "New role",
-      "edit": "Edit role"
+      "edit": "Edit role",
+      "singlePermissionsHint": "Granted on top of the permission groups above.",
+      "plusPermissions": "+ {{count}} permissions"
     },
     "permissionGroups": {
       "title": "Permission groups",
       "new": "New permission group",
-      "edit": "Edit permission group"
+      "edit": "Edit permission group",
+      "system": "System",
+      "coreReadOnly": "This is a system group: it stays in step with the permission catalog and cannot be changed. Create your own group to pick other permissions."
     },
     "permissions": {
       "title": "Permissions",
       "new": "New permission",
-      "edit": "Edit permission"
+      "edit": "Edit permission",
+      "system": "System"
+    },
+    "profile": {
+      "title": "Company profile",
+      "subtitle": "Logo and brand colors",
+      "readOnly": "You can view the branding but not change it.",
+      "logo": "Logo",
+      "primaryColor": "Primary color",
+      "secondaryColor": "Secondary color",
+      "colorFormat": "Use a hex color like #1A2B3C.",
+      "preview": "Preview",
+      "previewHint": "How the logo and colors look together.",
+      "sampleButton": "Sample button"
     }
   },
   "locations": {
@@ -310,6 +337,128 @@
       "taxId": "Letters, digits and hyphens only.",
       "phone": "International format: + then 8–15 digits, e.g. +966501234567.",
       "adminEmail": "An admin account is created for this address and its login details are emailed to it."
+    },
+    "billing": {
+      "periods": {
+        "monthly": "Monthly",
+        "quarterly": "Quarterly",
+        "yearly": "Yearly"
+      },
+      "fields": {
+        "name": "Name",
+        "billingPeriod": "Billing period",
+        "basePrice": "Base price",
+        "maxUsers": "Max users",
+        "trialDays": "Trial days",
+        "featured": "Featured",
+        "description": "Description",
+        "includedModules": "Included modules",
+        "code": "Code",
+        "pricePerUser": "Price per user",
+        "icon": "Icon",
+        "active": "Active",
+        "inactive": "Inactive",
+        "status": "Status",
+        "company": "Company",
+        "plan": "Plan",
+        "startDate": "Start date",
+        "endDate": "End date",
+        "trialEndDate": "Trial ends",
+        "subscription": "Subscription",
+        "taxRate": "Tax rate (%)",
+        "discount": "Discount",
+        "notes": "Notes",
+        "paidDate": "Paid on",
+        "paymentMethod": "Payment method",
+        "module": "Module",
+        "amount": "Amount",
+        "transactionId": "Transaction ID",
+        "paidAt": "Date",
+        "refunded": "Refunded",
+        "net": "Net"
+      },
+      "hints": {
+        "money": "Enter an amount with up to 2 decimals.",
+        "wholeNumber": "Enter a whole number.",
+        "unlimited": "Unlimited",
+        "code": "Lowercase letters, digits and _ (e.g. inventory)."
+      },
+      "plans": {
+        "title": "Plans",
+        "subtitle": "The plans companies subscribe to",
+        "new": "New plan",
+        "edit": "Edit plan",
+        "addons": "+ {{count}} add-ons"
+      },
+      "modules": {
+        "title": "Modules",
+        "subtitle": "Feature modules and their price per user",
+        "new": "New module",
+        "edit": "Edit module"
+      },
+      "subscriptions": {
+        "title": "Company subscriptions",
+        "subtitle": "Each company's plan, period, users and modules",
+        "new": "New subscription",
+        "edit": "Edit subscription",
+        "manageModules": "Modules",
+        "moduleEnabled": "Module enabled.",
+        "moduleDisabled": "Module disabled.",
+        "modulesHint": "Modules can only be enabled on an active subscription. Changes apply to the company straight away."
+      },
+      "invoices": {
+        "title": "Platform invoices",
+        "subtitle": "Invoices issued to every company",
+        "new": "New invoice",
+        "detail": "Invoice",
+        "createDraft": "Create draft",
+        "draftCreated": "Draft created. Add its items, then issue it.",
+        "noSubscriptions": "No subscriptions to invoice yet: the backend still has to list every company's subscriptions for staff.",
+        "items": "Items",
+        "addItem": "Add item",
+        "editItem": "Edit item",
+        "noItems": "Add at least one item before issuing.",
+        "issue": "Issue",
+        "issued": "Invoice issued.",
+        "confirmIssue": "Issue invoice {{number}}? Its items can't be changed afterwards.",
+        "markPaid": "Mark paid",
+        "paid": "Invoice marked as paid.",
+        "confirmMarkPaid": "Record the remaining {{amount}} on {{number}} as paid?",
+        "addPayment": "Record payment",
+        "recordPayment": "Record",
+        "amountDueHint": "Amount due: {{amount}}",
+        "cancel": "Cancel invoice",
+        "cancelled": "Invoice cancelled."
+      },
+      "payments": {
+        "title": "Platform payments",
+        "subtitle": "Payments on platform invoices from every company",
+        "refund": "Refund",
+        "refunded": "Refund recorded.",
+        "refundOf": "Invoice {{number}} — up to {{amount}} can be refunded."
+      },
+      "paymentStatus": {
+        "pending": "Pending",
+        "completed": "Completed",
+        "failed": "Failed",
+        "refunded": "Refunded",
+        "partially_refunded": "Partially refunded"
+      },
+      "reports": {
+        "title": "Billing reports",
+        "subtitle": "Revenue, outstanding invoices and balances",
+        "revenue": "Revenue by month",
+        "year": "Year",
+        "invoiced": "Invoiced",
+        "paid": "Paid",
+        "outstanding": "Outstanding",
+        "invoiceCount": "Invoices",
+        "noRevenue": "No invoices in this year.",
+        "outstandingInvoices": "Outstanding invoices",
+        "daysOverdue": "Days overdue",
+        "balances": "Balances by subscription",
+        "overdueCount": "Overdue"
+      }
     }
   },
   "inventory": {
@@ -1581,7 +1730,10 @@
       "overdue_purchase_orders": "Overdue purchase orders",
       "webhook_endpoints": "Webhook endpoints",
       "webhook_deliveries": "Webhook deliveries",
-      "webhook_success_rate_percent": "Webhook success rate"
+      "webhook_success_rate_percent": "Webhook success rate",
+      "total_paid": "Paid",
+      "total_outstanding": "Outstanding",
+      "total_invoiced": "Invoiced"
     },
     "charts": {
       "activity_by_user": "Activity by user",
@@ -1696,5 +1848,129 @@
       "administration": "Administration",
       "other": "Other"
     }
+  },
+  "permissionCatalog": {
+    "selected": "{{count}} selected",
+    "selectAll": "Select all",
+    "clearAll": "Clear all",
+    "access": "Module access",
+    "accessHint": "Needed before any screen of this module opens.",
+    "resource": "Screen",
+    "others": "Other permissions",
+    "actions": {
+      "view": "View",
+      "add": "Add",
+      "change": "Edit",
+      "delete": "Delete"
+    },
+    "modules": {
+      "company": "Company",
+      "location": "Locations",
+      "inventory": "Inventory",
+      "quality": "Quality",
+      "assembly": "Assembly",
+      "sales": "Sales",
+      "returns": "Returns",
+      "accounting": "Accounting",
+      "reports": "Reports",
+      "integrations": "Integrations"
+    },
+    "resources": {
+      "company": "Company profile",
+      "department": "Departments",
+      "team": "Teams",
+      "role": "Roles",
+      "permissiongroup": "Permission groups",
+      "permission": "Permissions",
+      "companyuser": "Company users",
+      "country": "Countries",
+      "region": "Regions",
+      "city": "Cities",
+      "district": "Districts",
+      "location": "Locations",
+      "category": "Categories",
+      "brand": "Brands",
+      "product": "Products",
+      "productattribute": "Product attributes",
+      "productattributevalue": "Product attribute values",
+      "productvariant": "Product variants",
+      "productbom": "Bills of materials",
+      "warehouse": "Warehouses",
+      "zone": "Zones",
+      "bin": "Bins",
+      "batch": "Batches",
+      "serialnumber": "Serial numbers",
+      "stockledger": "Stock ledger",
+      "stocksnapshot": "Stock snapshots",
+      "stockreservation": "Stock reservations",
+      "stockalert": "Stock alerts",
+      "stocktransfer": "Stock transfers",
+      "stockadjustment": "Stock adjustments",
+      "cyclecount": "Cycle counts",
+      "supplier": "Suppliers",
+      "supplierproduct": "Supplier products",
+      "purchaserequisition": "Purchase requisitions",
+      "purchaseorder": "Purchase orders",
+      "goodsreceipt": "Goods receipts",
+      "supplierinvoice": "Supplier invoices",
+      "approvalworkflow": "Approval workflows",
+      "approvalrequest": "Approval requests",
+      "reorderpolicy": "Reorder policies",
+      "reordersuggestion": "Reorder suggestions",
+      "demandforecast": "Demand forecasts",
+      "qualityinspection": "Quality inspections",
+      "nonconformancereport": "Non-conformance reports",
+      "quarantinerecord": "Quarantine records",
+      "workorder": "Work orders",
+      "customer": "Customers",
+      "salesorder": "Sales orders",
+      "deliverynote": "Delivery notes",
+      "salesinvoice": "Sales invoices",
+      "invoicepayment": "Invoice payments",
+      "salesaudittrail": "Sales audit trail",
+      "customerreturn": "Customer returns",
+      "supplierreturn": "Supplier returns",
+      "account": "Accounts",
+      "journalentry": "Journal entries",
+      "fiscalyear": "Fiscal years",
+      "fiscalperiod": "Fiscal periods",
+      "supplierpayment": "Supplier payments",
+      "debitnote": "Debit notes",
+      "accountingreport": "Accounting reports",
+      "report": "Reports",
+      "dashboard": "Dashboards",
+      "savedreport": "Saved reports",
+      "reportschedule": "Report schedules",
+      "webhook": "Webhooks"
+    }
+  },
+  "imagePicker": {
+    "choose": "Choose image",
+    "remove": "Remove",
+    "hint": "PNG or JPEG, up to 5 MB.",
+    "tooLarge": "The image is larger than 5 MB."
+  },
+  "profile": {
+    "title": "My profile",
+    "myProfile": "My profile",
+    "subtitle": "Your details, picture and password",
+    "details": "Personal details",
+    "picture": "Profile picture",
+    "fields": {
+      "firstName": "First name",
+      "middleName": "Middle name",
+      "lastName": "Last name",
+      "preferredName": "Preferred name",
+      "phone": "Phone number",
+      "timezone": "Time zone",
+      "currentPassword": "Current password",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm new password"
+    },
+    "changePassword": "Change password",
+    "passwordHint": "At least 8 characters, not only numbers, and different from the current one. You stay signed in.",
+    "passwordMismatch": "The passwords do not match.",
+    "updatePassword": "Update password",
+    "passwordChanged": "Password changed."
   }
 }

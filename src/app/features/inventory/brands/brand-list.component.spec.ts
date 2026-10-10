@@ -4,6 +4,9 @@ import { Router } from '@angular/router';
 import { envelope, provideApiTesting } from '../../../testing/api-testing';
 import { makeBrand } from '../../../testing/inventory-fixtures';
 import { BrandListComponent } from './brand-list.component';
+import { EMPTY } from 'rxjs';
+import { FormDialogService } from '../../../shared/forms/form-dialog.service';
+import { BrandFormComponent } from './brand-form.component';
 
 const URL = '/api/inventory/v1/brand/';
 
@@ -29,11 +32,12 @@ describe('BrandListComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('Gadgets');
   });
 
-  it('opens the edit page', () => {
+  it('opens the edit form in a dialog', () => {
     const fixture = TestBed.createComponent(BrandListComponent);
     fixture.detectChanges();
     httpMock.expectOne((r) => r.url === URL).flush(envelope([], 0));
+    const open = spyOn(TestBed.inject(FormDialogService), 'open').and.returnValue(EMPTY);
     fixture.componentInstance.edit(makeBrand({ id: 4 }));
-    expect(TestBed.inject(Router).navigate).toHaveBeenCalledWith(['/inventory/brands', 4, 'edit']);
+    expect(open).toHaveBeenCalledWith(BrandFormComponent, { header: 'inventory.brands.edit', id: 4 });
   });
 });

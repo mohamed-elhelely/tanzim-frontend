@@ -1,9 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
@@ -13,7 +11,8 @@ import { NotificationService } from '../../../core/services/notification.service
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
 import { FieldErrorComponent } from '../../../shared/components/field-error/field-error.component';
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
-import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
+import { FormLayoutComponent } from '../../../shared/components/form-layout/form-layout.component';
+import { injectFormContext } from '../../../shared/forms/form-context';
 import { errorTitleKey, handleSaveError } from '../../../shared/utils/server-errors';
 import { SelectOption } from '../../company/company.models';
 import { Category, CategoryPayload } from '../inventory.models';
@@ -25,12 +24,11 @@ import { CategoryService } from './category.service';
     ReactiveFormsModule,
     TranslatePipe,
     ButtonModule,
-    CardModule,
     InputTextModule,
     SelectModule,
     TextareaModule,
     ToggleSwitchModule,
-    PageHeaderComponent,
+    FormLayoutComponent,
     LoadingStateComponent,
     ErrorStateComponent,
     FieldErrorComponent,
@@ -40,11 +38,12 @@ import { CategoryService } from './category.service';
 })
 export class CategoryFormComponent implements OnInit {
   private readonly api = inject(CategoryService);
-  private readonly router = inject(Router);
   private readonly notifications = inject(NotificationService);
   private readonly translate = inject(TranslateService);
 
-  readonly id = Number(inject(ActivatedRoute).snapshot.paramMap.get('id')) || null;
+  /** Page (/new, /:id/edit) or dialog opened from the list. */
+  private readonly ctx = injectFormContext(['/inventory/categories']);
+  readonly id = this.ctx.id;
   readonly isEdit = this.id !== null;
   readonly loading = signal(false);
   readonly saving = signal(false);
@@ -96,14 +95,14 @@ export class CategoryFormComponent implements OnInit {
       next: () => {
         this.saving.set(false);
         this.notifications.success(this.translate.instant('common.saved'));
-        this.goBack();
+        this.goBack(true);
       },
       error: (error: AppError) => this.onSaveError(error),
     });
   }
 
-  goBack(): void {
-    void this.router.navigate(['/inventory/categories']);
+  goBack(saved = false): void {
+    this.ctx.close(saved);
   }
 
   private loadCategory(id: number): void {

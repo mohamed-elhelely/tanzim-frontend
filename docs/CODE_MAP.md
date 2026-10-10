@@ -86,7 +86,7 @@ flowchart LR
     me["GET /api/company/v1/me/"] --> access["AccessService<br/>can(codename) · hasModule(code) · isStaff()"]
     shellinit["ShellComponent / guards"] -->|load()| access
     access --> guards["guards: platformAdmin · companyMember · permission (route data.permission)"]
-    access --> nav["nav-list: hides items by permission, module, staffOnly; drops empty groups"]
+    access --> nav["nav-list: hides groups without access_&lt;module&gt;, screens without view_; drops empty groups"]
     access --> lists["company lists: New / edit / delete by add_ / change_ / delete_"]
     access --> dash["dashboard: cards, setup steps, quick actions"]
     authsvc --> guards
@@ -96,12 +96,16 @@ flowchart LR
 |---|---|---|
 | Platform staff | `/me.is_staff` (token `is_staff` until /me answers) | Dashboard (company counts) and Companies |
 | User without a company, not staff | login `role: ADMIN` | Dashboard welcome only |
-| Company user | login `role: COMPANY`/`EMPLOYEE` | Sections their subscription has (`/me.modules`); company screens and buttons by `/me.permissions` (`has_full_access` = everything) |
+| Company user | login `role: COMPANY`/`EMPLOYEE` | Sections their subscription has (`/me.modules`) **and** whose `access_<module>` permission they hold; screens and buttons by `/me.permissions` (`has_full_access` = everything) |
 
 Things to know:
-- Only the six company resources are permission-gated by the backend (`view_/add_/change_/delete_` +
-  `companyuser`, `department`, `team`, `role`, `permissiongroup`, `permission`). Locations and inventory are gated
-  by subscription module only. `?dropdown=true` needs no permission, so pickers always work.
+- Since backend 43d7e69 **every** company API is permission-gated: the module's feature permission
+  (`access_company`, `access_sales`, …) **and** the CRUD codename (`view_/add_/change_/delete_<resource>`; a POST
+  action on one record needs `change_`). `core/auth/permission-catalog.ts` 🔒 mirrors the backend catalog
+  (`company/access.py`): `can('add_salesorder')` also checks `access_sales`. Keep the two in step.
+- Menu groups carry `permission: 'access_<module>'`, their children the screen's `view_` codename; the module
+  parent routes in `app.routes.ts` run `permissionGuard` with `access_<module>`. `?dropdown=true` needs no
+  permission, so pickers always work. Subscription modules still apply on top.
 - `AccessService.can()` / `hasModule()` 🧠 return **false while /me loads** (no flicker) and **true if /me fails**
   (fail open: the backend still answers 403).
 - `AccessService` 🧠 resets itself when the signed-in user changes (an `effect` on `AuthService.user()`), so the next
@@ -120,7 +124,8 @@ Things to know:
 | `api/crud-api.ts` | Standard calls for one resource; `ListQuery.filters`, `all(filters)` and `dropdown(filters)` for exact-match filters | 🆕 every resource service extends it |
 | `auth/auth.service.ts` | Signed-in user, login, logout, token refresh | 🧠 role restored from the JWT on reload |
 | `auth/token-storage.service.ts` | Tokens in localStorage | |
-| `auth/access.service.ts` | Permissions, modules and staff flag from GET /me | 🆕 🧠 🔒 see §3 |
+| `auth/access.service.ts` | Permissions, modules, staff flag and branding (`current()`) from GET /me; `update()` merges a saved profile/logo | 🧠 🔒 see §3 |
+| `auth/permission-catalog.ts` | The backend's permission catalog: modules → resources → actions; `codenameModule`, `isSystemCodename` | 🆕 🔒 mirror of backend `company/access.py` |
 | `auth/auth.guard.ts` | `authGuard`, `guestGuard`, `platformAdminGuard`, `companyMemberGuard`, `permissionGuard` | 🔒 `permissionGuard` reads `route.data.permission` |
 | `errors/app-error.ts` | `AppError` + `toAppError()` | The only error shape in the app |
 | `errors/global-error-handler.ts` | Toast for uncaught non-HTTP errors | |
@@ -142,8 +147,8 @@ Things to know:
 | File | Purpose | Notes |
 |---|---|---|
 | `layout/shell/` | Frame for signed-in pages; starts loading /me | Hosts the toast and the confirm dialog once |
-| `layout/header/` | Breadcrumb (route `data.titleKey` + nav group), notifications bell, language/theme toggles, user menu | Bell: unread badge + popover with the latest 6 |
-| `layout/sidebar/` + `brand.component` | Desktop sidebar | Mobile uses a PrimeNG drawer in the shell |
+| `layout/header/` | Breadcrumb (route `data.titleKey` + nav group), notifications bell, language/theme toggles, user menu (My profile, sign out) | Bell: unread badge + popover with the latest 6. Avatar = `/me` profile picture, else initials |
+| `layout/sidebar/` + `brand.component` | Desktop sidebar; brand shows the company's logo and name from `/me` | Mobile uses a PrimeNG drawer in the shell. Its colors are the `secondary` brand palette |
 | `layout/nav/nav-items.ts` | The menu: label, icon, link, `module`, `roles`, children | 🔒 the single place to add a menu entry |
 | `layout/nav/nav-list.component` | Renders the menu, filters it, expands the active group | 🧠 §3 |
 | `shared/table/server-table.ts` | State for server-paged tables | 🆕 🧠 cancels stale requests; steps back a page after deleting the last row |
@@ -154,6 +159,9 @@ Things to know:
 | `shared/components/notification-item` | One notification row (bell + page) | Icon/colour by type, unread dot |
 | `shared/pipes/time-ago.pipe.ts` | "3 hours ago" in the current language | `Intl.RelativeTimeFormat`; not live |
 | `shared/components/confirm-dialog` | The one PrimeNG confirm dialog | Opened only through `ConfirmService` |
+| `shared/forms/form-context.ts`, `form-dialog.service.ts`, `shared/components/form-layout` | One form component as a page or in a dialog over its list (see ARCHITECTURE → form recipe) | 🆕 🧠 `DialogService` is provided in app.config.ts and provideApiTesting |
+| `core/theme/brand-palette.ts`, `brand-theme.service.ts` | Company colors from /me → 50–950 scales in CSS variables (`--brand-primary-*`, `--brand-secondary-*`) read by tailwind.config.js; primary also to PrimeNG | 🆕 🧠 #000000/#FFFFFF (backend defaults) = keep indigo; cached in localStorage |
+| `shared/components/image-picker` | Image preview with Choose / Remove, 5 MB check; emits File or null | 🆕 profile picture, company logo |
 | `shared/components/reason-dialog` | Optional-reason dialog before cancel / failed steps | Collects the text; the parent runs the action |
 | `shared/components/empty-state`, `error-state`, `loading-state`, `status-badge`, `loading-bar` | Visual states | |
 | `shared/pipes/localized-name.pipe.ts` | Arabic name in Arabic, else English | |
@@ -170,6 +178,7 @@ marked "client list".
 |---|---|
 | `auth/login/` | Split-screen login, language/theme toggles |
 | `dashboard/` | 🧠 🔒 platform counts for staff; for company users every card, setup step and quick action is gated by a permission or module (`Gate`). Counts are requested after /me answers, only for the visible cards. Reads services from company, locations and admin |
+| `profile/` | 🆕 `/profile` for every signed-in user (header menu): details + picture (`PATCH me/profile/`, multipart when a picture is picked) and change password (`POST me/change-password/`). ⚠️ no GET: an empty PATCH loads it (BACKEND_REQUESTS item 29) |
 | `notifications/` | `/notifications` for every signed-in user: All/Unread, mark all read (one request each) |
 | `billing/` | `/billing` (company admins in the menu): subscription card + read-only invoices with a details dialog. `BillingService` reads `subscriptions/current/` and `subscriptions/invoices/` |
 
@@ -179,6 +188,18 @@ marked "client list".
 |---|---|---|
 | `companies/` (`TenantCompanyService`) | `company/v1/admin/company/` | Server list with search. No delete button: DELETE only deactivates, which the form's Active switch does. Email required on create (the backend emails the admin's password). Logo upload not built yet |
 
+### admin/billing — `/admin/billing` (platform staff) 🔒
+
+Menu group "Subscriptions". Models and every service in `platform-billing.models.ts` / `platform-billing.service.ts`.
+
+| Screen | Endpoint | Notes |
+|---|---|---|
+| `subscriptions/` | `subscriptions/subscriptions/` (+ `add_module`, `remove_module`) | Company + status filters; form in a dialog; modules dialog with switches. ⚠️ empty for staff until BACKEND_REQUESTS item 30 |
+| `plans/`, `modules/` | `subscriptions/plans/`, `subscriptions/modules/` | Client lists, forms in dialogs. A plan's modules are read-only (item 30) |
+| `invoices/` | `subscriptions/invoices/` | List with company/status filters; "New invoice" dialog (`create_draft`, picks a subscription) opens the detail. Detail: items while draft (`add_item`, `items/{id}`), Issue, Record payment, Mark paid, Cancel (reason) — buttons follow `can_edit` / `can_add_payment` / `can_cancel` |
+| `payments/` | `subscriptions/payments/` (+ `refund`) | Company filter; refund dialog for completed payments |
+| `reports/` | `subscriptions/reports/…` | Year revenue (tiles + stacked chart via `AnalyticsChartComponent`), outstanding invoices, balances. ⚠️ company-scoped until item 30 |
+
 ### company — `/company`
 
 | Resource | Endpoint | Notes |
@@ -186,9 +207,11 @@ marked "client list".
 | `users/` (`CompanyUserService`) | `company/v1/company-user/` | Client list (not paginated). 🔒 New/Edit/Delete by `*_companyuser` permissions (+ `permissionGuard` on the form routes). Edit sends the nested `user` without a password. `userOptions()` uses the dropdown, so pickers work without `view_companyuser`. 🧠 `USER_FIELD_MAP` maps `user.email` errors to flat controls |
 | `departments/` | `company/v1/departments/` | Parent picker excludes itself. 🔒 every company list shows New/edit/delete by permission |
 | `teams/` | `company/v1/teams/` | Uses `LocationService.dropdown()` for the location picker |
-| `roles/` | `company/v1/roles/` | |
-| `permission-groups/` | `company/v1/permission-groups/` | |
-| `permissions/` | `company/v1/permissions/` | Search by name and codename |
+| `roles/` | `company/v1/roles/` | Groups (optional) + single `permissions` from the permission matrix |
+| `permission-groups/` | `company/v1/permission-groups/` | `permissions` from the matrix. 🔒 core groups (`is_core`) open read-only, no delete (backend 403) |
+| `permissions/` | `company/v1/permissions/` | Search by name and codename. 🔒 catalog permissions show "System", no edit/delete. The form's group picker hides core groups |
+| `permissions/permission-picker.component` | dropdown of `permissions/` | 🆕 🧠 form control (`number[]`): a module-by-module matrix (access switch + view/add/change/delete per resource) from `permission-catalog.ts`; company codenames under "Other" |
+| `company-profile/` | `company/v1/company-profile/` | 🆕 `/company/profile`: logo + primary/secondary colors with a live preview. `view_company` to open, read-only without `change_company`. Saving updates the sidebar brand through `AccessService.update()` |
 
 ### locations — `/locations` (module `location`)
 

@@ -1,0 +1,79 @@
+<app-form-layout [title]="isEdit ? 'admin.billing.plans.edit' : 'admin.billing.plans.new'" (back)="goBack()">
+  @if (loadError(); as err) {
+    <app-error-state [title]="errorTitleKey(err)" [showRetry]="false"></app-error-state>
+  } @else if (loading()) {
+    <app-loading-state></app-loading-state>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-6" novalidate>
+      @if (formErrors().length) {
+        <div
+          role="alert"
+          class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300"
+        >
+          @for (message of formErrors(); track $index) {
+            <p>{{ message }}</p>
+          }
+        </div>
+      }
+
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div class="flex flex-col gap-1">
+          <label for="name" class="text-sm font-medium">{{ 'admin.billing.fields.name' | translate }} *</label>
+          <input pInputText id="name" formControlName="name" class="w-full" />
+          <app-field-error [control]="form.controls.name"></app-field-error>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="billing_period" class="text-sm font-medium">{{ 'admin.billing.fields.billingPeriod' | translate }}</label>
+          <p-select
+            inputId="billing_period"
+            formControlName="billing_period"
+            [options]="periodOptions"
+            optionLabel="label"
+            optionValue="value"
+            styleClass="w-full"
+            appendTo="body"
+          >
+            <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
+            <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
+          </p-select>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="base_price" class="text-sm font-medium">{{ 'admin.billing.fields.basePrice' | translate }} *</label>
+          <input pInputText id="base_price" formControlName="base_price" dir="ltr" inputmode="decimal" class="w-full" />
+          <app-field-error [control]="form.controls.base_price" patternKey="admin.billing.hints.money"></app-field-error>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="max_users" class="text-sm font-medium">{{ 'admin.billing.fields.maxUsers' | translate }}</label>
+          <input
+            pInputText
+            id="max_users"
+            formControlName="max_users"
+            dir="ltr"
+            inputmode="numeric"
+            [placeholder]="'admin.billing.hints.unlimited' | translate"
+            class="w-full"
+          />
+          <app-field-error [control]="form.controls.max_users" patternKey="admin.billing.hints.wholeNumber"></app-field-error>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="trial_days" class="text-sm font-medium">{{ 'admin.billing.fields.trialDays' | translate }}</label>
+          <input pInputText id="trial_days" formControlName="trial_days" dir="ltr" inputmode="numeric" class="w-full" />
+          <app-field-error [control]="form.controls.trial_days" patternKey="admin.billing.hints.wholeNumber"></app-field-error>
+        </div>
+        <div class="flex items-center gap-3 md:pt-6">
+          <p-toggleswitch inputId="is_featured" formControlName="is_featured"></p-toggleswitch>
+          <label for="is_featured" class="text-sm font-medium">{{ 'admin.billing.fields.featured' | translate }}</label>
+        </div>
+        <div class="flex flex-col gap-1 md:col-span-2">
+          <label for="description" class="text-sm font-medium">{{ 'admin.billing.fields.description' | translate }}</label>
+          <textarea pTextarea id="description" formControlName="description" rows="3" class="w-full"></textarea>
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 border-t border-gray-100 pt-5 dark:border-gray-800">
+        <p-button type="button" [label]="'common.cancel' | translate" severity="secondary" [outlined]="true" (onClick)="goBack()"></p-button>
+        <p-button type="submit" [label]="'common.save' | translate" icon="pi pi-check" [loading]="saving()" [disabled]="saving()"></p-button>
+      </div>
+    </form>
+  }
+</app-form-layout>

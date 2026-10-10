@@ -5,6 +5,7 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { provideTranslateService } from '@ngx-translate/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { DialogService } from 'primeng/dynamicdialog';
 import { errorInterceptor } from '../core/interceptors/error.interceptor';
 
 /** A successful API response in the backend's envelope. */
@@ -43,5 +44,6 @@ export function provideApiTesting(): (Provider | EnvironmentProviders)[] {
     provideTranslateService(),
     MessageService,
     ConfirmationService,
+    DialogService,
   ];
 }
