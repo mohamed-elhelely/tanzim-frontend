@@ -19,6 +19,30 @@
   :root {
     --app-font: Inter, "IBM Plex Sans Arabic", ui-sans-serif, system-ui, sans-serif;
     --app-bg: #f4f5fa;
+    /* Brand palettes (RGB channels) used by tailwind.config.js: Tanzim's indigo until BrandThemeService
+       applies the company's colors from /me. */
+    --brand-primary-50: 238 242 255;
+    --brand-primary-100: 224 231 255;
+    --brand-primary-200: 199 210 254;
+    --brand-primary-300: 165 180 252;
+    --brand-primary-400: 129 140 248;
+    --brand-primary-500: 99 102 241;
+    --brand-primary-600: 79 70 229;
+    --brand-primary-700: 67 56 202;
+    --brand-primary-800: 55 48 163;
+    --brand-primary-900: 49 46 129;
+    --brand-primary-950: 30 27 75;
+    --brand-secondary-50: 238 242 255;
+    --brand-secondary-100: 224 231 255;
+    --brand-secondary-200: 199 210 254;
+    --brand-secondary-300: 165 180 252;
+    --brand-secondary-400: 129 140 248;
+    --brand-secondary-500: 99 102 241;
+    --brand-secondary-600: 79 70 229;
+    --brand-secondary-700: 67 56 202;
+    --brand-secondary-800: 55 48 163;
+    --brand-secondary-900: 49 46 129;
+    --brand-secondary-950: 30 27 75;
   }
 
   :root[lang="ar"] {
@@ -87,9 +111,9 @@
 
   /* The mobile navigation drawer reuses the dark sidebar look. */
   .p-drawer.app-nav-drawer {
-    background: var(--p-indigo-950);
+    background: rgb(var(--brand-secondary-950));
     border: 0;
-    color: var(--p-indigo-100);
+    color: rgb(var(--brand-secondary-100));
   }
 
   .p-drawer.app-nav-drawer .p-drawer-header {
@@ -101,7 +125,7 @@
   }
 
   .p-drawer.app-nav-drawer .p-drawer-header .p-button {
-    color: var(--p-indigo-200);
+    color: rgb(var(--brand-secondary-200));
   }
 }
 
