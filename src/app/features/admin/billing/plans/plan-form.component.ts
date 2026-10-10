@@ -1,8 +1,10 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
+import { MultiSelectModule } from 'primeng/multiselect';
 import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
@@ -15,7 +17,7 @@ import { LoadingStateComponent } from '../../../../shared/components/loading-sta
 import { injectFormContext } from '../../../../shared/forms/form-context';
 import { errorTitleKey, handleSaveError } from '../../../../shared/utils/server-errors';
 import { BILLING_PERIODS, BillingPeriod, MONEY, PlanPayload, WHOLE } from '../platform-billing.models';
-import { PlanService } from '../platform-billing.service';
+import { BillingModuleService, PlanService } from '../platform-billing.service';
 
 /** Create / edit a plan (dialog from the plans list, or /admin/plans/new as a page). */
 @Component({
@@ -25,6 +27,7 @@ import { PlanService } from '../platform-billing.service';
     TranslatePipe,
     ButtonModule,
     InputTextModule,
+    MultiSelectModule,
     SelectModule,
     TextareaModule,
     ToggleSwitchModule,
@@ -38,6 +41,7 @@ import { PlanService } from '../platform-billing.service';
 })
 export class PlanFormComponent implements OnInit {
   private readonly api = inject(PlanService);
+  private readonly modulesApi = inject(BillingModuleService);
   private readonly notifications = inject(NotificationService);
   private readonly translate = inject(TranslateService);
   private readonly ctx = injectFormContext(['/admin/billing/plans']);
@@ -59,9 +63,28 @@ export class PlanFormComponent implements OnInit {
     max_users: ['', [Validators.pattern(WHOLE)]],
     trial_days: ['14', [Validators.pattern(WHOLE)]],
     is_featured: [false],
+    included_module_ids: [[] as number[]],
+    addon_module_ids: [[] as number[]],
+  });
+
+  /** Active catalog modules; a module picked in one list is left out of the other. */
+  private readonly modules = signal<Array<{ value: number; label: string }>>([]);
+  private readonly picked = toSignal(this.form.valueChanges, { initialValue: this.form.getRawValue() });
+  readonly includedOptions = computed(() => {
+    const addons = new Set(this.picked().addon_module_ids ?? []);
+    return this.modules().filter((module) => !addons.has(module.value));
+  });
+  readonly addonOptions = computed(() => {
+    const included = new Set(this.picked().included_module_ids ?? []);
+    return this.modules().filter((module) => !included.has(module.value));
   });
 
   ngOnInit(): void {
+    this.modulesApi.all().subscribe({
+      next: (modules) =>
+        this.modules.set(modules.filter((module) => module.is_active).map((module) => ({ value: module.id, label: module.name }))),
+      error: () => this.modules.set([]),
+    });
     if (this.id === null) {
       return;
     }
@@ -76,6 +99,8 @@ export class PlanFormComponent implements OnInit {
           max_users: plan.max_users === null ? '' : String(plan.max_users),
           trial_days: String(plan.trial_days ?? 0),
           is_featured: plan.is_featured,
+          included_module_ids: plan.included_modules.map((module) => module.id),
+          addon_module_ids: plan.addon_modules.map((module) => module.id),
         });
         this.loading.set(false);
       },
@@ -100,6 +125,9 @@ export class PlanFormComponent implements OnInit {
       max_users: value.max_users === '' ? null : Number(value.max_users),
       trial_days: value.trial_days === '' ? 0 : Number(value.trial_days),
       is_featured: value.is_featured,
+      // Both lists are sent: each replaces the plan's list ([] clears it).
+      included_module_ids: value.included_module_ids,
+      addon_module_ids: value.addon_module_ids,
     };
     this.saving.set(true);
     this.formErrors.set([]);

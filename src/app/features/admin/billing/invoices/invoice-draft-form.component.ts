@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@ang
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { catchError, forkJoin, of } from 'rxjs';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
@@ -13,7 +12,6 @@ import { FieldErrorComponent } from '../../../../shared/components/field-error/f
 import { FormLayoutComponent } from '../../../../shared/components/form-layout/form-layout.component';
 import { injectFormContext } from '../../../../shared/forms/form-context';
 import { handleSaveError } from '../../../../shared/utils/server-errors';
-import { TenantCompanyService } from '../../companies/tenant-company.service';
 import { InvoiceDraftPayload, MONEY } from '../platform-billing.models';
 import { AdminInvoiceService, SubscriptionService } from '../platform-billing.service';
 
@@ -27,7 +25,6 @@ import { AdminInvoiceService, SubscriptionService } from '../platform-billing.se
 export class InvoiceDraftFormComponent implements OnInit {
   private readonly api = inject(AdminInvoiceService);
   private readonly subscriptions = inject(SubscriptionService);
-  private readonly companies = inject(TenantCompanyService);
   private readonly router = inject(Router);
   private readonly notifications = inject(NotificationService);
   private readonly translate = inject(TranslateService);
@@ -36,7 +33,7 @@ export class InvoiceDraftFormComponent implements OnInit {
   readonly saving = signal(false);
   readonly formErrors = signal<string[]>([]);
   readonly subscriptionOptions = signal<Array<{ value: number; label: string }>>([]);
-  /** False until the backend lets staff list every company's subscriptions (BACKEND_REQUESTS item 30). */
+  /** False when there is no subscription to invoice yet. */
   readonly hasSubscriptions = signal(true);
 
   readonly form = inject(NonNullableFormBuilder).group({
@@ -48,19 +45,10 @@ export class InvoiceDraftFormComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    forkJoin({
-      companies: this.companies.all().pipe(catchError(() => of([]))),
-      subscriptions: this.subscriptions.all(),
-    }).subscribe({
-      next: ({ companies, subscriptions }) => {
-        const names = new Map(companies.map((company) => [company.id, company.name]));
+    this.subscriptions.all().subscribe({
+      next: (subscriptions) => {
         this.hasSubscriptions.set(subscriptions.length > 0);
-        this.subscriptionOptions.set(
-          subscriptions.map((s) => ({
-            value: s.id,
-            label: `${s.company_name || names.get(s.company) || '#' + s.company} — ${s.plan_name}`,
-          })),
-        );
+        this.subscriptionOptions.set(subscriptions.map((s) => ({ value: s.id, label: `${s.company_name} — ${s.plan_name}` })));
       },
       error: () => this.hasSubscriptions.set(false),
     });

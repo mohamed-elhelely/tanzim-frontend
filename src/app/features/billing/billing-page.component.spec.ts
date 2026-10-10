@@ -4,8 +4,8 @@ import { envelope, errorEnvelope, provideApiTesting } from '../../testing/api-te
 import { CurrentSubscription, PlatformInvoice } from './billing.models';
 import { BillingPageComponent } from './billing-page.component';
 
-const SUB = '/api/subscriptions/subscriptions/current/';
-const INVOICES = '/api/subscriptions/invoices/';
+const SUB = '/api/subscriptions/v1/subscriptions/current/';
+const INVOICES = '/api/subscriptions/v1/invoices/';
 
 function subscription(): CurrentSubscription {
   return {

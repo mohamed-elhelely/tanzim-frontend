@@ -1,5 +1,5 @@
 /**
- * Platform billing for staff: /api/subscriptions/… (API_REFERENCE.md → "Subscriptions & platform billing" and
+ * Platform billing for staff: /api/subscriptions/v1/… (API_REFERENCE.md → "Subscriptions & platform billing" and
  * "Reports (platform billing)"). The company-side read-only types live in features/billing/billing.models.ts.
  */
 import { InvoiceStatus, PlatformInvoice, SubscriptionModule, SubscriptionStatus } from '../../billing/billing.models';
@@ -62,7 +62,6 @@ export interface Plan {
   max_users: number | null;
   trial_days: number;
   is_featured: boolean;
-  /** Read-only: the API has no way to set a plan's modules yet (BACKEND_REQUESTS item 30). */
   included_modules: BillingModule[];
   addon_modules: BillingModule[];
 }
@@ -75,13 +74,15 @@ export interface PlanPayload {
   max_users?: number | null;
   trial_days?: number;
   is_featured?: boolean;
+  /** Write-only: a list that is sent replaces that list; a module moves out of the other list. */
+  included_module_ids?: number[];
+  addon_module_ids?: number[];
 }
 
 export interface Subscription {
   id: number;
   company: number;
-  /** Requested from the backend (item 30); the list falls back to the company id. */
-  company_name?: string;
+  company_name: string;
   plan: number;
   plan_name: string;
   status: SubscriptionStatus;

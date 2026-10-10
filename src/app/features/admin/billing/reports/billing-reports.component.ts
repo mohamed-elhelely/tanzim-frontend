@@ -21,8 +21,8 @@ import { BillingReportService } from '../platform-billing.service';
 const REVENUE_CHART: ChartSpec = { type: 'bar', category: 'period', series: ['total_paid', 'total_outstanding'], stacked: true };
 
 /**
- * /admin/billing-reports: platform revenue by month for a year, outstanding invoices and balances per subscription.
- * ⚠️ Scoped to the caller's company until BACKEND_REQUESTS item 30 ships, so staff see empty reports until then.
+ * /admin/billing/reports: platform revenue by month for a year, outstanding invoices and balances per subscription,
+ * across every company.
  */
 @Component({
   selector: 'app-billing-reports',

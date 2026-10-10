@@ -4,12 +4,13 @@ import { envelope, provideApiTesting } from '../../../../testing/api-testing';
 import { Subscription } from '../platform-billing.models';
 import { SubscriptionListComponent } from './subscription-list.component';
 
-const URL = '/api/subscriptions/subscriptions/';
+const URL = '/api/subscriptions/v1/subscriptions/';
 
 function subscription(overrides: Partial<Subscription> = {}): Subscription {
   return {
     id: 2,
     company: 1,
+    company_name: 'Acme',
     plan: 3,
     plan_name: 'Professional',
     status: 'active',
@@ -41,7 +42,7 @@ describe('SubscriptionListComponent', () => {
 
   afterEach(() => httpMock.verify());
 
-  it('filters by company and names the company when the backend sends only its id', () => {
+  it('lists every company with its name and filters by company', () => {
     const fixture = setup();
     httpMock.expectOne((r) => r.url === URL && r.params.get('page') === '1').flush(envelope([subscription()], 1));
     fixture.detectChanges();
@@ -56,7 +57,7 @@ describe('SubscriptionListComponent', () => {
     const fixture = setup();
     httpMock.expectOne((r) => r.url === URL && r.params.has('page')).flush(envelope([subscription()], 1));
     fixture.componentInstance.openModules(subscription());
-    httpMock.expectOne('/api/subscriptions/modules/').flush(envelope([{ id: 7, name: 'Inventory', code: 'inventory', is_active: true }]));
+    httpMock.expectOne('/api/subscriptions/v1/modules/').flush(envelope([{ id: 7, name: 'Inventory', code: 'inventory', is_active: true }]));
 
     fixture.componentInstance.toggleModule(fixture.componentInstance.catalog()[0], true);
     expect(httpMock.expectOne(`${URL}2/add_module/`).request.body).toEqual({ module_id: 7 });

@@ -5,7 +5,7 @@ import { envelope, errorEnvelope, provideApiTesting } from '../../../../testing/
 import { AdminInvoice } from '../platform-billing.models';
 import { InvoiceDetailComponent } from './invoice-detail.component';
 
-const URL = '/api/subscriptions/invoices/5/';
+const URL = '/api/subscriptions/v1/invoices/5/';
 
 function invoice(overrides: Partial<AdminInvoice> = {}): AdminInvoice {
   return {
@@ -48,7 +48,7 @@ describe('InvoiceDetailComponent', () => {
     httpMock = TestBed.inject(HttpTestingController);
     const fixture = TestBed.createComponent(InvoiceDetailComponent);
     fixture.detectChanges();
-    httpMock.expectOne('/api/subscriptions/modules/').flush(envelope([{ id: 7, name: 'Inventory', code: 'inventory' }]));
+    httpMock.expectOne('/api/subscriptions/v1/modules/').flush(envelope([{ id: 7, name: 'Inventory', code: 'inventory' }]));
     httpMock.expectOne(URL).flush(envelope(data));
     fixture.detectChanges();
     return fixture;

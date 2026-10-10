@@ -194,11 +194,11 @@ Menu group "Subscriptions". Models and every service in `platform-billing.models
 
 | Screen | Endpoint | Notes |
 |---|---|---|
-| `subscriptions/` | `subscriptions/subscriptions/` (+ `add_module`, `remove_module`) | Company + status filters; form in a dialog; modules dialog with switches. ⚠️ empty for staff until BACKEND_REQUESTS item 30 |
-| `plans/`, `modules/` | `subscriptions/plans/`, `subscriptions/modules/` | Client lists, forms in dialogs. A plan's modules are read-only (item 30) |
-| `invoices/` | `subscriptions/invoices/` | List with company/status filters; "New invoice" dialog (`create_draft`, picks a subscription) opens the detail. Detail: items while draft (`add_item`, `items/{id}`), Issue, Record payment, Mark paid, Cancel (reason) — buttons follow `can_edit` / `can_add_payment` / `can_cancel` |
-| `payments/` | `subscriptions/payments/` (+ `refund`) | Company filter; refund dialog for completed payments |
-| `reports/` | `subscriptions/reports/…` | Year revenue (tiles + stacked chart via `AnalyticsChartComponent`), outstanding invoices, balances. ⚠️ company-scoped until item 30 |
+| `subscriptions/` | `subscriptions/v1/subscriptions/` (+ `add_module`, `remove_module`) | Company + status filters; form in a dialog; modules dialog with switches |
+| `plans/`, `modules/` | `subscriptions/v1/plans/`, `subscriptions/v1/modules/` | Client lists, forms in dialogs. The plan form sets `included_module_ids` / `addon_module_ids` (a module picked in one list is hidden from the other) |
+| `invoices/` | `subscriptions/v1/invoices/` | List with company/status filters; "New invoice" dialog (`create_draft`, picks a subscription) opens the detail. Detail: items while draft (`add_item`, `items/{id}`), Issue, Record payment, Mark paid, Cancel (reason) — buttons follow `can_edit` / `can_add_payment` / `can_cancel` |
+| `payments/` | `subscriptions/v1/payments/` (+ `refund`) | Company filter; refund dialog for completed payments |
+| `reports/` | `subscriptions/v1/reports/…` | Year revenue (tiles + stacked chart via `AnalyticsChartComponent`), outstanding invoices, balances, across every company |
 
 ### company — `/company`
 

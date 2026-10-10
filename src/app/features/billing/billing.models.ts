@@ -1,4 +1,4 @@
-/** /api/subscriptions/… (API_REFERENCE.md → "Subscriptions & platform billing"). Read-only for the company. */
+/** /api/subscriptions/v1/… (API_REFERENCE.md → "Subscriptions & platform billing"). Read-only for the company. */
 
 export type SubscriptionStatus = 'trial' | 'active' | 'past_due' | 'canceled' | 'expired';
 

@@ -6,7 +6,7 @@ It lists what the frontend still needs from the backend. Remove items as they sh
 History: the first round (current-user endpoint, enforced permissions, `is_staff`, company and location fixes,
 product variants, workflow actions, import, WebSocket token, export parameters, the password-hash leak) shipped on
 2026-10-08 and was verified from the frontend on 2026-10-09. The second round (items 0–23, backend master c6509d9)
-was verified against the running API on 2026-10-09; see "Fixed" below. Items 24–30 are open.
+was verified against the running API on 2026-10-09; see "Fixed" below. Items 24–29 are open; item 30 shipped on 2026-10-10 (backend a9bccfe).
 
 ```text
 You are working on the backend of Tanzim, a bilingual (English/Arabic) multi-tenant ERP.
@@ -75,28 +75,13 @@ Company admin: admin@testcompany.com / testpass123.
    loads them with an empty `PATCH {}` (which saves nothing and answers with every field). Add `GET` to
    `MeProfileAPIView` returning the same fields.
 
-
-30. Platform staff can't manage subscriptions, and company users can grant themselves modules (billing/apis.py):
-   - SECURITY: `SubscriptionViewSet` and `SubscriptionModuleViewSet` only check `IsAuthenticated`. Any company user can
-     `POST /subscriptions/subscriptions/` for their own company, `PATCH` its `status` to `active`, call
-     `add_module` / `remove_module` / `update_users`, and create/edit `subscription-modules`. Make every write
-     staff-only (`IsStaffOrReadOnly`, like invoices); company users keep read access to their own.
-   - Staff see nothing: `SubscriptionViewSet`, `SubscriptionModuleViewSet` and `ReportViewSet` filter by
-     `request.company`, which staff don't have. Do what `InvoiceViewSet` does: `allow_staff_without_company = True`;
-     staff get every company's rows, with an optional `?company=<id>` filter (reports too). Add `?status=` to the
-     subscriptions list.
-   - Add `company_name` to `SubscriptionSerializer` (the invoices already have it).
-   - A plan's modules can't be set through the API (`included_modules` / `addon_modules` are read-only method
-     fields): accept e.g. `included_module_ids` and `addon_module_ids` on plan create/update.
-   The frontend's /admin/billing screens (subscriptions, reports, the "new invoice" subscription picker) are built
-   for this contract and show empty lists until it ships.
-
 ```
 
 ## Fixed (verified against the API on 2026-10-09, backend master 0a78259)
 
 | Item | What was fixed | Verified with |
 |---|---|---|
+| 30 | Billing: subscription writes staff-only; staff see every company's subscriptions, subscription modules and reports (`?company=`, `?status=`); `company_name` on subscriptions; plan `included_module_ids` / `addon_module_ids`. All under `/api/subscriptions/v1/` | Backend commit a9bccfe and its tests (not yet walked from the UI) |
 | 0 | Platform invoice/payment writes need platform staff; staff can manage any company's invoices | Employee and company admin → 403; staff create_draft → add_item → issue |
 | 1 | 204 responses have no body | DELETE brand → 204, Content-Length 0 |
 | 2 | Inventory read serializers return every field (warehouse … variant, and all stock, movement and procurement documents) | Retrieve/list of each; serializer field check for the 18 stock/procurement serializers |

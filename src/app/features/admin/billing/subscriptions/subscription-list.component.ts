@@ -21,7 +21,7 @@ import { SubscriptionFormComponent } from './subscription-form.component';
 
 /**
  * /admin/subscriptions: every company's subscription, filtered by company and status; plan, dates and users are
- * edited in a dialog, modules switched on and off in another. Needs BACKEND_REQUESTS item 30 to list them all.
+ * edited in a dialog, modules switched on and off in another.
  */
 @Component({
   selector: 'app-subscription-list',
@@ -88,7 +88,7 @@ export class SubscriptionListComponent implements OnInit {
   }
 
   companyName(row: Subscription): string {
-    return row.company_name || this.companyNames().get(row.company) || `#${row.company}`;
+    return row.company_name || `#${row.company}`;
   }
 
   onFilterChange(): void {

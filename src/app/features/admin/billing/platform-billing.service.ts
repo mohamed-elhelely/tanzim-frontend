@@ -23,23 +23,19 @@ import {
 /** Plans catalog: public read, staff write. */
 @Injectable({ providedIn: 'root' })
 export class PlanService extends CrudApi<Plan, PlanPayload> {
-  protected readonly path = 'subscriptions/plans/';
+  protected readonly path = 'subscriptions/v1/plans/';
 }
 
 /** Feature modules catalog: read for everyone, staff write. */
 @Injectable({ providedIn: 'root' })
 export class BillingModuleService extends CrudApi<BillingModule, BillingModulePayload> {
-  protected readonly path = 'subscriptions/modules/';
+  protected readonly path = 'subscriptions/v1/modules/';
 }
 
-/**
- * Company subscriptions. ⚠️ The backend still scopes these to the caller's company, so platform staff (who have
- * none) get an empty list until BACKEND_REQUESTS item 30 ships; the screens are built for that contract
- * (every company's subscriptions for staff, `?company=` filter, `company_name`).
- */
+/** Every company's subscriptions for staff (`?company=`, `?status=` filters); writes are staff-only. */
 @Injectable({ providedIn: 'root' })
 export class SubscriptionService extends CrudApi<Subscription, SubscriptionPayload> {
-  protected readonly path = 'subscriptions/subscriptions/';
+  protected readonly path = 'subscriptions/v1/subscriptions/';
 
   addModule(id: number, moduleId: number): Observable<void> {
     return this.post<unknown>(`${this.detailPath(id)}add_module/`, { module_id: moduleId }).pipe(map(() => undefined));
@@ -53,7 +49,7 @@ export class SubscriptionService extends CrudApi<Subscription, SubscriptionPaylo
 /** Platform invoices of every company (staff), with the draft → issue → paid workflow. */
 @Injectable({ providedIn: 'root' })
 export class AdminInvoiceService extends CrudApi<AdminInvoice, Partial<AdminInvoice>> {
-  protected readonly path = 'subscriptions/invoices/';
+  protected readonly path = 'subscriptions/v1/invoices/';
 
   createDraft(body: InvoiceDraftPayload): Observable<AdminInvoice> {
     return this.action(`${this.path}create_draft/`, body);
@@ -95,25 +91,25 @@ export class AdminInvoiceService extends CrudApi<AdminInvoice, Partial<AdminInvo
 /** Payments of every company (staff); only refunds can be written. */
 @Injectable({ providedIn: 'root' })
 export class PlatformPaymentService extends CrudApi<PlatformPayment, never> {
-  protected readonly path = 'subscriptions/payments/';
+  protected readonly path = 'subscriptions/v1/payments/';
 
   refund(id: number, body: RefundPayload): Observable<PlatformPayment> {
     return this.post<PlatformPayment>(`${this.detailPath(id)}refund/`, body).pipe(map((r) => r.data as PlatformPayment));
   }
 }
 
-/** Platform billing reports. ⚠️ Scoped to the caller's company until BACKEND_REQUESTS item 30 ships. */
+/** Platform billing reports: every company for staff. */
 @Injectable({ providedIn: 'root' })
 export class BillingReportService extends BaseApiService {
   revenue(year: number): Observable<RevenueRow[]> {
-    return this.get<RevenueRow[]>('subscriptions/reports/revenue_summary/', { params: { year } }).pipe(map((r) => r.data ?? []));
+    return this.get<RevenueRow[]>('subscriptions/v1/reports/revenue_summary/', { params: { year } }).pipe(map((r) => r.data ?? []));
   }
 
   outstanding(): Observable<OutstandingInvoiceRow[]> {
-    return this.get<OutstandingInvoiceRow[]>('subscriptions/reports/outstanding_invoices/').pipe(map((r) => r.data ?? []));
+    return this.get<OutstandingInvoiceRow[]>('subscriptions/v1/reports/outstanding_invoices/').pipe(map((r) => r.data ?? []));
   }
 
   balances(): Observable<CustomerBalanceRow[]> {
-    return this.get<CustomerBalanceRow[]>('subscriptions/reports/customer_balances/').pipe(map((r) => r.data ?? []));
+    return this.get<CustomerBalanceRow[]>('subscriptions/v1/reports/customer_balances/').pipe(map((r) => r.data ?? []));
   }
 }

@@ -64,6 +64,38 @@
           <p-toggleswitch inputId="is_featured" formControlName="is_featured"></p-toggleswitch>
           <label for="is_featured" class="text-sm font-medium">{{ 'admin.billing.fields.featured' | translate }}</label>
         </div>
+        <div class="flex flex-col gap-1">
+          <label for="included_module_ids" class="text-sm font-medium">{{ 'admin.billing.fields.includedModules' | translate }}</label>
+          <p-multiSelect
+            inputId="included_module_ids"
+            formControlName="included_module_ids"
+            [options]="includedOptions()"
+            optionLabel="label"
+            optionValue="value"
+            display="chip"
+            [placeholder]="'common.select' | translate"
+            styleClass="w-full"
+            appendTo="body"
+          ></p-multiSelect>
+          <small class="text-xs text-gray-500 dark:text-gray-400">{{ 'admin.billing.hints.includedModules' | translate }}</small>
+          <app-field-error [control]="form.controls.included_module_ids"></app-field-error>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="addon_module_ids" class="text-sm font-medium">{{ 'admin.billing.fields.addonModules' | translate }}</label>
+          <p-multiSelect
+            inputId="addon_module_ids"
+            formControlName="addon_module_ids"
+            [options]="addonOptions()"
+            optionLabel="label"
+            optionValue="value"
+            display="chip"
+            [placeholder]="'common.select' | translate"
+            styleClass="w-full"
+            appendTo="body"
+          ></p-multiSelect>
+          <small class="text-xs text-gray-500 dark:text-gray-400">{{ 'admin.billing.hints.addonModules' | translate }}</small>
+          <app-field-error [control]="form.controls.addon_module_ids"></app-field-error>
+        </div>
         <div class="flex flex-col gap-1 md:col-span-2">
           <label for="description" class="text-sm font-medium">{{ 'admin.billing.fields.description' | translate }}</label>
           <textarea pTextarea id="description" formControlName="description" rows="3" class="w-full"></textarea>

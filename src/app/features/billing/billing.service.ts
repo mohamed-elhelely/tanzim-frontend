@@ -11,11 +11,11 @@ import { CurrentSubscription, PlatformInvoice } from './billing.models';
 export class BillingService extends BaseApiService {
   /** 404 when the company has no subscription. */
   currentSubscription(): Observable<CurrentSubscription> {
-    return this.get<CurrentSubscription>('subscriptions/subscriptions/current/').pipe(map((r) => r.data as CurrentSubscription));
+    return this.get<CurrentSubscription>('subscriptions/v1/subscriptions/current/').pipe(map((r) => r.data as CurrentSubscription));
   }
 
   /** Newest first; the endpoint isn't paginated. */
   invoices(): Observable<PlatformInvoice[]> {
-    return this.get<PlatformInvoice[]>('subscriptions/invoices/').pipe(map((r) => r.data ?? []));
+    return this.get<PlatformInvoice[]>('subscriptions/v1/invoices/').pipe(map((r) => r.data ?? []));
   }
 }
