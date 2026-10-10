@@ -375,13 +375,16 @@
         "transactionId": "Transaction ID",
         "paidAt": "Date",
         "refunded": "Refunded",
-        "net": "Net"
+        "net": "Net",
+        "addonModules": "Add-on modules"
       },
       "hints": {
         "money": "Enter an amount with up to 2 decimals.",
         "wholeNumber": "Enter a whole number.",
         "unlimited": "Unlimited",
-        "code": "Lowercase letters, digits and _ (e.g. inventory)."
+        "code": "Lowercase letters, digits and _ (e.g. inventory).",
+        "includedModules": "In the base price.",
+        "addonModules": "Bought separately, priced per user."
       },
       "plans": {
         "title": "Plans",
@@ -413,7 +416,7 @@
         "detail": "Invoice",
         "createDraft": "Create draft",
         "draftCreated": "Draft created. Add its items, then issue it.",
-        "noSubscriptions": "No subscriptions to invoice yet: the backend still has to list every company's subscriptions for staff.",
+        "noSubscriptions": "No subscriptions yet: create one under Company subscriptions first.",
         "items": "Items",
         "addItem": "Add item",
         "editItem": "Edit item",
@@ -428,7 +431,8 @@
         "recordPayment": "Record",
         "amountDueHint": "Amount due: {{amount}}",
         "cancel": "Cancel invoice",
-        "cancelled": "Invoice cancelled."
+        "cancelled": "Invoice cancelled.",
+        "paymentRecorded": "Payment recorded."
       },
       "payments": {
         "title": "Platform payments",
