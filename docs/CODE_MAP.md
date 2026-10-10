@@ -188,6 +188,18 @@ marked "client list".
 |---|---|---|
 | `companies/` (`TenantCompanyService`) | `company/v1/admin/company/` | Server list with search. No delete button: DELETE only deactivates, which the form's Active switch does. Email required on create (the backend emails the admin's password). Logo upload not built yet |
 
+### admin/billing — `/admin/billing` (platform staff) 🔒
+
+Menu group "Subscriptions". Models and every service in `platform-billing.models.ts` / `platform-billing.service.ts`.
+
+| Screen | Endpoint | Notes |
+|---|---|---|
+| `subscriptions/` | `subscriptions/subscriptions/` (+ `add_module`, `remove_module`) | Company + status filters; form in a dialog; modules dialog with switches. ⚠️ empty for staff until BACKEND_REQUESTS item 30 |
+| `plans/`, `modules/` | `subscriptions/plans/`, `subscriptions/modules/` | Client lists, forms in dialogs. A plan's modules are read-only (item 30) |
+| `invoices/` | `subscriptions/invoices/` | List with company/status filters; "New invoice" dialog (`create_draft`, picks a subscription) opens the detail. Detail: items while draft (`add_item`, `items/{id}`), Issue, Record payment, Mark paid, Cancel (reason) — buttons follow `can_edit` / `can_add_payment` / `can_cancel` |
+| `payments/` | `subscriptions/payments/` (+ `refund`) | Company filter; refund dialog for completed payments |
+| `reports/` | `subscriptions/reports/…` | Year revenue (tiles + stacked chart via `AnalyticsChartComponent`), outstanding invoices, balances. ⚠️ company-scoped until item 30 |
+
 ### company — `/company`
 
 | Resource | Endpoint | Notes |

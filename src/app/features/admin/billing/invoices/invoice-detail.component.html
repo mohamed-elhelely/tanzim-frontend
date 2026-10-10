@@ -1,0 +1,271 @@
+@if (loadError(); as err) {
+  <app-page-header title="admin.billing.invoices.title" [showBack]="true" backLabel="common.backToList" (back)="goBack()"></app-page-header>
+  <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403 && err.status !== 404" (retry)="load()"></app-error-state>
+} @else if (invoice(); as invoice) {
+  <app-page-header
+    [title]="invoice.invoice_number"
+    [subtitle]="invoice.company_name"
+    [showBack]="true"
+    backLabel="common.backToList"
+    [actions]="actions()"
+    (back)="goBack()"
+  ></app-page-header>
+
+  <div class="flex flex-col gap-4">
+    <dl class="grid grid-cols-2 gap-3 md:grid-cols-4">
+      <div class="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+        <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'billing.fields.status' | translate }}</dt>
+        <dd class="mt-1">
+          <app-status-badge [value]="'billing.invoiceStatus.' + invoice.status | translate" [severity]="severity[invoice.status]"></app-status-badge>
+        </dd>
+      </div>
+      <div class="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+        <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'billing.fields.total' | translate }}</dt>
+        <dd class="mt-1 text-sm font-semibold" dir="ltr">{{ invoice.total | number: '1.2-2' }}</dd>
+      </div>
+      <div class="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+        <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'billing.fields.amountPaid' | translate }}</dt>
+        <dd class="mt-1 text-sm font-semibold" dir="ltr">{{ invoice.amount_paid | number: '1.2-2' }}</dd>
+      </div>
+      <div class="rounded-xl border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900">
+        <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'billing.fields.amountDue' | translate }}</dt>
+        <dd class="mt-1 text-sm font-semibold" dir="ltr">{{ invoice.amount_due | number: '1.2-2' }}</dd>
+      </div>
+    </dl>
+
+    <p-card>
+      <dl class="grid grid-cols-2 gap-x-6 gap-y-3 text-sm md:grid-cols-4 xl:grid-cols-6">
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'billing.fields.issueDate' | translate }}</dt>
+          <dd class="mt-0.5" dir="ltr">{{ invoice.issue_date }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'billing.fields.dueDate' | translate }}</dt>
+          <dd class="mt-0.5" dir="ltr">{{ invoice.due_date }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'admin.billing.fields.paidDate' | translate }}</dt>
+          <dd class="mt-0.5" dir="ltr">{{ invoice.paid_date || '—' }}</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'admin.billing.fields.taxRate' | translate }}</dt>
+          <dd class="mt-0.5" dir="ltr">{{ invoice.tax_rate | number: '1.0-2' }} %</dd>
+        </div>
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'admin.billing.fields.discount' | translate }}</dt>
+          <dd class="mt-0.5" dir="ltr">
+            {{ invoice.discount | number: '1.2-2' }}{{ invoice.discount_type === 'percentage' ? ' %' : '' }}
+          </dd>
+        </div>
+        <div>
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'admin.billing.fields.paymentMethod' | translate }}</dt>
+          <dd class="mt-0.5">{{ invoice.payment_method || '—' }}</dd>
+        </div>
+        <div class="col-span-2 md:col-span-4 xl:col-span-6">
+          <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'admin.billing.fields.notes' | translate }}</dt>
+          <dd class="mt-0.5 whitespace-pre-line">{{ invoice.notes || '—' }}</dd>
+        </div>
+      </dl>
+    </p-card>
+
+    <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
+      <div class="flex items-center justify-between gap-3 border-b border-gray-100 p-4 dark:border-gray-800">
+        <h2 class="text-sm font-semibold text-gray-900 dark:text-gray-100">{{ 'admin.billing.invoices.items' | translate }}</h2>
+        @if (invoice.can_edit) {
+          <p-button [label]="'admin.billing.invoices.addItem' | translate" icon="pi pi-plus" size="small" (onClick)="openItem('new')"></p-button>
+        }
+      </div>
+      <div class="overflow-x-auto">
+        <p-table [value]="invoice.items" dataKey="id" size="small">
+          <ng-template pTemplate="header">
+            <tr>
+              <th>{{ 'billing.fields.description' | translate }}</th>
+              <th>{{ 'admin.billing.fields.module' | translate }}</th>
+              <th class="text-end">{{ 'billing.fields.quantity' | translate }}</th>
+              <th class="text-end">{{ 'billing.fields.unitPrice' | translate }}</th>
+              <th class="text-end">{{ 'admin.billing.fields.amount' | translate }}</th>
+              @if (invoice.can_edit) {
+                <th class="text-end">{{ 'common.actions' | translate }}</th>
+              }
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-item>
+            <tr>
+              <td>{{ item.description }}</td>
+              <td>{{ item.module_name || '—' }}</td>
+              <td class="text-end">{{ item.quantity }}</td>
+              <td class="text-end" dir="ltr">{{ item.unit_price | number: '1.2-2' }}</td>
+              <td class="text-end font-medium" dir="ltr">{{ item.amount | number: '1.2-2' }}</td>
+              @if (invoice.can_edit) {
+                <td class="whitespace-nowrap text-end">
+                  <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" [ariaLabel]="'common.edit' | translate" (onClick)="openItem(item)"></p-button>
+                  <p-button
+                    icon="pi pi-trash"
+                    severity="danger"
+                    [text]="true"
+                    [rounded]="true"
+                    [ariaLabel]="'common.delete' | translate"
+                    (onClick)="removeItem(item)"
+                  ></p-button>
+                </td>
+              }
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td [attr.colspan]="invoice.can_edit ? 6 : 5">
+                <app-empty-state icon="pi-list" message="admin.billing.invoices.noItems"></app-empty-state>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+      <dl class="ms-auto grid w-full max-w-xs grid-cols-2 gap-x-6 gap-y-1 p-4 text-sm">
+        <dt class="text-gray-500 dark:text-gray-400">{{ 'billing.fields.subtotal' | translate }}</dt>
+        <dd class="text-end" dir="ltr">{{ invoice.subtotal | number: '1.2-2' }}</dd>
+        <dt class="text-gray-500 dark:text-gray-400">{{ 'billing.fields.tax' | translate }}</dt>
+        <dd class="text-end" dir="ltr">{{ invoice.tax_amount | number: '1.2-2' }}</dd>
+        <dt class="border-t border-gray-200 pt-1 font-semibold dark:border-gray-800">{{ 'billing.fields.total' | translate }}</dt>
+        <dd class="border-t border-gray-200 pt-1 text-end font-semibold dark:border-gray-800" dir="ltr">{{ invoice.total | number: '1.2-2' }}</dd>
+      </dl>
+    </div>
+
+    @if (invoice.status_history.length) {
+      <p-card>
+        <h2 class="mb-3 text-sm font-semibold text-gray-900 dark:text-gray-100">{{ 'billing.history' | translate }}</h2>
+        <ol class="flex flex-col gap-3">
+          @for (change of invoice.status_history; track change.id) {
+            <li class="flex flex-wrap items-center gap-2 text-sm">
+              @if (change.from_status) {
+                <app-status-badge [value]="'billing.invoiceStatus.' + change.from_status | translate" [severity]="severity[change.from_status]"></app-status-badge>
+                <i class="pi pi-arrow-right text-xs text-gray-400 rtl:rotate-180"></i>
+              }
+              <app-status-badge [value]="'billing.invoiceStatus.' + change.to_status | translate" [severity]="severity[change.to_status]"></app-status-badge>
+              <span class="text-gray-500 dark:text-gray-400" dir="ltr">{{ change.created_at | date: 'yyyy-MM-dd HH:mm' }}</span>
+              @if (change.changed_by_email) {
+                <span class="text-gray-500 dark:text-gray-400">· {{ change.changed_by_email }}</span>
+              }
+              @if (change.reason) {
+                <span class="w-full text-gray-700 dark:text-gray-300">{{ change.reason }}</span>
+              }
+            </li>
+          }
+        </ol>
+      </p-card>
+    }
+  </div>
+
+  <p-dialog
+    [visible]="editingItem() !== null"
+    (visibleChange)="!$event && editingItem.set(null)"
+    [modal]="true"
+    [header]="(editingItem() === 'new' ? 'admin.billing.invoices.addItem' : 'admin.billing.invoices.editItem') | translate"
+    [style]="{ width: '36rem' }"
+    [breakpoints]="{ '640px': '100vw' }"
+    appendTo="body"
+  >
+    <form [formGroup]="itemForm" (ngSubmit)="saveItem()" class="flex flex-col gap-4" novalidate>
+      @if (itemErrors().length) {
+        <div role="alert" class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300">
+          @for (message of itemErrors(); track $index) {
+            <p>{{ message }}</p>
+          }
+        </div>
+      }
+      <div class="flex flex-col gap-1">
+        <label for="item_description" class="text-sm font-medium">{{ 'billing.fields.description' | translate }} *</label>
+        <input pInputText id="item_description" formControlName="description" class="w-full" />
+        <app-field-error [control]="itemForm.controls.description"></app-field-error>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="flex flex-col gap-1">
+          <label for="item_quantity" class="text-sm font-medium">{{ 'billing.fields.quantity' | translate }} *</label>
+          <input pInputText id="item_quantity" formControlName="quantity" dir="ltr" inputmode="numeric" class="w-full" />
+          <app-field-error [control]="itemForm.controls.quantity" patternKey="admin.billing.hints.wholeNumber"></app-field-error>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="item_unit_price" class="text-sm font-medium">{{ 'billing.fields.unitPrice' | translate }} *</label>
+          <input pInputText id="item_unit_price" formControlName="unit_price" dir="ltr" inputmode="decimal" class="w-full" />
+          <app-field-error [control]="itemForm.controls.unit_price" patternKey="admin.billing.hints.money"></app-field-error>
+        </div>
+      </div>
+      @if (editingItem() === 'new') {
+        <div class="flex flex-col gap-1">
+          <label for="item_module" class="text-sm font-medium">{{ 'admin.billing.fields.module' | translate }}</label>
+          <p-select
+            inputId="item_module"
+            formControlName="module"
+            [options]="moduleOptions()"
+            optionLabel="label"
+            optionValue="value"
+            [showClear]="true"
+            [placeholder]="'common.select' | translate"
+            styleClass="w-full"
+            appendTo="body"
+          ></p-select>
+        </div>
+      }
+      <div class="flex justify-end gap-2 border-t border-gray-100 pt-4 dark:border-gray-800">
+        <p-button type="button" [label]="'common.cancel' | translate" severity="secondary" [outlined]="true" (onClick)="editingItem.set(null)"></p-button>
+        <p-button type="submit" [label]="'common.save' | translate" icon="pi pi-check" [loading]="itemSaving()" [disabled]="itemSaving()"></p-button>
+      </div>
+    </form>
+  </p-dialog>
+
+  <p-dialog
+    [visible]="paymentOpen()"
+    (visibleChange)="paymentOpen.set($event)"
+    [modal]="true"
+    [header]="'admin.billing.invoices.addPayment' | translate"
+    [style]="{ width: '32rem' }"
+    [breakpoints]="{ '640px': '100vw' }"
+    appendTo="body"
+  >
+    <form [formGroup]="paymentForm" (ngSubmit)="savePayment()" class="flex flex-col gap-4" novalidate>
+      @if (paymentErrors().length) {
+        <div role="alert" class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300">
+          @for (message of paymentErrors(); track $index) {
+            <p>{{ message }}</p>
+          }
+        </div>
+      }
+      <div class="flex flex-col gap-1">
+        <label for="payment_amount" class="text-sm font-medium">{{ 'admin.billing.fields.amount' | translate }} *</label>
+        <input pInputText id="payment_amount" formControlName="amount" dir="ltr" inputmode="decimal" class="w-full" />
+        <small class="text-xs text-gray-500 dark:text-gray-400">
+          {{ 'admin.billing.invoices.amountDueHint' | translate: { amount: (invoice.amount_due | number: '1.2-2') } }}
+        </small>
+        <app-field-error [control]="paymentForm.controls.amount" patternKey="admin.billing.hints.money"></app-field-error>
+      </div>
+      <div class="flex flex-col gap-1">
+        <label for="payment_transaction" class="text-sm font-medium">{{ 'admin.billing.fields.transactionId' | translate }}</label>
+        <input pInputText id="payment_transaction" formControlName="transaction_id" dir="ltr" class="w-full" />
+        <app-field-error [control]="paymentForm.controls.transaction_id"></app-field-error>
+      </div>
+      <div class="flex flex-col gap-1">
+        <label for="payment_notes" class="text-sm font-medium">{{ 'admin.billing.fields.notes' | translate }}</label>
+        <textarea pTextarea id="payment_notes" formControlName="notes" rows="2" class="w-full"></textarea>
+      </div>
+      <div class="flex justify-end gap-2 border-t border-gray-100 pt-4 dark:border-gray-800">
+        <p-button type="button" [label]="'common.cancel' | translate" severity="secondary" [outlined]="true" (onClick)="paymentOpen.set(false)"></p-button>
+        <p-button
+          type="submit"
+          [label]="'admin.billing.invoices.recordPayment' | translate"
+          icon="pi pi-check"
+          [loading]="paymentSaving()"
+          [disabled]="paymentSaving()"
+        ></p-button>
+      </div>
+    </form>
+  </p-dialog>
+
+  <app-reason-dialog
+    [visible]="cancelOpen()"
+    (visibleChange)="cancelOpen.set($event)"
+    header="admin.billing.invoices.cancel"
+    confirmLabel="admin.billing.invoices.cancel"
+    (confirmed)="cancel($event)"
+  ></app-reason-dialog>
+} @else {
+  <app-loading-state></app-loading-state>
+}

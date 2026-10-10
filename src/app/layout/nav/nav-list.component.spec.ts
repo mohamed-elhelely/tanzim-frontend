@@ -75,10 +75,17 @@ describe('NavListComponent', () => {
     expect(links(await render('/dashboard', 'ADMIN'))).toContain('/admin/companies');
   });
 
-  it('shows platform admins only the dashboard, Companies and their notifications', async () => {
+  it('shows platform admins the dashboard, Companies, the Subscriptions group and their notifications', async () => {
     const fixture = await render('/dashboard', 'ADMIN');
     expect(links(fixture)).toEqual(['/dashboard', '/admin/companies', '/notifications']);
-    expect(fixture.nativeElement.querySelector('button[aria-expanded]')).toBeNull();
+    const groups = Array.from(fixture.nativeElement.querySelectorAll('button[aria-expanded]')) as HTMLButtonElement[];
+    expect(groups.map((button) => button.textContent?.trim())).toEqual(['nav.platformBilling']);
+  });
+
+  it('expands the Subscriptions group on a platform billing page', async () => {
+    const fixture = await render('/admin/billing/invoices/3', 'ADMIN');
+    expect(links(fixture)).toContain('/admin/billing/subscriptions');
+    expect(links(fixture)).toContain('/admin/billing/reports');
   });
 
   it('hides sections whose subscription module is off', async () => {

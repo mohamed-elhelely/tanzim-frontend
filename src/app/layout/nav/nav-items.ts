@@ -26,6 +26,21 @@ export const NAV_ITEMS: NavItem[] = [
   { labelKey: 'nav.dashboard', icon: 'pi pi-home', routerLink: '/dashboard' },
   { labelKey: 'nav.companies', icon: 'pi pi-briefcase', routerLink: '/admin/companies', staffOnly: true },
   {
+    // Subscriptions & platform billing: the super admin's side (/admin/…).
+    labelKey: 'nav.platformBilling',
+    icon: 'pi pi-credit-card',
+    routerLink: '/admin/billing',
+    staffOnly: true,
+    children: [
+      { labelKey: 'nav.subscriptions', icon: 'pi pi-id-card', routerLink: '/admin/billing/subscriptions' },
+      { labelKey: 'nav.plans', icon: 'pi pi-tags', routerLink: '/admin/billing/plans' },
+      { labelKey: 'nav.billingModules', icon: 'pi pi-th-large', routerLink: '/admin/billing/modules' },
+      { labelKey: 'nav.platformInvoices', icon: 'pi pi-receipt', routerLink: '/admin/billing/invoices' },
+      { labelKey: 'nav.platformPayments', icon: 'pi pi-wallet', routerLink: '/admin/billing/payments' },
+      { labelKey: 'nav.billingReports', icon: 'pi pi-chart-bar', routerLink: '/admin/billing/reports' },
+    ],
+  },
+  {
     labelKey: 'nav.company',
     icon: 'pi pi-building',
     routerLink: '/company',

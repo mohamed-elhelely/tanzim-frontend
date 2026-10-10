@@ -1,0 +1,88 @@
+<app-page-header title="admin.billing.invoices.title" subtitle="admin.billing.invoices.subtitle" [actions]="headerActions"></app-page-header>
+
+@if (table.error(); as err) {
+  <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403" (retry)="table.load()"></app-error-state>
+} @else {
+  <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
+    <div class="flex flex-col gap-3 border-b border-gray-100 p-4 sm:flex-row sm:items-center dark:border-gray-800">
+      <p-select
+        [(ngModel)]="company"
+        (ngModelChange)="onFilterChange()"
+        [options]="companyOptions()"
+        optionLabel="label"
+        optionValue="value"
+        [filter]="true"
+        [showClear]="true"
+        [placeholder]="'admin.billing.fields.company' | translate"
+        [ariaLabel]="'admin.billing.fields.company' | translate"
+        styleClass="w-full sm:w-64"
+        appendTo="body"
+      ></p-select>
+      <p-select
+        [(ngModel)]="status"
+        (ngModelChange)="onFilterChange()"
+        [options]="statusOptions"
+        optionLabel="label"
+        optionValue="value"
+        [showClear]="true"
+        [placeholder]="'admin.billing.fields.status' | translate"
+        [ariaLabel]="'admin.billing.fields.status' | translate"
+        styleClass="w-full sm:w-48"
+        appendTo="body"
+      >
+        <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
+        <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
+      </p-select>
+    </div>
+    <div class="overflow-x-auto">
+      <p-table
+        [value]="table.rows()"
+        [lazy]="true"
+        [lazyLoadOnInit]="false"
+        (onLazyLoad)="table.onLazyLoad($event)"
+        [paginator]="true"
+        [first]="table.first()"
+        [rows]="table.pageSize()"
+        [totalRecords]="table.total()"
+        [rowsPerPageOptions]="[10, 25, 50]"
+        [loading]="table.loading()"
+        dataKey="id"
+        size="small"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th>{{ 'billing.fields.number' | translate }}</th>
+            <th>{{ 'admin.billing.fields.company' | translate }}</th>
+            <th>{{ 'billing.fields.status' | translate }}</th>
+            <th>{{ 'billing.fields.issueDate' | translate }}</th>
+            <th>{{ 'billing.fields.dueDate' | translate }}</th>
+            <th class="text-end">{{ 'billing.fields.total' | translate }}</th>
+            <th class="text-end">{{ 'billing.fields.amountDue' | translate }}</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-row>
+          <tr class="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50" (click)="open(row)">
+            <td>
+              <a [routerLink]="['/admin/billing/invoices', row.id]" class="font-mono text-primary-600 hover:underline dark:text-primary-300" dir="ltr">{{
+                row.invoice_number
+              }}</a>
+            </td>
+            <td>{{ row.company_name }}</td>
+            <td>
+              <app-status-badge [value]="'billing.invoiceStatus.' + row.status | translate" [severity]="severity[row.status]"></app-status-badge>
+            </td>
+            <td class="whitespace-nowrap" dir="ltr">{{ row.issue_date }}</td>
+            <td class="whitespace-nowrap" dir="ltr">{{ row.due_date }}</td>
+            <td class="text-end" dir="ltr">{{ row.total | number: '1.2-2' }}</td>
+            <td class="text-end font-medium" dir="ltr">{{ row.amount_due | number: '1.2-2' }}</td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="7"><app-empty-state icon="pi-receipt"></app-empty-state></td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+}
