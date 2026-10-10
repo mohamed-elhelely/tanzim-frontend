@@ -1,0 +1,1 @@
+import{Xa as a}from"./chunk-LDEZJPGA.js";function t(n,e){return n?e==="ar"&&n.name_ar?n.name_ar:n.name_en||n.name||"":""}var i=class n{transform(e,r){return t(e,r)}static \u0275fac=function(r){return new(r||n)};static \u0275pipe=a({name:"localizedName",type:n,pure:!0})};export{t as a,i as b};
