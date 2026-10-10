@@ -84,7 +84,14 @@
     "analytics": "التحليلات",
     "dashboards": "لوحات المتابعة",
     "reports": "التقارير",
-    "companyProfile": "ملف الشركة"
+    "companyProfile": "ملف الشركة",
+    "platformBilling": "الاشتراكات",
+    "subscriptions": "اشتراكات الشركات",
+    "plans": "الخطط",
+    "billingModules": "الوحدات",
+    "platformInvoices": "الفواتير",
+    "platformPayments": "المدفوعات",
+    "billingReports": "التقارير"
   },
   "auth": {
     "login": "تسجيل الدخول",
@@ -330,6 +337,128 @@
       "taxId": "حروف وأرقام وشرطات فقط.",
       "phone": "بالصيغة الدولية: + ثم من 8 إلى 15 رقمًا، مثل ‎+966501234567.",
       "adminEmail": "يُنشأ حساب مسؤول لهذا البريد وتُرسل إليه بيانات الدخول."
+    },
+    "billing": {
+      "periods": {
+        "monthly": "شهري",
+        "quarterly": "ربع سنوي",
+        "yearly": "سنوي"
+      },
+      "fields": {
+        "name": "الاسم",
+        "billingPeriod": "دورة الفوترة",
+        "basePrice": "السعر الأساسي",
+        "maxUsers": "أقصى عدد مستخدمين",
+        "trialDays": "أيام التجربة",
+        "featured": "مميزة",
+        "description": "الوصف",
+        "includedModules": "الوحدات المضمنة",
+        "code": "الرمز",
+        "pricePerUser": "السعر لكل مستخدم",
+        "icon": "الأيقونة",
+        "active": "نشط",
+        "inactive": "غير نشط",
+        "status": "الحالة",
+        "company": "الشركة",
+        "plan": "الخطة",
+        "startDate": "تاريخ البدء",
+        "endDate": "تاريخ الانتهاء",
+        "trialEndDate": "نهاية التجربة",
+        "subscription": "الاشتراك",
+        "taxRate": "نسبة الضريبة (%)",
+        "discount": "الخصم",
+        "notes": "ملاحظات",
+        "paidDate": "تاريخ السداد",
+        "paymentMethod": "طريقة الدفع",
+        "module": "الوحدة",
+        "amount": "المبلغ",
+        "transactionId": "رقم العملية",
+        "paidAt": "التاريخ",
+        "refunded": "المسترد",
+        "net": "الصافي"
+      },
+      "hints": {
+        "money": "أدخل مبلغًا بحد أقصى رقمين عشريين.",
+        "wholeNumber": "أدخل رقمًا صحيحًا.",
+        "unlimited": "غير محدود",
+        "code": "حروف إنجليزية صغيرة وأرقام و _ (مثل inventory)."
+      },
+      "plans": {
+        "title": "الخطط",
+        "subtitle": "الخطط التي تشترك فيها الشركات",
+        "new": "خطة جديدة",
+        "edit": "تعديل الخطة",
+        "addons": "+ {{count}} إضافات"
+      },
+      "modules": {
+        "title": "الوحدات",
+        "subtitle": "وحدات النظام وسعر كل منها للمستخدم",
+        "new": "وحدة جديدة",
+        "edit": "تعديل الوحدة"
+      },
+      "subscriptions": {
+        "title": "اشتراكات الشركات",
+        "subtitle": "خطة كل شركة ومدتها وعدد مستخدميها ووحداتها",
+        "new": "اشتراك جديد",
+        "edit": "تعديل الاشتراك",
+        "manageModules": "الوحدات",
+        "moduleEnabled": "تم تفعيل الوحدة.",
+        "moduleDisabled": "تم إيقاف الوحدة.",
+        "modulesHint": "يمكن تفعيل الوحدات على الاشتراكات النشطة فقط، ويسري التغيير على الشركة فورًا."
+      },
+      "invoices": {
+        "title": "فواتير المنصة",
+        "subtitle": "الفواتير الصادرة لكل الشركات",
+        "new": "فاتورة جديدة",
+        "detail": "الفاتورة",
+        "createDraft": "إنشاء مسودة",
+        "draftCreated": "تم إنشاء المسودة. أضف البنود ثم أصدرها.",
+        "noSubscriptions": "لا توجد اشتراكات للفوترة بعد: ما زال الباك إند لا يعرض اشتراكات كل الشركات للمشرف.",
+        "items": "البنود",
+        "addItem": "إضافة بند",
+        "editItem": "تعديل البند",
+        "noItems": "أضف بندًا واحدًا على الأقل قبل الإصدار.",
+        "issue": "إصدار",
+        "issued": "تم إصدار الفاتورة.",
+        "confirmIssue": "إصدار الفاتورة {{number}}؟ لن يمكن تعديل بنودها بعد ذلك.",
+        "markPaid": "تحديد كمدفوعة",
+        "paid": "تم تحديد الفاتورة كمدفوعة.",
+        "confirmMarkPaid": "تسجيل المتبقي {{amount}} على {{number}} كمدفوع؟",
+        "addPayment": "تسجيل دفعة",
+        "recordPayment": "تسجيل",
+        "amountDueHint": "المبلغ المستحق: {{amount}}",
+        "cancel": "إلغاء الفاتورة",
+        "cancelled": "تم إلغاء الفاتورة."
+      },
+      "payments": {
+        "title": "مدفوعات المنصة",
+        "subtitle": "المدفوعات على فواتير المنصة من كل الشركات",
+        "refund": "استرداد",
+        "refunded": "تم تسجيل الاسترداد.",
+        "refundOf": "الفاتورة {{number}} — يمكن استرداد حتى {{amount}}."
+      },
+      "paymentStatus": {
+        "pending": "قيد الانتظار",
+        "completed": "مكتملة",
+        "failed": "فشلت",
+        "refunded": "مستردة",
+        "partially_refunded": "مستردة جزئيًا"
+      },
+      "reports": {
+        "title": "تقارير الفوترة",
+        "subtitle": "الإيرادات والفواتير المستحقة والأرصدة",
+        "revenue": "الإيرادات الشهرية",
+        "year": "السنة",
+        "invoiced": "المفوتر",
+        "paid": "المدفوع",
+        "outstanding": "المستحق",
+        "invoiceCount": "عدد الفواتير",
+        "noRevenue": "لا توجد فواتير في هذه السنة.",
+        "outstandingInvoices": "الفواتير المستحقة",
+        "daysOverdue": "أيام التأخير",
+        "balances": "الأرصدة حسب الاشتراك",
+        "overdueCount": "متأخرة"
+      }
     }
   },
   "inventory": {
@@ -1601,7 +1730,10 @@
       "overdue_purchase_orders": "أوامر شراء متأخرة",
       "webhook_endpoints": "نقاط Webhook",
       "webhook_deliveries": "إرسالات Webhook",
-      "webhook_success_rate_percent": "نجاح Webhook ٪"
+      "webhook_success_rate_percent": "نجاح Webhook ٪",
+      "total_paid": "المدفوع",
+      "total_outstanding": "المستحق",
+      "total_invoiced": "المفوتر"
     },
     "charts": {
       "activity_by_user": "النشاط حسب المستخدم",
