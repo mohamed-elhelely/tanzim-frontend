@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
-import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -14,7 +13,9 @@ import { PageHeaderAction, PageHeaderComponent } from '../../../shared/component
 import { LocalizedNamePipe } from '../../../shared/pipes/localized-name.pipe';
 import { ServerTable } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
+import { FormDialogService } from '../../../shared/forms/form-dialog.service';
 import { City } from '../locations.models';
+import { CityFormComponent } from './city-form.component';
 import { CityService } from './city.service';
 
 @Component({
@@ -36,7 +37,7 @@ import { CityService } from './city.service';
 })
 export class CityListComponent implements OnInit {
   private readonly api = inject(CityService);
-  private readonly router = inject(Router);
+  private readonly formDialog = inject(FormDialogService);
   private readonly confirm = inject(ConfirmService);
 
   readonly lang = inject(LanguageService).currentLang;
@@ -48,7 +49,7 @@ export class CityListComponent implements OnInit {
     {
       label: 'locations.cities.new',
       icon: 'pi pi-plus',
-      onClick: () => void this.router.navigate(['/locations/cities/new']),
+      onClick: () => this.openForm(),
     },
   ];
 
@@ -56,8 +57,15 @@ export class CityListComponent implements OnInit {
     this.table.load();
   }
 
+  /** Create (no id) or edit in a dialog over the list; the list reloads after a save. */
+  openForm(id?: number): void {
+    this.formDialog
+      .open(CityFormComponent, { header: id ? 'locations.cities.edit' : 'locations.cities.new', id })
+      .subscribe(() => this.table.load());
+  }
+
   edit(row: City): void {
-    void this.router.navigate(['/locations/cities', row.id, 'edit']);
+    this.openForm(row.id);
   }
 
   confirmDelete(row: City): void {

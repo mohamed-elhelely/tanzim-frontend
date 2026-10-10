@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
-import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -14,7 +13,9 @@ import { PageHeaderAction, PageHeaderComponent } from '../../../shared/component
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
 import { ServerTable } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
+import { FormDialogService } from '../../../shared/forms/form-dialog.service';
 import { Country } from '../locations.models';
+import { CountryFormComponent } from './country-form.component';
 import { CountryService } from './country.service';
 
 @Component({
@@ -36,7 +37,7 @@ import { CountryService } from './country.service';
 })
 export class CountryListComponent implements OnInit {
   private readonly api = inject(CountryService);
-  private readonly router = inject(Router);
+  private readonly formDialog = inject(FormDialogService);
   private readonly confirm = inject(ConfirmService);
 
   readonly lang = inject(LanguageService).currentLang;
@@ -48,7 +49,7 @@ export class CountryListComponent implements OnInit {
     {
       label: 'locations.countries.new',
       icon: 'pi pi-plus',
-      onClick: () => void this.router.navigate(['/locations/countries/new']),
+      onClick: () => this.openForm(),
     },
   ];
 
@@ -56,8 +57,15 @@ export class CountryListComponent implements OnInit {
     this.table.load();
   }
 
+  /** Create (no id) or edit in a dialog over the list; the list reloads after a save. */
+  openForm(id?: number): void {
+    this.formDialog
+      .open(CountryFormComponent, { header: id ? 'locations.countries.edit' : 'locations.countries.new', id })
+      .subscribe(() => this.table.load());
+  }
+
   edit(row: Country): void {
-    void this.router.navigate(['/locations/countries', row.id, 'edit']);
+    this.openForm(row.id);
   }
 
   confirmDelete(row: Country): void {

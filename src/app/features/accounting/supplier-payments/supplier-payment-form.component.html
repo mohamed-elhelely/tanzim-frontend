@@ -1,6 +1,6 @@
 <app-page-header title="accounting.payments.new" [showBack]="true" backLabel="common.backToList" (back)="goBack()"></app-page-header>
 
-<form [formGroup]="form" (ngSubmit)="submit()" class="flex max-w-4xl flex-col gap-4" novalidate>
+<form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-4" novalidate>
   @if (formErrors().length) {
     <div
       role="alert"
@@ -13,7 +13,7 @@
   }
 
   <p-card>
-    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
       <div class="flex flex-col gap-1">
         <label for="supplier" class="text-sm font-medium">{{ 'accounting.fields.supplier' | translate }} *</label>
         <p-select

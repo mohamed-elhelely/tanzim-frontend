@@ -6,6 +6,7 @@ import { provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
+import { DialogService } from 'primeng/dynamicdialog';
 import { routes } from './app.routes';
 import { GlobalErrorHandler } from './core/errors/global-error-handler';
 import { apiHeadersInterceptor } from './core/interceptors/api-headers.interceptor';
@@ -39,5 +40,7 @@ export const appConfig: ApplicationConfig = {
     MessageService,
     ConfirmationService,
     { provide: ErrorHandler, useClass: GlobalErrorHandler },
+    // Short create/edit forms open in dialogs (shared/forms/form-dialog.service.ts).
+    DialogService,
   ],
 };

@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
-import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -13,7 +12,9 @@ import { PageHeaderAction, PageHeaderComponent } from '../../../shared/component
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
 import { ServerTable } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
+import { FormDialogService } from '../../../shared/forms/form-dialog.service';
 import { Brand } from '../inventory.models';
+import { BrandFormComponent } from './brand-form.component';
 import { BrandService } from './brand.service';
 
 @Component({
@@ -35,7 +36,7 @@ import { BrandService } from './brand.service';
 })
 export class BrandListComponent implements OnInit {
   private readonly api = inject(BrandService);
-  private readonly router = inject(Router);
+  private readonly formDialog = inject(FormDialogService);
   private readonly confirm = inject(ConfirmService);
 
   readonly table = new ServerTable<Brand>((query) => this.api.list(query));
@@ -45,7 +46,7 @@ export class BrandListComponent implements OnInit {
     {
       label: 'inventory.brands.new',
       icon: 'pi pi-plus',
-      onClick: () => void this.router.navigate(['/inventory/brands/new']),
+      onClick: () => this.openForm(),
     },
   ];
 
@@ -53,8 +54,15 @@ export class BrandListComponent implements OnInit {
     this.table.load();
   }
 
+  /** Create (no id) or edit in a dialog over the list; the list reloads after a save. */
+  openForm(id?: number): void {
+    this.formDialog
+      .open(BrandFormComponent, { header: id ? 'inventory.brands.edit' : 'inventory.brands.new', id })
+      .subscribe(() => this.table.load());
+  }
+
   edit(row: Brand): void {
-    void this.router.navigate(['/inventory/brands', row.id, 'edit']);
+    this.openForm(row.id);
   }
 
   confirmDelete(row: Brand): void {

@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
-import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -14,7 +13,9 @@ import { PageHeaderAction, PageHeaderComponent } from '../../../shared/component
 import { LocalizedNamePipe } from '../../../shared/pipes/localized-name.pipe';
 import { ServerTable } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
+import { FormDialogService } from '../../../shared/forms/form-dialog.service';
 import { District } from '../locations.models';
+import { DistrictFormComponent } from './district-form.component';
 import { DistrictService } from './district.service';
 
 @Component({
@@ -36,7 +37,7 @@ import { DistrictService } from './district.service';
 })
 export class DistrictListComponent implements OnInit {
   private readonly api = inject(DistrictService);
-  private readonly router = inject(Router);
+  private readonly formDialog = inject(FormDialogService);
   private readonly confirm = inject(ConfirmService);
 
   readonly lang = inject(LanguageService).currentLang;
@@ -48,7 +49,7 @@ export class DistrictListComponent implements OnInit {
     {
       label: 'locations.districts.new',
       icon: 'pi pi-plus',
-      onClick: () => void this.router.navigate(['/locations/districts/new']),
+      onClick: () => this.openForm(),
     },
   ];
 
@@ -56,8 +57,15 @@ export class DistrictListComponent implements OnInit {
     this.table.load();
   }
 
+  /** Create (no id) or edit in a dialog over the list; the list reloads after a save. */
+  openForm(id?: number): void {
+    this.formDialog
+      .open(DistrictFormComponent, { header: id ? 'locations.districts.edit' : 'locations.districts.new', id })
+      .subscribe(() => this.table.load());
+  }
+
   edit(row: District): void {
-    void this.router.navigate(['/locations/districts', row.id, 'edit']);
+    this.openForm(row.id);
   }
 
   confirmDelete(row: District): void {

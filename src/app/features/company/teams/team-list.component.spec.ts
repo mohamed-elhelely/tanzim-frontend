@@ -5,6 +5,9 @@ import { Confirmation, ConfirmationService } from 'primeng/api';
 import { envelope, provideApiTesting } from '../../../testing/api-testing';
 import { SARA_REF, makeTeam } from '../../../testing/company-fixtures';
 import { TeamListComponent } from './team-list.component';
+import { EMPTY } from 'rxjs';
+import { FormDialogService } from '../../../shared/forms/form-dialog.service';
+import { TeamFormComponent } from './team-form.component';
 
 const URL = '/api/company/v1/teams/';
 
@@ -53,11 +56,12 @@ describe('TeamListComponent', () => {
     requests[1].flush(envelope([], 30));
   });
 
-  it('opens the edit page', () => {
+  it('opens the edit form in a dialog', () => {
     const fixture = create();
     httpMock.expectOne((r) => r.url === URL).flush(envelope([makeTeam()], 1));
+    const open = spyOn(TestBed.inject(FormDialogService), 'open').and.returnValue(EMPTY);
     fixture.componentInstance.edit(makeTeam());
-    expect(router.navigate).toHaveBeenCalledWith(['/company/teams', 7, 'edit']);
+    expect(open).toHaveBeenCalledWith(TeamFormComponent, { header: 'company.teams.edit', id: 7 });
   });
 
   it('deletes after confirmation and reloads', () => {

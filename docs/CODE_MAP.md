@@ -148,7 +148,7 @@ Things to know:
 |---|---|---|
 | `layout/shell/` | Frame for signed-in pages; starts loading /me | Hosts the toast and the confirm dialog once |
 | `layout/header/` | Breadcrumb (route `data.titleKey` + nav group), notifications bell, language/theme toggles, user menu (My profile, sign out) | Bell: unread badge + popover with the latest 6. Avatar = `/me` profile picture, else initials |
-| `layout/sidebar/` + `brand.component` | Desktop sidebar; brand shows the company's logo and name from `/me` | Mobile uses a PrimeNG drawer in the shell. Brand colors are not applied to the theme yet |
+| `layout/sidebar/` + `brand.component` | Desktop sidebar; brand shows the company's logo and name from `/me` | Mobile uses a PrimeNG drawer in the shell. Its colors are the `secondary` brand palette |
 | `layout/nav/nav-items.ts` | The menu: label, icon, link, `module`, `roles`, children | 🔒 the single place to add a menu entry |
 | `layout/nav/nav-list.component` | Renders the menu, filters it, expands the active group | 🧠 §3 |
 | `shared/table/server-table.ts` | State for server-paged tables | 🆕 🧠 cancels stale requests; steps back a page after deleting the last row |
@@ -159,6 +159,8 @@ Things to know:
 | `shared/components/notification-item` | One notification row (bell + page) | Icon/colour by type, unread dot |
 | `shared/pipes/time-ago.pipe.ts` | "3 hours ago" in the current language | `Intl.RelativeTimeFormat`; not live |
 | `shared/components/confirm-dialog` | The one PrimeNG confirm dialog | Opened only through `ConfirmService` |
+| `shared/forms/form-context.ts`, `form-dialog.service.ts`, `shared/components/form-layout` | One form component as a page or in a dialog over its list (see ARCHITECTURE → form recipe) | 🆕 🧠 `DialogService` is provided in app.config.ts and provideApiTesting |
+| `core/theme/brand-palette.ts`, `brand-theme.service.ts` | Company colors from /me → 50–950 scales in CSS variables (`--brand-primary-*`, `--brand-secondary-*`) read by tailwind.config.js; primary also to PrimeNG | 🆕 🧠 #000000/#FFFFFF (backend defaults) = keep indigo; cached in localStorage |
 | `shared/components/image-picker` | Image preview with Choose / Remove, 5 MB check; emits File or null | 🆕 profile picture, company logo |
 | `shared/components/reason-dialog` | Optional-reason dialog before cancel / failed steps | Collects the text; the parent runs the action |
 | `shared/components/empty-state`, `error-state`, `loading-state`, `status-badge`, `loading-bar` | Visual states | |

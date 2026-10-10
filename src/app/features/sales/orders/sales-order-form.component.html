@@ -12,7 +12,7 @@
 } @else if (notDraft()) {
   <app-error-state title="sales.hints.onlyDraftEditable" [showRetry]="false"></app-error-state>
 } @else {
-  <form [formGroup]="form" (ngSubmit)="submit()" class="flex max-w-6xl flex-col gap-4" novalidate>
+  <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-4" novalidate>
     @if (formErrors().length) {
       <div
         role="alert"

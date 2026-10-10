@@ -1,9 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
 import { SelectModule } from 'primeng/select';
 import { InputTextModule } from 'primeng/inputtext';
 import { MultiSelectModule } from 'primeng/multiselect';
@@ -13,7 +11,8 @@ import { NotificationService } from '../../../core/services/notification.service
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
 import { FieldErrorComponent } from '../../../shared/components/field-error/field-error.component';
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
-import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
+import { FormLayoutComponent } from '../../../shared/components/form-layout/form-layout.component';
+import { injectFormContext } from '../../../shared/forms/form-context';
 import { localizedName } from '../../../shared/pipes/localized-name.pipe';
 import { errorTitleKey, handleSaveError } from '../../../shared/utils/server-errors';
 import { LocationService } from '../../locations/sites/location.service';
@@ -30,11 +29,10 @@ export type LocationState = 'loading' | 'ready' | 'forbidden' | 'empty' | 'error
     ReactiveFormsModule,
     TranslatePipe,
     ButtonModule,
-    CardModule,
     SelectModule,
     InputTextModule,
     MultiSelectModule,
-    PageHeaderComponent,
+    FormLayoutComponent,
     LoadingStateComponent,
     ErrorStateComponent,
     FieldErrorComponent,
@@ -47,14 +45,15 @@ export class TeamFormComponent implements OnInit {
   private readonly departmentsApi = inject(DepartmentService);
   private readonly locationsApi = inject(LocationService);
   private readonly users = inject(CompanyUserService);
-  private readonly router = inject(Router);
   private readonly notifications = inject(NotificationService);
   private readonly translate = inject(TranslateService);
   private readonly lang = inject(LanguageService).currentLang;
   private readonly departments = signal<NamedRef[]>([]);
   private readonly locations = signal<NamedRef[]>([]);
 
-  readonly id = Number(inject(ActivatedRoute).snapshot.paramMap.get('id')) || null;
+  /** Page (/new, /:id/edit) or dialog opened from the list. */
+  private readonly ctx = injectFormContext(['/company/teams']);
+  readonly id = this.ctx.id;
   readonly isEdit = this.id !== null;
   readonly loading = signal(false);
   readonly saving = signal(false);
@@ -120,14 +119,14 @@ export class TeamFormComponent implements OnInit {
       next: () => {
         this.saving.set(false);
         this.notifications.success(this.translate.instant('common.saved'));
-        this.goBack();
+        this.goBack(true);
       },
       error: (error: AppError) => this.onSaveError(error),
     });
   }
 
-  goBack(): void {
-    void this.router.navigate(['/company/teams']);
+  goBack(saved = false): void {
+    this.ctx.close(saved);
   }
 
   private loadTeam(id: number): void {

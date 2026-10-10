@@ -1,0 +1,10 @@
+<ng-template #body><ng-content></ng-content></ng-template>
+
+@if (inDialog) {
+  <ng-container [ngTemplateOutlet]="body"></ng-container>
+} @else {
+  <app-page-header [title]="title()" [showBack]="true" backLabel="common.backToList" (back)="back.emit()"></app-page-header>
+  <p-card>
+    <ng-container [ngTemplateOutlet]="body"></ng-container>
+  </p-card>
+}

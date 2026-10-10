@@ -97,7 +97,14 @@ load everything with `api.all()` and let `p-table` page and filter in the browse
 ### The form screen recipe
 
 - A reactive form built with `NonNullableFormBuilder`; client validators mirror the backend's rules.
-- `id` from the route decides create (POST) or edit (PATCH with the full body).
+- `id` decides create (POST) or edit (PATCH with the full body).
+- **Dialog or page, by size.** Short forms (a handful of fields, no line items: brands, categories, zones, bins,
+  departments, teams, permissions, countries, regions, cities, districts, accounts) open in a dialog from their
+  list: the form calls `injectFormContext([listUrl])` (id from the dialog or the route, `close(saved)`), wraps its
+  template in `<app-form-layout>`, and the list calls `FormDialogService.open(Form, { header, id })` and reloads
+  when it emits. The `/new` and `/:id/edit` routes still open the same form as a page. Long forms (sections, line
+  items, the permission matrix) stay pages and use the full width: no `max-w-*` cap, `xl:grid-cols-3` grids with
+  `xl:col-span-3` full-row fields.
 - On save failure: `this.formErrors.set(handleSaveError(this.form, error, this.notifications))`. Field errors
   appear under the inputs (`<app-field-error>`), everything else in the alert above the form.
 - Cleared pickers send `null`; text fields are trimmed; optional numbers are converted explicitly.

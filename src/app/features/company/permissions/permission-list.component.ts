@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject } from '@angular/core';
-import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
@@ -17,7 +16,9 @@ import { StatusBadgeComponent } from '../../../shared/components/status-badge/st
 import { localizedName } from '../../../shared/pipes/localized-name.pipe';
 import { ServerTable } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
+import { FormDialogService } from '../../../shared/forms/form-dialog.service';
 import { Permission } from '../company.models';
+import { PermissionFormComponent } from './permission-form.component';
 import { PermissionService } from './permission.service';
 
 @Component({
@@ -39,7 +40,7 @@ import { PermissionService } from './permission.service';
 })
 export class PermissionListComponent implements OnInit {
   private readonly api = inject(PermissionService);
-  private readonly router = inject(Router);
+  private readonly formDialog = inject(FormDialogService);
   private readonly confirm = inject(ConfirmService);
   private readonly access = inject(AccessService);
   private readonly lang = inject(LanguageService).currentLang;
@@ -55,7 +56,7 @@ export class PermissionListComponent implements OnInit {
   readonly canDelete = computed(() => this.access.can('delete_permission'));
 
   readonly headerActions = computed<PageHeaderAction[]>(() =>
-    this.canAdd() ? [{ label: 'company.permissions.new', icon: 'pi pi-plus', onClick: () => void this.router.navigate(['/company/permissions/new']) }] : [],
+    this.canAdd() ? [{ label: 'company.permissions.new', icon: 'pi pi-plus', onClick: () => this.openForm() }] : [],
   );
 
   ngOnInit(): void {
@@ -66,8 +67,15 @@ export class PermissionListComponent implements OnInit {
     return (row.groups ?? []).map((group) => localizedName(group, this.lang())).join(', ');
   }
 
+  /** Create (no id) or edit in a dialog over the list; the list reloads after a save. */
+  openForm(id?: number): void {
+    this.formDialog
+      .open(PermissionFormComponent, { header: id ? 'company.permissions.edit' : 'company.permissions.new', id })
+      .subscribe(() => this.table.load());
+  }
+
   edit(row: Permission): void {
-    void this.router.navigate(['/company/permissions', row.id, 'edit']);
+    this.openForm(row.id);
   }
 
   confirmDelete(row: Permission): void {

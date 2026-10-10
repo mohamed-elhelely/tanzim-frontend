@@ -10,7 +10,7 @@
 } @else if (loading()) {
   <app-loading-state></app-loading-state>
 } @else {
-  <p-card styleClass="max-w-5xl">
+  <p-card>
     <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-6" novalidate>
       @if (isCore()) {
         <div
@@ -33,7 +33,7 @@
         </div>
       }
 
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         <div class="flex flex-col gap-1">
           <label for="name_en" class="text-sm font-medium">{{ 'company.fields.nameEn' | translate }} *</label>
           <input pInputText id="name_en" formControlName="name_en" class="w-full" />
@@ -46,13 +46,13 @@
           <app-field-error [control]="form.controls.name_ar"></app-field-error>
         </div>
 
-        <div class="flex flex-col gap-1 md:col-span-2">
+        <div class="flex flex-col gap-1 md:col-span-2 xl:col-span-3">
           <label for="description" class="text-sm font-medium">{{ 'company.fields.description' | translate }}</label>
           <textarea pTextarea id="description" formControlName="description" rows="3" class="w-full"></textarea>
           <app-field-error [control]="form.controls.description"></app-field-error>
         </div>
 
-        <div class="flex flex-col gap-1 md:col-span-2">
+        <div class="flex flex-col gap-1 md:col-span-2 xl:col-span-3">
           <span class="text-sm font-medium">{{ 'company.fields.permissions' | translate }}</span>
           <app-permission-picker formControlName="permissions"></app-permission-picker>
           <app-field-error [control]="form.controls.permissions"></app-field-error>
