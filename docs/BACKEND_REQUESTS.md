@@ -6,7 +6,7 @@ It lists what the frontend still needs from the backend. Remove items as they sh
 History: the first round (current-user endpoint, enforced permissions, `is_staff`, company and location fixes,
 product variants, workflow actions, import, WebSocket token, export parameters, the password-hash leak) shipped on
 2026-10-08 and was verified from the frontend on 2026-10-09. The second round (items 0–23, backend master c6509d9)
-was verified against the running API on 2026-10-09; see "Fixed" below. Items 24–28 are open.
+was verified against the running API on 2026-10-09; see "Fixed" below. Items 24–29 are open.
 
 ```text
 You are working on the backend of Tanzim, a bilingual (English/Arabic) multi-tenant ERP.
@@ -69,6 +69,12 @@ Company admin: admin@testcompany.com / testpass123.
    cost of sales −3,960 and the gross margin 1,860 % on the finance dashboard and the income statement. Either add an
    opening-stock path (e.g. reason `initial`, posting against an opening-balance equity account) or tell us how
    opening stock is meant to be entered.
+
+29. `/api/company/v1/me/profile/` only answers PATCH, and `GET /me/` returns just first/last name and the picture, so
+   the profile screen can't show the middle name, preferred name, phone or timezone it is about to edit. The frontend
+   loads them with an empty `PATCH {}` (which saves nothing and answers with every field). Add `GET` to
+   `MeProfileAPIView` returning the same fields.
+
 ```
 
 ## Fixed (verified against the API on 2026-10-09, backend master 0a78259)

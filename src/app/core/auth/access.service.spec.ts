@@ -10,15 +10,15 @@ const URL = '/api/company/v1/me/';
 
 function me(overrides: Partial<CurrentUser> = {}): CurrentUser {
   return {
-    user: { id: 7, email: 'sara@acme.example', first_name: 'Sara', last_name: 'Ali' },
+    user: { id: 7, email: 'sara@acme.example', first_name: 'Sara', last_name: 'Ali', profile_picture: null },
     is_staff: false,
-    company: { id: 1, name: 'Acme' },
+    company: { id: 1, name: 'Acme', logo: null, primary_color: '#0B5FFF', secondary_color: '#FFFFFF' },
     role: { id: 3, name_en: 'Clerk', name_ar: null, is_admin: false },
     is_company_admin: false,
     is_department_manager: false,
     is_team_lead: false,
     has_full_access: false,
-    permissions: ['view_team'],
+    permissions: ['access_company', 'view_team'],
     modules: ['location'],
     ...overrides,
   };
@@ -46,6 +46,26 @@ describe('AccessService', () => {
     expect(access.can('add_team')).toBeFalse();
     expect(access.hasModule('location')).toBeTrue();
     expect(access.hasModule('inventory')).toBeFalse();
+  });
+
+  it("needs the module's access_ permission next to a CRUD codename", () => {
+    const access = setup();
+    access.load().subscribe();
+    httpMock.expectOne(URL).flush(envelope(me({ permissions: ['view_team', 'view_salesorder', 'access_sales', 'custom_flag'] })));
+    expect(access.can('view_team')).toBeFalse();
+    expect(access.can('view_salesorder')).toBeTrue();
+    expect(access.can('access_sales')).toBeTrue();
+    expect(access.can('access_company')).toBeFalse();
+    // Company-defined codenames belong to no module.
+    expect(access.can('custom_flag')).toBeTrue();
+  });
+
+  it('merges a saved change into the /me data', () => {
+    const access = setup();
+    access.load().subscribe();
+    httpMock.expectOne(URL).flush(envelope(me()));
+    access.update((current) => ({ ...current, user: { ...current.user, profile_picture: 'http://x/p.png' } }));
+    expect(access.current()?.user.profile_picture).toBe('http://x/p.png');
   });
 
   it('grants every permission with has_full_access', () => {

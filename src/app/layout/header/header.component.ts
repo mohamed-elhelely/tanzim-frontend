@@ -7,6 +7,7 @@ import { ButtonModule } from 'primeng/button';
 import { MenuModule } from 'primeng/menu';
 import { PopoverModule } from 'primeng/popover';
 import { filter, map, startWith } from 'rxjs';
+import { AccessService } from '../../core/auth/access.service';
 import { AuthService } from '../../core/auth/auth.service';
 import { AppNotification } from '../../core/notifications/notification.model';
 import { NotificationCenterService } from '../../core/notifications/notification-center.service';
@@ -33,6 +34,9 @@ export class AppHeaderComponent {
   readonly language = inject(LanguageService);
   readonly theme = inject(ThemeService);
   readonly auth = inject(AuthService);
+  private readonly access = inject(AccessService);
+  /** The user's picture from /me (absolute URL), or null for initials. */
+  readonly picture = computed(() => this.access.current()?.user.profile_picture ?? null);
   readonly notifications = inject(NotificationCenterService);
   /** The bell shows the latest few; the notifications page shows them all. */
   readonly latest = computed(() => this.notifications.items().slice(0, 6));
@@ -53,9 +57,15 @@ export class AppHeaderComponent {
   /** The sidebar group the page belongs to (e.g. "Company"), shown before the title. */
   readonly sectionKey = computed(() => this.routeInfo().sectionKey);
 
-  readonly displayName = computed(() => this.auth.user()?.name || this.translate.instant('header.account'));
+  /** /me's name once loaded (it follows profile edits), else the login name. */
+  private readonly name = computed(() => {
+    const user = this.access.current()?.user;
+    const full = user ? `${user.first_name} ${user.last_name}`.trim() : '';
+    return full || this.auth.user()?.name || '';
+  });
+  readonly displayName = computed(() => this.name() || this.translate.instant('header.account'));
   readonly initials = computed(() => {
-    const name = this.auth.user()?.name?.trim();
+    const name = this.name().trim();
     if (!name) {
       return '?';
     }
@@ -69,6 +79,12 @@ export class AppHeaderComponent {
 
   get userMenuItems(): MenuItem[] {
     return [
+      {
+        label: this.translate.instant('profile.myProfile'),
+        icon: 'pi pi-user',
+        command: () => void this.router.navigate(['/profile']),
+      },
+      { separator: true },
       {
         label: this.translate.instant('auth.logout'),
         icon: 'pi pi-sign-out',

@@ -7,11 +7,13 @@ import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { AccessService } from '../../../core/auth/access.service';
+import { isSystemCodename } from '../../../core/auth/permission-catalog';
 import { ConfirmService } from '../../../core/services/confirm.service';
 import { LanguageService } from '../../../core/services/language.service';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
 import { PageHeaderAction, PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
+import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
 import { localizedName } from '../../../shared/pipes/localized-name.pipe';
 import { ServerTable } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
@@ -30,6 +32,7 @@ import { PermissionService } from './permission.service';
     PageHeaderComponent,
     EmptyStateComponent,
     ErrorStateComponent,
+    StatusBadgeComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './permission-list.component.html',
@@ -43,6 +46,8 @@ export class PermissionListComponent implements OnInit {
 
   readonly table = new ServerTable<Permission>((query) => this.api.list(query));
   readonly errorTitleKey = errorTitleKey;
+  /** Catalog permissions can't be changed or deleted (the backend answers 403). */
+  readonly isSystem = (row: Permission) => isSystemCodename(row.codename);
 
   /** Buttons follow the user's permissions; the backend refuses the rest with 403. */
   readonly canAdd = computed(() => this.access.can('add_permission'));

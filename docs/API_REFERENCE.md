@@ -22,11 +22,13 @@
 12. [Inventory — approvals](#inventory--approvals)
 13. [Sales](#sales)
 14. [Returns](#returns)
-15. [Subscriptions & platform billing](#subscriptions--platform-billing)
-16. [Reports (platform billing)](#reports-platform-billing)
-17. [Import & export](#import--export)
-18. [Notifications & background tasks](#notifications--background-tasks)
-19. [Known issues](#known-issues)
+15. [Accounting](#accounting)
+16. [Subscriptions & platform billing](#subscriptions--platform-billing)
+17. [Reports (platform billing)](#reports-platform-billing)
+18. [Analytics, reports & dashboards](#analytics-reports--dashboards)
+19. [Import & export](#import--export)
+20. [Notifications & background tasks](#notifications--background-tasks)
+21. [Known issues](#known-issues)
 
 ## Conventions
 
@@ -83,7 +85,8 @@ Errors:
 
 - Validation errors: `error.message` is `"Unknown error"` and the details are in `error.errors` — a map of
   `field → [messages]` (`non_field_errors` for cross-field rules). Nested objects/lists follow the same shape.
-- Business-rule errors (wrong status, insufficient quantity…): `error.message` holds the reason and `error.errors` is `{}`.
+- Business-rule errors (wrong status, insufficient quantity…): `error.message` holds the reason as a plain sentence
+  (e.g. `"Order exceeds customer credit limit"`; several reasons are joined with a space) and `error.errors` is `{}`.
 - Non-JSON 500 errors return an HTML page — treat any 5xx as "server error".
 
 | Status | Meaning |
@@ -127,6 +130,7 @@ Some areas require the company's subscription to include a module; otherwise you
 |---|---|
 | `inventory` | everything under `/api/inventory/v1/` |
 | `location` | countries, regions, cities, districts, locations |
+| `accounting` | everything under `/api/accounting/v1/` |
 
 Use `modules` from [`GET /api/company/v1/me/`](#get-apicompanyv1me) to know which modules the company has and hide menus accordingly
 (`GET /api/subscriptions/subscriptions/current/` returns the full subscription).
@@ -309,9 +313,9 @@ Call it after login (and on app start).
 
 | Field | Type | Notes |
 |---|---|---|
-| `user` | object | `id`, `email`, `first_name`, `last_name` |
+| `user` | object | `id`, `email`, `first_name`, `last_name`, `profile_picture` (absolute URL or null) |
 | `is_staff` | boolean | platform staff (can use `/api/company/v1/admin/company/`) |
-| `company` | object or null | `id`, `name`; `null` for users without a company |
+| `company` | object or null | `id`, `name`, `logo` (absolute URL or null), `primary_color`, `secondary_color` (`#RRGGBB`); `null` for users without a company |
 | `role` | object or null | `id`, `name_en`, `name_ar`, `is_admin` |
 | `is_company_admin` | boolean | |
 | `is_department_manager` | boolean | |
@@ -332,15 +336,27 @@ Response:
 {
   "success": true,
   "data": {
-    "user": { "id": 7, "email": "sara@acme.example", "first_name": "Sara", "last_name": "Ali" },
+    "user": {
+      "id": 7,
+      "email": "sara@acme.example",
+      "first_name": "Sara",
+      "last_name": "Ali",
+      "profile_picture": "https://api.example.com/media/profile_pics/sara.png"
+    },
     "is_staff": false,
-    "company": { "id": 1, "name": "Acme" },
+    "company": {
+      "id": 1,
+      "name": "Acme",
+      "logo": "https://api.example.com/media/company/logos/acme.png",
+      "primary_color": "#0B5FFF",
+      "secondary_color": "#FFFFFF"
+    },
     "role": { "id": 3, "name_en": "Clerk", "name_ar": "كاتب", "is_admin": false },
     "is_company_admin": false,
     "is_department_manager": false,
     "is_team_lead": true,
     "has_full_access": false,
-    "permissions": ["add_team", "view_department", "view_team"],
+    "permissions": ["access_company", "add_team", "view_department", "view_team"],
     "modules": ["inventory", "location"]
   },
   "metadata": {
@@ -351,6 +367,41 @@ Response:
 ```
 
 </details>
+
+### `PATCH /api/company/v1/me/profile/`
+
+The caller updates their own profile. Send `multipart/form-data` to upload a picture (JSON works for the
+other fields). Any authenticated user; no permission needed.
+
+| Field | Type | Notes |
+|---|---|---|
+| `first_name`, `middle_name`, `last_name`, `preferred_name` | string | |
+| `phone_number` | string | international format, e.g. `+201001234567` |
+| `timezone` | string | IANA name, e.g. `Africa/Cairo` |
+| `profile_picture` | image file or `null` | PNG/JPEG/…, max 5 MB; `null` removes it |
+
+Response `data`: the same fields, with `profile_picture` as an absolute URL (or null).
+
+### `POST /api/company/v1/me/change-password/`
+
+| Field | Type | Required |
+|---|---|---|
+| `current_password` | string | **yes** |
+| `new_password` | string | **yes**; must pass the password rules (length, not common, not numeric only, not like the user's details) and differ from the current one |
+
+`200` with `{"detail": "Password changed."}`; `400` with the failing field (`current_password` or `new_password`).
+The current tokens stay valid.
+
+### `GET` / `PATCH /api/company/v1/company-profile/`
+
+The caller's company branding. `GET` needs `view_company`, `PATCH` needs `change_company` (plus
+`access_company`; company admins always pass). Send `multipart/form-data` to upload a logo.
+
+| Field | Type | Notes |
+|---|---|---|
+| `id`, `name` | | read-only |
+| `logo` | image file or `null` | max 5 MB; `null` removes it; returned as an absolute URL |
+| `primary_color`, `secondary_color` | string | `#RRGGBB`, stored upper-case |
 
 There is no logout endpoint: drop the tokens on the client.
 
@@ -863,7 +914,7 @@ Response:
 
 ### Roles
 
-Roles group permission groups; assigned to company users.
+Roles grant permission groups and/or single permissions; assigned to company users.
 
 | Method | Path | Purpose |
 |---|---|---|
@@ -889,7 +940,8 @@ Roles group permission groups; assigned to company users.
 |---|---|---|---|
 | `name_en` | string | **yes** | max 100 chars |
 | `name_ar` | string | no | nullable; max 100 chars |
-| `permission_groups` | array of ids (PermissionGroup) | **yes** |  |
+| `permission_groups` | array of ids (PermissionGroup) | no | groups of your company (core groups included) |
+| `permissions` | array of ids (Permission) | no | single permissions on top of the groups; on update the list **replaces** them |
 | `is_admin` | boolean | no |  |
 
 _Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is optional._
@@ -902,7 +954,8 @@ _Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is opt
 | `name_en` | string |  |
 | `name_ar` | string |  |
 | `is_admin` | boolean |  |
-| `permission_groups` | computed |  |
+| `permission_groups` | array of objects | `id`, `name_en` |
+| `permissions` | array of objects | single permissions: `id`, `codename`, `name`, `permission_type` |
 
 **Examples** (real responses from the running API)
 
@@ -923,7 +976,8 @@ Response:
       "name_en": "Administrator",
       "name_ar": null,
       "is_admin": true,
-      "permission_groups": []
+      "permission_groups": [],
+      "permissions": []
     }
   ],
   "metadata": {
@@ -949,6 +1003,9 @@ Request body:
   "name_en": "Sales Manager",
   "permission_groups": [
     1
+  ],
+  "permissions": [
+    40
   ]
 }
 ```
@@ -968,6 +1025,9 @@ Response:
         "id": 1,
         "name_en": "Group 0"
       }
+    ],
+    "permissions": [
+      { "id": 40, "codename": "add_salesorder", "name": "Add sales orders", "permission_type": "API" }
     ]
   },
   "metadata": {
@@ -981,7 +1041,8 @@ Response:
 
 ### Permission groups
 
-Named sets of permissions.
+Named sets of permissions. Core groups (`is_core: true`) are created by the system and are read-only
+(see [Permissions](#permissions)).
 
 | Method | Path | Purpose |
 |---|---|---|
@@ -997,7 +1058,7 @@ Named sets of permissions.
 | Query param | Meaning |
 |---|---|
 | `page`, `page_size` | Pagination (default 10, max 100). Total in `metadata.total_count`. |
-| `dropdown=true` | Unpaginated short list with only: `id`, `name_en`, `name_ar` |
+| `dropdown=true` | Unpaginated short list with only: `id`, `name_en`, `name_ar`, `is_core` |
 | `search` | Text search in: `name_en`, `name_ar` |
 | `ordering` | Sort by `id`, `name_en` (prefix `-` for descending) |
 
@@ -1008,9 +1069,15 @@ Named sets of permissions.
 | `name_en` | string | **yes** | max 100 chars |
 | `name_ar` | string | no | nullable; max 100 chars |
 | `description` | string | no |  |
-| `is_core` | boolean | no |  |
+| `permissions` | array of ids (Permission) | no | permissions of your company; on update the list **replaces** the group's permissions |
 
-_Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is optional._
+_Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is optional. `is_core` is read-only.
+Updating or deleting a core group returns **403**._
+
+```json
+PATCH /api/company/v1/permission-groups/12/
+{ "permissions": [1, 2, 3] }
+```
 
 **Response object** (retrieve; create/update return the same shape)
 
@@ -1020,7 +1087,8 @@ _Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is opt
 | `name_en` | string |  |
 | `name_ar` | string |  |
 | `description` | string |  |
-| `is_core` | boolean |  |
+| `is_core` | boolean | system group, read-only |
+| `permissions` | array of objects | `id`, `codename`, `name`, `permission_type` |
 | `created_by` | object | fields: id, email, first_name, last_name, date_joined |
 | `updated_by` | object | fields: id, email, first_name, last_name, date_joined |
 
@@ -1044,6 +1112,7 @@ Response:
       "name_ar": null,
       "description": "",
       "is_core": false,
+      "permissions": [],
       "created_by": null,
       "updated_by": null
     }
@@ -1070,7 +1139,7 @@ Request body:
 {
   "name_en": "Group 1-N",
   "description": "",
-  "is_core": false
+  "permissions": [1, 2]
 }
 ```
 
@@ -1085,6 +1154,10 @@ Response:
     "name_ar": null,
     "description": "",
     "is_core": false,
+    "permissions": [
+      { "id": 1, "codename": "view_department", "name": "View departments", "permission_type": "API" },
+      { "id": 2, "codename": "add_department", "name": "Add departments", "permission_type": "API" }
+    ],
     "created_by": {
       "id": 1,
       "email": "admin@acme.example",
@@ -1115,27 +1188,134 @@ Response:
 
 Individual permissions.
 
-**System permission catalog.** Every company gets these permissions automatically (new companies on creation;
-existing ones through a migration or `python manage.py seed_permissions`). Codenames follow
-`<action>_<resource>` with action `view` / `add` / `change` / `delete`:
+**System permission catalog.** Every company gets these permissions and the core permission groups below
+automatically (new companies on creation; existing ones through a migration or
+`python manage.py seed_permissions`). CRUD codenames follow `<action>_<resource>` with action
+`view` / `add` / `change` / `delete`; each module also has a **feature permission** `access_<module>`
+(`permission_type: "FEATURE"`, the others are `"API"`).
 
-| Resource | Codenames |
-|---|---|
-| Departments | `view_department`, `add_department`, `change_department`, `delete_department` |
-| Teams | `view_team`, `add_team`, `change_team`, `delete_team` |
-| Roles | `view_role`, `add_role`, `change_role`, `delete_role` |
-| Permission groups | `view_permissiongroup`, `add_permissiongroup`, `change_permissiongroup`, `delete_permissiongroup` |
-| Permissions | `view_permission`, `add_permission`, `change_permission`, `delete_permission` |
-| Company users | `view_companyuser`, `add_companyuser`, `change_companyuser`, `delete_companyuser` |
+| Module (feature permission) | Resource | Actions |
+|---|---|---|
+| Company (`access_company`) | `company` (company profile) | view, change |
+|  | `department` (departments) | view, add, change, delete |
+|  | `team` (teams) | view, add, change, delete |
+|  | `role` (roles) | view, add, change, delete |
+|  | `permissiongroup` (permission groups) | view, add, change, delete |
+|  | `permission` (permissions) | view, add, change, delete |
+|  | `companyuser` (company users) | view, add, change, delete |
+| Locations (`access_location`) | `country` (countries) | view, add, change, delete |
+|  | `region` (regions) | view, add, change, delete |
+|  | `city` (cities) | view, add, change, delete |
+|  | `district` (districts) | view, add, change, delete |
+|  | `location` (locations) | view, add, change, delete |
+| Inventory (`access_inventory`) | `category` (categories) | view, add, change, delete |
+|  | `brand` (brands) | view, add, change, delete |
+|  | `product` (products) | view, add, change, delete |
+|  | `productattribute` (product attributes) | view, add, change, delete |
+|  | `productattributevalue` (product attribute values) | view, add, change, delete |
+|  | `productvariant` (product variants) | view, add, change, delete |
+|  | `productbom` (bills of materials) | view, add, change, delete |
+|  | `warehouse` (warehouses) | view, add, change, delete |
+|  | `zone` (zones) | view, add, change, delete |
+|  | `bin` (bins) | view, add, change, delete |
+|  | `batch` (batches) | view, add, change, delete |
+|  | `serialnumber` (serial numbers) | view, add, change, delete |
+|  | `stockledger` (stock ledger) | view |
+|  | `stocksnapshot` (stock snapshots) | view |
+|  | `stockreservation` (stock reservations) | view, add, change, delete |
+|  | `stockalert` (stock alerts) | view, add, change, delete |
+|  | `stocktransfer` (stock transfers) | view, add, change, delete |
+|  | `stockadjustment` (stock adjustments) | view, add, change, delete |
+|  | `cyclecount` (cycle counts) | view, add, change, delete |
+|  | `supplier` (suppliers) | view, add, change, delete |
+|  | `supplierproduct` (supplier products) | view, add, change, delete |
+|  | `purchaserequisition` (purchase requisitions) | view, add, change, delete |
+|  | `purchaseorder` (purchase orders) | view, add, change, delete |
+|  | `goodsreceipt` (goods receipts) | view, add, change, delete |
+|  | `supplierinvoice` (supplier invoices) | view, add, change, delete |
+|  | `approvalworkflow` (approval workflows) | view, add, change, delete |
+|  | `approvalrequest` (approval requests) | view, add, change, delete |
+|  | `reorderpolicy` (reorder policies) | view, add, change, delete |
+|  | `reordersuggestion` (reorder suggestions) | view, add, change, delete |
+|  | `demandforecast` (demand forecasts) | view, add, change, delete |
+| Quality (`access_quality`) | `qualityinspection` (quality inspections) | view, add, change, delete |
+|  | `nonconformancereport` (non-conformance reports) | view, add, change, delete |
+|  | `quarantinerecord` (quarantine records) | view, add, change, delete |
+| Assembly (`access_assembly`) | `workorder` (work orders) | view, add, change, delete |
+| Sales (`access_sales`) | `customer` (customers) | view, add, change, delete |
+|  | `salesorder` (sales orders) | view, add, change, delete |
+|  | `deliverynote` (delivery notes) | view, add, change, delete |
+|  | `salesinvoice` (sales invoices) | view, add, change, delete |
+|  | `invoicepayment` (invoice payments) | view, add, change, delete |
+|  | `salesaudittrail` (sales audit trail) | view |
+| Returns (`access_returns`) | `customerreturn` (customer returns) | view, add, change, delete |
+|  | `supplierreturn` (supplier returns) | view, add, change, delete |
+| Accounting (`access_accounting`) | `account` (accounts) | view, add, change, delete |
+|  | `journalentry` (journal entries) | view, add, change, delete |
+|  | `fiscalyear` (fiscal years) | view, add, change, delete |
+|  | `fiscalperiod` (fiscal periods) | view, add, change, delete |
+|  | `supplierpayment` (supplier payments) | view, add, change, delete |
+|  | `debitnote` (debit notes) | view, add, change, delete |
+|  | `accountingreport` (accounting reports) | view |
+| Reports (`access_reports`) | `report` (reports) | view |
+|  | `dashboard` (dashboards) | view |
+|  | `savedreport` (saved reports) | view, add, change, delete |
+|  | `reportschedule` (report schedules) | view, add, change, delete |
+| Integrations (`access_integrations`) | `webhook` (webhooks) | view, add, change, delete |
 
-A user's permissions are the union of the permissions in the (non-deleted) permission groups of their role.
-Company admins (`is_company_admin`) and users whose role has `is_admin=true` hold every permission.
-Companies may add their own codenames too; they are returned to the frontend but not enforced by the API.
+Document lines and workflow parts use their parent's codenames:
+`stocktransferline` → `stocktransfer`, `stockadjustmentline` → `stockadjustment`, `cyclecountline` → `cyclecount`, `purchaserequisitionline` → `purchaserequisition`, `purchaseorderline` → `purchaseorder`, `goodsreceiptline` → `goodsreceipt`, `salesorderline` → `salesorder`, `deliverynoteline` → `deliverynote`, `salesinvoiceline` → `salesinvoice`, `customerreturnline` → `customerreturn`, `supplierreturnline` → `supplierreturn`, `approvalstage` → `approvalworkflow`, `approvalaction` → `approvalrequest`, `webhookendpoint` → `webhook`, `webhookdelivery` → `webhook`.
 
-**Enforcement.** Departments, teams, roles, permission groups, permissions and company users check the codename
-that matches the HTTP method: `GET` → `view_`, `POST` → `add_`, `PUT`/`PATCH` → `change_`, `DELETE` → `delete_`.
-A missing codename returns **403**. Exception: `GET …?dropdown=true` only needs the user to belong to a company,
-so forms can fill their select boxes. Users without a company get 403 on all of these.
+**Core permission groups.** Created for every company with `is_core: true`, kept in sync with the catalog,
+and read-only through the API (`PATCH`/`PUT`/`DELETE` return **403**). Assign them to roles as they are,
+or create your own group with the permission ids you need.
+
+| Group (`name_en`) | `name_ar` | Grants | Permissions |
+|---|---|---|---|
+| Full Access | صلاحيات كاملة | Every permission in every module. | 254 |
+| Read Only | قراءة فقط | View everything in every module, change nothing. | 76 |
+| Company - Full Access | الشركة - صلاحيات كاملة | Every permission in the Company module. | 27 |
+| Company - Read Only | الشركة - قراءة فقط | View everything in the Company module. | 8 |
+| Locations - Full Access | المواقع - صلاحيات كاملة | Every permission in the Locations module. | 21 |
+| Locations - Read Only | المواقع - قراءة فقط | View everything in the Locations module. | 6 |
+| Inventory - Full Access | المخزون - صلاحيات كاملة | Every permission in the Inventory module. | 115 |
+| Inventory - Read Only | المخزون - قراءة فقط | View everything in the Inventory module. | 31 |
+| Quality - Full Access | الجودة - صلاحيات كاملة | Every permission in the Quality module. | 13 |
+| Quality - Read Only | الجودة - قراءة فقط | View everything in the Quality module. | 4 |
+| Assembly - Full Access | التجميع - صلاحيات كاملة | Every permission in the Assembly module. | 5 |
+| Assembly - Read Only | التجميع - قراءة فقط | View everything in the Assembly module. | 2 |
+| Sales - Full Access | المبيعات - صلاحيات كاملة | Every permission in the Sales module. | 22 |
+| Sales - Read Only | المبيعات - قراءة فقط | View everything in the Sales module. | 7 |
+| Returns - Full Access | المرتجعات - صلاحيات كاملة | Every permission in the Returns module. | 9 |
+| Returns - Read Only | المرتجعات - قراءة فقط | View everything in the Returns module. | 3 |
+| Accounting - Full Access | المحاسبة - صلاحيات كاملة | Every permission in the Accounting module. | 26 |
+| Accounting - Read Only | المحاسبة - قراءة فقط | View everything in the Accounting module. | 8 |
+| Reports - Full Access | التقارير - صلاحيات كاملة | Every permission in the Reports module. | 11 |
+| Reports - Read Only | التقارير - قراءة فقط | View everything in the Reports module. | 5 |
+| Integrations - Full Access | التكاملات - صلاحيات كاملة | Every permission in the Integrations module. | 5 |
+| Integrations - Read Only | التكاملات - قراءة فقط | View everything in the Integrations module. | 2 |
+
+**Who holds what.** A user's permissions are the union of the permissions in their role's (non-deleted)
+permission groups and the single permissions granted to the role directly (`permissions` on the role).
+Company admins (`is_company_admin`), users whose role has `is_admin=true`, and superusers hold every permission.
+Catalog (system) permissions cannot be changed or deleted (**403**); companies may add their own codenames,
+which are returned to the frontend but not enforced by the API.
+
+**Enforcement.** Every company endpoint (all of `/api/company/v1/` except `me/…`, `/api/inventory/v1/`,
+`/api/sales/v1/`, `/api/returns/v1/`, `/api/quality/v1/`, `/api/assembly/v1/`, `/api/accounting/v1/`,
+`/api/reports/v1/` and `/api/integrations/v1/`) needs **both** the module's `access_<module>` permission
+**and** the codename for the request:
+
+- `GET` → `view_`, `POST` → `add_`, `PUT`/`PATCH` → `change_`, `DELETE` → `delete_`
+- a `POST` to an action on one record (`/sales-orders/{id}/confirm/`, `/purchase-order/{id}/action/`,
+  `/reorder-policy/{id}/recalculate/`, …) → `change_`
+- imports (`…/import/`) → `add_`, exports (`…/export/`) → `view_`
+
+A missing permission returns **403** (`"You do not have access to the sales module."` when the module permission
+is missing). Exception: `GET …?dropdown=true` only needs the user to belong to a company, so forms can fill their
+select boxes. Users without a company get 403. The subscription-module check (see
+[Subscription modules](#subscription-modules)) still applies on top.
+Not permission-checked: login/refresh, `me/…`, notifications, background tasks and downloads, and platform billing.
 
 | Method | Path | Purpose |
 |---|---|---|
@@ -2112,6 +2292,10 @@ Response:
 
 Requires the `inventory` subscription module.
 
+**Inventory read responses** (list, retrieve, and the object returned by create/update) contain **every saved field** of
+the record except `company` and the soft-delete flags. Relations listed as `object`/`computed` are nested objects (which
+in turn carry all their fields); other relations come back as ids (`id (Model)`).
+
 ### Categories
 
 Product categories (tree via `parent`).
@@ -2125,7 +2309,7 @@ Product categories (tree via `parent`).
 | `GET` | `/api/inventory/v1/category/{id}/` | Retrieve |
 | `PUT` | `/api/inventory/v1/category/{id}/` | Replace (all required fields) |
 | `PATCH` | `/api/inventory/v1/category/{id}/` | Partial update |
-| `DELETE` | `/api/inventory/v1/category/{id}/` | Delete (soft delete) |
+| `DELETE` | `/api/inventory/v1/category/{id}/` | Delete (soft delete); `400` while live products or child categories still use it |
 
 **List query parameters**
 
@@ -2149,6 +2333,16 @@ Product categories (tree via `parent`).
 
 _Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is optional._
 
+**Delete** answers `400` with `error.message` `"Cannot delete: still used by 3 products, 2 categories."` while live products
+or child categories point at it (the same for a brand used by products).
+
+`name` must be unique among the categories of the same `parent`; a clash answers `400` with
+`errors.name = ["Category with this name already exists under this parent."]`. An update may re-send the category's own
+name and parent; a `PATCH` that omits one of them is checked with the saved value.
+
+`parent` cannot be the category itself or one of its descendants (`400`,
+`errors.parent = ["A category cannot be its own parent or ancestor."]`).
+
 **Response object** (retrieve; create/update return the same shape)
 
 | Field | Type | Notes |
@@ -2162,6 +2356,8 @@ _Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is opt
 | `parent` | computed |  |
 | `description` | string |  |
 | `is_active` | boolean |  |
+| `logo` | file (image) | nullable |
+| `flags` | object/JSON |  |
 
 **Examples** (real responses from the running API)
 
@@ -2264,7 +2460,7 @@ Response:
 | `GET` | `/api/inventory/v1/brand/{id}/` | Retrieve |
 | `PUT` | `/api/inventory/v1/brand/{id}/` | Replace (all required fields) |
 | `PATCH` | `/api/inventory/v1/brand/{id}/` | Partial update |
-| `DELETE` | `/api/inventory/v1/brand/{id}/` | Delete (soft delete) |
+| `DELETE` | `/api/inventory/v1/brand/{id}/` | Delete (soft delete); `400` while live products still use it |
 
 **List query parameters**
 
@@ -2300,6 +2496,7 @@ _Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is opt
 | `description` | string |  |
 | `logo` | file (image) |  |
 | `is_active` | boolean |  |
+| `flags` | object/JSON |  |
 
 **Examples** (real responses from the running API)
 
@@ -2464,6 +2661,8 @@ _Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is opt
 | `is_active` | boolean |  |
 | `is_purchasable` | boolean |  |
 | `is_sellable` | boolean |  |
+| `logo` | file (image) | nullable |
+| `flags` | object/JSON |  |
 
 **Examples** (real responses from the running API)
 
@@ -2619,7 +2818,7 @@ The stock-keeping unit of a product (stock, batches, serials, PO lines and trans
 | Field | Type | Required | Notes |
 |---|---|---|---|
 | `product` | id (Product) | **yes** | must belong to your company |
-| `sku` | string | **yes** | max 100 chars, unique |
+| `sku` | string | **yes** | max 100 chars, unique within your company |
 | `name` | string | **yes** | max 255 chars |
 | `barcode` | string | no | max 100 chars |
 | `attributes` | object | no | e.g. `{"color": "red", "size": "M"}` |
@@ -2632,7 +2831,8 @@ The stock-keeping unit of a product (stock, batches, serials, PO lines and trans
 | `is_active` | boolean | no | default `true` |
 
 **Response object**: `id`, `product` (full product object), `sku`, `barcode`, `name`, `attributes`, `standard_cost`,
-`standard_price`, `weight`, `dimensions`, `is_active`, plus the usual `created_at` / `updated_at` / `created_by` / `updated_by`.
+`standard_price`, `weight`, `weight_uom`, `dimensions`, `image`, `is_active`, plus the usual `created_at` / `updated_at` /
+`created_by` / `updated_by`.
 
 ## Inventory — warehouses
 
@@ -2665,9 +2865,9 @@ Warehouse → Zone → Bin.
 | Field | Type | Required | Notes |
 |---|---|---|---|
 | `location` | id (Location) | no | nullable |
-| `manager` | id (User) | no | nullable |
+| `manager` | id (User) | no | nullable; a user of your company |
 | `name` | string | **yes** | max 100 chars |
-| `code` | string | **yes** | max 20 chars |
+| `code` | string | **yes** | max 20 chars, unique within your company |
 | `warehouse_type` | enum | no | one of: `central`, `regional`, `retail`, `transit`, `returns`, `quarantine` |
 | `email` | email | no | max 254 chars |
 | `phone` | string | no | max 50 chars |
@@ -2699,6 +2899,15 @@ _Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is opt
 | `is_active` | boolean |  |
 | `allow_negative_stock` | boolean |  |
 | `use_bin_locations` | boolean |  |
+| `code` | string |  |
+| `email` | email |  |
+| `phone` | string |  |
+| `address_line1` | string |  |
+| `address_line2` | string |  |
+| `city` | string |  |
+| `state` | string |  |
+| `postal_code` | string |  |
+| `country` | string |  |
 
 **Examples** (real responses from the running API)
 
@@ -2852,6 +3061,8 @@ _Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is opt
 | `name` | string |  |
 | `warehouse` | object | fields: id, created_at, updated_at, created_by, updated_by, name, warehouse_type, location, manager, is_active, allow_negative_stock, use_bin_locations |
 | `is_active` | boolean |  |
+| `code` | string |  |
+| `description` | string |  |
 
 **Examples** (real responses from the running API)
 
@@ -3015,6 +3226,10 @@ _Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is opt
 | `zone` | object | fields: id, created_at, updated_at, created_by, updated_by, name, warehouse, is_active |
 | `is_active` | boolean |  |
 | `allow_mixed_products` | boolean |  |
+| `code` | string |  |
+| `barcode` | string |  |
+| `max_capacity` | decimal (string) | nullable |
+| `bin_type` | string |  |
 
 **Examples** (real responses from the running API)
 
@@ -3203,6 +3418,22 @@ _Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is opt
 | `is_preferred` | boolean |  |
 | `lead_time_days` | integer |  |
 | `credit_limit` | decimal (string) |  |
+| `tax_id` | string |  |
+| `contact_person` | string |  |
+| `email` | email |  |
+| `phone` | string |  |
+| `mobile` | string |  |
+| `website` | url |  |
+| `address_line1` | string |  |
+| `address_line2` | string |  |
+| `city` | string |  |
+| `state` | string |  |
+| `postal_code` | string |  |
+| `country` | string |  |
+| `payment_terms` | string |  |
+| `currency` | string |  |
+| `reliability_score` | string |  |
+| `notes` | string |  |
 
 **Examples** (real responses from the running API)
 
@@ -3323,6 +3554,7 @@ Price list: what a supplier sells, at what cost, from which date. `supplier + pr
 | `page`, `page_size` | Pagination (default 10, max 100). Total in `metadata.total_count`. |
 | `dropdown=true` | Unpaginated short list with only: `id`, `supplier_sku` |
 | `search` | Text search in: `supplier_sku`, `supplier_product_name` |
+| `supplier`, `product_variant` | Exact-match filters by id (combine them for one supplier and variant) |
 | `ordering` | Sort by `id` (prefix `-` for descending) |
 
 **Create body** (`POST`)
@@ -3358,6 +3590,17 @@ _Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is opt
 | `supplier` | object | fields: id, created_at, updated_at, created_by, updated_by, name, supplier_type, is_active, is_preferred, lead_time_days, credit_limit |
 | `product_variant` | computed |  |
 | `is_preferred` | boolean |  |
+| `supplier_sku` | string |  |
+| `supplier_product_name` | string |  |
+| `unit_cost` | decimal (string) |  |
+| `currency` | string |  |
+| `min_order_qty` | decimal (string) |  |
+| `max_order_qty` | decimal (string) | nullable |
+| `lead_time_days` | integer | nullable |
+| `is_primary` | boolean |  |
+| `effective_from` | date (YYYY-MM-DD) |  |
+| `effective_to` | date (YYYY-MM-DD) | nullable |
+| `notes` | string |  |
 
 **Examples** (real responses from the running API)
 
@@ -3537,6 +3780,14 @@ _Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is opt
 | `product_variant` | computed |  |
 | `supplier` | computed |  |
 | `is_quarantined` | boolean |  |
+| `batch_number` | string |  |
+| `manufacturing_date` | date (YYYY-MM-DD) | nullable |
+| `expiry_date` | date (YYYY-MM-DD) | nullable |
+| `received_date` | date (YYYY-MM-DD) |  |
+| `initial_quantity` | decimal (string) |  |
+| `remaining_quantity` | decimal (string) |  |
+| `notes` | string |  |
+| `location` | id (Bin) |  |
 
 **Examples** (real responses from the running API)
 
@@ -3709,6 +3960,11 @@ _Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is opt
 | `batch` | object | fields: id, created_at, updated_at, created_by, updated_by, name, product_variant, supplier, is_quarantined |
 | `warehouse` | computed |  |
 | `status` | string |  |
+| `serial_number` | string |  |
+| `received_at` | datetime (ISO 8601) | nullable |
+| `sold_at` | datetime (ISO 8601) | nullable |
+| `last_movement` | datetime (ISO 8601) |  |
+| `bin` | id (Bin) |  |
 
 **Examples** (real responses from the running API)
 
@@ -3885,6 +4141,13 @@ _Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is opt
 | `batch` | computed |  |
 | `serial_number` | computed |  |
 | `transaction_type` | string |  |
+| `quantity` | decimal (string) |  |
+| `unit_cost` | decimal (string) | nullable |
+| `total_cost` | decimal (string) | nullable |
+| `reference_type` | string |  |
+| `reference_id` | uuid | nullable |
+| `notes` | string |  |
+| `metadata` | object/JSON |  |
 
 **Examples** (real responses from the running API)
 
@@ -4055,6 +4318,11 @@ _Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is opt
 | `product_variant` | computed |  |
 | `warehouse` | computed |  |
 | `bin` | computed |  |
+| `snapshot_date` | date (YYYY-MM-DD) |  |
+| `quantity_on_hand` | decimal (string) |  |
+| `quantity_reserved` | decimal (string) |  |
+| `quantity_available` | decimal (string) |  |
+| `average_cost` | decimal (string) | nullable |
 
 **Examples** (real responses from the running API)
 
@@ -4229,6 +4497,12 @@ _Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is opt
 | `bin` | computed |  |
 | `reserved_by` | computed |  |
 | `is_released` | boolean |  |
+| `quantity` | decimal (string) |  |
+| `reference_type` | string |  |
+| `reference_id` | uuid |  |
+| `reserved_at` | datetime (ISO 8601) |  |
+| `expires_at` | datetime (ISO 8601) | nullable |
+| `released_at` | datetime (ISO 8601) | nullable |
 
 **Examples** (real responses from the running API)
 
@@ -4408,6 +4682,15 @@ _Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is opt
 | `destination_warehouse` | computed |  |
 | `requested_by` | computed |  |
 | `status` | string |  |
+| `transfer_number` | string |  |
+| `requested_date` | date (YYYY-MM-DD) |  |
+| `expected_delivery_date` | date (YYYY-MM-DD) | nullable |
+| `carrier` | string |  |
+| `tracking_number` | string |  |
+| `shipped_date` | date (YYYY-MM-DD) | nullable |
+| `received_date` | date (YYYY-MM-DD) | nullable |
+| `notes` | string |  |
+| `current_approval_stage` | id (ApprovalStage) |  |
 
 **Examples** (real responses from the running API)
 
@@ -4540,12 +4823,12 @@ otherwise it waits in `pending_approval` for a direct `approve` / `reject` here.
 |---|---|---|---|
 | `submit` | `draft` (needs ≥1 line, different warehouses) | `pending_approval` | — |
 | `approve` | `pending_approval` | `approved` | — |
-| `reject` | `pending_approval` | `rejected` | `reason` (optional) |
+| `reject` | `pending_approval` | back to `draft` | `reason` (optional) |
 | `ship` | `approved` | `in_transit`; stock leaves the source warehouse | `lines` (optional, default: everything requested) `[{"line_id": 1, "quantity": "5"}]`, `carrier`, `tracking_number` |
 | `receive` | `in_transit`, `partial` | `received` (or `partial`); stock enters the destination | `lines` (optional, default: everything outstanding) `[{"line_id": 1, "quantity": "5"}]` |
 | `cancel` | `draft`, `pending_approval`, `approved` | `cancelled` | — |
 
-Status flow: draft → pending_approval → approved → in_transit → (partial →) received; cancelled / rejected.
+Status flow: draft → pending_approval → approved → in_transit → (partial →) received; cancelled. Reject returns it to draft.
 
 
 ### Stock transfer lines
@@ -4569,6 +4852,7 @@ Status flow: draft → pending_approval → approved → in_transit → (partial
 | `dropdown=true` | Unpaginated short list with only: `id` |
 | `search` | Text search in: `name_en`, `name_ar` |
 | `ordering` | Sort by `id` (prefix `-` for descending) |
+| `transfer` | Only the lines of this StockTransfer (id); a value that isn't an id → 400 |
 
 **Create body** (`POST`)
 
@@ -4597,6 +4881,11 @@ _Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is opt
 | `transfer` | object | fields: id, created_at, updated_at, created_by, updated_by, name, source_warehouse, destination_warehouse, requested_by, status |
 | `product_variant` | computed |  |
 | `batch` | computed |  |
+| `quantity_requested` | decimal (string) |  |
+| `quantity_shipped` | decimal (string) |  |
+| `quantity_received` | decimal (string) |  |
+| `notes` | string |  |
+| `serial_numbers` | array of ids (SerialNumber) |  |
 
 **Examples** (real responses from the running API)
 
@@ -4763,6 +5052,9 @@ _Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is opt
 | `approved_by` | computed |  |
 | `reason` | string |  |
 | `status` | string |  |
+| `adjustment_number` | string |  |
+| `adjustment_date` | datetime (ISO 8601) |  |
+| `notes` | string |  |
 
 **Examples** (real responses from the running API)
 
@@ -4888,12 +5180,12 @@ otherwise it waits in `pending_approval` for a direct `approve` / `reject` here.
 
 | Action | Allowed from | Result | Extra body fields |
 |---|---|---|---|
-| `submit` | `draft` | `pending_approval` | — |
-| `approve` | `pending_approval` | `approved` | — |
-| `reject` | `pending_approval` | `rejected` | `reason` (optional) |
-| `post` | `approved` | `posted`; writes the stock ledger | — |
+| `submit` | `draft` (needs ≥1 line) | `pending` | — |
+| `approve` | `pending` | `approved` | — |
+| `reject` | `pending` | back to `draft` | `reason` (optional) |
+| `post` | `approved` | `posted`; writes the stock ledger (a negative difference with reason `damage`, `expiry`, `theft` or `write_off` is a `write_off` entry) | — |
 
-Status flow: draft → pending_approval → approved → posted; rejected.
+Status flow: draft → pending → approved → posted; reject returns it to draft.
 
 
 ### Stock adjustment lines
@@ -4919,6 +5211,7 @@ Status flow: draft → pending_approval → approved → posted; rejected.
 | `dropdown=true` | Unpaginated short list with only: `id` |
 | `search` | Text search in: `name_en`, `name_ar` |
 | `ordering` | Sort by `id` (prefix `-` for descending) |
+| `adjustment` | Only the lines of this StockAdjustment (id); a value that isn't an id → 400 |
 
 **Create body** (`POST`)
 
@@ -4951,6 +5244,12 @@ _Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is opt
 | `bin` | computed |  |
 | `batch` | computed |  |
 | `serial_number` | computed |  |
+| `current_quantity` | decimal (string) |  |
+| `new_quantity` | decimal (string) |  |
+| `difference` | decimal (string) |  |
+| `unit_cost` | decimal (string) | nullable |
+| `total_cost` | decimal (string) | nullable |
+| `notes` | string |  |
 
 **Examples** (real responses from the running API)
 
@@ -5120,6 +5419,9 @@ _Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is opt
 | `counted_by` | computed |  |
 | `approved_by` | computed |  |
 | `status` | string |  |
+| `count_number` | string |  |
+| `scheduled_date` | date (YYYY-MM-DD) |  |
+| `notes` | string |  |
 
 **Examples** (real responses from the running API)
 
@@ -5278,6 +5580,7 @@ Status flow: scheduled → in_progress → completed → approved; cancelled.
 | `dropdown=true` | Unpaginated short list with only: `id` |
 | `search` | Text search in: `name_en`, `name_ar` |
 | `ordering` | Sort by `id` (prefix `-` for descending) |
+| `cycle_count` | Only the lines of this CycleCount (id); a value that isn't an id → 400 |
 
 **Create body** (`POST`)
 
@@ -5308,6 +5611,10 @@ _Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is opt
 | `bin` | computed |  |
 | `batch` | computed |  |
 | `is_counted` | boolean |  |
+| `system_quantity` | decimal (string) |  |
+| `counted_quantity` | decimal (string) | nullable |
+| `variance` | decimal (string) |  |
+| `notes` | string |  |
 
 **Examples** (real responses from the running API)
 
@@ -5488,6 +5795,14 @@ _Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is opt
 | `supplier` | computed |  |
 | `warehouse` | computed |  |
 | `status` | string |  |
+| `requisition_number` | string |  |
+| `date_requested` | date (YYYY-MM-DD) |  |
+| `required_date` | date (YYYY-MM-DD) | nullable |
+| `estimated_total` | decimal (string) | nullable |
+| `currency` | string |  |
+| `notes` | string |  |
+| `custom_fields` | object/JSON |  |
+| `current_approval_stage` | id (ApprovalStage) |  |
 
 **Examples** (real responses from the running API)
 
@@ -5650,6 +5965,7 @@ Status flow: draft → pending_approval → approved → ordered; rejected / can
 | `dropdown=true` | Unpaginated short list with only: `id` |
 | `search` | Text search in: `name_en`, `name_ar` |
 | `ordering` | Sort by `id` (prefix `-` for descending) |
+| `requisition` | Only the lines of this PurchaseRequisition (id); a value that isn't an id → 400 |
 
 **Create body** (`POST`)
 
@@ -5675,6 +5991,10 @@ _Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is opt
 | `updated_by` | object | fields: id, email, first_name, last_name, date_joined |
 | `requisition` | object | fields: id, created_at, updated_at, created_by, updated_by, name, requester, department, supplier, warehouse, status |
 | `product_variant` | computed |  |
+| `quantity` | decimal (string) |  |
+| `estimated_unit_cost` | decimal (string) | nullable |
+| `estimated_total` | decimal (string) | nullable |
+| `notes` | string |  |
 
 **Examples** (real responses from the running API)
 
@@ -5856,6 +6176,21 @@ _Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is opt
 | `department` | computed |  |
 | `warehouse` | computed |  |
 | `status` | string |  |
+| `po_number` | string |  |
+| `order_date` | date (YYYY-MM-DD) |  |
+| `expected_date` | date (YYYY-MM-DD) | nullable |
+| `subtotal` | decimal (string) |  |
+| `tax_amount` | decimal (string) |  |
+| `total_amount` | decimal (string) |  |
+| `currency` | string |  |
+| `supplier_reference` | string |  |
+| `payment_terms` | string |  |
+| `shipping_method` | string |  |
+| `terms` | string |  |
+| `notes` | string |  |
+| `custom_fields` | object/JSON |  |
+| `version` | integer |  |
+| `current_approval_stage` | id (ApprovalStage) |  |
 
 **Examples** (real responses from the running API)
 
@@ -6019,6 +6354,7 @@ Status flow: draft → pending_approval → approved → sent → confirmed → 
 | `dropdown=true` | Unpaginated short list with only: `id` |
 | `search` | Text search in: `name_en`, `name_ar` |
 | `ordering` | Sort by `id` (prefix `-` for descending) |
+| `purchase_order` | Only the lines of this PurchaseOrder (id); a value that isn't an id → 400 |
 
 **Create body** (`POST`)
 
@@ -6048,6 +6384,15 @@ _Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is opt
 | `updated_by` | object | fields: id, email, first_name, last_name, date_joined |
 | `purchase_order` | object | fields: id, created_at, updated_at, created_by, updated_by, name, supplier, requisition, buyer, department, warehouse, status |
 | `product_variant` | computed |  |
+| `quantity_ordered` | decimal (string) |  |
+| `quantity_received` | decimal (string) |  |
+| `unit_cost` | decimal (string) |  |
+| `total` | decimal (string) |  |
+| `discount_percent` | decimal (string) |  |
+| `tax_rate` | decimal (string) |  |
+| `tax_amount` | decimal (string) |  |
+| `expected_date` | date (YYYY-MM-DD) | nullable |
+| `notes` | string |  |
 
 **Examples** (real responses from the running API)
 
@@ -6214,6 +6559,13 @@ _Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is opt
 | `purchase_order` | object | fields: id, created_at, updated_at, created_by, updated_by, name, supplier, requisition, buyer, department, warehouse, status |
 | `warehouse` | computed |  |
 | `received_by` | computed |  |
+| `receipt_number` | string |  |
+| `status` | string |  |
+| `posted_at` | datetime (ISO 8601) |  |
+| `is_complete` | boolean |  |
+| `received_date` | datetime (ISO 8601) |  |
+| `delivery_note` | string |  |
+| `notes` | string |  |
 
 **Examples** (real responses from the running API)
 
@@ -6359,6 +6711,7 @@ One per PO line received (`po_line`).
 | `dropdown=true` | Unpaginated short list with only: `id` |
 | `search` | Text search in: `name_en`, `name_ar` |
 | `ordering` | Sort by `id` (prefix `-` for descending) |
+| `goods_receipt` | Only the lines of this GoodsReceipt (id); a value that isn't an id → 400 |
 
 **Create body** (`POST`)
 
@@ -6387,6 +6740,9 @@ _Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is opt
 | `po_line` | computed |  |
 | `batch` | computed |  |
 | `bin` | computed |  |
+| `quantity_received` | decimal (string) |  |
+| `notes` | string |  |
+| `serial_numbers` | array of ids (SerialNumber) |  |
 
 **Examples** (real responses from the running API)
 
@@ -6526,8 +6882,11 @@ Bills from suppliers, matched to purchase orders.
 | Query param | Meaning |
 |---|---|
 | `page`, `page_size` | Pagination (default 10, max 100). Total in `metadata.total_count`. |
-| `dropdown=true` | Unpaginated short list with only: `id`, `invoice_number` |
+| `dropdown=true` | Unpaginated short list with only: `id`, `invoice_number`, `supplier` (id), `due_date`, `amount`, `currency`, `status`, `open_balance` |
 | `search` | Text search in: `invoice_number`, `payment_reference` |
+| `supplier` | Exact-match filter by supplier id |
+| `status` | Exact-match filter by status |
+| `open=true` | Only invoices a supplier payment can still be allocated to: `matched`/`paid` with `open_balance` > 0 |
 | `ordering` | Sort by `id`, `invoice_date` (prefix `-` for descending) |
 
 **Create body** (`POST`)
@@ -6559,6 +6918,14 @@ _Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is opt
 | `supplier` | computed |  |
 | `purchase_order` | computed |  |
 | `status` | string |  |
+| `invoice_number` | string |  |
+| `invoice_date` | date (YYYY-MM-DD) |  |
+| `due_date` | date (YYYY-MM-DD) |  |
+| `amount` | decimal (string) |  |
+| `currency` | string |  |
+| `payment_reference` | string |  |
+| `notes` | string |  |
+| `open_balance` | decimal (string) | `amount` less completed supplier payments and issued debit notes, never below 0 |
 
 **Examples** (real responses from the running API)
 
@@ -6745,6 +7112,11 @@ _Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is opt
 | `warehouse` | computed |  |
 | `acknowledged_by` | computed |  |
 | `is_resolved` | boolean |  |
+| `current_quantity` | decimal (string) |  |
+| `reorder_point` | decimal (string) |  |
+| `triggered_at` | datetime (ISO 8601) |  |
+| `resolved_at` | datetime (ISO 8601) | nullable |
+| `notes` | string |  |
 
 **Examples** (real responses from the running API)
 
@@ -6908,6 +7280,10 @@ _Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is opt
 | `updated_by` | object | fields: id, email, first_name, last_name, date_joined |
 | `batch` | computed |  |
 | `is_resolved` | boolean |  |
+| `expiry_date` | date (YYYY-MM-DD) |  |
+| `days_until_expiry` | integer |  |
+| `triggered_at` | datetime (ISO 8601) |  |
+| `resolved_at` | datetime (ISO 8601) | nullable |
 
 **Examples** (real responses from the running API)
 
@@ -7079,6 +7455,12 @@ _Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is opt
 | `warehouse` | computed |  |
 | `is_active` | boolean |  |
 | `is_ai_suggested` | boolean |  |
+| `min_stock` | decimal (string) | nullable |
+| `max_stock` | decimal (string) | nullable |
+| `reorder_point` | decimal (string) | nullable |
+| `reorder_quantity` | decimal (string) | nullable |
+| `safety_stock` | decimal (string) |  |
+| `lead_time_days` | integer |  |
 
 **Examples** (real responses from the running API)
 
@@ -7255,6 +7637,13 @@ _Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is opt
 | `suggested_supplier` | computed |  |
 | `priority` | string |  |
 | `is_actioned` | boolean |  |
+| `suggested_quantity` | decimal (string) |  |
+| `reason` | string |  |
+| `generated_at` | datetime (ISO 8601) |  |
+| `expires_at` | datetime (ISO 8601) |  |
+| `actioned_at` | datetime (ISO 8601) | nullable |
+| `actioned_by` | id (User) |  |
+| `converted_to_pr` | id (PurchaseRequisition) |  |
 
 **Examples** (real responses from the running API)
 
@@ -7423,6 +7812,13 @@ _Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is opt
 | `updated_by` | object | fields: id, email, first_name, last_name, date_joined |
 | `product_variant` | computed |  |
 | `warehouse` | computed |  |
+| `forecast_date` | date (YYYY-MM-DD) |  |
+| `predicted_demand` | decimal (string) |  |
+| `lower_bound` | decimal (string) | nullable |
+| `upper_bound` | decimal (string) | nullable |
+| `confidence` | string | nullable |
+| `model_version` | string |  |
+| `generated_at` | datetime (ISO 8601) |  |
 
 **Examples** (real responses from the running API)
 
@@ -7596,6 +7992,7 @@ _Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is opt
 | `document_type` | string |  |
 | `is_active` | boolean |  |
 | `department` | computed |  |
+| `description` | string |  |
 
 **Examples** (real responses from the running API)
 
@@ -7749,6 +8146,11 @@ _Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is opt
 | `workflow` | object | fields: id, created_at, updated_at, created_by, updated_by, name, document_type, is_active, department |
 | `approval_type` | string |  |
 | `is_optional` | boolean |  |
+| `sequence` | integer |  |
+| `escalation_hours` | integer | nullable |
+| `escalation_action` | enum | one of: `next_stage`, `manager`, `auto_approve`; nullable |
+| `roles` | array of ids (Role) |  |
+| `users` | array of ids (User) |  |
 
 **Examples** (real responses from the running API)
 
@@ -7916,6 +8318,15 @@ _Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is opt
 | `current_stage` | object | fields: id, created_at, updated_at, created_by, updated_by, name, workflow, approval_type, is_optional |
 | `status` | string |  |
 | `rejected_by` | computed |  |
+| `document_type` | string |  |
+| `document_id` | string |  |
+| `requested_at` | datetime (ISO 8601) |  |
+| `last_updated` | datetime (ISO 8601) |  |
+| `completed_at` | datetime (ISO 8601) | nullable |
+| `rejection_reason` | string |  |
+| `escalated_at` | datetime (ISO 8601) | nullable |
+| `stage_entered_at` | datetime (ISO 8601) | nullable |
+| `approved_by` | array of ids (User) |  |
 
 **Examples** (real responses from the running API)
 
@@ -8092,6 +8503,9 @@ _Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is opt
 | `request` | object | fields: id, created_at, updated_at, created_by, updated_by, name, workflow, current_stage, status, rejected_by |
 | `user` | computed |  |
 | `action` | string |  |
+| `comment` | string |  |
+| `timestamp` | datetime (ISO 8601) |  |
+| `stage` | id (ApprovalStage) |  |
 
 **Examples** (real responses from the running API)
 
@@ -8226,7 +8640,7 @@ Customers → Sales orders → Delivery notes → Sales invoices → Payments. N
 | `GET` | `/api/sales/customers/{id}/` | Retrieve |
 | `PUT` | `/api/sales/customers/{id}/` | Replace (all required fields) |
 | `PATCH` | `/api/sales/customers/{id}/` | Partial update |
-| `DELETE` | `/api/sales/customers/{id}/` | Delete |
+| `DELETE` | `/api/sales/customers/{id}/` | Delete (soft delete); `400` `"Cannot delete: the customer has 1 open order and 2 unpaid invoices."` while it has confirmed/picking/shipped/on-hold orders or issued/overdue invoices |
 | `GET` | `/api/sales/customers/{id}/statement/` | Customer statement |
 
 **List query parameters**
@@ -8474,14 +8888,17 @@ Response:
 | `GET` | `/api/sales/sales-orders/` | List |
 | `POST` | `/api/sales/sales-orders/` | Create |
 | `GET` | `/api/sales/sales-orders/{id}/` | Retrieve |
-| `PUT` | `/api/sales/sales-orders/{id}/` | Replace (all required fields) |
-| `PATCH` | `/api/sales/sales-orders/{id}/` | Partial update |
-| `DELETE` | `/api/sales/sales-orders/{id}/` | Delete |
+| `PUT` | `/api/sales/sales-orders/{id}/` | Replace (all required fields; drafts only) |
+| `PATCH` | `/api/sales/sales-orders/{id}/` | Partial update (drafts only) |
+| `DELETE` | `/api/sales/sales-orders/{id}/` | Delete (drafts only) |
 | `POST` | `/api/sales/sales-orders/{id}/confirm/` | Confirm order (reserves stock, checks credit) |
 | `POST` | `/api/sales/sales-orders/{id}/cancel/` | Cancel order |
 | `POST` | `/api/sales/sales-orders/{id}/clone/` | Copy as a new draft order |
 | `POST` | `/api/sales/sales-orders/{id}/create_delivery/` | Ship lines: create a delivery note and issue stock |
 | `POST` | `/api/sales/sales-orders/{id}/mark_delivered/` | Mark the order delivered |
+
+Update and delete are refused with `400` `"Only draft orders can be changed (order is confirmed)."` (or `deleted`)
+once the order has left `draft`: cancel it instead.
 
 **List query parameters**
 
@@ -9589,10 +10006,11 @@ _Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is opt
 | `currency` | string |  |
 | `subtotal` | decimal (string) |  |
 | `tax_amount` | decimal (string) |  |
-| `discount_amount` | decimal (string) |  |
-| `total_amount` | decimal (string) |  |
+| `discount_amount` | decimal (string) | the order's discount (first invoice of the order only) |
+| `shipping_cost` | decimal (string) | the order's shipping (first invoice of the order only) |
+| `total_amount` | decimal (string) | `subtotal + tax_amount + shipping_cost - discount_amount` |
 | `amount_paid` | decimal (string) |  |
-| `amount_due` | computed |  |
+| `amount_due` | decimal (string) | `total_amount - amount_paid` |
 | `payment_percentage` | computed |  |
 | `reference` | string |  |
 | `notes` | string |  |
@@ -9631,7 +10049,7 @@ _Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is opt
 | `currency` | string |  |
 | `total_amount` | decimal (string) |  |
 | `amount_paid` | decimal (string) |  |
-| `amount_due` | computed |  |
+| `amount_due` | decimal (string) | `total_amount - amount_paid` |
 | `payment_percentage` | computed |  |
 | `company` | id (Company) |  |
 | `created_at` | datetime (ISO 8601) |  |
@@ -9665,7 +10083,7 @@ Response:
       "currency": "USD",
       "total_amount": "0.0000",
       "amount_paid": "0.0000",
-      "amount_due": 0.0,
+      "amount_due": "0.0000",
       "payment_percentage": 0,
       "company": 1,
       "created_at": "2026-10-04T00:50:10.406385+03:00"
@@ -9684,6 +10102,14 @@ Response:
 #### `POST /api/sales/sales-invoices/create_from_order/` — Create a draft invoice from a delivered order
 
 Bills shipped quantities only. Order must be `delivered`. With `delivery_note`, bills only that delivery.
+
+The order's `shipping_cost` and `discount_amount` are carried onto the **first** invoice of the order (later per-delivery
+invoices get `0`), so the invoices of an order add up to the order total.
+
+Each shipment is billed once: `400` `"Order SO-2026-00004 is already invoiced (INV-2026-00001)"` when the order already
+has an invoice that isn't cancelled (an invoice of the whole order covers all its deliveries), and
+`"Delivery note DN-… is already invoiced (INV-…)"` when that delivery has one. Credit notes from returns don't count;
+cancel an invoice to bill it again.
 
 | Field | Type | Required | Notes |
 |---|---|---|---|
@@ -9735,7 +10161,7 @@ Response:
     "discount_amount": "0.0000",
     "total_amount": "2875.0000",
     "amount_paid": "0.0000",
-    "amount_due": 2875.0,
+    "amount_due": "2875.0000",
     "payment_percentage": 0.0,
     "reference": "PO-NILE-77",
     "notes": "",
@@ -9793,7 +10219,7 @@ Response:
     "discount_amount": "0.0000",
     "total_amount": "2875.0000",
     "amount_paid": "0.0000",
-    "amount_due": 2875.0,
+    "amount_due": "2875.0000",
     "payment_percentage": 0.0,
     "reference": "PO-NILE-77",
     "notes": "",
@@ -9869,7 +10295,7 @@ Response:
     "discount_amount": "0.0000",
     "total_amount": "2875.0000",
     "amount_paid": "1000.0000",
-    "amount_due": 1875.0,
+    "amount_due": "1875.0000",
     "payment_percentage": 34.78,
     "reference": "PO-NILE-77",
     "notes": "",
@@ -10183,7 +10609,10 @@ Customer returns (RMA) and returns to suppliers. ⚠️ Note the doubled prefix 
 
 ### Customer returns (RMA)
 
-`return_number` is generated (`RMA-YYYY-NNNNN`). Lines are sent in the same request. Status flow: `requested → approved → received → inspected → closed` (or `rejected`/`cancelled`).
+`return_number` is generated (`RMA-YYYY-NNNNN`). Lines are sent in the same request. Status flow: `requested → approved → received → inspected → closed`, or `rejected` (with `reject`, before anything is received).
+
+The workflow actions (`approve`, `receive`, `inspect`, `close`, and the supplier-return actions) answer with the return
+**as it is after the step**, lines included (e.g. `quantity_received` after `receive`).
 
 | Method | Path | Purpose |
 |---|---|---|
@@ -10191,9 +10620,10 @@ Customer returns (RMA) and returns to suppliers. ⚠️ Note the doubled prefix 
 | `POST` | `/api/returns/api/returns/customer-returns/` | Create |
 | `GET` | `/api/returns/api/returns/customer-returns/{id}/` | Retrieve |
 | `PUT` | `/api/returns/api/returns/customer-returns/{id}/` | Replace (all required fields) |
-| `PATCH` | `/api/returns/api/returns/customer-returns/{id}/` | Partial update |
+| `PATCH` | `/api/returns/api/returns/customer-returns/{id}/` | Partial update; sending `lines` replaces all lines (only while `requested`, `400` on `lines` otherwise) |
 | `DELETE` | `/api/returns/api/returns/customer-returns/{id}/` | Delete |
 | `POST` | `/api/returns/api/returns/customer-returns/{id}/approve/` | Approve (requested → approved) |
+| `POST` | `/api/returns/api/returns/customer-returns/{id}/reject/` | Reject (requested/approved → rejected), body `{"reason": "…"}` optional |
 | `POST` | `/api/returns/api/returns/customer-returns/{id}/receive/` | Receive items into stock (approved → received) |
 | `POST` | `/api/returns/api/returns/customer-returns/{id}/inspect/` | Record inspection results (received → inspected) |
 | `POST` | `/api/returns/api/returns/customer-returns/{id}/close/` | Close and record the refund |
@@ -10220,7 +10650,7 @@ Customer returns (RMA) and returns to suppliers. ⚠️ Note the doubled prefix 
 | `lines` | array of objects | **yes** |  |
 | &nbsp;&nbsp;↳ `sales_order_line` | id (SalesOrderLine) | no | nullable |
 | &nbsp;&nbsp;↳ `product` | id (Product) | **yes** |  |
-| &nbsp;&nbsp;↳ `quantity_requested` | decimal (string) | **yes** |  |
+| &nbsp;&nbsp;↳ `quantity_requested` | decimal (string) | **yes** | with a `sales_order_line`: at most its shipped quantity less what other (not rejected) returns already requested — `400` `"Only 2.000 of order line 1 can still be returned (2.000 shipped, 0.000 already requested)."` under `lines[i].quantity_requested` |
 | &nbsp;&nbsp;↳ `batch` | id (Batch) | no | nullable |
 | &nbsp;&nbsp;↳ `serials` | array of ids (SerialNumber) | no |  |
 | &nbsp;&nbsp;↳ `notes` | string | no |  |
@@ -10250,6 +10680,9 @@ _Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is opt
 | `received_date` | datetime (ISO 8601) |  |
 | `inspected_date` | datetime (ISO 8601) |  |
 | `closed_date` | datetime (ISO 8601) |  |
+| `rejected_date` | datetime (ISO 8601) | nullable; set by `reject` |
+| `rejection_reason` | string | set by `reject` |
+| `notes` | string |  |
 | `refund_method` | enum | one of: `credit_note`, `replacement`, `refund`, `exchange` |
 | `refund_amount` | decimal (string) |  |
 | `credit_note_number` | string |  |
@@ -10687,6 +11120,9 @@ Response:
 
 ### Customer return lines
 
+`quantity_requested` is capped like on the return (shipped quantity of the `sales_order_line` less what other returns
+already requested; `400` on `quantity_requested`).
+
 | Method | Path | Purpose |
 |---|---|---|
 | `GET` | `/api/returns/api/returns/customer-return-lines/` | List |
@@ -10755,7 +11191,7 @@ _Update (`PUT`/`PATCH`) accepts the same fields; with `PATCH` every field is opt
 | `inspected_by` | id (User) |  |
 | `inspected_date` | datetime (ISO 8601) |  |
 | `unit_price` | decimal (string) |  |
-| `line_value` | decimal (string) |  |
+| `line_value` | decimal (string) | set by `inspect`: accepted quantity × order-line unit price, after the line's discount and with its tax (what the customer paid; the default refund and the credit note use it) |
 | `batch` | id (Batch) |  |
 | `serials` | array of ids (SerialNumber) |  |
 | `notes` | string |  |
@@ -10846,7 +11282,10 @@ Response:
 
 ### Supplier returns
 
-Send goods back to a supplier. Status flow: `draft → approved → shipped → confirmed`.
+Send goods back to a supplier. Status flow: `draft → approved → shipped → confirmed → closed`.
+
+`refund_amount` is set when the return is approved (the value of its lines, unless one was entered) and can be
+corrected with the amount the supplier actually refunded when the return is closed.
 
 | Method | Path | Purpose |
 |---|---|---|
@@ -10859,6 +11298,7 @@ Send goods back to a supplier. Status flow: `draft → approved → shipped → 
 | `POST` | `/api/returns/api/returns/supplier-returns/{id}/approve/` | Approve |
 | `POST` | `/api/returns/api/returns/supplier-returns/{id}/ship/` | Mark shipped |
 | `POST` | `/api/returns/api/returns/supplier-returns/{id}/confirm_receipt/` | Supplier confirmed receipt |
+| `POST` | `/api/returns/api/returns/supplier-returns/{id}/close/` | Close (confirmed → closed), body `{"refund_amount": "20.00"}` optional |
 
 **List query parameters**
 
@@ -11191,6 +11631,14 @@ Response:
 
 </details>
 
+#### `POST /api/returns/api/returns/supplier-returns/{id}/close/` — Close and record the refund
+
+| Field | Type | Required | Notes |
+|---|---|---|---|
+| refund_amount | decimal | no | what the supplier refunded; ≥ 0. Default: the amount set at approval (the lines' value) |
+
+Only `confirmed` returns can be closed (`400` `"Cannot close return in shipped status"`). Returns: the supplier return.
+
 ### Supplier return lines
 
 | Method | Path | Purpose |
@@ -11301,6 +11749,331 @@ Response:
 {
   "_non_json": "text/html; charset=utf-8",
   "_preview": "\n<!doctype html>\n<html lang=\"en\">\n<head>\n  <title>Server Error (500)</title>\n</head>\n<body>\n  <h1>Server Error (500)</h1><p></p>\n</body>\n</html>\n"
+}
+```
+
+</details>
+
+---
+
+## Accounting
+
+General ledger: chart of accounts, journal entries (most of them posted automatically from sales invoices, payments,
+supplier invoices and stock movements), fiscal periods, supplier payments, debit notes and financial reports. The
+business rules are in `docs/BUSINESS_LOGIC.md` §9; this section is the HTTP contract.
+
+**Access:** subscription module `accounting` (`403` otherwise). Every row belongs to the user's company; related ids in
+request bodies (accounts, customers, suppliers, invoices…) must belong to it too (`400` otherwise).
+
+**Lists** return the full list by default; send `page` and/or `page_size` for pages (envelope `metadata.total_count`,
+`next`, `previous`). Filters below are exact-match query params.
+
+**Errors** from business rules (unbalanced entry, closed period, wrong status…) answer `400` with the reason in
+`error.message`, e.g. `"Posted entries cannot be changed; reverse them instead"`. Field errors come back keyed by field
+name in `error.errors`.
+
+**Amounts** in objects are decimal strings with 2 decimals (`"100.00"`). In **reports** they are JSON numbers.
+
+### Accounts (chart of accounts)
+
+| Method | Path | Purpose |
+|---|---|---|
+| `GET` | `/api/accounting/v1/accounts/` | List, ordered by `code` (creates the default chart on the first call) |
+| `POST` | `/api/accounting/v1/accounts/` | Create |
+| `GET` | `/api/accounting/v1/accounts/{id}/` | Retrieve |
+| `PUT` | `/api/accounting/v1/accounts/{id}/` | Replace |
+| `PATCH` | `/api/accounting/v1/accounts/{id}/` | Partial update |
+| `DELETE` | `/api/accounting/v1/accounts/{id}/` | Delete (`400` for system accounts, accounts with entries or with children: deactivate them instead) |
+| `POST` | `/api/accounting/v1/accounts/setup/` | Add any default account the company is missing |
+
+**List query parameters**
+
+| Query param | Meaning |
+|---|---|
+| `account_type` | one of `asset`, `liability`, `equity`, `revenue`, `cost_of_sales`, `expense` |
+| `is_active` | `true` / `false` |
+| `search` | code starting with, or name containing, the term |
+
+**Body** (`POST`; `PUT`/`PATCH` accept the same fields)
+
+| Field | Type | Required | Notes |
+|---|---|---|---|
+| `code` | string | **yes** | max 20 chars, unique within the company (`400` on `code`) |
+| `name` | string | **yes** | max 200 chars |
+| `account_type` | enum | **yes** | see above. System accounts and accounts with entries keep their type |
+| `parent` | id (Account) | no | nullable; must be a group account of the same type, not the account itself |
+| `is_group` | boolean | no | group accounts organise the chart and take no entries |
+| `is_active` | boolean | no | default `true` |
+| `description` | string | no |  |
+
+**Response object**
+
+| Field | Type | Notes |
+|---|---|---|
+| `id` | integer |  |
+| `code` | string |  |
+| `name` | string |  |
+| `account_type` | enum |  |
+| `parent` | id (Account) | nullable |
+| `is_group` | boolean |  |
+| `system_key` | string | read-only; set on the accounts automatic entries use (`cash`, `bank`, `accounts_receivable`, `inventory`, `accounts_payable`, `grni`, `vat_input`, `vat_output`, `sales`, `cogs`, `retained_earnings`…), `""` otherwise |
+| `is_active` | boolean |  |
+| `description` | string |  |
+| `created_at`, `updated_at` | datetime (ISO 8601) |  |
+
+`POST accounts/setup/` takes no body and answers `{"created": [<account>, …]}` — `201` when accounts were added,
+`200` with an empty list when the chart was complete.
+
+### Journal entries
+
+| Method | Path | Purpose |
+|---|---|---|
+| `GET` | `/api/accounting/v1/journal-entries/` | List, newest first (`-date`, `-number`) |
+| `POST` | `/api/accounting/v1/journal-entries/` | Create a manual entry (draft, or posted with `post: true`) |
+| `GET` | `/api/accounting/v1/journal-entries/{id}/` | Retrieve |
+| `PUT` | `/api/accounting/v1/journal-entries/{id}/` | Replace a draft |
+| `PATCH` | `/api/accounting/v1/journal-entries/{id}/` | Update a draft (`400` once posted) |
+| `DELETE` | `/api/accounting/v1/journal-entries/{id}/` | Delete a draft (`400` once posted) |
+| `POST` | `/api/accounting/v1/journal-entries/{id}/post/` | Post a draft (final from then on) |
+| `POST` | `/api/accounting/v1/journal-entries/{id}/reverse/` | Reverse a posted entry (once) → `201` with the reversing entry |
+
+**List query parameters**
+
+| Query param | Meaning |
+|---|---|
+| `status` | `draft` / `posted` |
+| `source_type`, `source_id`, `event` | the document an automatic entry comes from (e.g. `source_type=salesinvoice&source_id=12`) |
+| `account` | entries with at least one line on this account id |
+| `start_date`, `end_date` | `YYYY-MM-DD`, inclusive, on `date` |
+| `automatic` | `true` = only automatic entries, `false` = only manual ones |
+
+**Body** (`POST`; `PUT`/`PATCH` on drafts)
+
+| Field | Type | Required | Notes |
+|---|---|---|---|
+| `date` | date (YYYY-MM-DD) | **yes** | must not fall in a closed period |
+| `description` | string | no | max 255 chars |
+| `reference` | string | no | max 100 chars |
+| `lines` | array of objects | **yes** | at least 2 lines; total debit must equal total credit. On `PATCH`, sending `lines` replaces them all |
+| `lines[].account` | id (Account) | **yes** | an active, non-group account |
+| `lines[].debit` | decimal (string) | no | default `0`; each line is either a debit or a credit |
+| `lines[].credit` | decimal (string) | no | default `0` |
+| `lines[].description` | string | no |  |
+| `lines[].customer` | id (Customer) | no | nullable; links the line to a customer (statements) |
+| `lines[].supplier` | id (Supplier) | no | nullable; links the line to a supplier (statements) |
+| `post` | boolean | no | write-only; `true` posts the entry right away |
+
+**Response object**
+
+| Field | Type | Notes |
+|---|---|---|
+| `id` | integer |  |
+| `entry_number` | string | `JE-000001`, per company |
+| `date` | date (YYYY-MM-DD) |  |
+| `description`, `reference` | string |  |
+| `status` | enum | `draft`, `posted` |
+| `source_type`, `source_id`, `event` | string | empty for manual entries |
+| `reversal_of` | id (JournalEntry) | nullable; set on a reversing entry |
+| `reversed_by` | id (JournalEntry) | nullable; set once the entry has been reversed |
+| `posted_at` | datetime (ISO 8601) | nullable |
+| `posted_by` | id (User) | nullable |
+| `lines` | array of objects | `id`, `account`, `account_code`, `account_name`, `debit`, `credit`, `description`, `customer`, `supplier` |
+| `total_debit`, `total_credit` | decimal (string) |  |
+| `created_at` | datetime (ISO 8601) |  |
+
+**Reverse body** (all optional): `date` (default: today), `description` (default `"Reversal of JE-…"`).
+
+<details><summary>Example: create and post a manual entry → <code>201</code></summary>
+
+```http
+POST /api/accounting/v1/journal-entries/
+Content-Type: application/json
+
+{"date": "2026-05-01", "description": "Office rent", "post": true,
+ "lines": [{"account": 27, "debit": "100.00"}, {"account": 3, "credit": "100.00"}]}
+```
+
+Response:
+
+```json
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "entry_number": "JE-000001",
+    "date": "2026-05-01",
+    "description": "Office rent",
+    "reference": "",
+    "status": "posted",
+    "source_type": "",
+    "source_id": "",
+    "event": "",
+    "reversal_of": null,
+    "reversed_by": null,
+    "posted_at": "2026-10-09T14:31:34.527267+03:00",
+    "posted_by": 1,
+    "lines": [
+      {"id": 1, "account": 27, "account_code": "6200", "account_name": "Rent", "debit": "100.00", "credit": "0.00",
+       "description": "", "customer": null, "supplier": null},
+      {"id": 2, "account": 3, "account_code": "1110", "account_name": "Bank", "debit": "0.00", "credit": "100.00",
+       "description": "", "customer": null, "supplier": null}
+    ],
+    "total_debit": "100.00",
+    "total_credit": "100.00",
+    "created_at": "2026-10-09T14:31:34.526137+03:00"
+  },
+  "metadata": {"timestamp": "2026-10-09T11:31:34.532292Z", "version": "1.0"}
+}
+```
+
+</details>
+
+### Fiscal years and periods
+
+| Method | Path | Purpose |
+|---|---|---|
+| `GET` | `/api/accounting/v1/fiscal-years/` | List |
+| `POST` | `/api/accounting/v1/fiscal-years/` | Create (creates its monthly periods) |
+| `GET` | `/api/accounting/v1/fiscal-years/{id}/` | Retrieve (with `periods`) |
+| `PATCH` | `/api/accounting/v1/fiscal-years/{id}/` | Rename (dates cannot change: `400`) |
+| `DELETE` | `/api/accounting/v1/fiscal-years/{id}/` | Delete (`400` once a period is closed) |
+| `POST` | `/api/accounting/v1/fiscal-years/{id}/close/` | Close every period and post the closing entry to retained earnings |
+| `POST` | `/api/accounting/v1/fiscal-years/{id}/reopen/` | Reverse the closing entry (periods stay closed) |
+| `GET` | `/api/accounting/v1/fiscal-periods/` | List periods, by `start_date`. Filters: `fiscal_year`, `status` (`open`/`closed`) |
+| `GET` | `/api/accounting/v1/fiscal-periods/{id}/` | Retrieve |
+| `POST` | `/api/accounting/v1/fiscal-periods/{id}/close/` | Close (in order, only once it has ended) |
+| `POST` | `/api/accounting/v1/fiscal-periods/{id}/reopen/` | Reopen (latest closed first) |
+
+Periods cannot be created directly (`POST fiscal-periods/` → `405`). Every action takes no body and returns the
+updated year/period.
+
+**Fiscal year body**: `start_date` (**yes**), `end_date` (**yes**, at most 18 months after the start, no overlap with
+another year), `name` (optional, default `FY 2026`).
+
+**Fiscal year object**: `id`, `name`, `start_date`, `end_date`, `status` (`open`/`closed`), `closing_entry`
+(id (JournalEntry), nullable), `closed_at`, `closed_by` (id (User)), `periods` (array of period objects).
+
+**Period object**: `id`, `fiscal_year` (id), `name` (`Jan 2026`), `start_date`, `end_date`, `status` (`open`/`closed`),
+`closed_at`, `closed_by`.
+
+### Supplier payments
+
+Payments are never edited or deleted: void them and enter them again.
+
+| Method | Path | Purpose |
+|---|---|---|
+| `GET` | `/api/accounting/v1/supplier-payments/` | List, newest first |
+| `POST` | `/api/accounting/v1/supplier-payments/` | Record a payment |
+| `GET` | `/api/accounting/v1/supplier-payments/{id}/` | Retrieve |
+| `POST` | `/api/accounting/v1/supplier-payments/{id}/void/` | Void (body `{"reason": "…"}`, optional); reverses its entry and reopens the invoices |
+
+**List query parameters**: `supplier`, `status` (`completed`/`voided`), `payment_method`, `invoice` (payments allocated
+to that supplier invoice), `start_date`, `end_date` (on `payment_date`).
+
+**Body**
+
+| Field | Type | Required | Notes |
+|---|---|---|---|
+| `supplier` | id (Supplier) | **yes** |  |
+| `amount` | decimal (string) | **yes** | > 0 |
+| `payment_date` | date (YYYY-MM-DD) | no | default today |
+| `payment_method` | enum | no | `cash`, `bank_transfer` (default), `check`, `credit_card`, `other` |
+| `reference` | string | no | max 100 chars |
+| `notes` | string | no |  |
+| `allocations` | array of objects | no | `[{"invoice": <supplier invoice id>, "amount": "60.00"}]`. Invoices of the same supplier, `matched` (or `paid`) with at least that much open (see `open_balance` and `?open=true` on [supplier invoices](#supplier-invoices)); the allocations cannot exceed `amount`. What is not allocated stays an advance to the supplier |
+
+**Response object**: `id`, `payment_number` (`SP-00001`), `supplier` (id), `supplier_name`, `payment_date`, `amount`,
+`payment_method`, `reference`, `notes`, `status` (`completed`/`voided`), `allocations` (`id`, `invoice`,
+`invoice_number`, `amount`), `allocated_amount`, `unallocated_amount`, `voided_at`, `voided_by` (id (User)),
+`void_reason`, `created_at`.
+
+### Debit notes
+
+Claims against a supplier that reduce what the company owes them. Drafts can be edited and deleted; issued notes are
+only cancelled.
+
+| Method | Path | Purpose |
+|---|---|---|
+| `GET` | `/api/accounting/v1/debit-notes/` | List, newest first |
+| `POST` | `/api/accounting/v1/debit-notes/` | Create a draft |
+| `GET` | `/api/accounting/v1/debit-notes/{id}/` | Retrieve |
+| `PUT` | `/api/accounting/v1/debit-notes/{id}/` | Replace (drafts only) |
+| `PATCH` | `/api/accounting/v1/debit-notes/{id}/` | Update (drafts only) |
+| `DELETE` | `/api/accounting/v1/debit-notes/{id}/` | Delete (drafts only) |
+| `POST` | `/api/accounting/v1/debit-notes/{id}/issue/` | Issue (posts its entry; may not exceed the linked invoice's open balance) |
+| `POST` | `/api/accounting/v1/debit-notes/{id}/cancel/` | Cancel an issued note (body `{"reason": "…"}`, optional) |
+| `POST` | `/api/accounting/v1/debit-notes/from-supplier-return/` | Draft a note for an approved supplier return: `{"supplier_return": <id>, "tax_amount": "0.00"}` → `201` |
+
+**List query parameters**: `supplier`, `status` (`draft`/`issued`/`cancelled`), `supplier_invoice`, `supplier_return`.
+
+**Body**
+
+| Field | Type | Required | Notes |
+|---|---|---|---|
+| `supplier` | id (Supplier) | **yes** |  |
+| `supplier_invoice` | id (SupplierInvoice) | no | nullable; must belong to the same supplier |
+| `supplier_return` | id (SupplierReturn) | no | nullable; must belong to the same supplier |
+| `date` | date (YYYY-MM-DD) | **yes** |  |
+| `subtotal` | decimal (string) | **yes** | ≥ 0 |
+| `tax_amount` | decimal (string) | no | ≥ 0, default `0` |
+| `supplier_reference` | string | no | the supplier's own credit note number |
+| `reason` | string | no |  |
+
+**Response object**: `id`, `note_number` (`DBN-00001`), `supplier`, `supplier_name`, `supplier_invoice`,
+`supplier_return`, `date`, `subtotal`, `tax_amount`, `total_amount`, `supplier_reference`, `reason`, `status`,
+`issued_at`, `cancelled_at`, `cancel_reason`, `created_at`.
+
+### Financial reports
+
+| Method | Path | Purpose |
+|---|---|---|
+| `GET` | `/api/accounting/v1/reports/` | Report types: `[{"report_type": "trial_balance", "name": "Trial Balance"}, …]` |
+| `GET` | `/api/accounting/v1/reports/{report_type}/` | Run a report; `export=xlsx` downloads it as an Excel file instead |
+
+Reports read **posted** entries only. Unknown parameters are ignored; a bad date or an unknown id answers `400`
+(`"start_date must be a date (YYYY-MM-DD)"`, `"Account not found"`).
+
+| `report_type` | Parameters | `rows` | `summary` |
+|---|---|---|---|
+| `trial_balance` | `start_date`, `end_date` | `account_id`, `code`, `name`, `account_type`, `opening_debit`, `opening_credit`, `debit`, `credit`, `closing_debit`, `closing_credit` | `start_date`, `end_date`, `total_<each amount>`, `is_balanced` |
+| `income_statement` | `start_date`, `end_date` | `account_id`, `code`, `name`, `account_type`, `section` (`revenue`/`cost_of_sales`/`expense`), `amount` | `start_date`, `end_date`, `total_revenue`, `total_cost_of_sales`, `gross_profit`, `total_expenses`, `net_income` |
+| `balance_sheet` | `as_of_date` (default today) | same as above with `section` `asset`/`liability`/`equity`; unclosed profit is a `Current Earnings` row (`account_id: null`) | `as_of_date`, `total_assets`, `total_liabilities`, `total_equity`, `total_liabilities_and_equity`, `is_balanced` |
+| `general_ledger` | `account` (**required**), `start_date`, `end_date` | `date`, `entry_id`, `entry_number`, `account_code`, `description`, `reference`, `debit`, `credit`, `balance` (running) | `account` (`"1110 Bank"`), `start_date`, `end_date`, `opening_balance`, `total_debit`, `total_credit`, `closing_balance` |
+| `customer_statement` | `customer` (**required**), `start_date`, `end_date` | as `general_ledger` (receivable lines of that customer) | as `general_ledger` with `customer` (name) instead of `account` |
+| `supplier_statement` | `supplier` (**required**), `start_date`, `end_date` | as `general_ledger` (payable lines of that supplier) | as `general_ledger` with `supplier` (name) instead of `account` |
+| `receivables_aging` | `as_of_date` (default today) | `customer_id`, `customer`, `current`, `days_1_30`, `days_31_60`, `days_61_90`, `over_90`, `total`, `credits`, `net` | `as_of_date` and the totals of every amount column |
+| `payables_aging` | `as_of_date` (default today) | the same with `supplier_id`, `supplier` | the same |
+
+Every report answers `{"report_type", "columns", "rows", "summary"}`; `columns` lists the row keys to show, in order.
+
+<details><summary>Example: trial balance → <code>200</code></summary>
+
+```http
+GET /api/accounting/v1/reports/trial_balance/
+```
+
+Response:
+
+```json
+{
+  "success": true,
+  "data": {
+    "report_type": "trial_balance",
+    "columns": ["code", "name", "account_type", "opening_debit", "opening_credit", "debit", "credit",
+                "closing_debit", "closing_credit"],
+    "rows": [
+      {"account_id": 3, "code": "1110", "name": "Bank", "account_type": "asset", "opening_debit": 0.0,
+       "opening_credit": 0.0, "debit": 100.0, "credit": 100.0, "closing_debit": 0.0, "closing_credit": 0.0},
+      {"account_id": 27, "code": "6200", "name": "Rent", "account_type": "expense", "opening_debit": 0.0,
+       "opening_credit": 0.0, "debit": 100.0, "credit": 100.0, "closing_debit": 0.0, "closing_credit": 0.0}
+    ],
+    "summary": {
+      "start_date": null, "end_date": null,
+      "total_opening_debit": 0.0, "total_opening_credit": 0.0, "total_debit": 200.0, "total_credit": 200.0,
+      "total_closing_debit": 0.0, "total_closing_credit": 0.0, "is_balanced": true
+    }
+  },
+  "metadata": {"timestamp": "2026-10-09T11:31:34.556634Z", "version": "1.0"}
 }
 ```
 
@@ -11969,6 +12742,11 @@ Response:
 
 Invoices Tanzim issues to the company.
 
+**Access.** Company users can only read (`GET`) their own company's invoices. Every write — `POST`, `PUT`, `PATCH`,
+`DELETE` and all the actions below — requires platform staff (`is_staff`); anyone else gets `403`. Staff see the
+invoices of every company (optional filter `?company=<id>`) and need no company of their own; `create_draft` creates
+the invoice for the company of the given `subscription`.
+
 | Method | Path | Purpose |
 |---|---|---|
 | `GET` | `/api/subscriptions/invoices/` | List |
@@ -12546,6 +13324,9 @@ Response:
 
 Read-only list of payments, plus refunds.
 
+**Access.** Company users read their own company's payments; `refund` requires platform staff (`403` otherwise).
+Staff see every company's payments (optional filter `?company=<id>`).
+
 | Method | Path | Purpose |
 |---|---|---|
 | `GET` | `/api/subscriptions/payments/` | List |
@@ -12777,6 +13558,113 @@ Response:
 
 ---
 
+## Analytics, reports & dashboards
+
+Operational and financial reports over every module, plus ready-made dashboards per role. Everything is read-only and
+computed on request from the company's own data.
+
+**Access:** subscription module `inventory` (`403` otherwise). The finance reports (`cash_flow`, `financial_kpis`,
+`margin_trend`) and the `finance` dashboard also need the `accounting` module (`403` otherwise); without it the
+`overview` dashboard simply leaves out its cash and receivables KPIs.
+
+**Amounts and ratios** are JSON numbers; percentages are 0–100 with 2 decimals and are `null` when there is nothing to
+divide by. Dates are `YYYY-MM-DD`.
+
+### Reports
+
+| Method | Path | Purpose |
+|---|---|---|
+| `GET` | `/api/reports/v1/types/` | Report types this company can run: `[{"report_type", "name", "module"}]` |
+| `GET` | `/api/reports/v1/run/{report_type}/` | Run a report → `{"report_type", "columns", "rows", "summary"}`; `export=xlsx` downloads it as Excel |
+| `GET` `POST` | `/api/reports/v1/saved/` | Saved report configurations (`name`, `report_type`, `parameters`) |
+| `GET` `PUT` `PATCH` `DELETE` | `/api/reports/v1/saved/{id}/` | One saved report |
+| `GET` | `/api/reports/v1/saved/{id}/run/` | Run a saved report; query params override its `parameters` |
+| `GET` `POST` | `/api/reports/v1/schedules/` | Email a saved report on a schedule |
+| `GET` `PUT` `PATCH` `DELETE` | `/api/reports/v1/schedules/{id}/` | One schedule |
+
+**Query parameters** (each report takes the ones listed for it; others are ignored)
+
+| Query param | Meaning |
+|---|---|
+| `start_date`, `end_date` | window; defaults to the last 30 days ending today (365 for `purchase_price_trend` and `margin_trend`, 90 for `financial_kpis`) |
+| `as_of_date` | point-in-time reports; defaults to today |
+| `period` | `day`, `week` or `month` (default) for trends |
+| `limit` | keep only the first N rows |
+| `warehouse` | warehouse id (inventory reports) |
+| `inactive_days` | `customer_health`: days without an order before a customer counts as inactive (default 90) |
+| `method`, `days_ahead`, `a_threshold`, `b_threshold` | inventory valuation, expiry and ABC options |
+
+Bad dates, periods or numbers, or a warehouse from another company, answer `400` with `detail`.
+
+**Report types**
+
+| `report_type` | Rows | Parameters |
+|---|---|---|
+| `inventory_valuation`, `stock_aging`, `inventory_movement`, `abc_analysis`, `supplier_performance`, `warehouse_utilization`, `reorder_status`, `stock_turnover`, `expiry` | stock reports from the stock ledger | see parameters above |
+| `sales_performance` | orders, revenue and average order value per period; summary compares with the previous window and gives the cancellation rate | `start_date`, `end_date`, `period` |
+| `top_customers` | customers by booked order value with share and last order date | `start_date`, `end_date`, `limit` (default 10) |
+| `product_sales` | units, net sales, estimated cost and gross margin per variant (cost = average cost of shipped stock, else standard cost) | `start_date`, `end_date`, `limit` |
+| `order_pipeline` | open orders per status with value, average age and oldest order; summary counts orders past their required date | `as_of_date` |
+| `delivery_performance` | on-time shipping and days to ship per warehouse; summary adds failed deliveries and transit days | `start_date`, `end_date` |
+| `customer_health` | per customer: last order, 12-month orders and revenue, open/overdue receivables, credit use and `flags` (`inactive`, `overdue`, `near_credit_limit`, `over_credit_limit`) | `as_of_date`, `inactive_days` |
+| `return_rate` | units sold vs. units customers asked to return, per product | `start_date`, `end_date`, `limit` |
+| `return_reasons` | returns, value and refunds per reason; summary adds days to approve/close and restocking decisions | `start_date`, `end_date` |
+| `quality_inspections` | inspections, pass rate and quantity pass rate per source (receipts, returns, production…) | `start_date`, `end_date` |
+| `ncr_summary` | non-conformance reports per severity with days to close; summary lists the top suppliers | `start_date`, `end_date` |
+| `quarantine_status` | stock currently in quarantine, days held and estimated value | `as_of_date` |
+| `work_order_performance` | work orders per type: completed/open, yield, cycle days and unit cost | `start_date`, `end_date` |
+| `component_shortages` | components open work orders still need vs. stock on hand in their warehouse | — |
+| `purchase_spend` | committed purchase order value per supplier; summary has the spend trend and change vs. previous window | `start_date`, `end_date`, `period` |
+| `purchase_price_trend` | first, last, lowest, highest and average unit cost per variant, with % change | `start_date`, `end_date`, `limit` |
+| `open_purchase_orders` | purchase orders awaiting goods, with days overdue | `as_of_date` |
+| `cash_flow` | direct-method cash flow: cash in/out of cash and bank accounts by operating, investing and financing category; summary has opening and closing cash | `start_date`, `end_date` |
+| `financial_kpis` | `metric`/`value` rows: cash, receivables, payables, working capital, margins, DSO, DIO, DPO, cash conversion cycle | `start_date`, `end_date` |
+| `margin_trend` | revenue, cost of sales, gross profit, expenses and net income per period | `start_date`, `end_date`, `period` |
+| `webhook_health` | deliveries, success rate, attempts and last error per webhook endpoint | `start_date`, `end_date` |
+| `user_activity` | changes per user from the sales audit trail | `start_date`, `end_date` |
+
+### Dashboards
+
+| Method | Path | Purpose |
+|---|---|---|
+| `GET` | `/api/reports/v1/dashboards/` | Dashboards this company can open: `[{"dashboard", "title"}]` |
+| `GET` | `/api/reports/v1/dashboards/{name}/` | One dashboard (`404` for an unknown name) |
+
+`name` is one of `overview`, `sales`, `inventory`, `finance`, `operations`, `purchasing`, `administration`.
+Query parameters: `start_date`, `end_date` (default: last 30 days) and `warehouse`.
+
+**Response**
+
+```json
+{
+  "dashboard": "overview",
+  "title": "Overview",
+  "start_date": "2026-09-10",
+  "end_date": "2026-10-09",
+  "kpis": [
+    {"key": "revenue", "label": "Revenue", "value": 400.0, "unit": "currency", "previous": 200.0, "change_percent": 100.0},
+    {"key": "open_orders", "label": "Open orders", "value": 3, "unit": "number"}
+  ],
+  "charts": {"sales_trend": [{"period": "2026-10-04", "orders": 1, "revenue": 300.0, "average_order_value": 300.0}]},
+  "tables": {"reorder": []},
+  "alerts": [{"level": "warning", "message": "Sales orders past their required date", "count": 1}]
+}
+```
+
+`unit` is `currency`, `number`, `percent`, `days` or `ratio`. `previous` and `change_percent` appear on KPIs that compare
+with the previous window of the same length. `charts` and `tables` hold report rows (see the report types above);
+`alerts.level` is `warning` or `critical`.
+
+| Dashboard | For | KPIs | Charts and tables |
+|---|---|---|---|
+| `overview` | owners, managers | revenue, orders, order value, gross margin, open orders, stock value, items to reorder, return rate, inspection pass rate, open NCRs, open POs (+ cash, overdue receivables, net income with `accounting`) | sales trend, order pipeline, top products and customers, reorder list |
+| `sales` | sales managers | revenue, orders, order value, margin, cancellations, open orders, on-time shipping, days to ship, repeat and inactive customers | sales trend, pipeline, top products and customers, customers at risk |
+| `inventory` | stock controllers | stock value, units, SKUs, turnover, items at safety stock / below reorder point, expiring and expired batches, open low-stock alerts | stock aging, movement, warehouses, reorder list, expiring batches, slow movers |
+| `finance` | finance | revenue, gross profit and margin, net income and margin, cash, net cash flow, receivables (overdue), payables, DSO, DPO, cash conversion cycle | margin trend, cash flow, receivables and payables aging, top debtors and creditors |
+| `operations` | returns, quality, production | returns, return rate, refunds, open returns, days to close, inspections, pass rate, open NCRs, quarantine value, work orders completed, yield, blocked work orders | return reasons, inspections by source, NCRs by severity, work orders by type, most returned, quarantine, component shortages |
+| `purchasing` | buyers | spend, purchase orders, suppliers, open and overdue POs, price increases, items to reorder | spend trend, spend by supplier, overdue POs, price changes, supplier performance, reorder suggestions |
+| `administration` | admins | active users, recorded changes, webhook endpoints, deliveries and success rate | activity by user, webhook health |
+
 ## Import & export
 
 Available for: **company** `department`, `team`, `country`, `region`, `city`, `district`, `location`
@@ -12784,10 +13672,15 @@ Available for: **company** `department`, `team`, `country`, `region`, `city`, `d
 `product-attribute`, `product-variant`, `warehouse`, `zone`, `bin`, `supplier`, `supplier-product`, `batch`,
 `serial-number` (under `/api/inventory/v1/{resource}/import/` and `/export/`).
 
+**Access** is the same as the resource's CRUD endpoints: `department` and `team` need `add_department`/`add_team` to
+import and `view_department`/`view_team` to export (company admins pass); the location resources need the `location`
+module and the inventory ones the `inventory` module. Otherwise `403`.
+
 ### Export — `GET /…/{resource}/export/`
 
 Returns a **file download**, not JSON: `Content-Type: text/csv` with
-`Content-Disposition: attachment; filename="export.csv"`. Columns are the same headers the matching import accepts.
+`Content-Disposition: attachment; filename="export.csv"`. Columns are the same headers the matching import accepts;
+an export with no rows still has the header row (usable as an import template).
 Only the current company's rows are exported. You may add exact-match filters on the model's own fields as query
 parameters (e.g. `?is_active=true`); relation lookups are ignored.
 
@@ -12826,9 +13719,21 @@ JSON body, the file as a **base64 data URI**:
 | `batch_size` | integer | no | default 100 |
 
 `POST /…/{resource}/import/?template=true` (empty body) downloads an Excel template with the expected headers.
+Only the required headers must be present in an uploaded file; optional columns can be left out. Headers may be the
+field names (`name`) or the template labels (`Category Name`).
+Columns that point at another record (a category's `parent`, a product's `category`/`brand`, a zone's `warehouse`…)
+take that record's **name** (`name_en` for company data) or its **id** (what exports write); an unknown value is a row
+error `"Could not find Category 'Nowhere'"`.
+
+A row that matches an existing record (by its name, e.g. `name` + `parent` for categories) **updates** it and counts
+in `stats.updated`, so an exported file can be edited and imported back. Only a row that would create a duplicate of
+another record is an error (`"Violates unique constraint: …"`).
 
 The response `data` has `success`, `dry_run`, `task_id`, `stats` (`new`, `updated`, `errors`, `skipped`, `warnings`),
-and per-row `preview` / `errors`. A failed import returns **400** with the same structure inside `error.errors`.
+and per-row `preview` / `errors`. A failed import returns **400** with the same structure inside `error.errors`
+(`error_message`: `"Import failed with 2 errors"`). A request that can't be imported at all (no file, unreadable file,
+missing required headers) returns **400** with the reason in `error.message`, e.g. `"Missing required headers: name"`,
+`"Invalid file: the base64 data could not be decoded."` or `"The file could not be read as CSV."`.
 
 <details><summary>Example: Import categories (dry run) → <code>200</code></summary>
 
@@ -12930,7 +13835,7 @@ Response:
       "total_rows": 1,
       "success_rows": null,
       "error_rows": {
-        "import_error": "[ErrorDetail(string='Import failed with 1 errors', code='invalid')]"
+        "import_error": "Import failed with 1 errors"
       },
       "download_url": null,
       "duration": 0.007524,
@@ -13045,7 +13950,8 @@ ws(s)://<host>/ws/notifications/{user_id}/
 - On connect the server sends:
   `{"type": "connection_established", "message": "…", "unread_notification": 0}`
 - New notifications arrive as `{"type": "new_notification", "notification": {…}}`
-  (company-wide ones as `{"type": "broadcast_notification", …}`).
+  (company-wide ones as `{"type": "broadcast_notification", …}`). `notification` has exactly the fields of the HTTP
+  notification object: `id`, `title`, `message`, `notif_type`, `is_read`, `created_at`, `data`.
 - Keep-alive: send `{"action": "ping"}` → receive `{"type": "pong"}`.
 
 ---

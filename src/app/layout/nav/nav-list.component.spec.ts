@@ -5,16 +5,18 @@ import { provideTranslateService } from '@ngx-translate/core';
 import { AuthService } from '../../core/auth/auth.service';
 import { AccessService } from '../../core/auth/access.service';
 import { NavListComponent } from './nav-list.component';
+import { NAV_ITEMS } from './nav-items';
 
 describe('NavListComponent', () => {
-  const ALL_COMPANY = ['view_companyuser', 'view_department', 'view_team', 'view_role', 'view_permissiongroup', 'view_permission'];
+  /** Every permission the menu asks for. */
+  const ALL = NAV_ITEMS.flatMap((item) => [item, ...(item.children ?? [])]).flatMap((item) => (item.permission ? [item.permission] : []));
 
   async function render(
     url: string,
     role = 'COMPANY',
     modules: string[] = ['location', 'inventory'],
     access?: object,
-    permissions: string[] = ALL_COMPANY,
+    permissions: string[] = ALL,
   ) {
     TestBed.configureTestingModule({
       imports: [NavListComponent],
@@ -100,11 +102,17 @@ describe('NavListComponent', () => {
   });
 
   it('shows only the company screens the user may view, and drops an empty group', async () => {
-    const fixture = await render('/company/teams', 'EMPLOYEE', [], undefined, ['view_team']);
+    const fixture = await render('/company/teams', 'EMPLOYEE', [], undefined, ['access_company', 'view_team']);
     expect(links(fixture).filter((href) => href.startsWith('/company'))).toEqual(['/company/teams']);
     TestBed.resetTestingModule();
     const none = await render('/dashboard', 'EMPLOYEE', [], undefined, []);
     expect(none.nativeElement.textContent).not.toContain('nav.company');
+  });
+
+  it("hides a module's group without its access_ permission", async () => {
+    const fixture = await render('/dashboard', 'EMPLOYEE', ['location', 'inventory'], undefined, ALL.filter((code) => code !== 'access_sales'));
+    expect(fixture.nativeElement.textContent).not.toContain('nav.sales');
+    expect(fixture.nativeElement.textContent).toContain('nav.returns');
   });
 
   it('shows Companies to platform staff only, not to every user without a company', async () => {

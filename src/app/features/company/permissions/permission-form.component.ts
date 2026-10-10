@@ -17,7 +17,7 @@ import { LoadingStateComponent } from '../../../shared/components/loading-state/
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { localizedName } from '../../../shared/pipes/localized-name.pipe';
 import { errorTitleKey, handleSaveError } from '../../../shared/utils/server-errors';
-import { NamedRef, PermissionPayload, PermissionType, SelectOption } from '../company.models';
+import { NamedRef, PermissionGroupOption, PermissionPayload, PermissionType, SelectOption } from '../company.models';
 import { PermissionGroupService } from '../permission-groups/permission-group.service';
 import { PermissionService } from './permission.service';
 
@@ -74,8 +74,9 @@ export class PermissionFormComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this.groupsApi.dropdown<NamedRef>().subscribe({
-      next: (items) => this.groups.set(items),
+    // Core groups are system-managed: the backend refuses them here.
+    this.groupsApi.dropdown<PermissionGroupOption>().subscribe({
+      next: (items) => this.groups.set(items.filter((group) => !group.is_core)),
       error: () => this.groups.set([]),
     });
     if (this.id !== null) {

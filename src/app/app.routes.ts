@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard, companyMemberGuard, guestGuard, platformAdminGuard } from './core/auth/auth.guard';
+import { authGuard, companyMemberGuard, guestGuard, permissionGuard, platformAdminGuard } from './core/auth/auth.guard';
 import { ShellComponent } from './layout/shell/shell.component';
 
 export const routes: Routes = [
@@ -34,37 +34,44 @@ export const routes: Routes = [
       },
       {
         path: 'company',
-        canActivate: [companyMemberGuard],
+        canActivate: [companyMemberGuard, permissionGuard],
+        data: { permission: 'access_company' },
         loadChildren: () => import('./features/company/company.routes').then((m) => m.COMPANY_ROUTES),
       },
       {
         path: 'locations',
-        canActivate: [companyMemberGuard],
+        canActivate: [companyMemberGuard, permissionGuard],
+        data: { permission: 'access_location' },
         loadChildren: () => import('./features/locations/locations.routes').then((m) => m.LOCATIONS_ROUTES),
       },
       {
         path: 'inventory',
-        canActivate: [companyMemberGuard],
+        canActivate: [companyMemberGuard, permissionGuard],
+        data: { permission: 'access_inventory' },
         loadChildren: () => import('./features/inventory/inventory.routes').then((m) => m.INVENTORY_ROUTES),
       },
       {
         path: 'sales',
-        canActivate: [companyMemberGuard],
+        canActivate: [companyMemberGuard, permissionGuard],
+        data: { permission: 'access_sales' },
         loadChildren: () => import('./features/sales/sales.routes').then((m) => m.SALES_ROUTES),
       },
       {
         path: 'returns',
-        canActivate: [companyMemberGuard],
+        canActivate: [companyMemberGuard, permissionGuard],
+        data: { permission: 'access_returns' },
         loadChildren: () => import('./features/returns/returns.routes').then((m) => m.RETURNS_ROUTES),
       },
       {
         path: 'accounting',
-        canActivate: [companyMemberGuard],
+        canActivate: [companyMemberGuard, permissionGuard],
+        data: { permission: 'access_accounting' },
         loadChildren: () => import('./features/accounting/accounting.routes').then((m) => m.ACCOUNTING_ROUTES),
       },
       {
         path: 'analytics',
-        canActivate: [companyMemberGuard],
+        canActivate: [companyMemberGuard, permissionGuard],
+        data: { permission: 'access_reports' },
         loadChildren: () => import('./features/analytics/analytics.routes').then((m) => m.ANALYTICS_ROUTES),
       },
       {
@@ -72,6 +79,12 @@ export const routes: Routes = [
         canActivate: [companyMemberGuard],
         loadComponent: () => import('./features/billing/billing-page.component').then((m) => m.BillingPageComponent),
         data: { titleKey: 'nav.billing' },
+      },
+      {
+        // Every signed-in user edits their own profile and password, platform staff included.
+        path: 'profile',
+        loadComponent: () => import('./features/profile/profile-page.component').then((m) => m.ProfilePageComponent),
+        data: { titleKey: 'profile.title' },
       },
       {
         // Every signed-in user has notifications, platform staff included.

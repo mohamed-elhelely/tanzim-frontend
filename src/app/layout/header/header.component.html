@@ -92,11 +92,15 @@
       [attr.aria-label]="'header.account' | translate"
       (click)="userMenu.toggle($event)"
     >
-      <span
-        class="flex h-8 w-8 items-center justify-center rounded-full bg-primary-100 text-xs font-bold text-primary-700 dark:bg-primary-900 dark:text-primary-200"
-      >
-        {{ initials() }}
-      </span>
+      @if (picture(); as src) {
+        <img [src]="src" alt="" class="h-8 w-8 rounded-full object-cover" />
+      } @else {
+        <span
+          class="flex h-8 w-8 items-center justify-center rounded-full bg-primary-100 text-xs font-bold text-primary-700 dark:bg-primary-900 dark:text-primary-200"
+        >
+          {{ initials() }}
+        </span>
+      }
       <span class="hidden max-w-40 flex-col text-start leading-tight md:flex">
         <span class="truncate text-sm font-semibold text-gray-900 dark:text-gray-100">{{ displayName() }}</span>
         @if (auth.user()?.companyRole; as role) {

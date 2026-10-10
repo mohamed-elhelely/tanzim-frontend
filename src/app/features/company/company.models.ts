@@ -41,12 +41,31 @@ export interface Team {
   updated_by: UserRef | null;
 }
 
+export type PermissionType = 'API' | 'OBJECT' | 'FEATURE';
+
+/** A permission inside a role or group response. */
+export interface PermissionSummary {
+  id: number;
+  codename: string;
+  name: string;
+  permission_type: PermissionType;
+}
+
+/** GET /permissions/?dropdown=true. */
+export interface PermissionOption {
+  id: number;
+  name: string;
+  codename: string;
+}
+
 export interface Role {
   id: number;
   name_en: string;
   name_ar: string | null;
   is_admin: boolean;
   permission_groups: NamedRef[];
+  /** Single permissions granted on top of the groups. */
+  permissions: PermissionSummary[];
 }
 
 export interface PermissionGroup {
@@ -54,12 +73,17 @@ export interface PermissionGroup {
   name_en: string;
   name_ar: string | null;
   description: string;
+  /** System group (Full Access, Read Only, per-module ones): read-only, PATCH/DELETE answer 403. */
   is_core: boolean;
+  permissions: PermissionSummary[];
   created_by: UserRef | null;
   updated_by: UserRef | null;
 }
 
-export type PermissionType = 'API' | 'OBJECT' | 'FEATURE';
+/** GET /permission-groups/?dropdown=true. */
+export interface PermissionGroupOption extends NamedRef {
+  is_core: boolean;
+}
 
 export interface Permission {
   id: number;
@@ -140,7 +164,9 @@ export interface TeamPayload {
 export interface RolePayload {
   name_en: string;
   name_ar?: string | null;
-  permission_groups: number[];
+  permission_groups?: number[];
+  /** Replaces the role's single permissions on update. */
+  permissions?: number[];
   is_admin?: boolean;
 }
 
@@ -148,7 +174,19 @@ export interface PermissionGroupPayload {
   name_en: string;
   name_ar?: string | null;
   description?: string;
-  is_core?: boolean;
+  /** Replaces the group's permissions on update. */
+  permissions?: number[];
+}
+
+/** GET/PATCH /company-profile/: the company's branding. */
+export interface CompanyProfile {
+  id: number;
+  name: string;
+  /** Absolute URL or null. */
+  logo: string | null;
+  /** `#RRGGBB`. */
+  primary_color: string;
+  secondary_color: string;
 }
 
 export interface PermissionPayload {

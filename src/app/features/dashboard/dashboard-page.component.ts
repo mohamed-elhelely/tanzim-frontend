@@ -59,6 +59,7 @@ const STATS: StatCard[] = [
     icon: 'pi-map-marker',
     link: '/locations/sites',
     module: 'location',
+    permission: 'view_location',
     tone: 'bg-sky-100 text-sky-600 dark:bg-sky-500/15 dark:text-sky-300',
   },
 ];
@@ -87,12 +88,12 @@ const QUICK_ACTIONS: QuickAction[] = [
   { labelKey: 'dashboard.actions.newUser', icon: 'pi-user-plus', link: '/company/users/new', permission: 'add_companyuser' },
   { labelKey: 'dashboard.actions.newDepartment', icon: 'pi-sitemap', link: '/company/departments/new', permission: 'add_department' },
   { labelKey: 'dashboard.actions.newTeam', icon: 'pi-id-card', link: '/company/teams/new', permission: 'add_team' },
-  { labelKey: 'dashboard.actions.newLocation', icon: 'pi-map-marker', link: '/locations/sites/new', module: 'location' },
+  { labelKey: 'dashboard.actions.newLocation', icon: 'pi-map-marker', link: '/locations/sites/new', module: 'location', permission: 'add_location' },
 ];
 
 /** Setup steps in the order a new company usually does them; each is done once its count is > 0. */
 const SETUP_STEPS: Array<Gate & { key: StatKey; labelKey: string; link: string }> = [
-  { key: 'locations', labelKey: 'dashboard.steps.locations', link: '/locations/sites/new', module: 'location' },
+  { key: 'locations', labelKey: 'dashboard.steps.locations', link: '/locations/sites/new', module: 'location', permission: 'add_location' },
   { key: 'departments', labelKey: 'dashboard.steps.departments', link: '/company/departments/new', permission: 'add_department' },
   { key: 'teams', labelKey: 'dashboard.steps.teams', link: '/company/teams/new', permission: 'add_team' },
   { key: 'users', labelKey: 'dashboard.steps.users', link: '/company/users/new', permission: 'add_companyuser' },

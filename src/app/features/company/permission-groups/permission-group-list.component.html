@@ -39,6 +39,7 @@
             </th>
             <th>{{ 'company.fields.nameAr' | translate }}</th>
             <th>{{ 'company.fields.description' | translate }}</th>
+            <th>{{ 'company.fields.permissions' | translate }}</th>
             <th>{{ 'company.fields.isCore' | translate }}</th>
             @if (canEdit() || canDelete()) {
               <th class="text-end">{{ 'common.actions' | translate }}</th>
@@ -51,23 +52,24 @@
             <td>{{ row.name_en }}</td>
             <td>{{ row.name_ar }}</td>
             <td class="max-w-xs truncate">{{ row.description }}</td>
+            <td>{{ row.permissions?.length ?? 0 }}</td>
             <td>
               @if (row.is_core) {
-                <app-status-badge [value]="'common.yes' | translate" severity="info"></app-status-badge>
+                <app-status-badge [value]="'company.permissionGroups.system' | translate" severity="info" icon="pi pi-lock"></app-status-badge>
               }
             </td>
             @if (canEdit() || canDelete()) {
               <td class="whitespace-nowrap text-end">
                 @if (canEdit()) {
                   <p-button
-                    icon="pi pi-pencil"
+                    [icon]="row.is_core ? 'pi pi-eye' : 'pi pi-pencil'"
                     [text]="true"
                     [rounded]="true"
-                    [ariaLabel]="'common.edit' | translate"
+                    [ariaLabel]="(row.is_core ? 'common.view' : 'common.edit') | translate"
                     (onClick)="edit(row)"
                   ></p-button>
                 }
-                @if (canDelete()) {
+                @if (canDelete() && !row.is_core) {
                   <p-button
                     icon="pi pi-trash"
                     severity="danger"
@@ -83,7 +85,7 @@
         </ng-template>
         <ng-template pTemplate="emptymessage">
           <tr>
-            <td [attr.colspan]="canEdit() || canDelete() ? 6 : 5"><app-empty-state icon="pi-th-large"></app-empty-state></td>
+            <td [attr.colspan]="canEdit() || canDelete() ? 7 : 6"><app-empty-state icon="pi-th-large"></app-empty-state></td>
           </tr>
         </ng-template>
       </p-table>

@@ -1,0 +1,172 @@
+<app-page-header title="profile.title" subtitle="profile.subtitle"></app-page-header>
+
+@if (loadError(); as err) {
+  <app-error-state [title]="errorTitleKey(err)" [showRetry]="false"></app-error-state>
+} @else if (loading()) {
+  <app-loading-state></app-loading-state>
+} @else {
+  <div class="grid max-w-5xl grid-cols-1 gap-6 xl:grid-cols-5">
+    <p-card styleClass="xl:col-span-3">
+      <form [formGroup]="form" (ngSubmit)="save()" class="flex flex-col gap-6" novalidate>
+        <div>
+          <h2 class="text-base font-semibold text-gray-900 dark:text-gray-100">{{ 'profile.details' | translate }}</h2>
+          @if (email()) {
+            <p class="text-sm text-gray-500 dark:text-gray-400">{{ email() }}</p>
+          }
+        </div>
+
+        @if (formErrors().length) {
+          <div
+            role="alert"
+            class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300"
+          >
+            @for (message of formErrors(); track $index) {
+              <p>{{ message }}</p>
+            }
+          </div>
+        }
+
+        <div class="flex flex-col gap-1">
+          <span class="text-sm font-medium">{{ 'profile.picture' | translate }}</span>
+          <app-image-picker shape="circle" [url]="pictureUrl()" [placeholder]="initials()" (changed)="onPicture($event)"></app-image-picker>
+        </div>
+
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div class="flex flex-col gap-1">
+            <label for="first_name" class="text-sm font-medium">{{ 'profile.fields.firstName' | translate }} *</label>
+            <input pInputText id="first_name" formControlName="first_name" autocomplete="given-name" class="w-full" />
+            <app-field-error [control]="form.controls.first_name"></app-field-error>
+          </div>
+          <div class="flex flex-col gap-1">
+            <label for="middle_name" class="text-sm font-medium">{{ 'profile.fields.middleName' | translate }}</label>
+            <input pInputText id="middle_name" formControlName="middle_name" autocomplete="additional-name" class="w-full" />
+            <app-field-error [control]="form.controls.middle_name"></app-field-error>
+          </div>
+          <div class="flex flex-col gap-1">
+            <label for="last_name" class="text-sm font-medium">{{ 'profile.fields.lastName' | translate }} *</label>
+            <input pInputText id="last_name" formControlName="last_name" autocomplete="family-name" class="w-full" />
+            <app-field-error [control]="form.controls.last_name"></app-field-error>
+          </div>
+          <div class="flex flex-col gap-1">
+            <label for="preferred_name" class="text-sm font-medium">{{ 'profile.fields.preferredName' | translate }}</label>
+            <input pInputText id="preferred_name" formControlName="preferred_name" autocomplete="nickname" class="w-full" />
+            <app-field-error [control]="form.controls.preferred_name"></app-field-error>
+          </div>
+          <div class="flex flex-col gap-1">
+            <label for="phone_number" class="text-sm font-medium">{{ 'profile.fields.phone' | translate }}</label>
+            <input
+              pInputText
+              id="phone_number"
+              formControlName="phone_number"
+              type="tel"
+              dir="ltr"
+              autocomplete="tel"
+              placeholder="+201001234567"
+              class="w-full"
+            />
+            <app-field-error [control]="form.controls.phone_number"></app-field-error>
+          </div>
+          <div class="flex flex-col gap-1">
+            <label for="timezone" class="text-sm font-medium">{{ 'profile.fields.timezone' | translate }}</label>
+            <p-select
+              inputId="timezone"
+              formControlName="timezone"
+              [options]="timeZones"
+              optionLabel="label"
+              optionValue="value"
+              [filter]="true"
+              [editable]="timeZones.length === 0"
+              [placeholder]="'common.select' | translate"
+              styleClass="w-full"
+              appendTo="body"
+            ></p-select>
+            <app-field-error [control]="form.controls.timezone"></app-field-error>
+          </div>
+        </div>
+
+        <div class="flex justify-end border-t border-gray-100 pt-5 dark:border-gray-800">
+          <p-button
+            type="submit"
+            [label]="'common.save' | translate"
+            icon="pi pi-check"
+            [loading]="saving()"
+            [disabled]="saving() || form.pristine"
+          ></p-button>
+        </div>
+      </form>
+    </p-card>
+
+    <p-card styleClass="xl:col-span-2">
+      <form [formGroup]="passwordForm" (ngSubmit)="changePassword()" class="flex flex-col gap-4" novalidate>
+        <div>
+          <h2 class="text-base font-semibold text-gray-900 dark:text-gray-100">{{ 'profile.changePassword' | translate }}</h2>
+          <p class="text-sm text-gray-500 dark:text-gray-400">{{ 'profile.passwordHint' | translate }}</p>
+        </div>
+
+        @if (passwordErrors().length) {
+          <div
+            role="alert"
+            class="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950 dark:text-red-300"
+          >
+            @for (message of passwordErrors(); track $index) {
+              <p>{{ message }}</p>
+            }
+          </div>
+        }
+
+        <div class="flex flex-col gap-1">
+          <label for="current_password" class="text-sm font-medium">{{ 'profile.fields.currentPassword' | translate }} *</label>
+          <p-password
+            inputId="current_password"
+            formControlName="current_password"
+            [feedback]="false"
+            [toggleMask]="true"
+            styleClass="w-full"
+            inputStyleClass="w-full"
+            autocomplete="current-password"
+          ></p-password>
+          <app-field-error [control]="passwordForm.controls.current_password"></app-field-error>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="new_password" class="text-sm font-medium">{{ 'profile.fields.newPassword' | translate }} *</label>
+          <p-password
+            inputId="new_password"
+            formControlName="new_password"
+            [feedback]="false"
+            [toggleMask]="true"
+            styleClass="w-full"
+            inputStyleClass="w-full"
+            autocomplete="new-password"
+          ></p-password>
+          <app-field-error [control]="passwordForm.controls.new_password"></app-field-error>
+        </div>
+        <div class="flex flex-col gap-1">
+          <label for="confirm_password" class="text-sm font-medium">{{ 'profile.fields.confirmPassword' | translate }} *</label>
+          <p-password
+            inputId="confirm_password"
+            formControlName="confirm_password"
+            [feedback]="false"
+            [toggleMask]="true"
+            styleClass="w-full"
+            inputStyleClass="w-full"
+            autocomplete="new-password"
+          ></p-password>
+          <app-field-error [control]="passwordForm.controls.confirm_password"></app-field-error>
+          @if (passwordForm.hasError('mismatch') && passwordForm.controls.confirm_password.touched) {
+            <small class="text-sm text-red-600 dark:text-red-400">{{ 'profile.passwordMismatch' | translate }}</small>
+          }
+        </div>
+
+        <div class="flex justify-end border-t border-gray-100 pt-4 dark:border-gray-800">
+          <p-button
+            type="submit"
+            [label]="'profile.updatePassword' | translate"
+            icon="pi pi-lock"
+            [loading]="changingPassword()"
+            [disabled]="changingPassword()"
+          ></p-button>
+        </div>
+      </form>
+    </p-card>
+  </div>
+}

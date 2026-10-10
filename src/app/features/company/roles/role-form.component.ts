@@ -18,6 +18,7 @@ import { localizedName } from '../../../shared/pipes/localized-name.pipe';
 import { errorTitleKey, handleSaveError } from '../../../shared/utils/server-errors';
 import { NamedRef, RolePayload, SelectOption } from '../company.models';
 import { PermissionGroupService } from '../permission-groups/permission-group.service';
+import { PermissionPickerComponent } from '../permissions/permission-picker.component';
 import { RoleService } from './role.service';
 
 @Component({
@@ -34,6 +35,7 @@ import { RoleService } from './role.service';
     LoadingStateComponent,
     ErrorStateComponent,
     FieldErrorComponent,
+    PermissionPickerComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './role-form.component.html',
@@ -61,7 +63,9 @@ export class RoleFormComponent implements OnInit {
   readonly form = inject(NonNullableFormBuilder).group({
     name_en: ['', [Validators.required, Validators.maxLength(100)]],
     name_ar: ['', [Validators.maxLength(100)]],
-    permission_groups: [[] as number[], [Validators.required]],
+    // A role grants groups and/or single permissions; either may be empty.
+    permission_groups: [[] as number[]],
+    permissions: [[] as number[]],
     is_admin: [false],
   });
 
@@ -85,6 +89,7 @@ export class RoleFormComponent implements OnInit {
       name_en: value.name_en.trim(),
       name_ar: value.name_ar.trim() || null,
       permission_groups: value.permission_groups,
+      permissions: value.permissions,
       is_admin: value.is_admin,
     };
     this.saving.set(true);
@@ -112,6 +117,7 @@ export class RoleFormComponent implements OnInit {
           name_en: role.name_en,
           name_ar: role.name_ar ?? '',
           permission_groups: (role.permission_groups ?? []).map((g) => g.id),
+          permissions: (role.permissions ?? []).map((p) => p.id),
           is_admin: role.is_admin,
         });
         this.loading.set(false);
