@@ -2,7 +2,7 @@ import { DatePipe, DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -61,6 +61,7 @@ export class InvoiceDetailComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly confirm = inject(ConfirmService);
   private readonly notifications = inject(NotificationService);
+  private readonly translate = inject(TranslateService);
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly id = Number(inject(ActivatedRoute).snapshot.paramMap.get('id'));
 
@@ -200,10 +201,11 @@ export class InvoiceDetailComponent implements OnInit {
         ...(value.notes.trim() ? { notes: value.notes.trim() } : {}),
       })
       .subscribe({
-        next: (invoice) => {
+        next: () => {
           this.paymentSaving.set(false);
-          this.invoice.set(invoice);
           this.paymentOpen.set(false);
+          this.notifications.success(this.translate.instant('admin.billing.invoices.paymentRecorded'));
+          this.load();
         },
         error: (error: AppError) => {
           this.paymentSaving.set(false);

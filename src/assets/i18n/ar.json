@@ -431,7 +431,8 @@
         "recordPayment": "تسجيل",
         "amountDueHint": "المبلغ المستحق: {{amount}}",
         "cancel": "إلغاء الفاتورة",
-        "cancelled": "تم إلغاء الفاتورة."
+        "cancelled": "تم إلغاء الفاتورة.",
+        "paymentRecorded": "تم تسجيل الدفعة."
       },
       "payments": {
         "title": "مدفوعات المنصة",
