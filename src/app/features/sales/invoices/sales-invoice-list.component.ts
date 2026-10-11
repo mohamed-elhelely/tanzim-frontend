@@ -25,6 +25,7 @@ import {
   PAYMENT_STATUS_SEVERITY,
   SalesInvoiceListItem,
   SalesInvoiceStatus,
+  daysOverdue,
 } from '../sales.models';
 import { SalesInvoiceService } from './sales-invoice.service';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
@@ -79,6 +80,7 @@ export class SalesInvoiceListComponent implements OnInit {
   /** The ticked rows the bulk action applies to (drafts only). */
   readonly selectedDrafts = computed(() => this.table.selection().filter((row) => row.status === 'draft'));
   readonly errorTitleKey = errorTitleKey;
+  readonly daysOverdue = daysOverdue;
   readonly statusOptions = INVOICE_STATUSES.map((status) => ({ value: status, label: `sales.invoiceStatuses.${status}` }));
   readonly paymentOptions = PAYMENT_STATUSES.map((status) => ({ value: status, label: `sales.paymentStatuses.${status}` }));
 

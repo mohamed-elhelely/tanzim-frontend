@@ -303,6 +303,23 @@ export interface SalesInvoiceListItem {
   created_at: string;
 }
 
+/**
+ * Whole days an issued, unpaid invoice is past its due date (0 when it isn't). Worked out here because the
+ * backend doesn't yet move such invoices to `overdue` (docs/BACKEND_REQUESTS.md item 24).
+ */
+export function daysOverdue(
+  invoice: Pick<SalesInvoiceListItem, 'status' | 'due_date' | 'amount_due'>,
+  today: Date = new Date(),
+): number {
+  if ((invoice.status !== 'issued' && invoice.status !== 'overdue') || !invoice.due_date || !(Number(invoice.amount_due) > 0)) {
+    return 0;
+  }
+  const [year, month, day] = invoice.due_date.split('-').map(Number);
+  const due = Date.UTC(year, month - 1, day);
+  const now = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate());
+  return Math.max(0, Math.round((now - due) / 86_400_000));
+}
+
 export interface SalesInvoiceLine {
   id: number;
   line_number: number;

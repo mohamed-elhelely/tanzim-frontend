@@ -28,6 +28,7 @@ import {
   PaymentMethod,
   SalesInvoice,
   SalesInvoiceStatus,
+  daysOverdue,
 } from '../sales.models';
 import { SalesInvoiceService } from './sales-invoice.service';
 import { RecordHistoryComponent } from '../../company/system-logs/record-history.component';
@@ -89,6 +90,7 @@ export class SalesInvoiceDetailComponent implements OnInit {
   details = { due_date: '', reference: '', payment_terms: '', notes: '' };
   payment = { amount: '', payment_method: 'bank_transfer' as PaymentMethod, payment_date: today(), reference: '', notes: '' };
   readonly errorTitleKey = errorTitleKey;
+  readonly daysOverdue = daysOverdue;
   readonly statusSeverity = INVOICE_STATUS_SEVERITY;
   readonly paymentStatusSeverity = PAYMENT_STATUS_SEVERITY;
   readonly methodOptions = PAYMENT_METHODS.map((method) => ({ value: method, label: `sales.paymentMethods.${method}` }));

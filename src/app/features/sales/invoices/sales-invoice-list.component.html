@@ -122,7 +122,16 @@
               <div class="font-mono text-xs text-gray-500" dir="ltr">{{ row.sales_order_number }}</div>
             </td>
             <td class="whitespace-nowrap" dir="ltr">{{ row.invoice_date }}</td>
-            <td class="whitespace-nowrap" dir="ltr">{{ row.due_date || '—' }}</td>
+            <td class="whitespace-nowrap">
+              <span dir="ltr">{{ row.due_date || '—' }}</span>
+              @if (daysOverdue(row); as days) {
+                <app-status-badge
+                  class="mt-1 block"
+                  [value]="'sales.hints.overdueDays' | translate: { days: days }"
+                  severity="danger"
+                ></app-status-badge>
+              }
+            </td>
             <td>
               <app-status-badge
                 [value]="'sales.invoiceStatuses.' + row.status | translate"

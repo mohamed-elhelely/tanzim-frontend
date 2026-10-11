@@ -66,7 +66,16 @@
         </div>
         <div>
           <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.dueDate' | translate }}</dt>
-          <dd class="mt-0.5" dir="ltr">{{ invoice.due_date || '—' }}</dd>
+          <dd class="mt-0.5">
+            <span dir="ltr">{{ invoice.due_date || '—' }}</span>
+            @if (daysOverdue(invoice); as days) {
+              <app-status-badge
+                class="ms-2"
+                [value]="'sales.hints.overdueDays' | translate: { days: days }"
+                severity="danger"
+              ></app-status-badge>
+            }
+          </dd>
         </div>
         <div>
           <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.paymentTerms' | translate }}</dt>
