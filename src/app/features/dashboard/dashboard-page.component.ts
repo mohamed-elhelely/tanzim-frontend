@@ -8,9 +8,14 @@ import { TenantCompanyService } from '../admin/companies/tenant-company.service'
 import { DepartmentService } from '../company/departments/department.service';
 import { TeamService } from '../company/teams/team.service';
 import { CompanyUserService } from '../company/users/company-user.service';
+import { ProductService } from '../inventory/products/product.service';
+import { WarehouseService } from '../inventory/warehouses/warehouse.service';
 import { LocationService } from '../locations/sites/location.service';
+import { CustomerService } from '../sales/customers/customer.service';
 
 type StatKey = 'users' | 'departments' | 'teams' | 'locations' | 'companies' | 'activeCompanies';
+/** Setup-only counts (no stat card). */
+type StepKey = StatKey | 'warehouses' | 'products' | 'customers' | 'branding';
 
 /** Shown only when the user has this permission or the company has this module. */
 interface Gate {
@@ -91,12 +96,19 @@ const QUICK_ACTIONS: QuickAction[] = [
   { labelKey: 'dashboard.actions.newLocation', icon: 'pi-map-marker', link: '/locations/sites/new', module: 'location', permission: 'add_location' },
 ];
 
-/** Setup steps in the order a new company usually does them; each is done once its count is > 0. */
-const SETUP_STEPS: Array<Gate & { key: StatKey; labelKey: string; link: string }> = [
+/**
+ * Setup steps in the order a new company usually does them; each is done once its count is > 0 (branding: once
+ * the company has a logo). The chart of accounts is left out: the backend creates it on the first read.
+ */
+const SETUP_STEPS: Array<Gate & { key: StepKey; labelKey: string; link: string }> = [
+  { key: 'branding', labelKey: 'dashboard.steps.branding', link: '/company/profile', permission: 'change_company' },
   { key: 'locations', labelKey: 'dashboard.steps.locations', link: '/locations/sites/new', module: 'location', permission: 'add_location' },
   { key: 'departments', labelKey: 'dashboard.steps.departments', link: '/company/departments/new', permission: 'add_department' },
   { key: 'teams', labelKey: 'dashboard.steps.teams', link: '/company/teams/new', permission: 'add_team' },
   { key: 'users', labelKey: 'dashboard.steps.users', link: '/company/users/new', permission: 'add_companyuser' },
+  { key: 'warehouses', labelKey: 'dashboard.steps.warehouses', link: '/inventory/warehouses/new', module: 'inventory', permission: 'add_warehouse' },
+  { key: 'products', labelKey: 'dashboard.steps.products', link: '/inventory/products/new', module: 'inventory', permission: 'add_product' },
+  { key: 'customers', labelKey: 'dashboard.steps.customers', link: '/sales/customers/new', permission: 'add_customer' },
 ];
 
 @Component({
@@ -110,6 +122,9 @@ export class DashboardPageComponent {
   private readonly departments = inject(DepartmentService);
   private readonly teams = inject(TeamService);
   private readonly locations = inject(LocationService);
+  private readonly warehouses = inject(WarehouseService);
+  private readonly products = inject(ProductService);
+  private readonly customers = inject(CustomerService);
   private readonly companies = inject(TenantCompanyService);
   private readonly access = inject(AccessService);
   private readonly auth = inject(AuthService);
@@ -125,14 +140,14 @@ export class DashboardPageComponent {
     this.isPlatformAdmin() ? PLATFORM_ACTIONS : this.hasCompany ? QUICK_ACTIONS.filter((action) => this.allowed(action)) : [],
   );
   /** undefined = loading, null = unavailable, number = count. */
-  readonly counts = signal<Partial<Record<StatKey, number | null>>>({});
+  readonly counts = signal<Partial<Record<StepKey, number | null>>>({});
   /** The setup checklist only lists steps this user can do. */
   readonly steps = computed(() =>
     this.isPlatformAdmin() || !this.hasCompany
       ? []
       : SETUP_STEPS.filter((step) => this.allowed(step)).map((step) => ({
           ...step,
-          done: (this.counts()[step.key] ?? 0) > 0,
+          done: step.key === 'branding' ? !!this.access.current()?.company?.logo : (this.counts()[step.key] ?? 0) > 0,
         })),
   );
   readonly stepsDone = computed(() => this.steps().filter((step) => step.done).length);
@@ -158,7 +173,7 @@ export class DashboardPageComponent {
       });
       return;
     }
-    const shown = new Set(this.stats().map((stat) => stat.key));
+    const shown = new Set<StepKey>([...this.stats().map((stat) => stat.key), ...this.steps().map((step) => step.key)]);
     if (shown.has('users')) {
       this.load('users', this.users.all().pipe(map((items) => items.length)));
     }
@@ -171,6 +186,15 @@ export class DashboardPageComponent {
     if (shown.has('locations')) {
       this.load('locations', this.total(this.locations.list({ page: 1, pageSize: 1 })));
     }
+    if (shown.has('warehouses')) {
+      this.load('warehouses', this.total(this.warehouses.list({ page: 1, pageSize: 1 })));
+    }
+    if (shown.has('products')) {
+      this.load('products', this.total(this.products.list({ page: 1, pageSize: 1 })));
+    }
+    if (shown.has('customers')) {
+      this.load('customers', this.total(this.customers.list({ page: 1, pageSize: 1 })));
+    }
   }
 
   private allowed(gate: Gate): boolean {
@@ -181,7 +205,7 @@ export class DashboardPageComponent {
     return request.pipe(map((page) => page.total));
   }
 
-  private load(key: StatKey, request: Observable<number>): void {
+  private load(key: StepKey, request: Observable<number>): void {
     request.pipe(catchError(() => of(null))).subscribe((count) => {
       this.counts.update((counts) => ({ ...counts, [key]: count }));
     });

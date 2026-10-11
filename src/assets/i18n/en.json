@@ -154,7 +154,11 @@
       "locations": "Add your first location",
       "departments": "Create departments",
       "teams": "Organise people into teams",
-      "users": "Invite your colleagues"
+      "users": "Invite your colleagues",
+      "branding": "Add your company logo and colours",
+      "warehouses": "Create your first warehouse",
+      "products": "Add your products",
+      "customers": "Add your customers"
     },
     "setupDone": "Your organisation is all set up.",
     "welcomeTextPlatform": "Here's a quick look at the companies on Tanzim."
