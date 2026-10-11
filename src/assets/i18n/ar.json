@@ -1977,6 +1977,10 @@
     "passwordChanged": "تم تغيير كلمة المرور."
   },
   "systemLogs": {
+    "export": "تصدير إلى Excel",
+    "history": "السجل",
+    "noHistory": "لا توجد تغييرات مسجّلة بعد.",
+    "loadMore": "عرض المزيد",
     "title": "سجل النظام",
     "subtitle": "من عدّل ماذا ومتى",
     "detailTitle": "تفاصيل التعديل",

@@ -1977,6 +1977,10 @@
     "passwordChanged": "Password changed."
   },
   "systemLogs": {
+    "export": "Export to Excel",
+    "history": "History",
+    "noHistory": "No changes recorded yet.",
+    "loadMore": "Show more",
     "title": "System log",
     "subtitle": "Who changed what, and when",
     "detailTitle": "Change details",

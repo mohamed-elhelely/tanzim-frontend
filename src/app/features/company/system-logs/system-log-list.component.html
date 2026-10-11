@@ -1,4 +1,4 @@
-<app-page-header title="systemLogs.title" subtitle="systemLogs.subtitle"></app-page-header>
+<app-page-header title="systemLogs.title" subtitle="systemLogs.subtitle" [actions]="headerActions()"></app-page-header>
 
 @if (table.error(); as err) {
   <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403" (retry)="table.load()"></app-error-state>

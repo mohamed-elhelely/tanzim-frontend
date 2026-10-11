@@ -91,6 +91,16 @@ describe('ServerTable', () => {
     expect(fetch.calls.mostRecent().args[0]).toEqual(jasmine.objectContaining({ search: undefined, filters: {} }));
   });
 
+  it('reports the applied search and filters, not half-edited ones', () => {
+    const fetch = jasmine.createSpy('fetch').and.returnValue(of(page([])));
+    const fields = { status: 'draft' as string | null };
+    const { table } = createTable(fetch, { filters: () => ({ ...fields }) });
+    table.apply('abc');
+    fields.status = 'posted';
+    table.searchDraft.set('xyz');
+    expect(table.appliedQuery()).toEqual({ search: 'abc', filters: { status: 'draft' } });
+  });
+
   it('keeps only the newest request', () => {
     const first = new Subject<Paginated<number>>();
     const fetch = jasmine.createSpy('fetch').and.returnValues(first, of(page([9])));

@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
@@ -9,14 +9,17 @@ import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
+import { AppError } from '../../../core/errors/app-error';
 import { LanguageService } from '../../../core/services/language.service';
+import { NotificationService } from '../../../core/services/notification.service';
 import { NAV_ITEMS, NavItem } from '../../../layout/nav/nav-items';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
-import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
+import { PageHeaderAction, PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
 import { UserNamePipe } from '../../../shared/pipes/user-name.pipe';
 import { ServerTable } from '../../../shared/table/server-table';
+import { saveFile } from '../../../shared/utils/save-file';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { SelectOption } from '../company.models';
 import { CompanyUserService } from '../users/company-user.service';
@@ -73,6 +76,7 @@ function resourceLabels(items: NavItem[]): Map<string, string> {
 export class SystemLogListComponent implements OnInit {
   private readonly api = inject(SystemLogService);
   private readonly users = inject(CompanyUserService);
+  private readonly notifications = inject(NotificationService);
   readonly language = inject(LanguageService);
 
   action: AuditAction | null = null;
@@ -111,6 +115,17 @@ export class SystemLogListComponent implements OnInit {
   readonly sourceOptions = AUDIT_SOURCES.map((source) => ({ value: source, label: `systemLogs.sources.${source}` }));
   readonly userOptions = signal<SelectOption[]>([]);
 
+  readonly exporting = signal(false);
+  readonly headerActions = computed<PageHeaderAction[]>(() => [
+    {
+      label: 'systemLogs.export',
+      icon: this.exporting() ? 'pi pi-spin pi-spinner' : 'pi pi-file-excel',
+      severity: 'secondary',
+      disabled: this.exporting(),
+      onClick: () => this.export(),
+    },
+  ]);
+
   /** The row shown in the drawer. */
   readonly selected = signal<AuditLogEntry | null>(null);
   readonly changeRows = auditChangeRows;
@@ -127,6 +142,21 @@ export class SystemLogListComponent implements OnInit {
 
   actionSeverity(action: AuditAction): AuditSeverity {
     return AUDIT_ACTION_SEVERITY[action] ?? 'secondary';
+  }
+
+  /** Downloads what the table shows: the applied search and filters, not half-edited ones. */
+  export(): void {
+    this.exporting.set(true);
+    this.api.exportXlsx(this.table.appliedQuery()).subscribe({
+      next: (blob) => {
+        this.exporting.set(false);
+        saveFile(blob, `system-log_${new Date().toISOString().slice(0, 10)}.xlsx`);
+      },
+      error: (error: AppError) => {
+        this.exporting.set(false);
+        this.notifications.error(error.message);
+      },
+    });
   }
 
   open(row: AuditLogEntry): void {

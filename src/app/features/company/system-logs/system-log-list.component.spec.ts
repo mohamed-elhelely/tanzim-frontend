@@ -92,6 +92,24 @@ describe('SystemLogListComponent', () => {
     expect(component.dateFrom).toBe('');
   });
 
+  it('exports the applied search and filters', () => {
+    const fixture = create();
+    const component = fixture.componentInstance;
+    component.action = 'delete';
+    component.table.apply('SO-2026');
+    httpMock.expectOne((r) => r.url === URL && r.params.get('action') === 'delete').flush(envelope([], 0));
+    component.action = 'create';
+
+    component.export();
+    expect(component.exporting()).toBeTrue();
+    const req = httpMock.expectOne((r) => r.url === `${URL}export/`);
+    expect(req.request.params.get('action')).toBe('delete');
+    expect(req.request.params.get('search')).toBe('SO-2026');
+    expect(req.request.responseType).toBe('blob');
+    req.flush(new Blob(['x']));
+    expect(component.exporting()).toBeFalse();
+  });
+
   it('opens the change details', () => {
     const fixture = create();
     fixture.nativeElement.querySelector('tbody tr').click();

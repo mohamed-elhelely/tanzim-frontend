@@ -108,6 +108,11 @@ export class ServerTable<T> {
     });
   }
 
+  /** The search and filters the table is showing, e.g. to export exactly those rows. */
+  appliedQuery(): { search?: string; filters: Record<string, string | number> } {
+    return { search: this.searchTerm || undefined, filters: { ...(this.appliedFilters ?? this.readFilters()) } };
+  }
+
   /** Empty the search box, reset the filter fields and show everything again. */
   clear(): void {
     this.searchDraft.set('');
