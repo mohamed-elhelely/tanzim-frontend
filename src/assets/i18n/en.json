@@ -407,7 +407,15 @@
         "manageModules": "Modules",
         "moduleEnabled": "Module enabled.",
         "moduleDisabled": "Module disabled.",
-        "modulesHint": "Modules can only be enabled on an active subscription. Changes apply to the company straight away."
+        "modulesHint": "Changes apply to the company straight away; its users see the new menu on their next page load.",
+        "modulesLocked": "This subscription is {{status}}: modules can only be changed on a trial or active subscription.",
+        "confirmDisableModule": "Turn off \"{{name}}\" for this company? Its users lose access to it straight away.",
+        "disableModule": "Turn off",
+        "perUser": "per user",
+        "estimatedCost": "Estimated modules cost",
+        "newModulesHint": "Added once the subscription is created.",
+        "newModulesLocked": "Modules can only be added to a trial or active subscription; these will be skipped.",
+        "modulesFailed": "The subscription was saved, but these modules could not be added: {{modules}}"
       },
       "invoices": {
         "title": "Platform invoices",
@@ -1398,16 +1406,8 @@
       "locations": "Locations",
       "inventory": "Inventory"
     },
-    "export": {
-      "title": "Export",
-      "hint": "Downloads every record of this type for your company."
-    },
     "import": {
-      "title": "Import",
-      "hint": "Start from the template, fill in the rows, then check the file before importing it."
-    },
-    "check": {
-      "title": "File check"
+      "hint": "Start from the template, fill in the rows, then import the file. If any row has a problem nothing is saved, and the problems are listed so you can fix them."
     },
     "history": {
       "title": "Recent imports and exports"
@@ -1431,7 +1431,6 @@
     },
     "fields": {
       "resource": "Data",
-      "format": "Format",
       "row": "Row",
       "result": "Result",
       "data": "Data",
@@ -1446,12 +1445,9 @@
     "actions": {
       "export": "Export",
       "template": "Download template",
-      "chooseFile": "Choose a CSV or Excel file",
-      "changeFile": "Choose another file",
-      "removeFile": "Remove file",
-      "check": "Check file",
       "import": "Import",
-      "download": "Download"
+      "download": "Download",
+      "close": "Close"
     },
     "hints": {
       "pickResource": "Choose what to import or export",
@@ -1459,13 +1455,13 @@
       "fileType": "Choose a .csv or .xlsx file.",
       "fileSize": "The file is larger than 5 MB.",
       "unreadable": "The file could not be read.",
-      "checkFirst": "Check the file first; Import is enabled when no row has errors.",
-      "fixErrors": "Fix the rows with errors in your file, then check it again.",
-      "readyToImport": "No errors found. You can import the file.",
       "imported": "Imported: {{new}} new, {{updated}} updated."
     },
-    "toasts": {
-      "imported": "{{count}} rows imported."
+    "failed": {
+      "title": "Import failed",
+      "nothingSaved": "Nothing was saved. Fix the rows below in your file and import it again.",
+      "onlyProblems": "Only rows with problems",
+      "hint": "Tip: download the template to see the expected columns."
     }
   },
   "analytics": {

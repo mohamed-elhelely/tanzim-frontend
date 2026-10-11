@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { BaseApiService } from '../../../core/api/base-api.service';
 import { CrudApi } from '../../../core/api/crud-api';
+import { SubscriptionModule } from '../../billing/billing.models';
 import {
   AdminInvoice,
   BillingModule,
@@ -37,10 +38,14 @@ export class BillingModuleService extends CrudApi<BillingModule, BillingModulePa
 export class SubscriptionService extends CrudApi<Subscription, SubscriptionPayload> {
   protected readonly path = 'subscriptions/v1/subscriptions/';
 
-  addModule(id: number, moduleId: number): Observable<void> {
-    return this.post<unknown>(`${this.detailPath(id)}add_module/`, { module_id: moduleId }).pipe(map(() => undefined));
+  /** 400 unless the subscription is trial/active or when the module is already enabled; 404 for an unknown module. */
+  addModule(id: number, moduleId: number): Observable<SubscriptionModule> {
+    return this.post<SubscriptionModule>(`${this.detailPath(id)}add_module/`, { module_id: moduleId }).pipe(
+      map((r) => r.data as SubscriptionModule),
+    );
   }
 
+  /** 204; 404 when the module isn't on the subscription. */
   removeModule(id: number, moduleId: number): Observable<void> {
     return this.post<unknown>(`${this.detailPath(id)}remove_module/`, { module_id: moduleId }).pipe(map(() => undefined));
   }

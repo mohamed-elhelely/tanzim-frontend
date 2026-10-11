@@ -2,10 +2,14 @@
 
 export type SubscriptionStatus = 'trial' | 'active' | 'past_due' | 'canceled' | 'expired';
 
+/** A module attached to a subscription; only `is_active` entries count as enabled. */
 export interface SubscriptionModule {
   id: number;
-  module: { id: number; name: string; code: string; is_active: boolean };
+  module: { id: number; name: string; code: string; is_active: boolean; price_per_user?: string; icon?: string };
+  price_per_user?: string;
   is_active: boolean;
+  package_name?: string | null;
+  enabled_at?: string;
 }
 
 export interface CurrentSubscription {

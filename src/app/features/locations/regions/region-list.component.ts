@@ -10,6 +10,7 @@ import { LanguageService } from '../../../core/services/language.service';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
 import { PageHeaderAction, PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
+import { ImportExportActionsComponent } from '../../import-export/import-export-actions.component';
 import { LocalizedNamePipe } from '../../../shared/pipes/localized-name.pipe';
 import { ServerTable } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
@@ -28,6 +29,7 @@ import { RegionService } from './region.service';
     IconFieldModule,
     InputIconModule,
     PageHeaderComponent,
+    ImportExportActionsComponent,
     EmptyStateComponent,
     ErrorStateComponent,
     LocalizedNamePipe,

@@ -1,4 +1,6 @@
-<app-page-header title="inventory.supplierProducts.title" [actions]="headerActions"></app-page-header>
+<app-page-header title="inventory.supplierProducts.title" [actions]="headerActions">
+  <app-import-export-actions resource="supplierProduct" (imported)="table.load()"></app-import-export-actions>
+</app-page-header>
 
 @if (table.error(); as err) {
   <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403" (retry)="table.load()"></app-error-state>

@@ -10,6 +10,7 @@ import { ConfirmService } from '../../../core/services/confirm.service';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
 import { PageHeaderAction, PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
+import { ImportExportActionsComponent } from '../../import-export/import-export-actions.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
 import { ServerTable } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
@@ -26,6 +27,7 @@ import { ProductService } from './product.service';
     IconFieldModule,
     InputIconModule,
     PageHeaderComponent,
+    ImportExportActionsComponent,
     EmptyStateComponent,
     ErrorStateComponent,
     StatusBadgeComponent,

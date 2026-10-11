@@ -52,14 +52,4 @@ describe('SubscriptionListComponent', () => {
     fixture.componentInstance.onFilterChange();
     httpMock.expectOne((r) => r.url === URL && r.params.get('company') === '1').flush(envelope([], 0));
   });
-
-  it('switches a module on, then shows the subscription as saved', () => {
-    const fixture = setup();
-    httpMock.expectOne((r) => r.url === URL && r.params.has('page')).flush(envelope([subscription()], 1));
-    fixture.componentInstance.openModules(subscription());
-    httpMock.expectOne('/api/subscriptions/v1/modules/').flush(envelope([{ id: 7, name: 'Inventory', code: 'inventory', is_active: true }]));
-
-    fixture.componentInstance.toggleModule(fixture.componentInstance.catalog()[0], true);
-    expect(httpMock.expectOne(`${URL}2/add_module/`).request.body).toEqual({ module_id: 7 });
-  });
 });

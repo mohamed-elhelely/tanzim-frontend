@@ -75,6 +75,20 @@ export class AccessService extends BaseApiService {
     }
   }
 
+  /**
+   * Fetches /me again (e.g. after the company's subscription modules changed) so menus follow without a
+   * re-login. Keeps the current answer until the new one arrives, so nothing flashes.
+   */
+  reload(): void {
+    this.get<CurrentUser>('company/v1/me/').subscribe({
+      next: (response) => {
+        this.me.set(response.data);
+        this.state.set('ready');
+      },
+      error: () => undefined,
+    });
+  }
+
   private reset(): void {
     this.me.set(null);
     this.state.set('idle');

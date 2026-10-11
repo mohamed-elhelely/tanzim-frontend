@@ -21,7 +21,9 @@ export function toAppError(error: unknown): AppError {
         raw: error,
       };
     }
-    return { status: error.status, message: error.message, errors: {}, raw: error };
+    // DRF's plain `{ "detail": "…" }` (some actions answer outside the envelope).
+    const detail = body && typeof body === 'object' ? (body as { detail?: unknown }).detail : undefined;
+    return { status: error.status, message: typeof detail === 'string' ? detail : error.message, errors: {}, raw: error };
   }
 
   return {

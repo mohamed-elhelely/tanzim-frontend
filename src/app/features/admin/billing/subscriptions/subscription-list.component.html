@@ -123,24 +123,6 @@
 >
   @if (modulesFor(); as subscription) {
     <p class="mb-4 text-sm text-gray-500 dark:text-gray-400">{{ companyName(subscription) }} — {{ subscription.plan_name }}</p>
-    <ul class="flex flex-col divide-y divide-gray-100 dark:divide-gray-800">
-      @for (module of catalog(); track module.id) {
-        <li class="flex items-center justify-between gap-3 py-2">
-          <span class="flex min-w-0 flex-col">
-            <span class="text-sm font-medium">{{ module.name }}</span>
-            <span class="font-mono text-xs text-gray-500 dark:text-gray-400" dir="ltr">{{ module.code }}</span>
-          </span>
-          <p-toggleswitch
-            [ngModel]="enabled().has(module.id)"
-            (ngModelChange)="toggleModule(module, $event)"
-            [disabled]="busyModule() !== null"
-            [ariaLabel]="module.name"
-          ></p-toggleswitch>
-        </li>
-      } @empty {
-        <li class="py-6 text-center text-sm text-gray-500 dark:text-gray-400">{{ 'common.empty' | translate }}</li>
-      }
-    </ul>
-    <p class="mt-4 text-xs text-gray-500 dark:text-gray-400">{{ 'admin.billing.subscriptions.modulesHint' | translate }}</p>
+    <app-subscription-modules [subscription]="subscription" (changed)="table.load()"></app-subscription-modules>
   }
 </p-dialog>
