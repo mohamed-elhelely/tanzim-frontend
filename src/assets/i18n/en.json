@@ -2029,5 +2029,10 @@
       "task": "Background task",
       "system": "System"
     }
+  },
+  "palette": {
+    "open": "Search screens (Ctrl+K)",
+    "placeholder": "Go to…",
+    "noResults": "No matching screens"
   }
 }
