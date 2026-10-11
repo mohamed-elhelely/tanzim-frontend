@@ -31,6 +31,7 @@ import {
   SalesOrderStatus,
 } from '../sales.models';
 import { SalesOrderService } from './sales-order.service';
+import { RecordHistoryComponent } from '../../company/system-logs/record-history.component';
 
 /** Which workflow actions the backend allows from each status (sales/services.py). */
 const CAN_CANCEL: SalesOrderStatus[] = ['draft', 'confirmed', 'on_hold'];
@@ -52,6 +53,7 @@ interface ShipRow {
 @Component({
   selector: 'app-sales-order-detail',
   imports: [
+    RecordHistoryComponent,
     DatePipe,
     DecimalPipe,
     FormsModule,

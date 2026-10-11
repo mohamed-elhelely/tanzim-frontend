@@ -20,6 +20,7 @@ import { StatusBadgeComponent } from '../../../shared/components/status-badge/st
 import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { DELIVERY_STATUS_SEVERITY, DeliveryNote, SHIPPING_METHODS, ShippingMethod } from '../sales.models';
 import { DeliveryNoteService } from './delivery-note.service';
+import { RecordHistoryComponent } from '../../company/system-logs/record-history.component';
 
 /**
  * One delivery note and its workflow: draft → confirmed → in transit → delivered or failed
@@ -28,6 +29,7 @@ import { DeliveryNoteService } from './delivery-note.service';
 @Component({
   selector: 'app-delivery-note-detail',
   imports: [
+    RecordHistoryComponent,
     DecimalPipe,
     FormsModule,
     RouterLink,

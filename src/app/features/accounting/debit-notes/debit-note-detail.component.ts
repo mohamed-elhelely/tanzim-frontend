@@ -13,11 +13,13 @@ import { StatusBadgeComponent } from '../../../shared/components/status-badge/st
 import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { DEBIT_NOTE_SEVERITY, DebitNote } from '../accounting.models';
 import { DebitNoteService } from './debit-note.service';
+import { RecordHistoryComponent } from '../../company/system-logs/record-history.component';
 
 /** One debit note. Drafts: edit, issue (posts it), delete. Issued: cancel with a reason. */
 @Component({
   selector: 'app-debit-note-detail',
   imports: [
+    RecordHistoryComponent,
     DatePipe,
     DecimalPipe,
     RouterLink,

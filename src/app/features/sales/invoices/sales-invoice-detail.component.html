@@ -189,6 +189,8 @@
         <p class="text-sm text-gray-500 dark:text-gray-400">{{ 'sales.hints.noPayments' | translate }}</p>
       }
     </p-card>
+
+    <app-record-history resource="salesinvoice" [objectId]="invoice.id"></app-record-history>
   </div>
 
   <p-dialog

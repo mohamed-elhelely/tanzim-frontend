@@ -14,11 +14,13 @@ import { StatusBadgeComponent } from '../../../shared/components/status-badge/st
 import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { SupplierPayment } from '../accounting.models';
 import { SupplierPaymentService } from './supplier-payment.service';
+import { RecordHistoryComponent } from '../../company/system-logs/record-history.component';
 
 /** One supplier payment with its allocations. Completed payments can be voided (with a reason). */
 @Component({
   selector: 'app-supplier-payment-detail',
   imports: [
+    RecordHistoryComponent,
     DatePipe,
     DecimalPipe,
     TranslatePipe,

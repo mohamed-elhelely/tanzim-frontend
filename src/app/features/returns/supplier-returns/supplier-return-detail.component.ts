@@ -19,6 +19,7 @@ import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { DebitNoteService } from '../../accounting/debit-notes/debit-note.service';
 import { SUPPLIER_RETURN_SEVERITY, SupplierReturn } from '../returns.models';
 import { SupplierReturnService } from './supplier-return.service';
+import { RecordHistoryComponent } from '../../company/system-logs/record-history.component';
 
 const MONEY = /^\d+(\.\d{1,4})?$/;
 
@@ -26,6 +27,7 @@ const MONEY = /^\d+(\.\d{1,4})?$/;
 @Component({
   selector: 'app-supplier-return-detail',
   imports: [
+    RecordHistoryComponent,
     DecimalPipe,
     FormsModule,
     RouterLink,

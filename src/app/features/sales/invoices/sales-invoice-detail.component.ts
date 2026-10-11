@@ -30,6 +30,7 @@ import {
   SalesInvoiceStatus,
 } from '../sales.models';
 import { SalesInvoiceService } from './sales-invoice.service';
+import { RecordHistoryComponent } from '../../company/system-logs/record-history.component';
 
 const PAYABLE: SalesInvoiceStatus[] = ['issued', 'overdue'];
 const CANCELLABLE: SalesInvoiceStatus[] = ['draft', 'issued', 'overdue'];
@@ -48,6 +49,7 @@ function today(): string {
 @Component({
   selector: 'app-sales-invoice-detail',
   imports: [
+    RecordHistoryComponent,
     DatePipe,
     DecimalPipe,
     FormsModule,
