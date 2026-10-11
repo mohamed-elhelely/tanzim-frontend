@@ -6,6 +6,8 @@ Per language:
   2. render the title card, end card and one on-screen label per scene (HTML -> PNG, so Arabic shapes correctly)
   3. synthesize the narration of each scene
        --voice azure   : Azure Speech neural voices (natural). Needs AZURE_SPEECH_KEY and AZURE_SPEECH_REGION.
+       --voice voicetut: VoiceTut-TTS, free and local on the GPU, natural Egyptian Arabic (default).
+                         Needs its own environment: see README (python at ~/.tanzim/voicetut-venv).
        --voice windows : offline Windows voices (robotic; only for previewing timing and visuals)
   4. encode each screen with a slow zoom, add the label, join scenes, add subtitles
 Outputs next to index.html: video/tanzim-tour-<lang>.mp4 / .srt / .vtt
@@ -118,6 +120,8 @@ body { font-family: 'IBM Plex Sans', 'IBM Plex Sans Arabic', sans-serif; }
 .label b { display: grid; place-items: center; min-width: 64px; height: 64px; border-radius: 14px; background: #6366f1;
   font: 600 30px 'IBM Plex Sans'; padding: 0 10px; }
 .label span { font-size: 44px; font-weight: 600; }
+.chapter .num { font: 600 44px 'IBM Plex Sans'; color: #a5b4fc; letter-spacing: .08em; }
+.chapter h1 { font-size: 110px; }
 """
 
 
@@ -139,8 +143,14 @@ def render_overlays(tour, lang, out, count):
              "title.png", False)
         end = {"en": "Thanks for watching", "ar": "شكرًا إنك اتفرجت"}[lang]
         shot(f"<div class='card'><div class='logo'>ت</div><h1>{end}</h1><p>{tour['subtitle'][lang]}</p></div>", "end.png", False)
-        for i, s in enumerate(tour["scenes"]):
-            n = f"{i:02d} / {count - 1:02d}" if 0 < i < count - 1 else "•"
+        content = [s["id"] for s in tour["scenes"][1:-1] if not s.get("card")]
+        part = {"en": "Part", "ar": "الجزء"}[lang]
+        for s in tour["scenes"]:
+            if s.get("card"):
+                shot(f"<div class='card chapter'><div class='num'>{part} {s['chapter']}</div><h1>{s['label'][lang]}</h1></div>",
+                     f"card-{s['id']}.png", False)
+                continue
+            n = f"{content.index(s['id']) + 1:02d} / {len(content):02d}" if s["id"] in content else "•"
             shot(f"<div class='label'><b dir='ltr'>{n}</b><span>{s['label'][lang]}</span></div>", f"label-{s['id']}.png", True)
         b.close()
 
@@ -155,6 +165,10 @@ def sentences(text):
         else:
             out.append(p)
     return out
+
+
+def spoken_sentences(text):
+    return [p.strip() for p in re.split(r"(?<=[.!?؟])\s+", text) if p.strip()]
 
 
 def ts(sec, sep):
@@ -185,7 +199,10 @@ def still_clip(ff, png, dur, out, label=None, zoom=True):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--voice", choices=["azure", "windows"], default="azure")
+    ap.add_argument("--voice", choices=["voicetut", "azure", "windows"], default="voicetut")
+    ap.add_argument("--ar-speaker", default="Mohamed", help="VoiceTut speaker for Arabic")
+    ap.add_argument("--en-speaker", default="Mohamed", help="VoiceTut speaker for English")
+    ap.add_argument("--tts-python", default=str(Path.home() / ".tanzim" / "voicetut-venv" / "Scripts" / "python.exe"))
     ap.add_argument("--lang", nargs="+", default=["ar", "en"], choices=["ar", "en"])
     ap.add_argument("--ar-voice", default="ar-EG-ShakirNeural")
     ap.add_argument("--en-voice", default="en-US-AndrewNeural")
@@ -211,7 +228,7 @@ def main():
 
         if not a.skip_capture:
             print(f"[{lang}] capturing screens")
-            shots = [{**sh, "name": f"{s['id']}-{i}"} for s in scenes for i, sh in enumerate(s["shots"])]
+            shots = [{**sh, "name": f"{s['id']}-{i}"} for s in scenes if not s.get("card") for i, sh in enumerate(s["shots"])]
             (L / "shots.json").write_text(json.dumps(shots), encoding="utf-8")
             run([sys.executable, str(HERE / "capture_app.py"), "--shots", str(L / "shots.json"), "--lang", lang,
                  "--out", str(shots_dir), "--base", a.base])
@@ -222,6 +239,15 @@ def main():
         print(f"[{lang}] voice ({a.voice})")
         if a.voice == "windows":
             tts_windows(scenes, lang, wav_dir)
+        if a.voice == "voicetut":
+            jobs = {"speaker": a.ar_speaker if lang == "ar" else a.en_speaker, "num_step": 32, "guidance_scale": 2.5,
+                    "pause": 0.3, "language": "Egyptian" if lang == "ar" else "English",
+                    "jobs": [{"sentences": spoken_sentences(s["say"][lang]),
+                              "out": str(wav_dir / f"{i + 1:02d}-{s['id']}.wav")} for i, s in enumerate(scenes)]}
+            (wav_dir / "jobs.json").write_text(json.dumps(jobs, ensure_ascii=False), encoding="utf-8")
+            r = subprocess.run([a.tts_python, str(HERE / "voicetut_say.py"), str(wav_dir / "jobs.json")])
+            if r.returncode:
+                sys.exit("VoiceTut failed (see the output above)")
         for i, s in enumerate(scenes):
             wav = wav_dir / f"{i + 1:02d}-{s['id']}.wav"
             if a.voice == "azure":
@@ -237,6 +263,12 @@ def main():
         for i, s in enumerate(scenes):
             speech = seconds(s["_wav"])
             total = LEAD + speech + TAIL
+            if s.get("card"):
+                clip = clip_dir / f"{i + 1:02d}-{s['id']}.mp4"
+                still_clip(ff, ov_dir / f"card-{s['id']}.png", total, clip, zoom=False)
+                parts.append(([clip], s["_wav"], total))
+                t += total
+                continue
             n = len(s["shots"])
             vids = []
             for k in range(n):
@@ -246,13 +278,24 @@ def main():
                            label=ov_dir / f"label-{s['id']}.png" if k == 0 else None)
                 vids.append(clip)
             parts.append((vids, s["_wav"], total))
-            start = t + LEAD
-            segs = sentences(s["say"][lang])
-            chars = sum(len(x) for x in segs) or 1
-            for x in segs:
-                d = speech * len(x) / chars
-                cues.append((start, start + d, x))
-                start += d
+            timing = Path(str(s["_wav"]) + ".json")
+            if timing.exists():  # exact sentence times from VoiceTut; long sentences split at commas by length
+                for c in json.loads(timing.read_text(encoding="utf-8")):
+                    pieces = sentences(c["text"])
+                    chars = sum(len(x) for x in pieces) or 1
+                    start = t + LEAD + c["start"]
+                    for x in pieces:
+                        d = (c["end"] - c["start"]) * len(x) / chars
+                        cues.append((start, start + d, x))
+                        start += d
+            else:
+                start = t + LEAD
+                segs = sentences(s["say"][lang])
+                chars = sum(len(x) for x in segs) or 1
+                for x in segs:
+                    d = speech * len(x) / chars
+                    cues.append((start, start + d, x))
+                    start += d
             t += total
         end = clip_dir / "999-end.mp4"
         still_clip(ff, ov_dir / "end.png", CARD, end, zoom=False)
