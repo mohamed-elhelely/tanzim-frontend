@@ -2045,5 +2045,12 @@
     "namePlaceholder": "Name this view",
     "save": "Save current filters",
     "applyFirst": "Apply a search or filter first, then save it."
+  },
+  "print": {
+    "invoice": "Invoice",
+    "print": "Print / PDF",
+    "close": "Close",
+    "billTo": "Bill to",
+    "discount": "Discount"
   }
 }

@@ -16,6 +16,14 @@ export const routes: Routes = [
     ],
   },
   {
+    // Printable documents, outside the shell (no sidebar or header on paper).
+    path: 'print/sales-invoices/:id',
+    canActivate: [authGuard, companyMemberGuard, permissionGuard],
+    data: { permission: 'view_salesinvoice', titleKey: 'print.invoice' },
+    loadComponent: () =>
+      import('./features/sales/invoices/sales-invoice-print.component').then((m) => m.SalesInvoicePrintComponent),
+  },
+  {
     path: '',
     component: ShellComponent,
     canActivate: [authGuard],

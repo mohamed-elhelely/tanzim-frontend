@@ -56,14 +56,21 @@ describe('SalesInvoiceDetailComponent', () => {
   });
 
   it('offers the actions each state allows', () => {
-    expect(labels(setup())).toEqual(['sales.actions.editDetails', 'sales.actions.issueInvoice', 'common.delete', 'sales.actions.cancelInvoice']);
+    expect(labels(setup())).toEqual(['print.print', 'sales.actions.editDetails', 'sales.actions.issueInvoice', 'common.delete', 'sales.actions.cancelInvoice']);
     TestBed.resetTestingModule();
-    expect(labels(setup({ status: 'issued' }))).toEqual(['sales.actions.recordPayment', 'sales.actions.cancelInvoice']);
+    expect(labels(setup({ status: 'issued' }))).toEqual(['print.print', 'sales.actions.recordPayment', 'sales.actions.cancelInvoice']);
     TestBed.resetTestingModule();
     // A paid amount blocks cancelling (refund first).
-    expect(labels(setup({ status: 'issued', amount_paid: '100.0000', amount_due: '187.0000' }))).toEqual(['sales.actions.recordPayment']);
+    expect(labels(setup({ status: 'issued', amount_paid: '100.0000', amount_due: '187.0000' }))).toEqual(['print.print', 'sales.actions.recordPayment']);
     TestBed.resetTestingModule();
-    expect(labels(setup({ status: 'paid', amount_paid: '287.0000', amount_due: '0.0000' }))).toEqual([]);
+    expect(labels(setup({ status: 'paid', amount_paid: '287.0000', amount_due: '0.0000' }))).toEqual(['print.print']);
+  });
+
+  it('opens the printable invoice in a new tab, printing by itself', () => {
+    const open = spyOn(window, 'open');
+    const fixture = setup();
+    run(fixture, 'print.print');
+    expect(open).toHaveBeenCalledWith('/print/sales-invoices/1?print=1', '_blank', 'noopener');
   });
 
   it('saves draft details and reloads', () => {

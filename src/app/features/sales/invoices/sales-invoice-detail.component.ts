@@ -98,7 +98,9 @@ export class SalesInvoiceDetailComponent implements OnInit {
     if (!invoice) {
       return [];
     }
-    const actions: PageHeaderAction[] = [];
+    const actions: PageHeaderAction[] = [
+      { label: 'print.print', icon: 'pi pi-print', severity: 'secondary', onClick: () => this.openPrint(invoice.id) },
+    ];
     if (invoice.status === 'draft') {
       actions.push({ label: 'sales.actions.editDetails', icon: 'pi pi-pencil', severity: 'secondary', onClick: () => this.openDetails() });
       actions.push({ label: 'sales.actions.issueInvoice', icon: 'pi pi-send', onClick: () => this.issue() });
@@ -128,6 +130,12 @@ export class SalesInvoiceDetailComponent implements OnInit {
 
   goBack(): void {
     void this.router.navigate(['/sales/invoices']);
+  }
+
+  /** The printable invoice in a new tab; it opens the print dialog (which also saves as PDF) by itself. */
+  openPrint(id: number): void {
+    const url = this.router.serializeUrl(this.router.createUrlTree(['/print/sales-invoices', id], { queryParams: { print: 1 } }));
+    window.open(url, '_blank', 'noopener');
   }
 
   paymentSeverity(payment: InvoicePayment) {
