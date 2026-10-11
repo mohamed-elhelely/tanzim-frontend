@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmationService } from 'primeng/api';
-import { Observable } from 'rxjs';
+import { Observable, catchError, concatMap, from, map, of, toArray } from 'rxjs';
 import { AppError } from '../errors/app-error';
 import { NotificationService } from './notification.service';
 
@@ -54,6 +54,49 @@ export class ConfirmService {
           },
           error: (error: AppError) => this.showClientError(error),
         }),
+    });
+  }
+
+  /**
+   * Asks "Delete {count} items?", then deletes them one at a time (so one refusal doesn't stop the rest) and
+   * reports the outcome: "Deleted n", plus how many the backend refused and its first reason (e.g. "still used
+   * by …"). `onDone` gets the number deleted and runs whenever anything was attempted, usually a reload.
+   */
+  confirmBulkDelete<T>(rows: T[], remove: (row: T) => Observable<unknown>, onDone: (deleted: number) => void): void {
+    if (!rows.length) {
+      return;
+    }
+    this.confirmation.confirm({
+      key: CONFIRM_DIALOG_KEY,
+      header: this.translate.instant('common.confirm'),
+      message: this.translate.instant('common.confirmBulkDelete', { count: rows.length }),
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: this.translate.instant('common.delete'),
+      rejectLabel: this.translate.instant('common.cancel'),
+      acceptButtonStyleClass: 'p-button-danger',
+      accept: () =>
+        from(rows)
+          .pipe(
+            concatMap((row) =>
+              remove(row).pipe(
+                map(() => null),
+                catchError((error: AppError) => of(error)),
+              ),
+            ),
+            toArray(),
+          )
+          .subscribe((results) => {
+            const failures = results.filter((result): result is AppError => result !== null);
+            const deleted = results.length - failures.length;
+            if (deleted) {
+              this.notifications.success(this.translate.instant('common.bulkDeleted', { count: deleted }));
+            }
+            if (failures.length) {
+              const reason = failures.find((error) => error.status >= 400 && error.status < 500)?.message ?? '';
+              this.notifications.error(this.translate.instant('common.bulkDeleteFailed', { count: failures.length, reason }));
+            }
+            onDone(deleted);
+          }),
     });
   }
 

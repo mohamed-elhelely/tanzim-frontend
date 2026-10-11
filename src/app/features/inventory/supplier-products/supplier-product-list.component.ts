@@ -64,4 +64,12 @@ export class SupplierProductListComponent implements OnInit {
   confirmDelete(row: SupplierProduct): void {
     this.confirm.confirmDelete(`${row.supplier?.name ?? ''} · ${row.product_variant?.sku ?? ''}`, () => this.api.remove(row.id), () => this.table.afterDelete());
   }
+
+  confirmBulkDelete(): void {
+    this.confirm.confirmBulkDelete(
+      this.table.selection(),
+      (row: SupplierProduct) => this.api.remove(row.id),
+      (deleted) => this.table.afterBulkDelete(deleted),
+    );
+  }
 }

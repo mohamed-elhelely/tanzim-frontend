@@ -36,6 +36,16 @@
           styleClass="w-full sm:w-auto"
         ></p-button>
       }
+      @if (table.selection().length) {
+        <p-button
+          [label]="'common.deleteSelected' | translate: { count: table.selection().length }"
+          icon="pi pi-trash"
+          severity="danger"
+          [outlined]="true"
+          (onClick)="confirmBulkDelete()"
+          styleClass="w-full sm:ms-auto sm:w-auto"
+        ></p-button>
+      }
     </div>
     <div class="overflow-x-auto">
       <p-table
@@ -50,10 +60,13 @@
         [rowsPerPageOptions]="[10, 25, 50]"
         [loading]="table.loading()"
         dataKey="id"
+        [selection]="table.selection()"
+        (selectionChange)="table.selection.set($event)"
         size="small"
       >
         <ng-template pTemplate="header">
           <tr>
+            <th class="w-12"><p-tableHeaderCheckbox></p-tableHeaderCheckbox></th>
             <th pSortableColumn="name_en">
               {{ 'company.fields.nameEn' | translate }} <p-sortIcon field="name_en"></p-sortIcon>
             </th>
@@ -66,6 +79,7 @@
         </ng-template>
         <ng-template pTemplate="body" let-row>
           <tr>
+            <td (click)="$event.stopPropagation()"><p-tableCheckbox [value]="row"></p-tableCheckbox></td>
             <td>{{ row.name_en }}</td>
             <td>{{ row.name_ar }}</td>
             <td>{{ row.postal_code_prefix }}</td>
@@ -92,7 +106,7 @@
         </ng-template>
         <ng-template pTemplate="emptymessage">
           <tr>
-            <td colspan="6"><app-empty-state icon="pi-directions"></app-empty-state></td>
+            <td colspan="7"><app-empty-state icon="pi-directions"></app-empty-state></td>
           </tr>
         </ng-template>
       </p-table>

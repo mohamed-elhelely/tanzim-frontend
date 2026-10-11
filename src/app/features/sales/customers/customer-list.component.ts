@@ -77,4 +77,12 @@ export class CustomerListComponent implements OnInit {
   confirmDelete(row: CustomerListItem): void {
     this.confirm.confirmDelete(row.name, () => this.api.remove(row.id), () => this.table.afterDelete());
   }
+
+  confirmBulkDelete(): void {
+    this.confirm.confirmBulkDelete(
+      this.table.selection(),
+      (row: CustomerListItem) => this.api.remove(row.id),
+      (deleted) => this.table.afterBulkDelete(deleted),
+    );
+  }
 }

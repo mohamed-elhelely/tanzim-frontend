@@ -73,4 +73,12 @@ export class RegionListComponent implements OnInit {
   confirmDelete(row: Region): void {
     this.confirm.confirmDelete(row.name_en, () => this.api.remove(row.id), () => this.table.afterDelete());
   }
+
+  confirmBulkDelete(): void {
+    this.confirm.confirmBulkDelete(
+      this.table.selection(),
+      (row: Region) => this.api.remove(row.id),
+      (deleted) => this.table.afterBulkDelete(deleted),
+    );
+  }
 }

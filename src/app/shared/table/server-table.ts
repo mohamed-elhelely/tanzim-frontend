@@ -36,6 +36,8 @@ export class ServerTable<T> {
   readonly loading = signal(false);
   readonly error = signal<AppError | null>(null);
 
+  /** Rows ticked for a bulk action; emptied whenever the table reloads. */
+  readonly selection = signal<T[]>([]);
   /** What the search box shows; it only reaches the server on `apply()`. */
   readonly searchDraft = signal('');
   /** True while a search or filters are applied, so the screen can offer "clear". */
@@ -83,6 +85,7 @@ export class ServerTable<T> {
   }
 
   load(): void {
+    this.selection.set([]);
     this.loading.set(true);
     this.error.set(null);
     // Cancel the previous request so a slower, older response can't overwrite newer results.
@@ -132,7 +135,12 @@ export class ServerTable<T> {
 
   /** Reload after a delete; if it removed the only row on a later page, step back a page first. */
   afterDelete(): void {
-    if (this.rows().length === 1 && this.first() >= this.pageSize()) {
+    this.afterBulkDelete(1);
+  }
+
+  /** Reload after deleting `count` rows of this page; if that may have emptied a later page, step back first. */
+  afterBulkDelete(count: number): void {
+    if (count >= this.rows().length && this.first() >= this.pageSize()) {
       this.first.update((first) => first - this.pageSize());
     }
     this.load();

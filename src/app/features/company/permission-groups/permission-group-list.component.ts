@@ -63,4 +63,12 @@ export class PermissionGroupListComponent implements OnInit {
   confirmDelete(row: PermissionGroup): void {
     this.confirm.confirmDelete(row.name_en, () => this.api.remove(row.id), () => this.table.afterDelete());
   }
+
+  confirmBulkDelete(): void {
+    this.confirm.confirmBulkDelete(
+      this.table.selection(),
+      (row: PermissionGroup) => this.api.remove(row.id),
+      (deleted) => this.table.afterBulkDelete(deleted),
+    );
+  }
 }

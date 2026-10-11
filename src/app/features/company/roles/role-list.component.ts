@@ -70,4 +70,12 @@ export class RoleListComponent implements OnInit {
   confirmDelete(row: Role): void {
     this.confirm.confirmDelete(row.name_en, () => this.api.remove(row.id), () => this.table.afterDelete());
   }
+
+  confirmBulkDelete(): void {
+    this.confirm.confirmBulkDelete(
+      this.table.selection(),
+      (row: Role) => this.api.remove(row.id),
+      (deleted) => this.table.afterBulkDelete(deleted),
+    );
+  }
 }

@@ -62,4 +62,12 @@ export class SupplierListComponent implements OnInit {
   confirmDelete(row: Supplier): void {
     this.confirm.confirmDelete(row.name, () => this.api.remove(row.id), () => this.table.afterDelete());
   }
+
+  confirmBulkDelete(): void {
+    this.confirm.confirmBulkDelete(
+      this.table.selection(),
+      (row: Supplier) => this.api.remove(row.id),
+      (deleted) => this.table.afterBulkDelete(deleted),
+    );
+  }
 }

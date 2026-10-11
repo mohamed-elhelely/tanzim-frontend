@@ -48,6 +48,16 @@
           styleClass="w-full sm:w-auto"
         ></p-button>
       }
+      @if (table.selection().length) {
+        <p-button
+          [label]="'common.deleteSelected' | translate: { count: table.selection().length }"
+          icon="pi pi-trash"
+          severity="danger"
+          [outlined]="true"
+          (onClick)="confirmBulkDelete()"
+          styleClass="w-full sm:ms-auto sm:w-auto"
+        ></p-button>
+      }
     </div>
     <div class="overflow-x-auto">
       <p-table
@@ -62,10 +72,13 @@
         [rowsPerPageOptions]="[10, 25, 50]"
         [loading]="table.loading()"
         dataKey="id"
+        [selection]="table.selection()"
+        (selectionChange)="table.selection.set($event)"
         size="small"
       >
         <ng-template pTemplate="header">
           <tr>
+            <th class="w-12"><p-tableHeaderCheckbox></p-tableHeaderCheckbox></th>
             <th>{{ 'sales.fields.customerNumber' | translate }}</th>
             <th pSortableColumn="name">
               {{ 'sales.fields.name' | translate }} <p-sortIcon field="name"></p-sortIcon>
@@ -80,6 +93,7 @@
         </ng-template>
         <ng-template pTemplate="body" let-row>
           <tr>
+            <td (click)="$event.stopPropagation()"><p-tableCheckbox [value]="row"></p-tableCheckbox></td>
             <td class="whitespace-nowrap font-mono text-xs" dir="ltr">{{ row.customer_number }}</td>
             <td class="font-medium">{{ row.name }}</td>
             <td>{{ 'sales.customerTypes.' + row.customer_type | translate }}</td>
@@ -120,7 +134,7 @@
         </ng-template>
         <ng-template pTemplate="emptymessage">
           <tr>
-            <td colspan="8"><app-empty-state icon="pi-users"></app-empty-state></td>
+            <td colspan="9"><app-empty-state icon="pi-users"></app-empty-state></td>
           </tr>
         </ng-template>
       </p-table>

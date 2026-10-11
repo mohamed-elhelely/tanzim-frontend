@@ -11,6 +11,7 @@ describe('ConfirmService', () => {
   let lastConfirmation: Confirmation | undefined;
 
   beforeEach(() => {
+    lastConfirmation = undefined;
     notifications = jasmine.createSpyObj('NotificationService', ['success', 'error']);
     TestBed.configureTestingModule({
       providers: [...provideApiTesting(), { provide: NotificationService, useValue: notifications }],
@@ -47,6 +48,25 @@ describe('ConfirmService', () => {
     service.confirmDelete('Sales', () => throwError(() => ({ status: 500, message: 'Boom', errors: {} })), () => undefined);
     lastConfirmation?.accept?.();
     expect(notifications.error).not.toHaveBeenCalled();
+  });
+
+  it('bulk-deletes one at a time, keeps going after a refusal and reports both counts', () => {
+    const onDone = jasmine.createSpy('onDone');
+    const remove = jasmine.createSpy('remove').and.callFake((id: number) =>
+      id === 2 ? throwError(() => ({ status: 400, message: 'Still used by 3 products', errors: {} })) : of(null),
+    );
+    service.confirmBulkDelete([1, 2, 3], remove, onDone);
+    expect(remove).not.toHaveBeenCalled();
+    lastConfirmation?.accept?.();
+    expect(remove.calls.allArgs()).toEqual([[1], [2], [3]]);
+    expect(notifications.success).toHaveBeenCalledWith('common.bulkDeleted');
+    expect(notifications.error).toHaveBeenCalledWith('common.bulkDeleteFailed');
+    expect(onDone).toHaveBeenCalledWith(2);
+  });
+
+  it('does not ask when nothing is selected', () => {
+    service.confirmBulkDelete([], () => of(null), () => undefined);
+    expect(lastConfirmation).toBeUndefined();
   });
 
   it('runs a workflow action after accepting, then toasts and hands over the result', () => {

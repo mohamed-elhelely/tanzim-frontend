@@ -101,6 +101,16 @@ describe('ServerTable', () => {
     expect(table.appliedQuery()).toEqual({ search: 'abc', filters: { status: 'draft' } });
   });
 
+  it('clears the selection on reload and steps back a page after emptying it', () => {
+    const fetch = jasmine.createSpy('fetch').and.returnValue(of(page([11, 12], 12)));
+    const { table } = createTable(fetch);
+    table.onLazyLoad({ first: 10, rows: 10 });
+    table.selection.set([11, 12]);
+    table.afterBulkDelete(2);
+    expect(table.selection()).toEqual([]);
+    expect(fetch.calls.mostRecent().args[0].page).toBe(1);
+  });
+
   it('keeps only the newest request', () => {
     const first = new Subject<Paginated<number>>();
     const fetch = jasmine.createSpy('fetch').and.returnValues(first, of(page([9])));

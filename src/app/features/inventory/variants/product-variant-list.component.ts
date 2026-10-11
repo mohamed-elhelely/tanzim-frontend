@@ -90,4 +90,12 @@ export class ProductVariantListComponent {
   confirmDelete(row: ProductVariant): void {
     this.confirm.confirmDelete(row.sku, () => this.api.remove(row.id), () => this.table.afterDelete());
   }
+
+  confirmBulkDelete(): void {
+    this.confirm.confirmBulkDelete(
+      this.table.selection(),
+      (row: ProductVariant) => this.api.remove(row.id),
+      (deleted) => this.table.afterBulkDelete(deleted),
+    );
+  }
 }
