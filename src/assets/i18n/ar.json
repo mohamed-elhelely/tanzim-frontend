@@ -21,7 +21,7 @@
     "deleteSelected": "حذف المحدد ({{count}})",
     "confirmBulkDelete": "حذف {{count}} من العناصر المحددة؟ لا يمكن التراجع عن ذلك.",
     "bulkDeleted": "تم حذف {{count}}.",
-    "bulkDeleteFailed": "تعذّر حذف {{count}}. {{reason}}",
+    "bulkFailed": "تعذّر تنفيذ {{count}}. {{reason}}",
     "apply": "تطبيق",
     "back": "رجوع",
     "retry": "إعادة المحاولة",
@@ -871,6 +871,8 @@
       "country": "الدولة"
     },
     "actions": {
+      "confirmSelected": "تأكيد المسودات ({{count}})",
+      "issueSelected": "إصدار المسودات ({{count}})",
       "sameAsBilling": "نفس عنوان الفوترة",
       "addLine": "إضافة صنف",
       "removeLine": "حذف الصنف",
@@ -891,6 +893,8 @@
       "cancelInvoice": "إلغاء الفاتورة"
     },
     "confirm": {
+      "confirmOrders": "تأكيد {{count}} من أوامر البيع المسودة؟ سيتم حجز المخزون لكل منها.",
+      "issueInvoices": "إصدار {{count}} من الفواتير المسودة؟ لا يمكن تعديل الفاتورة بعد إصدارها.",
       "confirmOrder": "تأكيد هذا الأمر؟ سيتم حجز المخزون لكل الأصناف والتحقق من حد ائتمان العميل.",
       "markDelivered": "تعيين هذا الأمر كمُسلَّم؟",
       "clone": "إنشاء أمر مسودة جديد بنفس العميل والأصناف؟",
@@ -901,6 +905,8 @@
       "refund": "استرداد هذه الدفعة بقيمة {{amount}} بالكامل؟"
     },
     "toasts": {
+      "ordersConfirmed": "تم تأكيد {{count}} طلب.",
+      "invoicesIssued": "تم إصدار {{count}} فاتورة.",
       "confirmed": "تم تأكيد الأمر.",
       "cancelled": "تم إلغاء الأمر.",
       "cloned": "تم إنشاء نسخة مسودة.",

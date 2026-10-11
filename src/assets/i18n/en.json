@@ -21,7 +21,7 @@
     "deleteSelected": "Delete selected ({{count}})",
     "confirmBulkDelete": "Delete {{count}} selected items? This cannot be undone.",
     "bulkDeleted": "Deleted {{count}}.",
-    "bulkDeleteFailed": "{{count}} couldn't be deleted. {{reason}}",
+    "bulkFailed": "{{count}} couldn't be done. {{reason}}",
     "apply": "Apply",
     "back": "Back",
     "retry": "Retry",
@@ -871,6 +871,8 @@
       "country": "Country"
     },
     "actions": {
+      "confirmSelected": "Confirm drafts ({{count}})",
+      "issueSelected": "Issue drafts ({{count}})",
       "sameAsBilling": "Same as billing",
       "addLine": "Add item",
       "removeLine": "Remove item",
@@ -891,6 +893,8 @@
       "cancelInvoice": "Cancel invoice"
     },
     "confirm": {
+      "confirmOrders": "Confirm {{count}} draft orders? Stock is reserved for each.",
+      "issueInvoices": "Issue {{count}} draft invoices? Issued invoices can't be edited.",
       "confirmOrder": "Confirm this order? Stock will be reserved for every item and the customer's credit limit checked.",
       "markDelivered": "Mark this order as delivered?",
       "clone": "Create a new draft order with the same customer and items?",
@@ -901,6 +905,8 @@
       "refund": "Refund this payment of {{amount}} in full?"
     },
     "toasts": {
+      "ordersConfirmed": "{{count}} orders confirmed.",
+      "invoicesIssued": "{{count}} invoices issued.",
       "confirmed": "Order confirmed.",
       "cancelled": "Order cancelled.",
       "cloned": "Draft copy created.",

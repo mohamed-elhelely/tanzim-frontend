@@ -63,6 +63,14 @@
           styleClass="w-full sm:w-auto"
         ></p-button>
       }
+      @if (selectedDrafts().length) {
+        <p-button
+          [label]="'sales.actions.issueSelected' | translate: { count: selectedDrafts().length }"
+          icon="pi pi-send"
+          (onClick)="issueSelected()"
+          styleClass="w-full sm:ms-auto sm:w-auto"
+        ></p-button>
+      }
     </div>
     <div class="overflow-x-auto">
       <p-table
@@ -77,10 +85,15 @@
         [rowsPerPageOptions]="[10, 25, 50]"
         [loading]="table.loading()"
         dataKey="id"
+        [selection]="table.selection()"
+        (selectionChange)="table.selection.set($event)"
         size="small"
       >
         <ng-template pTemplate="header">
           <tr>
+            @if (canBulk()) {
+              <th class="w-12"><p-tableHeaderCheckbox></p-tableHeaderCheckbox></th>
+            }
             <th pSortableColumn="invoice_number">
               {{ 'sales.fields.invoiceNumber' | translate }} <p-sortIcon field="invoice_number"></p-sortIcon>
             </th>
@@ -100,6 +113,9 @@
         </ng-template>
         <ng-template pTemplate="body" let-row>
           <tr class="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50" (click)="open(row)">
+            @if (canBulk()) {
+              <td (click)="$event.stopPropagation()" (keydown.enter)="$event.stopPropagation()"><p-tableCheckbox [value]="row"></p-tableCheckbox></td>
+            }
             <td class="whitespace-nowrap font-mono text-xs font-semibold" dir="ltr">{{ row.invoice_number }}</td>
             <td>
               <div class="font-medium">{{ row.customer_name }}</div>
@@ -134,7 +150,7 @@
         </ng-template>
         <ng-template pTemplate="emptymessage">
           <tr>
-            <td colspan="9"><app-empty-state icon="pi-file"></app-empty-state></td>
+            <td [attr.colspan]="9 + (canBulk() ? 1 : 0)"><app-empty-state icon="pi-file"></app-empty-state></td>
           </tr>
         </ng-template>
       </p-table>

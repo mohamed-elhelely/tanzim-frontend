@@ -1,5 +1,5 @@
 import { DecimalPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -10,6 +10,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
+import { AccessService } from '../../../core/auth/access.service';
 import { ConfirmService } from '../../../core/services/confirm.service';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
@@ -54,6 +55,7 @@ export class SalesOrderListComponent implements OnInit {
   private readonly api = inject(SalesOrderService);
   private readonly router = inject(Router);
   private readonly confirm = inject(ConfirmService);
+  private readonly access = inject(AccessService);
 
   status: SalesOrderStatus | null = null;
   readonly table = new ServerTable<SalesOrderListItem>(
@@ -68,6 +70,11 @@ export class SalesOrderListComponent implements OnInit {
       },
     },
   );
+
+  /** Ticking rows is for acting on several drafts at once. */
+  readonly canBulk = computed(() => this.access.can('change_salesorder'));
+  /** The ticked rows the bulk action applies to (drafts only). */
+  readonly selectedDrafts = computed(() => this.table.selection().filter((row) => row.status === 'draft'));
   readonly errorTitleKey = errorTitleKey;
   readonly statusOptions = SALES_ORDER_STATUSES.map((status) => ({ value: status, label: `sales.orderStatuses.${status}` }));
 
@@ -98,5 +105,16 @@ export class SalesOrderListComponent implements OnInit {
   /** Only drafts can be deleted; later orders hold reservations and stock movements. */
   confirmDelete(row: SalesOrderListItem): void {
     this.confirm.confirmDelete(row.order_number, () => this.api.remove(row.id), () => this.table.afterDelete());
+  }
+
+  confirmSelected(): void {
+    this.confirm.confirmBulk({
+      rows: this.selectedDrafts(),
+      message: 'sales.confirm.confirmOrders',
+      accept: 'sales.actions.confirmOrder',
+      success: 'sales.toasts.ordersConfirmed',
+      run: (row: SalesOrderListItem) => this.api.confirm(row.id),
+      onDone: () => this.table.load(),
+    });
   }
 }

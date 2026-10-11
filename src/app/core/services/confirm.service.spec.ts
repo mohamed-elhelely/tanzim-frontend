@@ -60,7 +60,7 @@ describe('ConfirmService', () => {
     lastConfirmation?.accept?.();
     expect(remove.calls.allArgs()).toEqual([[1], [2], [3]]);
     expect(notifications.success).toHaveBeenCalledWith('common.bulkDeleted');
-    expect(notifications.error).toHaveBeenCalledWith('common.bulkDeleteFailed');
+    expect(notifications.error).toHaveBeenCalledWith('common.bulkFailed');
     expect(onDone).toHaveBeenCalledWith(2);
   });
 

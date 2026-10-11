@@ -25,6 +25,20 @@ export interface ConfirmActionOptions<T> {
   onError?: (error: AppError) => void;
 }
 
+export interface ConfirmBulkOptions<T> {
+  rows: T[];
+  /** Translation key of the question; gets `{ count }`. */
+  message: string;
+  /** Translation key of the accept button. */
+  accept: string;
+  /** Translation key of the success toast; gets `{ count }` (how many succeeded). */
+  success: string;
+  danger?: boolean;
+  run: (row: T) => Observable<unknown>;
+  /** Gets the number that succeeded; runs whenever anything was attempted, usually a reload. */
+  onDone: (succeeded: number) => void;
+}
+
 /** The confirm → act → toast flows: deletes on list screens and workflow actions (confirm, ship, issue…). */
 @Injectable({ providedIn: 'root' })
 export class ConfirmService {
@@ -63,22 +77,39 @@ export class ConfirmService {
    * by …"). `onDone` gets the number deleted and runs whenever anything was attempted, usually a reload.
    */
   confirmBulkDelete<T>(rows: T[], remove: (row: T) => Observable<unknown>, onDone: (deleted: number) => void): void {
+    this.confirmBulk({
+      rows,
+      message: 'common.confirmBulkDelete',
+      accept: 'common.delete',
+      success: 'common.bulkDeleted',
+      danger: true,
+      run: remove,
+      onDone,
+    });
+  }
+
+  /**
+   * The same flow for any action on several rows (e.g. confirm the ticked draft orders): ask once, run the
+   * action row by row, then report how many succeeded and why the others failed.
+   */
+  confirmBulk<T>(options: ConfirmBulkOptions<T>): void {
+    const { rows } = options;
     if (!rows.length) {
       return;
     }
     this.confirmation.confirm({
       key: CONFIRM_DIALOG_KEY,
       header: this.translate.instant('common.confirm'),
-      message: this.translate.instant('common.confirmBulkDelete', { count: rows.length }),
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel: this.translate.instant('common.delete'),
+      message: this.translate.instant(options.message, { count: rows.length }),
+      icon: options.danger ? 'pi pi-exclamation-triangle' : 'pi pi-question-circle',
+      acceptLabel: this.translate.instant(options.accept),
       rejectLabel: this.translate.instant('common.cancel'),
-      acceptButtonStyleClass: 'p-button-danger',
+      acceptButtonStyleClass: options.danger ? 'p-button-danger' : undefined,
       accept: () =>
         from(rows)
           .pipe(
             concatMap((row) =>
-              remove(row).pipe(
+              options.run(row).pipe(
                 map(() => null),
                 catchError((error: AppError) => of(error)),
               ),
@@ -87,15 +118,15 @@ export class ConfirmService {
           )
           .subscribe((results) => {
             const failures = results.filter((result): result is AppError => result !== null);
-            const deleted = results.length - failures.length;
-            if (deleted) {
-              this.notifications.success(this.translate.instant('common.bulkDeleted', { count: deleted }));
+            const succeeded = results.length - failures.length;
+            if (succeeded) {
+              this.notifications.success(this.translate.instant(options.success, { count: succeeded }));
             }
             if (failures.length) {
               const reason = failures.find((error) => error.status >= 400 && error.status < 500)?.message ?? '';
-              this.notifications.error(this.translate.instant('common.bulkDeleteFailed', { count: failures.length, reason }));
+              this.notifications.error(this.translate.instant('common.bulkFailed', { count: failures.length, reason }));
             }
-            onDone(deleted);
+            options.onDone(succeeded);
           }),
     });
   }
