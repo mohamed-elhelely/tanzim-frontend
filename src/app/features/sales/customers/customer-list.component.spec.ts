@@ -37,7 +37,8 @@ describe('CustomerListComponent', () => {
     fixture.detectChanges();
     httpMock.expectOne((r) => r.url === URL).flush(envelope([], 0));
     fixture.componentInstance.table.first.set(10);
-    fixture.componentInstance.onTypeChange('government');
+    fixture.componentInstance.customerType = 'government';
+    fixture.componentInstance.table.apply();
     httpMock.expectOne((r) => r.url === URL && r.params.get('customer_type') === 'government' && r.params.get('page') === '1').flush(envelope([], 0));
   });
 

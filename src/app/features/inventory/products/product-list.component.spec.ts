@@ -58,10 +58,7 @@ describe('ProductListComponent', () => {
     expectList({}, [makeProduct()], 30);
     fixture.componentInstance.table.onLazyLoad({ first: 10, rows: 10 });
     expectList({ page: '2' }, []);
-    fixture.componentInstance.table.onSearch('pho');
-    tick(100);
-    fixture.componentInstance.table.onSearch('phone ');
-    tick(300);
+    fixture.componentInstance.table.apply('phone ');
     expectList({ page: '1', search: 'phone' }, [makeProduct()]);
   }));
 

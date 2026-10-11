@@ -83,6 +83,8 @@ export class StockLevelsComponent implements OnInit {
   readonly exporting = signal(false);
   readonly error = signal<AppError | null>(null);
   readonly search = signal('');
+  /** What the search box shows; copied into `search` only when the user searches. */
+  readonly searchDraft = signal('');
   private readonly variantNames = signal<ReadonlyMap<number, string>>(new Map());
   private readonly reservations = signal<StockReservation[]>([]);
   readonly errorTitleKey = errorTitleKey;

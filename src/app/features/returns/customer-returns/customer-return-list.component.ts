@@ -52,16 +52,16 @@ export class CustomerReturnListComponent implements OnInit {
 
   status: CustomerReturnStatus | null = null;
   reason: ReturnReason | null = null;
-  readonly table = new ServerTable<CustomerReturnListItem>((query) => {
-    const filters: Record<string, string> = {};
-    if (this.status) {
-      filters['status'] = this.status;
-    }
-    if (this.reason) {
-      filters['return_reason'] = this.reason;
-    }
-    return this.api.list({ ...query, filters });
-  });
+  readonly table = new ServerTable<CustomerReturnListItem>(
+    (query) => this.api.list(query),
+    {
+      filters: () => ({ status: this.status, return_reason: this.reason }),
+      reset: () => {
+        this.status = null;
+        this.reason = null;
+      },
+    },
+  );
   readonly errorTitleKey = errorTitleKey;
   readonly statusOptions = CUSTOMER_RETURN_STATUSES.map((status) => ({ value: status, label: `returns.customerStatuses.${status}` }));
   readonly reasonOptions = RETURN_REASONS.map((reason) => ({ value: reason, label: `returns.reasons.${reason}` }));
@@ -71,11 +71,6 @@ export class CustomerReturnListComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-    this.table.load();
-  }
-
-  onFilterChange(): void {
-    this.table.first.set(0);
     this.table.load();
   }
 

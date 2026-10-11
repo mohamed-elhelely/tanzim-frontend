@@ -37,8 +37,14 @@ export class DebitNoteListComponent implements OnInit {
   private readonly router = inject(Router);
 
   status: DebitNoteStatus | null = null;
-  readonly table = new ServerTable<DebitNote>((query) =>
-    this.api.list({ page: query.page, pageSize: query.pageSize, filters: this.status ? { status: this.status } : {} }),
+  readonly table = new ServerTable<DebitNote>(
+    (query) => this.api.list({ page: query.page, pageSize: query.pageSize, filters: query.filters }),
+    {
+      filters: () => ({ status: this.status }),
+      reset: () => {
+        this.status = null;
+      },
+    },
   );
   readonly errorTitleKey = errorTitleKey;
   readonly statusOptions = (['draft', 'issued', 'cancelled'] as const).map((status) => ({ value: status, label: `accounting.noteStatuses.${status}` }));
@@ -48,11 +54,6 @@ export class DebitNoteListComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-    this.table.load();
-  }
-
-  onFilterChange(): void {
-    this.table.first.set(0);
     this.table.load();
   }
 

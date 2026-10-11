@@ -54,8 +54,14 @@ export class SalesOrderListComponent implements OnInit {
   private readonly confirm = inject(ConfirmService);
 
   status: SalesOrderStatus | null = null;
-  readonly table = new ServerTable<SalesOrderListItem>((query) =>
-    this.api.list({ ...query, filters: this.status ? { status: this.status } : {} }),
+  readonly table = new ServerTable<SalesOrderListItem>(
+    (query) => this.api.list(query),
+    {
+      filters: () => ({ status: this.status }),
+      reset: () => {
+        this.status = null;
+      },
+    },
   );
   readonly errorTitleKey = errorTitleKey;
   readonly statusOptions = SALES_ORDER_STATUSES.map((status) => ({ value: status, label: `sales.orderStatuses.${status}` }));
@@ -69,12 +75,6 @@ export class SalesOrderListComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-    this.table.load();
-  }
-
-  onStatusChange(status: SalesOrderStatus | null): void {
-    this.status = status;
-    this.table.first.set(0);
     this.table.load();
   }
 

@@ -51,16 +51,16 @@ export class SubscriptionListComponent implements OnInit {
   company: number | null = null;
   status: string | null = null;
 
-  readonly table = new ServerTable<Subscription>((query) => {
-    const filters: Record<string, string | number> = {};
-    if (this.company !== null) {
-      filters['company'] = this.company;
-    }
-    if (this.status) {
-      filters['status'] = this.status;
-    }
-    return this.api.list({ ...query, filters });
-  });
+  readonly table = new ServerTable<Subscription>(
+    (query) => this.api.list(query),
+    {
+      filters: () => ({ company: this.company, status: this.status }),
+      reset: () => {
+        this.company = null;
+        this.status = null;
+      },
+    },
+  );
   readonly errorTitleKey = errorTitleKey;
   /** Keyed by string: table rows are untyped in the template. */
   readonly severity: Record<string, Severity> = SUBSCRIPTION_SEVERITY;
@@ -83,11 +83,6 @@ export class SubscriptionListComponent implements OnInit {
 
   companyName(row: Subscription): string {
     return row.company_name || `#${row.company}`;
-  }
-
-  onFilterChange(): void {
-    this.table.first.set(0);
-    this.table.load();
   }
 
   /** Create (no id) or edit in a dialog over the list; the list reloads after a save. */

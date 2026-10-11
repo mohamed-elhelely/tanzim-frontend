@@ -53,26 +53,21 @@ export class SalesInvoiceListComponent implements OnInit {
 
   status: SalesInvoiceStatus | null = null;
   paymentStatus: InvoicePaymentStatus | null = null;
-  readonly table = new ServerTable<SalesInvoiceListItem>((query) => {
-    const filters: Record<string, string> = {};
-    if (this.status) {
-      filters['status'] = this.status;
-    }
-    if (this.paymentStatus) {
-      filters['payment_status'] = this.paymentStatus;
-    }
-    return this.api.list({ ...query, filters });
-  });
+  readonly table = new ServerTable<SalesInvoiceListItem>(
+    (query) => this.api.list(query),
+    {
+      filters: () => ({ status: this.status, payment_status: this.paymentStatus }),
+      reset: () => {
+        this.status = null;
+        this.paymentStatus = null;
+      },
+    },
+  );
   readonly errorTitleKey = errorTitleKey;
   readonly statusOptions = INVOICE_STATUSES.map((status) => ({ value: status, label: `sales.invoiceStatuses.${status}` }));
   readonly paymentOptions = PAYMENT_STATUSES.map((status) => ({ value: status, label: `sales.paymentStatuses.${status}` }));
 
   ngOnInit(): void {
-    this.table.load();
-  }
-
-  onFilterChange(): void {
-    this.table.first.set(0);
     this.table.load();
   }
 

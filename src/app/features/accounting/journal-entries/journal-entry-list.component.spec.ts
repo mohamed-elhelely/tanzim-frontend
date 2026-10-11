@@ -29,7 +29,7 @@ describe('JournalEntryListComponent', () => {
     component.status = 'posted';
     component.origin = 'manual';
     component.startDate = '2026-10-01';
-    component.onFilterChange();
+    component.table.apply();
     httpMock
       .expectOne(
         (r) =>

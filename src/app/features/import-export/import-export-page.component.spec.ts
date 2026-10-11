@@ -44,7 +44,7 @@ describe('ImportExportPageComponent', () => {
   it('filters the history by type', () => {
     const component = setup().componentInstance;
     component.taskType = 'export';
-    component.onTaskTypeChange();
+    component.tasks.apply();
     httpMock.expectOne((r) => r.url === TASKS && r.params.get('type') === 'export').flush(envelope([], 0));
   });
 });

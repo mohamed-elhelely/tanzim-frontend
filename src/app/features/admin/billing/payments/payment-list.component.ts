@@ -55,8 +55,14 @@ export class PaymentListComponent implements OnInit {
 
   company: number | null = null;
 
-  readonly table = new ServerTable<PlatformPayment>((query) =>
-    this.api.list({ ...query, filters: this.company !== null ? { company: this.company } : {} }),
+  readonly table = new ServerTable<PlatformPayment>(
+    (query) => this.api.list(query),
+    {
+      filters: () => ({ company: this.company }),
+      reset: () => {
+        this.company = null;
+      },
+    },
   );
   readonly errorTitleKey = errorTitleKey;
   /** Keyed by string: table rows are untyped in the template. */
@@ -77,11 +83,6 @@ export class PaymentListComponent implements OnInit {
       next: (companies) => this.companyOptions.set(companies.map((company) => ({ value: company.id, label: company.name }))),
       error: () => this.companyOptions.set([]),
     });
-    this.table.load();
-  }
-
-  onFilterChange(): void {
-    this.table.first.set(0);
     this.table.load();
   }
 

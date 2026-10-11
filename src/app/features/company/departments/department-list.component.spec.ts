@@ -75,10 +75,7 @@ describe('DepartmentListComponent', () => {
     fixture.componentInstance.table.onLazyLoad({ first: 10, rows: 10 });
     expectList({ page: '2' }, []);
 
-    fixture.componentInstance.table.onSearch('sa');
-    tick(100);
-    fixture.componentInstance.table.onSearch('sales ');
-    tick(300);
+    fixture.componentInstance.table.apply('sales ');
 
     expectList({ page: '1', search: 'sales' }, [makeDepartment()]);
   }));

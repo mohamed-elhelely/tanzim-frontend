@@ -24,7 +24,7 @@ describe('Payables lists', () => {
     fixture.detectChanges();
     expect(fixture.nativeElement.textContent).toContain('DBN-00001');
     fixture.componentInstance.status = 'issued';
-    fixture.componentInstance.onFilterChange();
+    fixture.componentInstance.table.apply();
     httpMock.expectOne((r) => r.url === '/api/accounting/v1/debit-notes/' && r.params.get('status') === 'issued').flush(envelope([], 0));
   });
 
@@ -36,7 +36,7 @@ describe('Payables lists', () => {
     expect(fixture.nativeElement.textContent).toContain('SP-00001');
     fixture.componentInstance.status = 'voided';
     fixture.componentInstance.method = 'cash';
-    fixture.componentInstance.onFilterChange();
+    fixture.componentInstance.table.apply();
     httpMock
       .expectOne((r) => r.url === '/api/accounting/v1/supplier-payments/' && r.params.get('status') === 'voided' && r.params.get('payment_method') === 'cash')
       .flush(envelope([], 0));

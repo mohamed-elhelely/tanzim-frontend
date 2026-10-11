@@ -41,8 +41,14 @@ export class SupplierReturnListComponent implements OnInit {
   private readonly router = inject(Router);
 
   status: SupplierReturnStatus | null = null;
-  readonly table = new ServerTable<SupplierReturnListItem>((query) =>
-    this.api.list({ ...query, filters: this.status ? { status: this.status } : {} }),
+  readonly table = new ServerTable<SupplierReturnListItem>(
+    (query) => this.api.list(query),
+    {
+      filters: () => ({ status: this.status }),
+      reset: () => {
+        this.status = null;
+      },
+    },
   );
   readonly errorTitleKey = errorTitleKey;
   readonly statusOptions = SUPPLIER_RETURN_STATUSES.map((status) => ({ value: status, label: `returns.supplierStatuses.${status}` }));
@@ -52,11 +58,6 @@ export class SupplierReturnListComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-    this.table.load();
-  }
-
-  onFilterChange(): void {
-    this.table.first.set(0);
     this.table.load();
   }
 

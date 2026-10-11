@@ -38,18 +38,19 @@ export class PaymentListComponent implements OnInit {
   private readonly router = inject(Router);
 
   method: PaymentMethod | null = null;
-  readonly table = new ServerTable<InvoicePayment>((query) =>
-    this.api.list({ ...query, filters: this.method ? { payment_method: this.method } : {} }),
+  readonly table = new ServerTable<InvoicePayment>(
+    (query) => this.api.list(query),
+    {
+      filters: () => ({ payment_method: this.method }),
+      reset: () => {
+        this.method = null;
+      },
+    },
   );
   readonly errorTitleKey = errorTitleKey;
   readonly methodOptions = PAYMENT_METHODS.map((method) => ({ value: method, label: `sales.paymentMethods.${method}` }));
 
   ngOnInit(): void {
-    this.table.load();
-  }
-
-  onMethodChange(): void {
-    this.table.first.set(0);
     this.table.load();
   }
 

@@ -48,8 +48,7 @@ describe('PermissionListComponent', () => {
     httpMock.expectOne((r) => r.url === URL).flush(envelope([makePermission()], 1));
     fixture.detectChanges();
     expect(fixture.nativeElement.querySelector('input[type="search"]')).not.toBeNull();
-    fixture.componentInstance.table.onSearch('team');
-    tick(300);
+    fixture.componentInstance.table.apply('team');
     httpMock.expectOne((r) => r.url === URL && r.params.get('search') === 'team').flush(envelope([], 0));
   }));
 

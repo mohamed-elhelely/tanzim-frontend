@@ -13,7 +13,9 @@
           pInputText
           type="search"
           [placeholder]="'common.search' | translate"
-          (input)="table.onSearch($any($event.target).value)"
+          [value]="table.searchDraft()"
+          (input)="table.searchDraft.set($any($event.target).value)"
+          (keydown.enter)="table.apply()"
           class="w-full"
         />
       </p-iconfield>
@@ -24,6 +26,23 @@
           {{ 'inventory.variants.filteredBy' | translate: { name: productName() || '#' + productId() } }}
           <a routerLink="/inventory/variants" class="font-medium underline">{{ 'inventory.variants.showAll' | translate }}</a>
         </span>
+      }
+      <p-button
+        [label]="'common.search' | translate"
+        icon="pi pi-search"
+        [disabled]="!table.changed()"
+        (onClick)="table.apply()"
+        styleClass="w-full sm:w-auto"
+      ></p-button>
+      @if (table.filtered()) {
+        <p-button
+          [label]="'common.clearFilters' | translate"
+          icon="pi pi-filter-slash"
+          severity="secondary"
+          [text]="true"
+          (onClick)="table.clear()"
+          styleClass="w-full sm:w-auto"
+        ></p-button>
       }
     </div>
     <div class="overflow-x-auto">

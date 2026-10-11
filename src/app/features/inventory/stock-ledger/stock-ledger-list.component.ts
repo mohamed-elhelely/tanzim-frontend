@@ -1,6 +1,7 @@
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
+import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
@@ -29,6 +30,7 @@ import { StockLedgerService } from './stock-ledger.service';
     InputIconModule,
     InputTextModule,
     TableModule,
+    ButtonModule,
     PageHeaderComponent,
     EmptyStateComponent,
     ErrorStateComponent,

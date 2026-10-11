@@ -46,8 +46,14 @@ export class CustomerListComponent implements OnInit {
 
   /** Exact-match filter sent with every page request. */
   customerType: CustomerType | null = null;
-  readonly table = new ServerTable<CustomerListItem>((query) =>
-    this.api.list({ ...query, filters: this.customerType ? { customer_type: this.customerType } : {} }),
+  readonly table = new ServerTable<CustomerListItem>(
+    (query) => this.api.list(query),
+    {
+      filters: () => ({ customer_type: this.customerType }),
+      reset: () => {
+        this.customerType = null;
+      },
+    },
   );
   readonly errorTitleKey = errorTitleKey;
   readonly typeOptions = CUSTOMER_TYPES.map((type) => ({ value: type, label: `sales.customerTypes.${type}` }));
@@ -61,12 +67,6 @@ export class CustomerListComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-    this.table.load();
-  }
-
-  onTypeChange(type: CustomerType | null): void {
-    this.customerType = type;
-    this.table.first.set(0);
     this.table.load();
   }
 

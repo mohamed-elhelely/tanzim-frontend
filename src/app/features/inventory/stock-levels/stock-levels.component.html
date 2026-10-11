@@ -78,11 +78,20 @@
             pInputText
             type="search"
             [placeholder]="'inventory.stock.searchItems' | translate"
-            [ngModel]="search()"
-            (ngModelChange)="search.set($event)"
+            [value]="searchDraft()"
+            (input)="searchDraft.set($any($event.target).value)"
+            (keydown.enter)="search.set(searchDraft().trim())"
             class="w-full"
           />
         </p-iconfield>
+        <p-button
+          [label]="'common.search' | translate"
+          icon="pi pi-search"
+          [disabled]="searchDraft().trim() === search()"
+          (onClick)="search.set(searchDraft().trim())"
+          styleClass="w-full sm:w-auto"
+        ></p-button>
+
         @if (!isCurrent()) {
           <p class="text-xs text-gray-500 dark:text-gray-400">{{ 'inventory.stock.pastDateHint' | translate }}</p>
         }

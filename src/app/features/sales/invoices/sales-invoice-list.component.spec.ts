@@ -36,7 +36,7 @@ describe('SalesInvoiceListComponent', () => {
     httpMock.expectOne((r) => r.url === URL).flush(envelope([], 0));
     fixture.componentInstance.status = 'issued';
     fixture.componentInstance.paymentStatus = 'partial';
-    fixture.componentInstance.onFilterChange();
+    fixture.componentInstance.table.apply();
     httpMock.expectOne((r) => r.url === URL && r.params.get('status') === 'issued' && r.params.get('payment_status') === 'partial').flush(envelope([], 0));
   });
 
