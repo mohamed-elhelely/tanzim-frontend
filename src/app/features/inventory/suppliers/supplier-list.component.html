@@ -101,6 +101,16 @@
               }
             </td>
             <td class="whitespace-nowrap text-end">
+              @if (canStatement()) {
+                <p-button
+                  icon="pi pi-book"
+                  [text]="true"
+                  [rounded]="true"
+                  severity="secondary"
+                  [ariaLabel]="'accounting.reports.supplier_statement' | translate"
+                  (onClick)="statement(row)"
+                ></p-button>
+              }
               <p-button
                 icon="pi pi-pencil"
                 [text]="true"

@@ -1,5 +1,5 @@
 import { DecimalPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, computed } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -9,6 +9,7 @@ import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
+import { AccessService } from '../../../core/auth/access.service';
 import { ConfirmService } from '../../../core/services/confirm.service';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
@@ -45,6 +46,10 @@ export class CustomerListComponent implements OnInit {
   private readonly api = inject(CustomerService);
   private readonly router = inject(Router);
   private readonly confirm = inject(ConfirmService);
+  private readonly access = inject(AccessService);
+
+  /** The customer statement lives in the accounting reports; offered when the user may open them. */
+  readonly canStatement = computed(() => this.access.can('view_accountingreport'));
 
   /** Exact-match filter sent with every page request. */
   customerType: CustomerType | null = null;
@@ -81,6 +86,10 @@ export class CustomerListComponent implements OnInit {
 
   confirmDelete(row: CustomerListItem): void {
     this.confirm.confirmDelete(row.name, () => this.api.remove(row.id), () => this.table.afterDelete());
+  }
+
+  statement(row: { id: number }): void {
+    void this.router.navigate(['/accounting/reports'], { queryParams: { type: 'customer_statement', customer: row.id } });
   }
 
   confirmBulkDelete(): void {

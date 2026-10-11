@@ -1,6 +1,7 @@
 import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
@@ -73,6 +74,7 @@ export class ReportViewerComponent implements OnInit {
   private readonly customersApi = inject(CustomerService);
   private readonly suppliersApi = inject(SupplierService);
   private readonly notifications = inject(NotificationService);
+  private readonly route = inject(ActivatedRoute);
 
   readonly type = signal<ReportType>('trial_balance');
   params: Partial<Record<ReportParam, string | number | null>> = {};
@@ -106,7 +108,24 @@ export class ReportViewerComponent implements OnInit {
       next: (suppliers) => this.suppliers.set(suppliers.map((s) => ({ value: s.id, label: s.name }))),
       error: () => undefined,
     });
+    this.readLink();
     this.run();
+  }
+
+  /** Opens a report from a link, e.g. `?type=customer_statement&customer=5` from the customer list. */
+  private readLink(): void {
+    const query = this.route.snapshot.queryParamMap;
+    const type = query.get('type') as ReportType | null;
+    if (!type || !REPORT_TYPES.includes(type)) {
+      return;
+    }
+    this.type.set(type);
+    for (const param of REPORT_PARAMS[type]) {
+      const value = query.get(param);
+      if (value) {
+        this.params[param] = param === 'account' || param === 'customer' || param === 'supplier' ? Number(value) : value;
+      }
+    }
   }
 
   onTypeChange(type: ReportType): void {

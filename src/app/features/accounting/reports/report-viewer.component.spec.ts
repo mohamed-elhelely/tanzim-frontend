@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { HttpTestingController, TestRequest } from '@angular/common/http/testing';
 import { envelope, provideApiTesting } from '../../../testing/api-testing';
 import { makeChart } from '../../../testing/accounting-fixtures';
@@ -17,8 +18,11 @@ const TRIAL: ReportResult = {
 describe('ReportViewerComponent', () => {
   let httpMock: HttpTestingController;
 
-  function setup() {
-    TestBed.configureTestingModule({ imports: [ReportViewerComponent], providers: provideApiTesting() });
+  function setup(query: Record<string, string> = {}) {
+    TestBed.configureTestingModule({
+      imports: [ReportViewerComponent],
+      providers: [...provideApiTesting(), { provide: ActivatedRoute, useValue: { snapshot: { queryParamMap: convertToParamMap(query) } } }],
+    });
     httpMock = TestBed.inject(HttpTestingController);
     const fixture = TestBed.createComponent(ReportViewerComponent);
     fixture.detectChanges();
@@ -40,6 +44,22 @@ describe('ReportViewerComponent', () => {
     expect(text).toContain('accounting.accountTypes.asset');
     expect(text).toContain('accounting.hints.balanced');
     expect(fixture.componentInstance.summary().map(([key]) => key)).toEqual(['total_debit', 'total_credit', 'is_balanced']);
+  });
+
+  it('opens the report a link asks for, e.g. a customer statement from the customer list', () => {
+    const fixture = setup({ type: 'customer_statement', customer: '5', start_date: '2026-01-01', account: '9' });
+    expect(fixture.componentInstance.type()).toBe('customer_statement');
+    const req = httpMock.expectOne((r) => r.url === `${BASE}customer_statement/`);
+    expect(req.request.params.get('customer')).toBe('5');
+    expect(req.request.params.get('start_date')).toBe('2026-01-01');
+    expect(req.request.params.has('account')).toBeFalse();
+    req.flush(envelope({ ...TRIAL, report_type: 'customer_statement', rows: [], summary: {} }));
+  });
+
+  it('ignores an unknown report type in the link', () => {
+    const fixture = setup({ type: 'payroll' });
+    expect(fixture.componentInstance.type()).toBe('trial_balance');
+    httpMock.expectOne(`${BASE}trial_balance/`).flush(envelope(TRIAL));
   });
 
   it('sends only the parameters the report takes, and asks for the required account first', () => {

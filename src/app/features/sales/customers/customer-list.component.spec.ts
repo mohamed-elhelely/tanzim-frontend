@@ -50,6 +50,14 @@ describe('CustomerListComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('common.forbidden');
   });
 
+  it('opens the customer statement in the accounting reports', () => {
+    const fixture = TestBed.createComponent(CustomerListComponent);
+    fixture.componentInstance.statement({ id: 7 });
+    expect(TestBed.inject(Router).navigate).toHaveBeenCalledWith(['/accounting/reports'], {
+      queryParams: { type: 'customer_statement', customer: 7 },
+    });
+  });
+
   it('opens the edit page', () => {
     const fixture = TestBed.createComponent(CustomerListComponent);
     fixture.detectChanges();
