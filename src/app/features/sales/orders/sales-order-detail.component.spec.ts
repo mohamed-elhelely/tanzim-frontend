@@ -61,13 +61,20 @@ describe('SalesOrderDetailComponent', () => {
   });
 
   it('offers the actions each status allows', () => {
-    expect(labels(setup('draft'))).toEqual(['common.edit', 'sales.actions.confirmOrder', 'sales.actions.clone', 'sales.actions.cancelOrder']);
+    expect(labels(setup('draft'))).toEqual(['print.print', 'common.edit', 'sales.actions.confirmOrder', 'sales.actions.clone', 'sales.actions.cancelOrder']);
     TestBed.resetTestingModule();
-    expect(labels(setup('confirmed'))).toEqual(['sales.actions.ship', 'sales.actions.clone', 'sales.actions.cancelOrder']);
+    expect(labels(setup('confirmed'))).toEqual(['print.print', 'sales.actions.ship', 'sales.actions.clone', 'sales.actions.cancelOrder']);
     TestBed.resetTestingModule();
-    expect(labels(setup('shipped'))).toEqual(['sales.actions.markDelivered', 'sales.actions.clone']);
+    expect(labels(setup('shipped'))).toEqual(['print.print', 'sales.actions.markDelivered', 'sales.actions.clone']);
     TestBed.resetTestingModule();
-    expect(labels(setup('delivered'))).toEqual(['sales.actions.createInvoice', 'sales.actions.clone']);
+    expect(labels(setup('delivered'))).toEqual(['print.print', 'sales.actions.createInvoice', 'sales.actions.clone']);
+  });
+
+  it('opens the printable order in a new tab', () => {
+    const open = spyOn(window, 'open');
+    const fixture = setup('draft');
+    fixture.componentInstance.actions()[0].onClick();
+    expect(open).toHaveBeenCalledWith(`/print/sales-orders/${fixture.componentInstance.order()!.id}?print=1`, '_blank', 'noopener');
   });
 
   it("doesn't offer Ship once every line is shipped", () => {

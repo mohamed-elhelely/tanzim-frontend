@@ -2047,6 +2047,8 @@
     "applyFirst": "طبّق بحثًا أو فلترًا أولًا، ثم احفظه."
   },
   "print": {
+    "quotation": "عرض سعر",
+    "orderConfirmation": "تأكيد طلب",
     "deliveryNote": "إذن تسليم",
     "deliverTo": "التسليم إلى",
     "received": "المستلَم",

@@ -90,6 +90,15 @@ export interface SalesOrderListItem {
   created_at: string;
 }
 
+/** "Street · City, State ZIP · Country" with empty parts skipped. */
+export function formatAddress(address: Address | null | undefined): string {
+  if (!address) {
+    return '';
+  }
+  const cityLine = [address.city, [address.state, address.zip].filter(Boolean).join(' ')].filter(Boolean).join(', ');
+  return [address.street, cityLine, address.country].filter(Boolean).join(' · ');
+}
+
 export interface SalesOrderLine {
   id: number;
   line_number: number;

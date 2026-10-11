@@ -31,6 +31,13 @@ export const routes: Routes = [
       import('./features/sales/deliveries/delivery-note-print.component').then((m) => m.DeliveryNotePrintComponent),
   },
   {
+    path: 'print/sales-orders/:id',
+    canActivate: [authGuard, companyMemberGuard, permissionGuard],
+    data: { permission: 'view_salesorder', titleKey: 'print.orderConfirmation' },
+    loadComponent: () =>
+      import('./features/sales/orders/sales-order-print.component').then((m) => m.SalesOrderPrintComponent),
+  },
+  {
     path: '',
     component: ShellComponent,
     canActivate: [authGuard],

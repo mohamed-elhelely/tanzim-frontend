@@ -2047,6 +2047,8 @@
     "applyFirst": "Apply a search or filter first, then save it."
   },
   "print": {
+    "quotation": "Quotation",
+    "orderConfirmation": "Order confirmation",
     "deliveryNote": "Delivery note",
     "deliverTo": "Deliver to",
     "received": "Received",
