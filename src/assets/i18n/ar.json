@@ -87,6 +87,7 @@
     "dashboards": "لوحات المتابعة",
     "reports": "التقارير",
     "companyProfile": "ملف الشركة",
+    "systemLogs": "سجل النظام",
     "platformBilling": "الاشتراكات",
     "subscriptions": "اشتراكات الشركات",
     "plans": "الخطط",
@@ -1974,5 +1975,51 @@
     "passwordMismatch": "كلمتا المرور غير متطابقتين.",
     "updatePassword": "تحديث كلمة المرور",
     "passwordChanged": "تم تغيير كلمة المرور."
+  },
+  "systemLogs": {
+    "title": "سجل النظام",
+    "subtitle": "من عدّل ماذا ومتى",
+    "detailTitle": "تفاصيل التعديل",
+    "systemUser": "النظام",
+    "noChanges": "لا توجد تغييرات مسجّلة في الحقول.",
+    "hints": {
+      "search": "ابحث بالسجل أو المستخدم"
+    },
+    "fields": {
+      "time": "الوقت",
+      "user": "المستخدم",
+      "action": "العملية",
+      "resource": "الشاشة",
+      "record": "السجل",
+      "changes": "التغييرات",
+      "source": "المصدر",
+      "from": "من",
+      "to": "إلى",
+      "ip": "عنوان IP",
+      "device": "الجهاز",
+      "field": "الحقل",
+      "before": "قبل",
+      "after": "بعد"
+    },
+    "actions": {
+      "create": "إضافة",
+      "update": "تعديل",
+      "delete": "حذف",
+      "restore": "استرجاع",
+      "bulk_update": "تعديل جماعي",
+      "bulk_delete": "حذف جماعي",
+      "import": "استيراد",
+      "login": "تسجيل دخول",
+      "login_failed": "محاولة دخول فاشلة",
+      "logout": "تسجيل خروج",
+      "password_change": "تغيير كلمة المرور"
+    },
+    "sources": {
+      "api": "التطبيق",
+      "admin": "لوحة الإدارة",
+      "import": "استيراد",
+      "task": "مهمة في الخلفية",
+      "system": "النظام"
+    }
   }
 }

@@ -87,6 +87,7 @@
     "dashboards": "Dashboards",
     "reports": "Reports",
     "companyProfile": "Company profile",
+    "systemLogs": "System log",
     "platformBilling": "Subscriptions",
     "subscriptions": "Company subscriptions",
     "plans": "Plans",
@@ -1974,5 +1975,51 @@
     "passwordMismatch": "The passwords do not match.",
     "updatePassword": "Update password",
     "passwordChanged": "Password changed."
+  },
+  "systemLogs": {
+    "title": "System log",
+    "subtitle": "Who changed what, and when",
+    "detailTitle": "Change details",
+    "systemUser": "System",
+    "noChanges": "No field changes recorded.",
+    "hints": {
+      "search": "Search by record or user"
+    },
+    "fields": {
+      "time": "Time",
+      "user": "User",
+      "action": "Action",
+      "resource": "Screen",
+      "record": "Record",
+      "changes": "Changes",
+      "source": "Source",
+      "from": "From",
+      "to": "To",
+      "ip": "IP address",
+      "device": "Device",
+      "field": "Field",
+      "before": "Before",
+      "after": "After"
+    },
+    "actions": {
+      "create": "Created",
+      "update": "Updated",
+      "delete": "Deleted",
+      "restore": "Restored",
+      "bulk_update": "Bulk update",
+      "bulk_delete": "Bulk delete",
+      "import": "Import",
+      "login": "Signed in",
+      "login_failed": "Failed sign-in",
+      "logout": "Signed out",
+      "password_change": "Password changed"
+    },
+    "sources": {
+      "api": "App",
+      "admin": "Admin panel",
+      "import": "Import",
+      "task": "Background task",
+      "system": "System"
+    }
   }
 }

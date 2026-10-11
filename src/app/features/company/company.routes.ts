@@ -30,6 +30,13 @@ export const COMPANY_ROUTES: Routes = [
     data: { titleKey: 'company.departments.edit', permission: 'change_department' },
   },
   {
+    path: 'system-logs',
+    canActivate: [permissionGuard],
+    loadComponent: () =>
+      import('./system-logs/system-log-list.component').then((m) => m.SystemLogListComponent),
+    data: { titleKey: 'systemLogs.title', permission: 'view_auditlog' },
+  },
+  {
     path: 'profile',
     canActivate: [permissionGuard],
     loadComponent: () =>
