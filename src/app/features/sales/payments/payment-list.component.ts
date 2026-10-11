@@ -14,11 +14,13 @@ import { ServerTable } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { InvoicePayment, PAYMENT_METHODS, PAYMENT_RECORD_SEVERITY, PaymentMethod, PaymentRecordStatus } from '../sales.models';
 import { InvoicePaymentService } from './invoice-payment.service';
+import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 /** Every payment received, newest first. Payments are recorded and refunded from their invoice. */
 @Component({
   selector: 'app-payment-list',
   imports: [
+    SavedViewsComponent,
     DecimalPipe,
     FormsModule,
     TranslatePipe,
@@ -44,6 +46,9 @@ export class PaymentListComponent implements OnInit {
       filters: () => ({ payment_method: this.method }),
       reset: () => {
         this.method = null;
+      },
+      restore: (filters) => {
+        this.method = (filters['payment_method'] ?? null) as PaymentListComponent['method'];
       },
     },
   );

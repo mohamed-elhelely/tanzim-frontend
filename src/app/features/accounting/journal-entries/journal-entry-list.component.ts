@@ -15,6 +15,7 @@ import { ServerTable } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { JournalEntry, JournalStatus } from '../accounting.models';
 import { JournalEntryService } from './journal-entry.service';
+import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 type Origin = 'manual' | 'automatic';
 
@@ -22,6 +23,7 @@ type Origin = 'manual' | 'automatic';
 @Component({
   selector: 'app-journal-entry-list',
   imports: [
+    SavedViewsComponent,
     DecimalPipe,
     FormsModule,
     TranslatePipe,
@@ -60,6 +62,12 @@ export class JournalEntryListComponent implements OnInit {
         this.origin = null;
         this.startDate = '';
         this.endDate = '';
+      },
+      restore: (filters) => {
+        this.status = (filters['status'] ?? null) as JournalEntryListComponent['status'];
+        this.origin = filters['automatic'] === undefined ? null : filters['automatic'] === 'true' ? 'automatic' : 'manual';
+        this.startDate = String(filters['start_date'] ?? '');
+        this.endDate = String(filters['end_date'] ?? '');
       },
     },
   );

@@ -17,10 +17,12 @@ import { ServerTable } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { SupplierProduct } from '../inventory.models';
 import { SupplierProductService } from './supplier-product.service';
+import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 @Component({
   selector: 'app-supplier-product-list',
   imports: [
+    SavedViewsComponent,
     DecimalPipe,
     TranslatePipe,
     TableModule,

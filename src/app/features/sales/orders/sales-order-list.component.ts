@@ -26,10 +26,12 @@ import {
   SalesOrderStatus,
 } from '../sales.models';
 import { SalesOrderService } from './sales-order.service';
+import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 @Component({
   selector: 'app-sales-order-list',
   imports: [
+    SavedViewsComponent,
     FormsModule,
     DecimalPipe,
     TranslatePipe,
@@ -60,6 +62,9 @@ export class SalesOrderListComponent implements OnInit {
       filters: () => ({ status: this.status }),
       reset: () => {
         this.status = null;
+      },
+      restore: (filters) => {
+        this.status = (filters['status'] ?? null) as SalesOrderListComponent['status'];
       },
     },
   );

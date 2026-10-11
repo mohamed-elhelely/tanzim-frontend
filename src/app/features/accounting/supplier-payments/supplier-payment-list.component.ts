@@ -14,10 +14,12 @@ import { ServerTable } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { SUPPLIER_PAYMENT_METHODS, SupplierPayment, SupplierPaymentMethod } from '../accounting.models';
 import { SupplierPaymentService } from './supplier-payment.service';
+import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 @Component({
   selector: 'app-supplier-payment-list',
   imports: [
+    SavedViewsComponent,
     DecimalPipe,
     FormsModule,
     TranslatePipe,
@@ -45,6 +47,10 @@ export class SupplierPaymentListComponent implements OnInit {
       reset: () => {
         this.status = null;
         this.method = null;
+      },
+      restore: (filters) => {
+        this.status = (filters['status'] ?? null) as SupplierPaymentListComponent['status'];
+        this.method = (filters['payment_method'] ?? null) as SupplierPaymentListComponent['method'];
       },
     },
   );

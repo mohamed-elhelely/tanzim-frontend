@@ -40,6 +40,19 @@ describe('SalesInvoiceListComponent', () => {
     httpMock.expectOne((r) => r.url === URL && r.params.get('status') === 'issued' && r.params.get('payment_status') === 'partial').flush(envelope([], 0));
   });
 
+  it('restores saved filters into its fields', () => {
+    const fixture = TestBed.createComponent(SalesInvoiceListComponent);
+    fixture.detectChanges();
+    httpMock.expectOne((r) => r.url === URL).flush(envelope([], 0));
+    const component = fixture.componentInstance;
+    component.table.applyQuery({ search: 'INV-9', filters: { status: 'issued', payment_status: 'partial' } });
+    expect(component.status).toBe('issued');
+    expect(component.paymentStatus).toBe('partial');
+    httpMock
+      .expectOne((r) => r.url === URL && r.params.get('search') === 'INV-9' && r.params.get('payment_status') === 'partial')
+      .flush(envelope([], 0));
+  });
+
   it('opens an invoice', () => {
     const fixture = TestBed.createComponent(SalesInvoiceListComponent);
     fixture.detectChanges();

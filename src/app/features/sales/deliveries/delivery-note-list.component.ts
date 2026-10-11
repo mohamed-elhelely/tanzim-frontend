@@ -16,11 +16,13 @@ import { ServerTable } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { DELIVERY_STATUSES, DELIVERY_STATUS_SEVERITY, DeliveryNoteListItem, DeliveryStatus } from '../sales.models';
 import { DeliveryNoteService } from './delivery-note.service';
+import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 /** Delivery notes are created from an order ("Ship"), so this list has no New button. */
 @Component({
   selector: 'app-delivery-note-list',
   imports: [
+    SavedViewsComponent,
     FormsModule,
     TranslatePipe,
     TableModule,
@@ -48,6 +50,9 @@ export class DeliveryNoteListComponent implements OnInit {
       filters: () => ({ status: this.status }),
       reset: () => {
         this.status = null;
+      },
+      restore: (filters) => {
+        this.status = (filters['status'] ?? null) as DeliveryNoteListComponent['status'];
       },
     },
   );

@@ -20,10 +20,12 @@ import { FormDialogService } from '../../../shared/forms/form-dialog.service';
 import { Permission } from '../company.models';
 import { PermissionFormComponent } from './permission-form.component';
 import { PermissionService } from './permission.service';
+import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 @Component({
   selector: 'app-permission-list',
   imports: [
+    SavedViewsComponent,
     TranslatePipe,
     TableModule,
     ButtonModule,

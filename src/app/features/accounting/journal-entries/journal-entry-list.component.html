@@ -41,6 +41,7 @@
         <span class="text-gray-500 dark:text-gray-400">{{ 'accounting.fields.to' | translate }}</span>
         <input pInputText type="date" [(ngModel)]="endDate" class="w-full sm:w-40" />
       </label>
+      <app-saved-views [table]="table" screen="journal-entry"></app-saved-views>
       <p-button
         [label]="'common.apply' | translate"
         icon="pi pi-filter"

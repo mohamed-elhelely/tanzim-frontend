@@ -31,6 +31,7 @@
         <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
         <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
       </p-select>
+      <app-saved-views [table]="table" screen="supplier-return"></app-saved-views>
       <p-button
         [label]="'common.apply' | translate"
         icon="pi pi-filter"

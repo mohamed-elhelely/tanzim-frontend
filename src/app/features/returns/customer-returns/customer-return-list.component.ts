@@ -24,10 +24,12 @@ import {
   ReturnReason,
 } from '../returns.models';
 import { CustomerReturnService } from './customer-return.service';
+import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 @Component({
   selector: 'app-customer-return-list',
   imports: [
+    SavedViewsComponent,
     DatePipe,
     DecimalPipe,
     FormsModule,
@@ -59,6 +61,10 @@ export class CustomerReturnListComponent implements OnInit {
       reset: () => {
         this.status = null;
         this.reason = null;
+      },
+      restore: (filters) => {
+        this.status = (filters['status'] ?? null) as CustomerReturnListComponent['status'];
+        this.reason = (filters['return_reason'] ?? null) as CustomerReturnListComponent['reason'];
       },
     },
   );

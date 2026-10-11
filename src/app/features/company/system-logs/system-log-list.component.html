@@ -79,6 +79,7 @@
         <span class="text-gray-500 dark:text-gray-400">{{ 'systemLogs.fields.to' | translate }}</span>
         <input pInputText type="date" [(ngModel)]="dateTo" class="w-full sm:w-40" />
       </label>
+      <app-saved-views [table]="table" screen="system-log"></app-saved-views>
       <p-button
         [label]="'common.apply' | translate"
         icon="pi pi-filter"

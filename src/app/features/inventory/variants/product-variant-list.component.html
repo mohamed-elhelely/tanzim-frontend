@@ -27,6 +27,7 @@
           <a routerLink="/inventory/variants" class="font-medium underline">{{ 'inventory.variants.showAll' | translate }}</a>
         </span>
       }
+      <app-saved-views [table]="table" screen="product-variant"></app-saved-views>
       <p-button
         [label]="'common.search' | translate"
         icon="pi pi-search"

@@ -14,6 +14,7 @@ import { ServerTable } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { TenantCompany } from '../admin.models';
 import { TenantCompanyService } from './tenant-company.service';
+import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 /**
  * No delete action: the backend's DELETE deactivates the company, which the form's Active switch already does
@@ -22,6 +23,7 @@ import { TenantCompanyService } from './tenant-company.service';
 @Component({
   selector: 'app-tenant-company-list',
   imports: [
+    SavedViewsComponent,
     TranslatePipe,
     TableModule,
     ButtonModule,

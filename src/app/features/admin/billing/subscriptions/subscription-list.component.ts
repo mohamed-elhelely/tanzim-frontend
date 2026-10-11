@@ -18,6 +18,7 @@ import { SUBSCRIPTION_SEVERITY, SUBSCRIPTION_STATUSES, Severity, Subscription } 
 import { SubscriptionService } from '../platform-billing.service';
 import { SubscriptionFormComponent } from './subscription-form.component';
 import { SubscriptionModulesComponent } from './subscription-modules.component';
+import { SavedViewsComponent } from '../../../../shared/table/saved-views.component';
 
 /**
  * /admin/subscriptions: every company's subscription, filtered by company and status; plan, dates and users are
@@ -26,6 +27,7 @@ import { SubscriptionModulesComponent } from './subscription-modules.component';
 @Component({
   selector: 'app-subscription-list',
   imports: [
+    SavedViewsComponent,
     FormsModule,
     TranslatePipe,
     ButtonModule,
@@ -58,6 +60,10 @@ export class SubscriptionListComponent implements OnInit {
       reset: () => {
         this.company = null;
         this.status = null;
+      },
+      restore: (filters) => {
+        this.company = filters['company'] === undefined ? null : Number(filters['company']);
+        this.status = (filters['status'] ?? null) as SubscriptionListComponent['status'];
       },
     },
   );

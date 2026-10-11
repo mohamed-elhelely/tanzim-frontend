@@ -17,11 +17,13 @@ import { TenantCompanyService } from '../../companies/tenant-company.service';
 import { AdminInvoice, INVOICE_SEVERITY, INVOICE_STATUSES, Severity } from '../platform-billing.models';
 import { AdminInvoiceService } from '../platform-billing.service';
 import { InvoiceDraftFormComponent } from './invoice-draft-form.component';
+import { SavedViewsComponent } from '../../../../shared/table/saved-views.component';
 
 /** /admin/invoices: platform invoices of every company, filtered by company and status. */
 @Component({
   selector: 'app-invoice-list',
   imports: [
+    SavedViewsComponent,
     DecimalPipe,
     FormsModule,
     RouterLink,
@@ -53,6 +55,10 @@ export class InvoiceListComponent implements OnInit {
       reset: () => {
         this.company = null;
         this.status = null;
+      },
+      restore: (filters) => {
+        this.company = filters['company'] === undefined ? null : Number(filters['company']);
+        this.status = (filters['status'] ?? null) as InvoiceListComponent['status'];
       },
     },
   );

@@ -34,6 +34,7 @@ import {
   auditChangeRows,
 } from './system-log.models';
 import { SystemLogService } from './system-log.service';
+import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 /** Screens' `view_<resource>` permissions give the resource filter its options and labels (nav.* keys). */
 function resourceLabels(items: NavItem[]): Map<string, string> {
@@ -54,6 +55,7 @@ function resourceLabels(items: NavItem[]): Map<string, string> {
 @Component({
   selector: 'app-system-log-list',
   imports: [
+    SavedViewsComponent,
     DatePipe,
     FormsModule,
     TranslatePipe,
@@ -104,6 +106,14 @@ export class SystemLogListComponent implements OnInit {
         this.source = null;
         this.dateFrom = '';
         this.dateTo = '';
+      },
+      restore: (filters) => {
+        this.action = (filters['action'] ?? null) as SystemLogListComponent['action'];
+        this.resource = (filters['resource'] ?? null) as SystemLogListComponent['resource'];
+        this.user = filters['user'] === undefined ? null : Number(filters['user']);
+        this.source = (filters['source'] ?? null) as SystemLogListComponent['source'];
+        this.dateFrom = String(filters['date_from'] ?? '');
+        this.dateTo = String(filters['date_to'] ?? '');
       },
     },
   );

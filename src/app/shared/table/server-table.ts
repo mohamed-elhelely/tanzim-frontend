@@ -25,6 +25,14 @@ export interface ServerTableOptions {
   filters?: () => FilterValues;
   /** Puts the screen's filter fields back to their defaults (used by `clear()`). */
   reset?: () => void;
+  /** Sets the screen's filter fields from saved values, the inverse of `filters` (used by saved views). */
+  restore?: (filters: Record<string, string | number>) => void;
+}
+
+/** The search and filters a table is showing; what a saved view keeps. */
+export interface TableQuery {
+  search?: string;
+  filters: Record<string, string | number>;
 }
 
 export class ServerTable<T> {
@@ -112,8 +120,21 @@ export class ServerTable<T> {
   }
 
   /** The search and filters the table is showing, e.g. to export exactly those rows. */
-  appliedQuery(): { search?: string; filters: Record<string, string | number> } {
+  appliedQuery(): TableQuery {
     return { search: this.searchTerm || undefined, filters: { ...(this.appliedFilters ?? this.readFilters()) } };
+  }
+
+  /** Shows a saved query: fills the search box and the filter fields, then applies them. */
+  applyQuery(query: TableQuery): void {
+    this.searchDraft.set(query.search ?? '');
+    this.options.reset?.();
+    this.options.restore?.(query.filters);
+    this.apply();
+  }
+
+  /** Whether this table can put its filter fields back (screens with only a search box always can). */
+  canRestore(): boolean {
+    return !this.options.filters || !!this.options.restore;
   }
 
   /** Empty the search box, reset the filter fields and show everything again. */

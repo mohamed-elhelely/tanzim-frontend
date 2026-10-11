@@ -18,10 +18,12 @@ import { ServerTable } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { CUSTOMER_TYPES, CustomerListItem, CustomerType } from '../sales.models';
 import { CustomerService } from './customer.service';
+import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 @Component({
   selector: 'app-customer-list',
   imports: [
+    SavedViewsComponent,
     FormsModule,
     DecimalPipe,
     TranslatePipe,
@@ -52,6 +54,9 @@ export class CustomerListComponent implements OnInit {
       filters: () => ({ customer_type: this.customerType }),
       reset: () => {
         this.customerType = null;
+      },
+      restore: (filters) => {
+        this.customerType = (filters['customer_type'] ?? null) as CustomerListComponent['customerType'];
       },
     },
   );

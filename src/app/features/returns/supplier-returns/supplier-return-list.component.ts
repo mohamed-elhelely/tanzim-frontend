@@ -16,10 +16,12 @@ import { ServerTable } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { SUPPLIER_RETURN_SEVERITY, SUPPLIER_RETURN_STATUSES, SupplierReturnListItem, SupplierReturnStatus } from '../returns.models';
 import { SupplierReturnService } from './supplier-return.service';
+import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 @Component({
   selector: 'app-supplier-return-list',
   imports: [
+    SavedViewsComponent,
     FormsModule,
     TranslatePipe,
     TableModule,
@@ -47,6 +49,9 @@ export class SupplierReturnListComponent implements OnInit {
       filters: () => ({ status: this.status }),
       reset: () => {
         this.status = null;
+      },
+      restore: (filters) => {
+        this.status = (filters['status'] ?? null) as SupplierReturnListComponent['status'];
       },
     },
   );

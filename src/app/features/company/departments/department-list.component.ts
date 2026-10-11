@@ -20,10 +20,12 @@ import { FormDialogService } from '../../../shared/forms/form-dialog.service';
 import { Department } from '../company.models';
 import { DepartmentFormComponent } from './department-form.component';
 import { DepartmentService } from './department.service';
+import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 @Component({
   selector: 'app-department-list',
   imports: [
+    SavedViewsComponent,
     TranslatePipe,
     TableModule,
     ButtonModule,

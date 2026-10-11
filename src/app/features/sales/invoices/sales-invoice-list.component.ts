@@ -25,11 +25,13 @@ import {
   SalesInvoiceStatus,
 } from '../sales.models';
 import { SalesInvoiceService } from './sales-invoice.service';
+import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 /** Invoices are created from a delivered order ("Create invoice"), so this list has no New button. */
 @Component({
   selector: 'app-sales-invoice-list',
   imports: [
+    SavedViewsComponent,
     DecimalPipe,
     FormsModule,
     TranslatePipe,
@@ -60,6 +62,10 @@ export class SalesInvoiceListComponent implements OnInit {
       reset: () => {
         this.status = null;
         this.paymentStatus = null;
+      },
+      restore: (filters) => {
+        this.status = (filters['status'] ?? null) as SalesInvoiceListComponent['status'];
+        this.paymentStatus = (filters['payment_status'] ?? null) as SalesInvoiceListComponent['paymentStatus'];
       },
     },
   );

@@ -15,6 +15,7 @@ import { ServerTable } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { LEDGER_TYPE_SEVERITY, LedgerTransactionType, Severity, StockLedgerEntry } from '../inventory.models';
 import { StockLedgerService } from './stock-ledger.service';
+import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 /**
  * Every stock movement, newest first, read-only (the inventory services write it). Search matches the document
@@ -23,6 +24,7 @@ import { StockLedgerService } from './stock-ledger.service';
 @Component({
   selector: 'app-stock-ledger-list',
   imports: [
+    SavedViewsComponent,
     DatePipe,
     DecimalPipe,
     TranslatePipe,

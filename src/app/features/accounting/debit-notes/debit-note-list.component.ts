@@ -14,10 +14,12 @@ import { ServerTable } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { DEBIT_NOTE_SEVERITY, DebitNote, DebitNoteStatus } from '../accounting.models';
 import { DebitNoteService } from './debit-note.service';
+import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 @Component({
   selector: 'app-debit-note-list',
   imports: [
+    SavedViewsComponent,
     DecimalPipe,
     FormsModule,
     TranslatePipe,
@@ -43,6 +45,9 @@ export class DebitNoteListComponent implements OnInit {
       filters: () => ({ status: this.status }),
       reset: () => {
         this.status = null;
+      },
+      restore: (filters) => {
+        this.status = (filters['status'] ?? null) as DebitNoteListComponent['status'];
       },
     },
   );

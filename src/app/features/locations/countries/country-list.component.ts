@@ -18,10 +18,12 @@ import { FormDialogService } from '../../../shared/forms/form-dialog.service';
 import { Country } from '../locations.models';
 import { CountryFormComponent } from './country-form.component';
 import { CountryService } from './country.service';
+import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 @Component({
   selector: 'app-country-list',
   imports: [
+    SavedViewsComponent,
     TranslatePipe,
     TableModule,
     ButtonModule,

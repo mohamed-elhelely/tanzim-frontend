@@ -2038,5 +2038,12 @@
     "open": "Search screens (Ctrl+K)",
     "placeholder": "Go to…",
     "noResults": "No matching screens"
+  },
+  "views": {
+    "title": "Views",
+    "empty": "No saved views yet.",
+    "namePlaceholder": "Name this view",
+    "save": "Save current filters",
+    "applyFirst": "Apply a search or filter first, then save it."
   }
 }
