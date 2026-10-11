@@ -2061,5 +2061,12 @@
     "close": "Close",
     "billTo": "Bill to",
     "discount": "Discount"
+  },
+  "labels": {
+    "title": "Labels",
+    "printSelected": "Print labels ({{count}})",
+    "copies": "Copies of each",
+    "showPrice": "Show price",
+    "none": "No items chosen. Tick items on the variants list first."
   }
 }

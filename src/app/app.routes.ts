@@ -38,6 +38,13 @@ export const routes: Routes = [
       import('./features/sales/orders/sales-order-print.component').then((m) => m.SalesOrderPrintComponent),
   },
   {
+    path: 'print/variant-labels',
+    canActivate: [authGuard, companyMemberGuard, permissionGuard],
+    data: { permission: 'view_productvariant', titleKey: 'labels.title' },
+    loadComponent: () =>
+      import('./features/inventory/variants/variant-labels-print.component').then((m) => m.VariantLabelsPrintComponent),
+  },
+  {
     path: '',
     component: ShellComponent,
     canActivate: [authGuard],

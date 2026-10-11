@@ -1,0 +1,53 @@
+<div class="min-h-screen bg-gray-100 py-6 print:bg-white print:py-0">
+  <div class="mx-auto mb-4 flex max-w-4xl flex-wrap items-center justify-end gap-3 px-4 print:hidden">
+    <label class="flex items-center gap-2 text-sm text-gray-700">
+      {{ 'labels.copies' | translate }}
+      <p-inputnumber
+        [ngModel]="copies()"
+        (ngModelChange)="setCopies($event)"
+        [min]="1"
+        [max]="100"
+        [showButtons]="true"
+        inputStyleClass="w-16"
+      ></p-inputnumber>
+    </label>
+    <label class="flex items-center gap-2 text-sm text-gray-700">
+      <input type="checkbox" [checked]="showPrice()" (change)="showPrice.set($any($event.target).checked)" />
+      {{ 'labels.showPrice' | translate }}
+    </label>
+    <p-button [label]="'print.close' | translate" icon="pi pi-times" severity="secondary" [outlined]="true" (onClick)="close()"></p-button>
+    <p-button [label]="'print.print' | translate" icon="pi pi-print" [disabled]="!labels().length" (onClick)="print()"></p-button>
+  </div>
+
+  @if (error(); as err) {
+    <div class="mx-auto max-w-4xl px-4">
+      <app-error-state [title]="errorTitleKey(err)" [showRetry]="false"></app-error-state>
+    </div>
+  } @else if (variants(); as variants) {
+    @if (!variants.length) {
+      <p class="mx-auto max-w-4xl px-4 text-center text-sm text-gray-500">{{ 'labels.none' | translate }}</p>
+    } @else {
+      <div class="mx-auto grid max-w-4xl grid-cols-3 gap-3 bg-white p-6 shadow print:max-w-none print:gap-[3mm] print:p-0 print:shadow-none">
+        @for (variant of labels(); track $index) {
+          <div class="flex h-[32mm] flex-col justify-between break-inside-avoid border border-dashed border-gray-300 p-2 text-gray-900 print:border-gray-200">
+            <div class="min-w-0">
+              <p class="truncate text-xs font-semibold">{{ variant.product.name }}</p>
+              @if (variant.name && variant.name !== variant.product.name) {
+                <p class="truncate text-[0.65rem] text-gray-600">{{ variant.name }}</p>
+              }
+            </div>
+            <div class="flex items-end justify-between gap-2">
+              <span class="font-mono text-[0.6rem] text-gray-600" dir="ltr">{{ variant.sku }}</span>
+              @if (showPrice() && variant.standard_price) {
+                <span class="text-sm font-bold">{{ variant.standard_price | number: '1.2-2' }}</span>
+              }
+            </div>
+            <app-barcode class="h-[11mm]" [value]="code(variant)"></app-barcode>
+          </div>
+        }
+      </div>
+    }
+  } @else {
+    <app-loading-state></app-loading-state>
+  }
+</div>

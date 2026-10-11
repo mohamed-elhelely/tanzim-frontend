@@ -47,12 +47,20 @@
       }
       @if (table.selection().length) {
         <p-button
+          [label]="'labels.printSelected' | translate: { count: table.selection().length }"
+          icon="pi pi-barcode"
+          severity="secondary"
+          [outlined]="true"
+          (onClick)="printLabels()"
+          styleClass="w-full sm:ms-auto sm:w-auto"
+        ></p-button>
+        <p-button
           [label]="'common.deleteSelected' | translate: { count: table.selection().length }"
           icon="pi pi-trash"
           severity="danger"
           [outlined]="true"
           (onClick)="confirmBulkDelete()"
-          styleClass="w-full sm:ms-auto sm:w-auto"
+          styleClass="w-full sm:w-auto"
         ></p-button>
       }
     </div>

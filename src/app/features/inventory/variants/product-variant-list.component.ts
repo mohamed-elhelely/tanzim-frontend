@@ -93,6 +93,13 @@ export class ProductVariantListComponent {
     this.confirm.confirmDelete(row.sku, () => this.api.remove(row.id), () => this.table.afterDelete());
   }
 
+  /** Barcode labels for the ticked variants, in a new tab. */
+  printLabels(): void {
+    const ids = this.table.selection().map((variant) => variant.id).join(',');
+    const url = this.router.serializeUrl(this.router.createUrlTree(['/print/variant-labels'], { queryParams: { ids } }));
+    window.open(url, '_blank', 'noopener');
+  }
+
   confirmBulkDelete(): void {
     this.confirm.confirmBulkDelete(
       this.table.selection(),
