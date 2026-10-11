@@ -35,7 +35,6 @@
       >
         <ng-template pTemplate="header">
           <tr>
-            <th pSortableColumn="id">{{ 'company.fields.id' | translate }} <p-sortIcon field="id"></p-sortIcon></th>
             <th pSortableColumn="name_en">
               {{ 'company.fields.nameEn' | translate }} <p-sortIcon field="name_en"></p-sortIcon>
             </th>
@@ -48,7 +47,6 @@
         </ng-template>
         <ng-template pTemplate="body" let-row>
           <tr>
-            <td>{{ row.id }}</td>
             <td>{{ row.name_en }}</td>
             <td>{{ row.name_ar }}</td>
             <td>{{ row.postal_code_prefix }}</td>
@@ -75,7 +73,7 @@
         </ng-template>
         <ng-template pTemplate="emptymessage">
           <tr>
-            <td colspan="7"><app-empty-state icon="pi-directions"></app-empty-state></td>
+            <td colspan="6"><app-empty-state icon="pi-directions"></app-empty-state></td>
           </tr>
         </ng-template>
       </p-table>
