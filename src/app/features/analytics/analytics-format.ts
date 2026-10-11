@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform, inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { AnalyticsValue, isMoneyKey } from './analytics.models';
+import { AnalyticsValue, isMoneyKey, Kpi } from './analytics.models';
 
 /** "days_since_last_order" → "Days since last order": the label when no translation exists. */
 export function humanize(key: string): string {
@@ -56,4 +56,14 @@ export function formatValue(key: string, value: AnalyticsValue, locale = 'en'): 
       .join(' · ');
   }
   return String(value);
+}
+
+/** A KPI value for display: money and ratios with two decimals, `%` and `×` suffixes, "—" when missing. */
+export function formatKpi(kpi: Kpi): string {
+  if (kpi.value === null || kpi.value === undefined) {
+    return '—';
+  }
+  const digits = kpi.unit === 'currency' || kpi.unit === 'percent' || kpi.unit === 'ratio' ? 2 : 0;
+  const text = kpi.value.toLocaleString('en', { minimumFractionDigits: digits, maximumFractionDigits: kpi.unit === 'number' ? 2 : digits });
+  return kpi.unit === 'percent' ? `${text}%` : kpi.unit === 'ratio' ? `${text}×` : text;
 }

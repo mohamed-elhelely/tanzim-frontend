@@ -131,6 +131,8 @@
     "notifications": "Notifications"
   },
   "dashboard": {
+    "keyNumbers": "Key numbers",
+    "openAnalytics": "Open analytics",
     "subtitle": "Overview of your organisation",
     "welcome": "Welcome back, {{name}}",
     "welcomeNoName": "Welcome back",

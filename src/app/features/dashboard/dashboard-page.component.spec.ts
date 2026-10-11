@@ -38,10 +38,17 @@ describe('DashboardPageComponent setup steps', () => {
 
   afterEach(() => httpMock.verify());
 
-  /** Answers every count request: `total` per path, 0 for the rest. */
+  const OVERVIEW = 'reports/v1/dashboards/overview/';
+  const kpi = (key: string, value: number) => ({ key, label: key, value, unit: 'currency' as const, change_percent: 12.5 });
+
+  /** Answers every count request: `total` per path, 0 for the rest; the analytics overview gets five KPIs. */
   function answerCounts(totals: Record<string, number>) {
     for (const req of httpMock.match((r) => r.url.startsWith(API))) {
       const path = req.request.url.slice(API.length);
+      if (path === OVERVIEW) {
+        req.flush(envelope({ kpis: [kpi('revenue', 1500), kpi('a', 1), kpi('b', 2), kpi('c', 3), kpi('d', 4)], charts: {}, tables: {}, alerts: [] }));
+        continue;
+      }
       const total = totals[path] ?? 0;
       req.flush(path === 'company/v1/company-user/' ? envelope(Array(total).fill({})) : envelope([], total));
     }
@@ -66,6 +73,17 @@ describe('DashboardPageComponent setup steps', () => {
     ]);
     expect(steps.filter((step) => step.done).map((step) => step.key)).toEqual(['departments', 'warehouses']);
     expect(fixture.nativeElement.textContent).toContain('dashboard.steps.products');
+  });
+
+  it('shows the first four analytics KPIs with their change', () => {
+    const fixture = TestBed.createComponent(DashboardPageComponent);
+    fixture.detectChanges();
+    answerCounts({});
+    fixture.detectChanges();
+    expect(fixture.componentInstance.kpis()?.map((k) => k.key)).toEqual(['revenue', 'a', 'b', 'c']);
+    const text = fixture.nativeElement.textContent;
+    expect(text).toContain('1,500.00');
+    expect(text).toContain('12.5%');
   });
 
   it('counts branding as done once the company has a logo, and hides stock steps without inventory', () => {

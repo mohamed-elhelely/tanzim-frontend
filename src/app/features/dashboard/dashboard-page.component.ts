@@ -5,6 +5,9 @@ import { Observable, catchError, map, of } from 'rxjs';
 import { AuthService } from '../../core/auth/auth.service';
 import { AccessService } from '../../core/auth/access.service';
 import { TenantCompanyService } from '../admin/companies/tenant-company.service';
+import { AnalyticsLabelPipe, formatKpi } from '../analytics/analytics-format';
+import { Kpi } from '../analytics/analytics.models';
+import { AnalyticsService } from '../analytics/analytics.service';
 import { DepartmentService } from '../company/departments/department.service';
 import { TeamService } from '../company/teams/team.service';
 import { CompanyUserService } from '../company/users/company-user.service';
@@ -113,7 +116,7 @@ const SETUP_STEPS: Array<Gate & { key: StepKey; labelKey: string; link: string }
 
 @Component({
   selector: 'app-dashboard-page',
-  imports: [TranslatePipe, RouterLink],
+  imports: [TranslatePipe, RouterLink, AnalyticsLabelPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './dashboard-page.component.html',
 })
@@ -126,6 +129,7 @@ export class DashboardPageComponent {
   private readonly products = inject(ProductService);
   private readonly customers = inject(CustomerService);
   private readonly companies = inject(TenantCompanyService);
+  private readonly analytics = inject(AnalyticsService);
   private readonly access = inject(AccessService);
   private readonly auth = inject(AuthService);
   /** Users without a company: platform staff see company counts, anyone else only the welcome. */
@@ -151,6 +155,9 @@ export class DashboardPageComponent {
         })),
   );
   readonly stepsDone = computed(() => this.steps().filter((step) => step.done).length);
+  /** The first KPIs of the analytics overview, for users who may open it; null while loading or hidden. */
+  readonly kpis = signal<Kpi[] | null>(null);
+  readonly formatKpi = formatKpi;
 
   constructor() {
     // Counts are requested only for the cards this user may see, so wait until /me has answered.
@@ -158,7 +165,10 @@ export class DashboardPageComponent {
     effect(() => {
       if (this.access.settled() && !requested) {
         requested = true;
-        untracked(() => this.loadCounts());
+        untracked(() => {
+          this.loadCounts();
+          this.loadKpis();
+        });
       }
     });
   }
@@ -195,6 +205,17 @@ export class DashboardPageComponent {
     if (shown.has('customers')) {
       this.load('customers', this.total(this.customers.list({ page: 1, pageSize: 1 })));
     }
+  }
+
+  /** A failure only hides the strip: the rest of the home page doesn't depend on analytics. */
+  private loadKpis(): void {
+    if (this.isPlatformAdmin() || !this.hasCompany || !this.access.can('view_dashboard')) {
+      return;
+    }
+    this.analytics.dashboard('overview', {}).subscribe({
+      next: (board) => this.kpis.set((board?.kpis ?? []).slice(0, 4)),
+      error: () => undefined,
+    });
   }
 
   private allowed(gate: Gate): boolean {

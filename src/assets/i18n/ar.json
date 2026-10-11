@@ -131,6 +131,8 @@
     "notifications": "الإشعارات"
   },
   "dashboard": {
+    "keyNumbers": "أهم الأرقام",
+    "openAnalytics": "فتح التحليلات",
     "subtitle": "نظرة عامة على مؤسستك",
     "welcome": "أهلًا بعودتك، {{name}}",
     "welcomeNoName": "أهلًا بعودتك",
