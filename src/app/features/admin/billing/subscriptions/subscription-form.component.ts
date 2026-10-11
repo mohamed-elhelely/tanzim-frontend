@@ -1,10 +1,14 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
+import { MultiSelectModule } from 'primeng/multiselect';
 import { SelectModule } from 'primeng/select';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
+import { Observable, catchError, forkJoin, map, of, startWith } from 'rxjs';
+import { AccessService } from '../../../../core/auth/access.service';
 import { AppError } from '../../../../core/errors/app-error';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { ErrorStateComponent } from '../../../../shared/components/error-state/error-state.component';
@@ -15,8 +19,9 @@ import { injectFormContext } from '../../../../shared/forms/form-context';
 import { errorTitleKey, handleSaveError } from '../../../../shared/utils/server-errors';
 import { SubscriptionStatus } from '../../../billing/billing.models';
 import { TenantCompanyService } from '../../companies/tenant-company.service';
-import { SUBSCRIPTION_STATUSES, SubscriptionPayload, WHOLE } from '../platform-billing.models';
-import { PlanService, SubscriptionService } from '../platform-billing.service';
+import { BillingModule, MODULE_EDITABLE_STATUSES, SUBSCRIPTION_STATUSES, Subscription, SubscriptionPayload, WHOLE } from '../platform-billing.models';
+import { BillingModuleService, PlanService, SubscriptionService } from '../platform-billing.service';
+import { SubscriptionModulesComponent } from './subscription-modules.component';
 
 /** `YYYY-MM-DD`, `months` from today. */
 function isoDate(months = 0): string {
@@ -25,7 +30,10 @@ function isoDate(months = 0): string {
   return date.toISOString().slice(0, 10);
 }
 
-/** Create / edit a company's subscription (dialog from the subscriptions list). */
+/**
+ * Create / edit a company's subscription (dialog from the subscriptions list). Editing shows the modules panel;
+ * creating lets staff pick modules, added one by one (add_module) once the subscription exists.
+ */
 @Component({
   selector: 'app-subscription-form',
   imports: [
@@ -33,12 +41,14 @@ function isoDate(months = 0): string {
     TranslatePipe,
     ButtonModule,
     InputTextModule,
+    MultiSelectModule,
     SelectModule,
     ToggleSwitchModule,
     FormLayoutComponent,
     LoadingStateComponent,
     ErrorStateComponent,
     FieldErrorComponent,
+    SubscriptionModulesComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './subscription-form.component.html',
@@ -47,6 +57,8 @@ export class SubscriptionFormComponent implements OnInit {
   private readonly api = inject(SubscriptionService);
   private readonly companies = inject(TenantCompanyService);
   private readonly plans = inject(PlanService);
+  private readonly modulesApi = inject(BillingModuleService);
+  private readonly access = inject(AccessService);
   private readonly notifications = inject(NotificationService);
   private readonly translate = inject(TranslateService);
   private readonly ctx = injectFormContext(['/admin/billing/subscriptions']);
@@ -73,7 +85,19 @@ export class SubscriptionFormComponent implements OnInit {
     next_billing_date: [isoDate(1), [Validators.required]],
     licensed_users: ['1', [Validators.required, Validators.pattern(WHOLE)]],
     auto_renew: [true],
+    /** Create only: modules to add once the subscription exists. */
+    module_ids: [[] as number[]],
   });
+
+  readonly isStaff = this.access.isStaff;
+  /** Edit only: the saved subscription, for the modules panel. */
+  readonly subscription = signal<Subscription | null>(null);
+  readonly moduleOptions = signal<BillingModule[]>([]);
+  private readonly status = toSignal(this.form.controls.status.valueChanges.pipe(startWith(this.form.controls.status.value)));
+  /** add_module refuses subscriptions that aren't trial/active. */
+  readonly modulesAllowed = computed(() => MODULE_EDITABLE_STATUSES.includes(this.status() ?? 'trial'));
+  /** Module changes apply at once, so the list reloads even when the form itself isn't saved. */
+  private modulesChanged = false;
 
   ngOnInit(): void {
     this.companies.all().subscribe({
@@ -85,6 +109,12 @@ export class SubscriptionFormComponent implements OnInit {
       error: () => this.planOptions.set([]),
     });
     if (this.id === null) {
+      if (this.isStaff()) {
+        this.modulesApi.all().subscribe({
+          next: (modules) => this.moduleOptions.set(modules.filter((module) => module.is_active)),
+          error: () => this.moduleOptions.set([]),
+        });
+      }
       return;
     }
     this.loading.set(true);
@@ -104,6 +134,7 @@ export class SubscriptionFormComponent implements OnInit {
         });
         // A subscription stays with its company.
         this.form.controls.company.disable();
+        this.subscription.set(subscription);
         this.loading.set(false);
       },
       error: (error: AppError) => {
@@ -133,21 +164,73 @@ export class SubscriptionFormComponent implements OnInit {
     };
     this.saving.set(true);
     this.formErrors.set([]);
-    const request = this.id !== null ? this.api.update(this.id, body) : this.api.create(body);
-    request.subscribe({
-      next: () => {
-        this.saving.set(false);
+    if (this.id !== null) {
+      this.api.update(this.id, body).subscribe({
+        next: (subscription) => {
+          this.saving.set(false);
+          this.notifications.success(this.translate.instant('common.saved'));
+          this.afterModulesChange(subscription.company ?? body.company);
+          this.goBack(true);
+        },
+        error: (error: AppError) => this.onSaveError(error),
+      });
+      return;
+    }
+    const moduleIds = this.modulesAllowed() ? value.module_ids : [];
+    this.api.create(body).subscribe({
+      next: (subscription) => {
         this.notifications.success(this.translate.instant('common.saved'));
-        this.goBack(true);
+        if (!moduleIds.length) {
+          this.saving.set(false);
+          this.afterModulesChange(subscription.company ?? body.company);
+          this.goBack(true);
+          return;
+        }
+        this.addModules(subscription, moduleIds).subscribe((failures) => {
+          this.saving.set(false);
+          if (failures.length) {
+            this.notifications.error(
+              this.translate.instant('admin.billing.subscriptions.modulesFailed', { modules: failures.join('; ') }),
+            );
+          }
+          this.afterModulesChange(subscription.company ?? body.company);
+          this.goBack(true);
+        });
       },
-      error: (error: AppError) => {
-        this.saving.set(false);
-        this.formErrors.set(handleSaveError(this.form, error, this.notifications));
-      },
+      error: (error: AppError) => this.onSaveError(error),
     });
   }
 
+  onModulesChanged(subscription: Subscription): void {
+    this.subscription.set(subscription);
+    this.modulesChanged = true;
+  }
+
   goBack(saved = false): void {
-    this.ctx.close(saved);
+    this.ctx.close(saved || this.modulesChanged);
+  }
+
+  /** Adds each module in turn; answers "Name (reason)" for those the backend refused. */
+  private addModules(subscription: Subscription, moduleIds: number[]): Observable<string[]> {
+    const names = new Map(this.moduleOptions().map((module) => [module.id, module.name]));
+    const calls = moduleIds.map((moduleId) =>
+      this.api.addModule(subscription.id, moduleId).pipe(
+        map(() => null),
+        catchError((error: AppError) => of(`${names.get(moduleId) ?? `#${moduleId}`} (${error.message})`)),
+      ),
+    );
+    return forkJoin(calls).pipe(map((results) => results.filter((failure): failure is string => failure !== null)));
+  }
+
+  /** The user's own company: fetch /me again so the menu shows its modules without a re-login. */
+  private afterModulesChange(company: number): void {
+    if (this.access.current()?.company?.id === company) {
+      this.access.reload();
+    }
+  }
+
+  private onSaveError(error: AppError): void {
+    this.saving.set(false);
+    this.formErrors.set(handleSaveError(this.form, error, this.notifications));
   }
 }

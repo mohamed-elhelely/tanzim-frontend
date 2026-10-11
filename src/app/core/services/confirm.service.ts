@@ -19,6 +19,10 @@ export interface ConfirmActionOptions<T> {
   danger?: boolean;
   run: () => Observable<T>;
   onDone: (result: T) => void;
+  /** Called when the user dismisses the question, e.g. to switch a toggle back. */
+  onCancel?: () => void;
+  /** Called when the action fails (the message is already shown). */
+  onError?: (error: AppError) => void;
 }
 
 /** The confirm → act → toast flows: deletes on list screens and workflow actions (confirm, ship, issue…). */
@@ -63,7 +67,8 @@ export class ConfirmService {
       acceptLabel: this.translate.instant(options.accept),
       rejectLabel: this.translate.instant('common.cancel'),
       acceptButtonStyleClass: options.danger ? 'p-button-danger' : undefined,
-      accept: () => this.runAction(options.run, options.success, options.onDone),
+      accept: () => this.runAction(options.run, options.success, options.onDone, options.onError),
+      reject: () => options.onCancel?.(),
     });
   }
 

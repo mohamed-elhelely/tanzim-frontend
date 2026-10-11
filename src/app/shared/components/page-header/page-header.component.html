@@ -15,8 +15,10 @@
       <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ subtitle | translate }}</p>
     }
   </div>
-  @if (actions.length) {
-    <div class="flex shrink-0 flex-wrap items-center gap-2">
+  <!-- Projected content (e.g. import/export buttons) shares the row with the action buttons. -->
+  <div class="flex shrink-0 flex-wrap items-center gap-2 empty:hidden">
+    <ng-content></ng-content>
+    @if (actions.length) {
       @for (action of actions; track action.label) {
         <p-button
           [label]="action.label | translate"
@@ -26,6 +28,6 @@
           (onClick)="action.onClick()"
         ></p-button>
       }
-    </div>
-  }
+    }
+  </div>
 </div>

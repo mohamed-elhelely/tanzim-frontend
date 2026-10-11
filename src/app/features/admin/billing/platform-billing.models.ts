@@ -13,6 +13,9 @@ export type Severity = 'success' | 'secondary' | 'info' | 'warn' | 'danger';
 export const SUBSCRIPTION_STATUSES: SubscriptionStatus[] = ['trial', 'active', 'past_due', 'canceled', 'expired'];
 export const INVOICE_STATUSES: InvoiceStatus[] = ['draft', 'issued', 'partially_paid', 'paid', 'overdue', 'cancelled'];
 
+/** Modules can only be added to subscriptions in these statuses (add_module answers 400 otherwise). */
+export const MODULE_EDITABLE_STATUSES: readonly SubscriptionStatus[] = ['trial', 'active'];
+
 export const SUBSCRIPTION_SEVERITY: Record<SubscriptionStatus, Severity> = {
   trial: 'info',
   active: 'success',

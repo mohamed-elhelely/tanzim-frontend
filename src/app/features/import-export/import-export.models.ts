@@ -88,3 +88,32 @@ export interface DataTask {
 export function taskModelName(resource: string): string {
   return resource.split('.').pop() ?? resource;
 }
+
+/** Why a file could not be imported: the backend's message and, when rows were read, every row's result. */
+export interface ImportFailure {
+  message: string;
+  stats: ImportStats | null;
+  rows: ImportPreviewRow[];
+}
+
+/**
+ * Reads a 400 from the import endpoint. A file with bad rows comes back with the whole result inside `error.errors`
+ * (`stats`, `detailed_results`, `error_message`); a file that can't be read at all only has `error.message`.
+ */
+export function importFailure(error: { message: string; errors: unknown }): ImportFailure {
+  const body = (error.errors ?? {}) as { stats?: ImportStats; detailed_results?: ImportPreviewRow[]; error_message?: string };
+  return {
+    message: body.error_message || error.message,
+    stats: body.stats ?? null,
+    rows: body.detailed_results ?? [],
+  };
+}
+
+/** The resource with this key; throws on a typo so a list page can't silently lose its import buttons. */
+export function dataResource(key: string): DataResource {
+  const resource = DATA_RESOURCES.find((item) => item.key === key);
+  if (!resource) {
+    throw new Error(`Unknown import/export resource "${key}"`);
+  }
+  return resource;
+}

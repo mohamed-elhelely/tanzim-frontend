@@ -1,0 +1,202 @@
+{
+  "title": { "en": "Tanzim: a quick tour", "ar": "جولة سريعة في تنظيم" },
+  "subtitle": { "en": "One system to run your company: people, stock, sales, accounts and reports", "ar": "سيستم واحد تدير بيه شركتك: الناس، المخزن، المبيعات، الحسابات والتقارير" },
+  "scenes": [
+    {
+      "id": "intro",
+      "label": { "en": "Welcome to Tanzim", "ar": "أهلًا بيك في تنظيم" },
+      "shots": [{ "path": "/dashboard" }],
+      "say": {
+        "en": "Hi, and welcome to Tanzim. Tanzim is one system to run your whole company: your team, your stock, your sales, and your accounts. To keep it real, we'll follow a company called Nile Valley. They sell computers and office furniture. We'll set them up, sell to one of their customers, and watch how that one sale moves through the whole system.",
+        "ar": "أهلًا بيك في تنظيم. تنظيم ده سيستم واحد تدير بيه شركتك كلها: فريقك، ومخزنك، ومبيعاتك، وحساباتك. وعشان الكلام يبقى عملي، هنمشي مع شركة اسمها نايل فالي. الشركة دي بتبيع أجهزة كمبيوتر وأثاث مكاتب. هنجهزها مع بعض، وبعدين نبيع لعميل من عملائها، ونشوف البيعة دي بتمشي إزاي في السيستم كله."
+      }
+    },
+    {
+      "id": "ch1", "card": true, "chapter": 1,
+      "label": { "en": "Setting up the company", "ar": "تجهيز الشركة" },
+      "say": { "en": "Part one: setting up the company.", "ar": "الجزء الأول: تجهيز الشركة." }
+    },
+    {
+      "id": "company",
+      "label": { "en": "Company & team", "ar": "الشركة والفريق" },
+      "shots": [{ "path": "/company/users" }, { "path": "/company/departments" }],
+      "say": {
+        "en": "Everything starts with the people. Here you add your departments and your employees. Nile Valley has seven departments and twelve employees, from the sales team to the warehouse and the accountants.",
+        "ar": "كل حاجة بتبدأ بالناس. من هنا بتضيف الأقسام والموظفين. نايل فالي مثلًا عندها سبع أقسام، واتناشر موظف، من فريق المبيعات، للمخزن، للحسابات."
+      }
+    },
+    {
+      "id": "permissions",
+      "label": { "en": "Roles & permissions", "ar": "الأدوار والصلاحيات" },
+      "shots": [{ "path": "/company/roles" }, { "path": "/company/permission-groups" }],
+      "say": {
+        "en": "Next, you decide who sees what. Each employee gets a role. Karim, the sales manager, works in sales. Omar, the accountant, works in the accounts. And for every screen you choose who can view, add, edit, or delete. So everyone has exactly what they need, and nothing more.",
+        "ar": "بعد كده بتحدد مين يشوف إيه. كل موظف بياخد دور. كريم مدير المبيعات بيشتغل في المبيعات، وعمر المحاسب بيشتغل في الحسابات. ولكل شاشة بتختار مين يقدر يشوف، ومين يضيف، ومين يعدّل أو يمسح. وبكده كل واحد معاه اللي محتاجه بالظبط، ومفيش أكتر."
+      }
+    },
+    {
+      "id": "locations",
+      "label": { "en": "Locations", "ar": "المواقع" },
+      "shots": [{ "path": "/locations/sites" }],
+      "say": {
+        "en": "Last step in the setup: your locations. Nile Valley has a head office in Zamalek and a warehouse in the Tenth of Ramadan. Later, every warehouse is linked to one of these addresses.",
+        "ar": "وآخر خطوة في التجهيز: أماكن الشركة. نايل فالي عندها مكتب رئيسي في الزمالك، ومخزن في العاشر من رمضان. وبعدين كل مخزن بيترِبط بعنوان من دول."
+      }
+    },
+    {
+      "id": "ch2", "card": true, "chapter": 2,
+      "label": { "en": "Products and the warehouse", "ar": "المنتجات والمخزن" },
+      "say": { "en": "Part two: products and the warehouse.", "ar": "الجزء التاني: المنتجات والمخزن." }
+    },
+    {
+      "id": "products",
+      "label": { "en": "Products", "ar": "المنتجات" },
+      "shots": [{ "path": "/inventory/products" }, { "path": "/inventory/variants" }],
+      "say": {
+        "en": "Now the company is ready, so let's add what it sells. Every product has a category, a cost, and a selling price. For example, this business laptop costs twenty-seven thousand pounds, and sells for thirty-two and a half. And if you have hundreds of products, you can import them from Excel in one go.",
+        "ar": "دلوقتي الشركة جاهزة، يبقى نضيف الحاجات اللي بتبيعها. كل منتج ليه تصنيف، وتكلفة، وسعر بيع. يعني مثلًا اللاب توب ده تكلفته سبعة وعشرين ألف جنيه، وبيتباع باتنين وتلاتين ألف ونص. ولو عندك مئات المنتجات، تقدر تستوردهم من إكسل مرة واحدة."
+      }
+    },
+    {
+      "id": "warehouses",
+      "label": { "en": "Warehouses & suppliers", "ar": "المخازن والموردين" },
+      "shots": [{ "path": "/inventory/warehouses" }, { "path": "/inventory/suppliers" }],
+      "say": {
+        "en": "The products need a place to live. Nile Valley has two warehouses: the main warehouse and the showroom. Each warehouse can be split into zones and shelves. And here are the suppliers they buy from, with each supplier's price list.",
+        "ar": "المنتجات محتاجة مكان تتخزن فيه. نايل فالي عندها مخزنين: المخزن الرئيسي، والمعرض. وكل مخزن ممكن يتقسم لمناطق ورفوف. وهنا الموردين اللي الشركة بتشتري منهم، ومع كل مورد قايمة أسعاره."
+      }
+    },
+    {
+      "id": "purchasing",
+      "label": { "en": "Buying from suppliers", "ar": "الشراء من الموردين" },
+      "shots": [{ "path": "/inventory/supplier-products" }, { "path": "/accounting/supplier-payments" }],
+      "say": {
+        "en": "Time to fill the warehouse. Nile Valley bought twenty laptops from Delta, their IT supplier. When the goods arrived, they went straight into stock, and the supplier's invoice was checked against what was actually received. Then the accountant recorded the payment here, by bank transfer.",
+        "ar": "يلا نملا المخزن. نايل فالي اشترت عشرين لاب توب من دلتا، المورد بتاعها. أول ما البضاعة وصلت، دخلت المخزن على طول، وفاتورة المورد اتراجعت على اللي اتستلم فعلًا. وبعدين المحاسب سجل الدفعة من هنا، بتحويل بنكي."
+      }
+    },
+    {
+      "id": "stock",
+      "label": { "en": "Stock levels", "ar": "أرصدة المخزون" },
+      "shots": [{ "path": "/inventory/stock" }, { "path": "/inventory/stock-ledger" }],
+      "say": {
+        "en": "So how much do we have now? Stock levels answer that in one look: how much you have of each item, how much is reserved for customers, and how much is free to sell. And the stock ledger shows every single movement, in or out, with the document behind it. No more guessing.",
+        "ar": "طب إحنا عندنا كام دلوقتي؟ أرصدة المخزون بتجاوبك في نظرة واحدة: عندك كام من كل صنف، وكام محجوز لعملاء، وكام متاح للبيع. وسجل الحركة بيوريك كل حاجة دخلت أو خرجت، ومين المستند اللي عملها. يعني خلاص، مفيش تخمين."
+      }
+    },
+    {
+      "id": "ch3", "card": true, "chapter": 3,
+      "label": { "en": "Selling", "ar": "البيع" },
+      "say": { "en": "Part three: selling. Let's follow one order from start to finish.", "ar": "الجزء التالت: البيع. وهنمشي مع أوردر واحد من أوله لآخره." }
+    },
+    {
+      "id": "customers",
+      "label": { "en": "Customers", "ar": "العملاء" },
+      "shots": [{ "path": "/sales/customers" }],
+      "say": {
+        "en": "Our customer is Horizon Engineering. Like every business customer, they have a credit limit: they can buy on credit up to two hundred and fifty thousand pounds. The system will never let an order go past that.",
+        "ar": "العميل بتاعنا اسمه هورايزون للهندسة. وزي أي عميل شركة، ليه حد ائتمان: يقدر يشتري بالآجل لحد ميتين وخمسين ألف جنيه. والسيستم عمره ما هيسمح لأوردر يعدّي الرقم ده."
+      }
+    },
+    {
+      "id": "orders",
+      "label": { "en": "Sales orders", "ar": "أوامر البيع" },
+      "shots": [{ "path": "/sales/orders" }, { "path": "/sales/orders/1" }],
+      "say": {
+        "en": "Horizon orders six laptops and twelve mice. When the sales rep confirms the order, the system checks two things: does Horizon have enough credit, and do we have enough stock? Both are fine, so it reserves the items for Horizon. Now nobody else can sell them by mistake.",
+        "ar": "هورايزون طلبت ست لاب توب واتناشر ماوس. أول ما المندوب يأكد الأوردر، السيستم بيراجع حاجتين: هل هورايزون ليها ائتمان كفاية؟ وهل عندنا بضاعة كفاية؟ الاتنين تمام، فبيحجز البضاعة باسم هورايزون. وكده محدش تاني يقدر يبيعها بالغلط."
+      }
+    },
+    {
+      "id": "delivery",
+      "label": { "en": "Deliveries", "ar": "التسليمات" },
+      "shots": [{ "path": "/sales/deliveries" }, { "path": "/sales/deliveries/1" }],
+      "say": {
+        "en": "Next, the goods leave the warehouse with a delivery note. You can deliver everything at once, or in parts. The stock goes down by itself, and you can follow the shipment until it reaches the customer.",
+        "ar": "بعد كده البضاعة بتخرج من المخزن بإذن تسليم. تقدر تسلّم كله مرة واحدة، أو على دفعات. والمخزون بينقص لوحده، وتقدر تتابع الشحنة لحد ما توصل للعميل."
+      }
+    },
+    {
+      "id": "invoices",
+      "label": { "en": "Invoices & payments", "ar": "الفواتير والتحصيل" },
+      "shots": [{ "path": "/sales/invoices/1" }, { "path": "/sales/payments" }],
+      "say": {
+        "en": "Once it's delivered, the invoice is one click away. Horizon paid sixty percent by bank transfer, and the system knows exactly how much is still due. Another customer, Smart Schools, paid their whole invoice by cheque.",
+        "ar": "أول ما الأوردر يتسلم، الفاتورة بتطلع بضغطة زرار. هورايزون دفعت ستين في المية بتحويل بنكي، والسيستم عارف بالظبط الباقي عليهم كام. وعميل تاني، سمارت سكولز، دفع فاتورته كلها بشيك."
+      }
+    },
+    {
+      "id": "returns",
+      "label": { "en": "Returns", "ar": "المرتجعات" },
+      "shots": [{ "path": "/returns/customer/1" }],
+      "say": {
+        "en": "And sometimes things come back. Two of Horizon's mice stopped working. We approved the return, received the mice, inspected them, and closed it with a credit note. So Horizon's balance went down by itself.",
+        "ar": "وأحيانًا حاجات بترجع. اتنين ماوس من بتوع هورايزون باظوا. وافقنا على المرتجع، واستلمناهم، وفحصناهم، وقفلناه بإشعار دائن. وكده رصيد هورايزون نزل لوحده."
+      }
+    },
+    {
+      "id": "ch4", "card": true, "chapter": 4,
+      "label": { "en": "The accounts", "ar": "الحسابات" },
+      "say": { "en": "Part four: the accounts.", "ar": "الجزء الرابع: الحسابات." }
+    },
+    {
+      "id": "accounting",
+      "label": { "en": "Accounting", "ar": "المحاسبة" },
+      "shots": [{ "path": "/accounting/journal-entries" }, { "path": "/accounting/accounts" }],
+      "say": {
+        "en": "Here's the best part. Every step you just saw, the purchase, the delivery, the invoice, the payment, and the return, created its own accounting entry automatically. The accountant doesn't retype anything. They only add things like rent and salaries.",
+        "ar": "ودي بقى أحلى حتة. كل خطوة شفناها، الشرا، والتسليم، والفاتورة، والدفع، والمرتجع، اتعمل لها قيد محاسبي لوحدها. المحاسب مش بيكتب حاجة تاني. هو بس بيضيف حاجات زي الإيجار والمرتبات."
+      }
+    },
+    {
+      "id": "reports",
+      "label": { "en": "Financial reports", "ar": "التقارير المالية" },
+      "shots": [{ "path": "/accounting/reports", "click": "button:has(.pi-play)", "wait": 2500 }],
+      "say": {
+        "en": "And from all of that, your financial reports are always ready: the trial balance, the income statement, the balance sheet, and who owes you money and for how long. Any report exports to Excel.",
+        "ar": "ومن ده كله، تقاريرك المالية دايمًا جاهزة: ميزان المراجعة، وقايمة الدخل، والميزانية، ومين عليه فلوس ليك ومن إمتى. وأي تقرير تقدر تنزله إكسل."
+      }
+    },
+    {
+      "id": "ch5", "card": true, "chapter": 5,
+      "label": { "en": "Monitoring and management", "ar": "المتابعة والإدارة" },
+      "say": { "en": "And finally, part five: monitoring and management.", "ar": "وأخيرًا، الجزء الخامس: المتابعة والإدارة." }
+    },
+    {
+      "id": "analytics",
+      "label": { "en": "Dashboards", "ar": "لوحات المتابعة" },
+      "shots": [{ "path": "/analytics/dashboards/overview", "wait": 2500 }, { "path": "/analytics/dashboards/sales", "wait": 2500 }],
+      "say": {
+        "en": "For the owner and the managers, there are ready dashboards: one for the whole company, and one for each area, sales, inventory, finance, and purchasing. Revenue, profit, stock value, and alerts, all compared with the previous period. Horizon's order is already in these numbers.",
+        "ar": "وللمالك والمديرين فيه لوحات متابعة جاهزة: واحدة للشركة كلها، وواحدة لكل قسم، المبيعات، والمخزون، والمالية، والمشتريات. الإيرادات، والأرباح، وقيمة المخزون، والتنبيهات، ومقارنة بالفترة اللي فاتت. وأوردر هورايزون نفسه موجود في الأرقام دي."
+      }
+    },
+    {
+      "id": "tools",
+      "label": { "en": "Import, export & notifications", "ar": "الاستيراد والتصدير والإشعارات" },
+      "shots": [{ "path": "/import-export" }],
+      "say": {
+        "en": "A few helpful tools, too. You can bring in your old data from Excel, and the system checks the file before saving anything. Notifications arrive live at the bell up top. And the whole system works in Arabic and English.",
+        "ar": "وفيه كمان أدوات مساعدة. تقدر تدخّل بياناتك القديمة من إكسل، والسيستم بيراجع الملف قبل ما يحفظ أي حاجة. والإشعارات بتوصلك لحظتها عند الجرس اللي فوق. والسيستم كله شغال عربي وإنجليزي."
+      }
+    },
+    {
+      "id": "platform",
+      "label": { "en": "Subscriptions", "ar": "الاشتراكات" },
+      "shots": [{ "path": "/billing" }, { "path": "/admin/billing/plans", "account": "staff" }],
+      "say": {
+        "en": "And how does a company start? It picks a plan and the modules it needs, and sees its invoices right here. On our side, the Tanzim team manages the plans and the subscriptions.",
+        "ar": "طب الشركة بتبدأ إزاي؟ بتختار الخطة والموديولات اللي محتاجاها، وبتشوف فواتيرها من هنا. ومن ناحيتنا، فريق تنظيم بيدير الخطط والاشتراكات."
+      }
+    },
+    {
+      "id": "outro",
+      "label": { "en": "Tanzim", "ar": "تنظيم" },
+      "shots": [{ "path": "/dashboard" }],
+      "say": {
+        "en": "So, in a few minutes, we set up a company, filled its warehouse, sold to a customer, collected the money, handled a return, and got the reports, all in one place. That's Tanzim. Thanks for watching!",
+        "ar": "يعني في دقايق، جهزنا شركة، وملينا مخزنها، وبعنا لعميل، وحصّلنا الفلوس، واتعاملنا مع مرتجع، وطلّعنا التقارير، وكله من مكان واحد. وده تنظيم. شكرًا إنك اتفرجت!"
+      }
+    }
+  ]
+}
