@@ -104,6 +104,10 @@ You are working on the backend of Tanzim, a bilingual (English/Arabic) multi-ten
    NCRs, quarantine), assembly work orders, webhooks and saved/scheduled reports. Please make sure each is in
    docs/API_REFERENCE.md with an example request/response, the allowed status transitions, and the permission each
    action needs.
+9. Question: the dashboard's "getting started" list wants a "chart of accounts ready" step, but listing accounts
+   creates the default chart as a side effect. Is there a read-only way to know whether a company's chart exists
+   (e.g. a `chart_ready` flag on `GET /api/company/v1/me/`, or a count that doesn't create anything)?
+
 ```
 
 ## Fixed
