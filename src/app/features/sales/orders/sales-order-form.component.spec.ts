@@ -45,6 +45,22 @@ describe('SalesOrderFormComponent', () => {
     expect(component.items().map((o) => o.value)).toEqual([1]);
   });
 
+  it("warns while a new order is more than the customer's available credit", () => {
+    const fixture = setup(null);
+    const component = fixture.componentInstance;
+    expect(component.availableCredit()).toBeNull();
+
+    component.form.patchValue({ customer: 1 });
+    expect(component.availableCredit()).toBe(724);
+    component.lines.at(0).patchValue({ quantity_ordered: '1', unit_price: '700', discount_percent: '0', tax_percent: '0' });
+    expect(component.overCredit()).toBeFalse();
+
+    component.lines.at(0).patchValue({ unit_price: '800' });
+    expect(component.overCredit()).toBeTrue();
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('[role="alert"]')?.textContent).toContain('sales.hints.overCredit');
+  });
+
   it("fills the customer's terms and addresses, sets the product and default price from the item, and creates", () => {
     const component = setup(null).componentInstance;
     component.form.patchValue({ customer: 1, warehouse: 1 });

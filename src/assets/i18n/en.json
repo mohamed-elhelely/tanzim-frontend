@@ -917,6 +917,8 @@
       "invoiceCancelled": "Invoice cancelled."
     },
     "hints": {
+      "availableCredit": "Available credit",
+      "overCredit": "This order is more than the customer's available credit ({{available}}). It will be refused when confirmed unless the limit is raised or a payment comes in.",
       "noCreditLimit": "No limit",
       "creditLimit": "Leave empty for no limit.",
       "searchOrders": "Search by order no., customer or PO",

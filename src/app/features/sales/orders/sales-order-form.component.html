@@ -42,6 +42,12 @@
             appendTo="body"
           ></p-select>
           <app-field-error [control]="form.controls.customer"></app-field-error>
+          @if (availableCredit() !== null) {
+            <p class="text-xs text-gray-500 dark:text-gray-400">
+              {{ 'sales.hints.availableCredit' | translate }}:
+              <span class="font-medium" [class.text-red-600]="(availableCredit() ?? 0) <= 0">{{ availableCredit() | number: '1.2-2' }}</span>
+            </p>
+          }
         </div>
 
         <div class="flex flex-col gap-1">
@@ -251,6 +257,12 @@
             <dt>{{ 'sales.fields.total' | translate }}</dt>
             <dd>{{ totals().total | number: '1.2-2' }} {{ form.controls.currency.value | uppercase }}</dd>
           </div>
+          @if (overCredit()) {
+            <p role="alert" class="col-span-2 mt-2 rounded-md bg-amber-50 p-2 text-xs text-amber-800 dark:bg-amber-500/10 dark:text-amber-300">
+              <i class="pi pi-exclamation-triangle me-1"></i>
+              {{ 'sales.hints.overCredit' | translate: { available: (availableCredit() | number: '1.2-2') } }}
+            </p>
+          }
         </dl>
       </div>
     </p-card>
