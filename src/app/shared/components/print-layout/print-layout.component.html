@@ -1,0 +1,33 @@
+<div class="min-h-screen bg-gray-100 py-6 print:bg-white print:py-0" [attr.dir]="direction()">
+  <div class="mx-auto mb-4 flex max-w-3xl justify-end gap-2 px-4 print:hidden">
+    <p-button [label]="'print.close' | translate" icon="pi pi-times" severity="secondary" [outlined]="true" (onClick)="close()"></p-button>
+    <p-button [label]="'print.print' | translate" icon="pi pi-print" [disabled]="!ready()" (onClick)="print()"></p-button>
+  </div>
+
+  @if (error(); as err) {
+    <div class="mx-auto max-w-3xl px-4">
+      <app-error-state [title]="errorTitleKey(err)" [showRetry]="false"></app-error-state>
+    </div>
+  } @else if (ready()) {
+    <article class="mx-auto max-w-3xl bg-white p-10 text-sm text-gray-900 shadow print:max-w-none print:p-0 print:shadow-none">
+      <header class="flex items-start justify-between gap-6 border-b-2 pb-6" [style.border-color]="accent()">
+        <div class="flex items-center gap-4">
+          @if (company()?.logo; as logo) {
+            <img [src]="logo" alt="" class="h-16 w-auto max-w-40 object-contain" />
+          }
+          <p class="text-xl font-bold">{{ company()?.name }}</p>
+        </div>
+        <div class="text-end">
+          <h1 class="text-2xl font-bold uppercase tracking-wide" [style.color]="accent()">{{ titleKey() | translate }}</h1>
+          <p class="mt-1 font-mono font-semibold" dir="ltr">{{ number() }}</p>
+          @if (warningKey(); as warning) {
+            <p class="mt-1 text-xs font-semibold uppercase text-red-600">{{ warning | translate }}</p>
+          }
+        </div>
+      </header>
+      <ng-content></ng-content>
+    </article>
+  } @else {
+    <app-loading-state></app-loading-state>
+  }
+</div>

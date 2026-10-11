@@ -2047,6 +2047,11 @@
     "applyFirst": "Apply a search or filter first, then save it."
   },
   "print": {
+    "deliveryNote": "Delivery note",
+    "deliverTo": "Deliver to",
+    "received": "Received",
+    "deliveredBy": "Delivered by (name and signature)",
+    "receivedBy": "Received by (name, signature and date)",
     "invoice": "Invoice",
     "print": "Print / PDF",
     "close": "Close",

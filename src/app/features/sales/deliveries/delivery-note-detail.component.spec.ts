@@ -48,15 +48,22 @@ describe('DeliveryNoteDetailComponent', () => {
   });
 
   it('offers the next workflow step for each status (pick-ups skip the carrier)', () => {
-    expect(labels(setup())).toEqual(['sales.actions.editDetails', 'sales.actions.confirmDelivery']);
+    expect(labels(setup())).toEqual(['print.print', 'sales.actions.editDetails', 'sales.actions.confirmDelivery']);
     TestBed.resetTestingModule();
-    expect(labels(setup({ status: 'confirmed' }))).toEqual(['sales.actions.handToCarrier']);
+    expect(labels(setup({ status: 'confirmed' }))).toEqual(['print.print', 'sales.actions.handToCarrier']);
     TestBed.resetTestingModule();
-    expect(labels(setup({ status: 'confirmed', shipping_method: 'pickup' }))).toEqual(['sales.actions.markDelivered']);
+    expect(labels(setup({ status: 'confirmed', shipping_method: 'pickup' }))).toEqual(['print.print', 'sales.actions.markDelivered']);
     TestBed.resetTestingModule();
-    expect(labels(setup({ status: 'in_transit' }))).toEqual(['sales.actions.markDelivered', 'sales.actions.markFailed']);
+    expect(labels(setup({ status: 'in_transit' }))).toEqual(['print.print', 'sales.actions.markDelivered', 'sales.actions.markFailed']);
     TestBed.resetTestingModule();
-    expect(labels(setup({ status: 'delivered' }))).toEqual([]);
+    expect(labels(setup({ status: 'delivered' }))).toEqual(['print.print']);
+  });
+
+  it('opens the printable delivery note in a new tab', () => {
+    const open = spyOn(window, 'open');
+    const fixture = setup();
+    run(fixture, 'print.print');
+    expect(open).toHaveBeenCalledWith('/print/delivery-notes/1?print=1', '_blank', 'noopener');
   });
 
   it('confirms a draft', () => {
