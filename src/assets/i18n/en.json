@@ -39,7 +39,9 @@
     "backToDashboard": "Back to dashboard",
     "viewAll": "View all",
     "reasonOptional": "Reason (optional)",
-    "selectedCount": "{0} selected"
+    "selectedCount": "{0} selected",
+    "dateFrom": "From",
+    "dateTo": "To"
   },
   "nav": {
     "dashboard": "Dashboard",

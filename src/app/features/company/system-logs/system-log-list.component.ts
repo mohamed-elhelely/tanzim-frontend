@@ -21,7 +21,7 @@ import { ErrorStateComponent } from '../../../shared/components/error-state/erro
 import { PageHeaderAction, PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
 import { UserNamePipe } from '../../../shared/pipes/user-name.pipe';
-import { ServerTable } from '../../../shared/table/server-table';
+import { ServerTable, splitFilter } from '../../../shared/table/server-table';
 import { saveFile } from '../../../shared/utils/save-file';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { SelectOption } from '../company.models';
@@ -52,11 +52,6 @@ function resourceLabels(items: NavItem[]): Map<string, string> {
     resourceLabels(item.children ?? []).forEach((label, resource) => labels.set(resource, label));
   }
   return labels;
-}
-
-/** A comma-separated filter value (as saved views keep it) back into the list a multi-select holds. */
-function splitList(value: string | number | undefined): string[] {
-  return value === undefined || value === '' ? [] : String(value).split(',');
 }
 
 /**
@@ -128,9 +123,9 @@ export class SystemLogListComponent implements OnInit {
         this.dateTo = '';
       },
       restore: (filters) => {
-        this.actions = splitList(filters['action']) as AuditAction[];
-        this.resources = splitList(filters['resource']);
-        this.sources = splitList(filters['source']) as AuditSource[];
+        this.actions = splitFilter(filters['action']) as AuditAction[];
+        this.resources = splitFilter(filters['resource']);
+        this.sources = splitFilter(filters['source']) as AuditSource[];
         this.user = filters['user'] === undefined ? null : Number(filters['user']);
         this.company = filters['company'] === undefined ? null : Number(filters['company']);
         this.dateFrom = String(filters['date_from'] ?? '');

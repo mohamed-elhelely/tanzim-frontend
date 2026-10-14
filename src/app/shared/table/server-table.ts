@@ -20,6 +20,11 @@ import { Paginated } from '../../core/models/api-response.model';
  */
 export type FilterValues = Record<string, string | number | boolean | readonly (string | number)[] | null | undefined>;
 
+/** A saved comma-separated filter (`status=draft,issued`) back into the list a multi-select holds. */
+export function splitFilter(value: string | number | undefined): string[] {
+  return value === undefined || value === '' ? [] : String(value).split(',');
+}
+
 export interface ServerTableOptions {
   /**
    * Reads the screen's filter fields; empty values (null, undefined, '', []) are dropped. A list (a multi-select)
@@ -46,6 +51,11 @@ export class ServerTable<T> {
   readonly pageSize = signal(10);
   readonly loading = signal(false);
   readonly error = signal<AppError | null>(null);
+  /**
+   * A filter the backend refused (400 keyed by the parameter, e.g. `{ date_from: ["Enter a valid date."] }`).
+   * The table keeps its rows and filter bar so the user can fix it; `error` stays for real failures.
+   */
+  readonly filterErrors = signal<Record<string, string[]>>({});
 
   /** Rows ticked for a bulk action; emptied whenever the table reloads. */
   readonly selection = signal<T[]>([]);
@@ -113,10 +123,15 @@ export class ServerTable<T> {
       next: (page) => {
         this.rows.set(page.items);
         this.total.set(page.total);
+        this.filterErrors.set({});
         this.loading.set(false);
       },
       error: (error: AppError) => {
-        this.error.set(error);
+        if (error.status === 400 && Object.keys(error.errors ?? {}).length) {
+          this.filterErrors.set(error.errors);
+        } else {
+          this.error.set(error);
+        }
         this.loading.set(false);
       },
     });

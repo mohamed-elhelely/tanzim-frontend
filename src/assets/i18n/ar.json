@@ -39,7 +39,9 @@
     "backToDashboard": "العودة للوحة التحكم",
     "viewAll": "عرض الكل",
     "reasonOptional": "السبب (اختياري)",
-    "selectedCount": "{0} محددة"
+    "selectedCount": "{0} محددة",
+    "dateFrom": "من",
+    "dateTo": "إلى"
   },
   "nav": {
     "dashboard": "لوحة التحكم",
