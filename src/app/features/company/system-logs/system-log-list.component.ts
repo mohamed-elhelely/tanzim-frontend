@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, computed, inject, input, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -75,6 +75,9 @@ function resourceLabels(items: NavItem[]): Map<string, string> {
  *
  * Company users see their company (`/company/system-logs`); platform staff see every company and can filter by
  * one (`/admin/system-logs`). Staff have no company, so they get the company filter instead of the user filter.
+ *
+ * With `scope` (a module's audit resources) it is a module's activity log, shown in the activity drawer: always
+ * limited to those resources, without the page header, the resource filter or saved views.
  */
 @Component({
   selector: 'app-system-log-list',
@@ -107,6 +110,8 @@ export class SystemLogListComponent implements OnInit {
   private readonly notifications = inject(NotificationService);
   readonly language = inject(LanguageService);
   readonly staff = inject(AccessService).isStaff;
+  /** A module's audit resources: every request is limited to them (not a filter the user can clear). */
+  readonly scope = input<readonly string[] | null>(null);
 
   actions: AuditAction[] = [];
   resources: string[] = [];
@@ -117,7 +122,7 @@ export class SystemLogListComponent implements OnInit {
   dateTo = '';
 
   readonly table = new ServerTable<AuditLogEntry>(
-    (query) => this.api.list({ ...query, ordering: query.ordering ?? '-timestamp' }),
+    (query) => this.api.list({ ...query, ordering: query.ordering ?? '-timestamp', filters: this.scoped(query.filters) }),
     {
       filters: () => ({
         action: this.actions,
@@ -199,6 +204,11 @@ export class SystemLogListComponent implements OnInit {
     } else {
       this.users.userOptions().subscribe({ next: (options) => this.userOptions.set(options), error: () => undefined });
     }
+  }
+
+  private scoped(filters: Record<string, string | number> | undefined): Record<string, string | number> {
+    const scope = this.scope();
+    return scope ? { ...filters, resource: scope.join(',') } : { ...filters };
   }
 
   private options(entries: readonly (readonly [string, string])[]): { value: string; label: string }[] {

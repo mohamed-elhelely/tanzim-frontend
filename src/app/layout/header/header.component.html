@@ -63,11 +63,23 @@
       <div class="-m-2 flex flex-col">
         <div class="flex items-center justify-between px-3 py-2">
           <span class="text-sm font-semibold text-gray-900 dark:text-gray-100">{{ 'header.notifications' | translate }}</span>
-          @if (notifications.hasUnread()) {
-            <button type="button" class="text-xs font-medium text-primary-600 hover:underline dark:text-primary-300" (click)="notifications.markAllRead()">
-              {{ 'notifications.markAllRead' | translate }}
+          <div class="flex items-center gap-3">
+            @if (notifications.hasUnread()) {
+              <button type="button" class="text-xs font-medium text-primary-600 hover:underline dark:text-primary-300" (click)="notifications.markAllRead()">
+                {{ 'notifications.markAllRead' | translate }}
+              </button>
+            }
+            <button
+              type="button"
+              class="flex h-7 w-7 items-center justify-center rounded-md text-gray-500 transition-colors hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
+              [attr.aria-label]="(sound.enabled() ? 'notifications.muteSound' : 'notifications.unmuteSound') | translate"
+              [attr.aria-pressed]="!sound.enabled()"
+              [title]="(sound.enabled() ? 'notifications.muteSound' : 'notifications.unmuteSound') | translate"
+              (click)="sound.toggle()"
+            >
+              <i class="pi" [class.pi-volume-up]="sound.enabled()" [class.pi-volume-off]="!sound.enabled()"></i>
             </button>
-          }
+          </div>
         </div>
         <div class="flex max-h-96 flex-col gap-0.5 overflow-y-auto">
           @for (item of latest(); track item.id) {

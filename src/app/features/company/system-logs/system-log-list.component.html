@@ -1,4 +1,6 @@
-<app-page-header title="systemLogs.title" subtitle="systemLogs.subtitle" [actions]="headerActions()"></app-page-header>
+@if (!scope()) {
+  <app-page-header title="systemLogs.title" subtitle="systemLogs.subtitle" [actions]="headerActions()"></app-page-header>
+}
 
 @if (table.error(); as err) {
   <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403" (retry)="table.load()"></app-error-state>
@@ -57,20 +59,22 @@
         styleClass="w-full sm:w-48"
         appendTo="body"
       ></p-multiselect>
-      <p-multiselect
-        [(ngModel)]="resources"
-        [options]="resourceOptions()"
-        optionLabel="label"
-        optionValue="value"
-        [filter]="true"
-        [showClear]="true"
-        [maxSelectedLabels]="2"
-        [selectedItemsLabel]="'common.selectedCount' | translate"
-        [placeholder]="'systemLogs.fields.resource' | translate"
-        [ariaLabel]="'systemLogs.fields.resource' | translate"
-        styleClass="w-full sm:w-52"
-        appendTo="body"
-      ></p-multiselect>
+      @if (!scope()) {
+        <p-multiselect
+          [(ngModel)]="resources"
+          [options]="resourceOptions()"
+          optionLabel="label"
+          optionValue="value"
+          [filter]="true"
+          [showClear]="true"
+          [maxSelectedLabels]="2"
+          [selectedItemsLabel]="'common.selectedCount' | translate"
+          [placeholder]="'systemLogs.fields.resource' | translate"
+          [ariaLabel]="'systemLogs.fields.resource' | translate"
+          styleClass="w-full sm:w-52"
+          appendTo="body"
+        ></p-multiselect>
+      }
       <p-multiselect
         [(ngModel)]="sources"
         [options]="sourceOptions()"
@@ -92,7 +96,9 @@
         <span class="text-gray-500 dark:text-gray-400">{{ 'systemLogs.fields.to' | translate }}</span>
         <input pInputText type="date" [(ngModel)]="dateTo" class="w-full sm:w-40" />
       </label>
-      <app-saved-views [table]="table" screen="system-log"></app-saved-views>
+      @if (!scope()) {
+        <app-saved-views [table]="table" screen="system-log"></app-saved-views>
+      }
       <p-button
         [label]="'common.apply' | translate"
         icon="pi pi-filter"

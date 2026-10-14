@@ -1,13 +1,16 @@
+import { signal } from '@angular/core';
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { provideApiTesting } from '../../testing/api-testing';
 import { AccessService } from '../auth/access.service';
 import { AuthService } from '../auth/auth.service';
+import { LanguageService } from '../services/language.service';
 import { NotificationService } from '../services/notification.service';
 import { ACCESS_RELOAD_DEBOUNCE_MS, LiveNotificationsService, SIGN_OUT_DELAY_MS } from './live-notifications.service';
-import { AccountChangeData, AppNotification } from './notification.model';
+import { AccountChangeData, AppNotification, notificationText } from './notification.model';
 import { NotificationCenterService } from './notification-center.service';
+import { NotificationSoundService } from './notification-sound.service';
 
 function note(id: number, overrides: Partial<AppNotification> = {}): AppNotification {
   return { id, title: `N${id}`, message: 'm', notif_type: 'info', is_read: false, created_at: '2026-10-15T10:00:00Z', data: {}, ...overrides };
@@ -25,9 +28,13 @@ describe('LiveNotificationsService', () => {
   let endSession: jasmine.Spy;
   let navigate: jasmine.Spy;
   let toast: jasmine.SpyObj<NotificationService>;
+  const lang = signal<'en' | 'ar'>('en');
+  let play: jasmine.Spy;
 
   beforeEach(() => {
     incoming = new Subject<AppNotification>();
+    lang.set('en');
+    play = jasmine.createSpy('play');
     reload = jasmine.createSpy('reload').and.callFake((then?: () => void) => then?.());
     can = jasmine.createSpy('can').and.returnValue(true);
     endSession = jasmine.createSpy('endSession');
@@ -39,6 +46,8 @@ describe('LiveNotificationsService', () => {
         { provide: AccessService, useValue: { reload, can } },
         { provide: AuthService, useValue: { user: () => ({ id: '7' }), endSession } },
         { provide: NotificationService, useValue: toast },
+        { provide: LanguageService, useValue: { currentLang: lang } },
+        { provide: NotificationSoundService, useValue: { play } },
       ],
     });
     const router = TestBed.inject(Router);
@@ -53,6 +62,9 @@ describe('LiveNotificationsService', () => {
   it('shows a toast with the title and message of an ordinary notification', () => {
     incoming.next(note(1, { title: 'Order shipped', message: 'SO-12 left the warehouse.', notif_type: 'warning' }));
     expect(toast.notify).toHaveBeenCalledWith('warn', 'Order shipped', 'SO-12 left the warehouse.');
+    expect(play).toHaveBeenCalledWith('alert');
+    incoming.next(note(2));
+    expect(play).toHaveBeenCalledWith('normal');
     expect(reload).not.toHaveBeenCalled();
   });
 
@@ -78,6 +90,7 @@ describe('LiveNotificationsService', () => {
   it('signs out after the message when removed from the company', fakeAsync(() => {
     incoming.next(change(1, 'companyuser', 'delete', 'Removed from company'));
     expect(toast.notify).toHaveBeenCalledWith('error', 'Removed from company', 'm', { life: SIGN_OUT_DELAY_MS });
+    expect(play).toHaveBeenCalledWith('alert');
     tick(SIGN_OUT_DELAY_MS - 1);
     expect(endSession).not.toHaveBeenCalled();
     tick(1);
@@ -93,4 +106,19 @@ describe('LiveNotificationsService', () => {
     tick(ACCESS_RELOAD_DEBOUNCE_MS);
     expect(reload).not.toHaveBeenCalled();
   }));
+
+  it('shows the Arabic title and message when the interface is in Arabic', () => {
+    lang.set('ar');
+    incoming.next(note(1, { title: 'Order shipped', message: 'SO-12 left.', title_ar: 'تم شحن الطلب', message_ar: 'خرج SO-12.' }));
+    expect(toast.notify).toHaveBeenCalledWith('info', 'تم شحن الطلب', 'خرج SO-12.');
+  });
+});
+
+describe('notificationText', () => {
+  const item = note(1, { title: 'Password changed', message: 'Your password was changed.', title_ar: 'تم تغيير كلمة المرور', message_ar: null });
+
+  it('uses the Arabic text in Arabic and falls back to the default text where there is none', () => {
+    expect(notificationText(item, 'ar')).toEqual({ title: 'تم تغيير كلمة المرور', message: 'Your password was changed.' });
+    expect(notificationText(item, 'en')).toEqual({ title: 'Password changed', message: 'Your password was changed.' });
+  });
 });

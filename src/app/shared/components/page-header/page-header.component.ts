@@ -1,6 +1,9 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, computed, inject } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
+import { AccessService } from '../../../core/auth/access.service';
+import { ModuleActivityService, moduleActivityFor } from '../../activity/module-activity';
 
 export interface PageHeaderAction {
   label: string;
@@ -10,7 +13,11 @@ export interface PageHeaderAction {
   disabled?: boolean;
 }
 
-/** Page title with an optional back link (forms) and action buttons (lists). Texts are translation keys. */
+/**
+ * Page title with an optional back link (forms) and action buttons (lists). Texts are translation keys.
+ * On a module's list screen (see MODULE_ACTIVITY_RESOURCES) it also shows an "Activity log" button for users who
+ * may read the system log; it opens the module's log in the drawer the shell hosts.
+ */
 @Component({
   selector: 'app-page-header',
   imports: [TranslatePipe, ButtonModule],
@@ -24,4 +31,22 @@ export class PageHeaderComponent {
   @Input() backLabel = 'common.back';
   @Input() actions: PageHeaderAction[] = [];
   @Output() back = new EventEmitter<void>();
+
+  /** The screen's module activity, from its path; detail and form screens have none (they have record history). */
+  private readonly activity = moduleActivity(inject(ActivatedRoute, { optional: true }));
+  private readonly access = this.activity ? inject(AccessService) : null;
+  private readonly activityDrawer = this.activity ? inject(ModuleActivityService) : null;
+  readonly showActivity = computed(() => !!this.activity && !!this.access?.can('view_auditlog'));
+
+  openActivity(): void {
+    if (this.activity) {
+      this.activityDrawer?.open(this.activity);
+    }
+  }
+}
+
+function moduleActivity(route: ActivatedRoute | null) {
+  // Partial routes (test stubs) have no path: no activity then.
+  const path = route?.snapshot?.pathFromRoot?.flatMap((r) => r.url?.map((segment) => segment.path) ?? []).join('/');
+  return path === undefined ? null : moduleActivityFor(`/${path}`);
 }

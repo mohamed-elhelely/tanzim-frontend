@@ -122,6 +122,17 @@ You are working on the backend of Tanzim, a bilingual (English/Arabic) multi-ten
       (the number already starts with `SO-` / `DN-`).
     - Stock reservations have no readable name: `object_repr` is `StockReservation object (10)`.
     - The test company admin in item 10 is still refused; another seeded account works.
+
+15. Question (module activity logs): every module list screen now has an "Activity log" button that reads
+    `GET /api/audit/v1/logs/?resource=<a>,<b>` for that module's resources (no new endpoint needed). Please confirm:
+    (a) these resources are written to the log under exactly these names: companyuser, user, department, team, role,
+    permissiongroup, company, location, country, region, city, district, product, productvariant, category, brand,
+    warehouse, zone, bin, supplier, supplierproduct, salesorder, salesorderline, deliverynote, deliverynoteline,
+    salesinvoice, invoicepayment, customer, customerreturn, supplierreturn, journalentry, journalline, account,
+    fiscalyear, supplierpayment, debitnote; (b) are countries/regions/cities/districts company data that gets logged,
+    or a global catalog (then their button will always be empty)? (c) are sales invoice lines, customer/supplier
+    return lines and debit note lines logged, and under which resource names? (d) does `view_auditlog` alone let a
+    user read every module's entries, or should a module's log also require that module's `view_<resource>`?
 ```
 
 ## Fixed

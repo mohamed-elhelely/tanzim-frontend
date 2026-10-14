@@ -13855,7 +13855,7 @@ Async export files are downloaded from `GET /api/common/v1/api/download/export/{
 
 | Method | Path | Body | Returns |
 |---|---|---|---|
-| `GET` | `/api/notifications/my-notifications/` | — | the user's recent notifications (`id`, `title`, `message`, `notif_type`, `is_read`, `created_at`, `data`) |
+| `GET` | `/api/notifications/my-notifications/` | — | the user's recent notifications (`id`, `title`, `message`, `title_ar`, `message_ar`, `notif_type`, `is_read`, `created_at`, `data`); the socket's `notification` has the same fields. The frontend shows the `_ar` text in Arabic and falls back to `title` / `message` when it is empty |
 | `GET` | `/api/notifications/unread-count/` | — | `{"unread_count": 3}` |
 | `POST` | `/api/notifications/mark-read/{notification_id}/` | — | `{"status": "success"}` or 404 |
 

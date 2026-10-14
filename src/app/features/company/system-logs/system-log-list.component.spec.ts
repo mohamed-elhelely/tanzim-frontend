@@ -186,6 +186,34 @@ describe('SystemLogListComponent', () => {
     fixture.detectChanges();
     expect(fixture.componentInstance.table.error()?.status).toBe(403);
   });
+
+  it("as a module's activity log, always asks for that module's resources and hides the resource filter", () => {
+    const fixture = TestBed.createComponent(SystemLogListComponent);
+    fixture.componentRef.setInput('scope', ['salesorder', 'salesorderline']);
+    fixture.detectChanges();
+    httpMock
+      .expectOne((r) => r.url === URL && r.params.get('resource') === 'salesorder,salesorderline' && r.params.get('page_size') === '10')
+      .flush(envelope([makeLogEntry()], 31));
+    httpMock.expectOne((r) => r.url === USERS).flush(envelope([]));
+    fixture.detectChanges();
+    const el: HTMLElement = fixture.nativeElement;
+    expect(el.querySelector('app-page-header')).toBeNull();
+    expect(el.querySelector('[aria-label="systemLogs.fields.resource"]')).toBeNull();
+    expect(el.querySelector('app-saved-views')).toBeNull();
+    expect(el.textContent).toContain('SO-2026-00012');
+
+    // Applying a filter keeps the scope, and the scope never counts as a filter to clear.
+    const component = fixture.componentInstance;
+    component.actions = ['delete'];
+    component.table.apply();
+    httpMock
+      .expectOne((r) => r.url === URL && r.params.get('resource') === 'salesorder,salesorderline' && r.params.get('action') === 'delete')
+      .flush(envelope([], 0));
+    component.actions = [];
+    component.table.apply();
+    httpMock.expectOne((r) => r.url === URL && r.params.get('resource') === 'salesorder,salesorderline' && !r.params.has('action')).flush(envelope([], 0));
+    expect(component.table.filtered()).toBeFalse();
+  });
 });
 
 describe('SystemLogListComponent for platform staff', () => {

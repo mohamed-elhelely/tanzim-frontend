@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, inject } from '@angular/core';
-import { AppNotification, NotificationType, accountChange } from '../../../core/notifications/notification.model';
+import { AppNotification, NotificationType, accountChange, notificationText } from '../../../core/notifications/notification.model';
 import { LanguageService } from '../../../core/services/language.service';
 import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
 
@@ -24,6 +24,10 @@ export class NotificationItemComponent {
   @Output() open = new EventEmitter<AppNotification>();
 
   readonly lang = inject(LanguageService).currentLang;
+
+  get text(): { title: string; message: string } {
+    return notificationText(this.notification, this.lang());
+  }
 
   get style(): { icon: string; tone: string } {
     if (accountChange(this.notification)) {

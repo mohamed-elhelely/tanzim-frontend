@@ -17,6 +17,16 @@
   </div>
   <!-- Projected content (e.g. import/export buttons) shares the row with the action buttons. -->
   <div class="flex shrink-0 flex-wrap items-center gap-2 empty:hidden">
+    @if (showActivity()) {
+      <p-button
+        [label]="'activityLog.button' | translate"
+        icon="pi pi-history"
+        severity="secondary"
+        [outlined]="true"
+        [ariaLabel]="'activityLog.button' | translate"
+        (onClick)="openActivity()"
+      ></p-button>
+    }
     <ng-content></ng-content>
     @if (actions.length) {
       @for (action of actions; track action.label) {

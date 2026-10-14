@@ -11,6 +11,7 @@ import { AccessService } from '../../core/auth/access.service';
 import { AuthService } from '../../core/auth/auth.service';
 import { AppNotification } from '../../core/notifications/notification.model';
 import { NotificationCenterService } from '../../core/notifications/notification-center.service';
+import { NotificationSoundService } from '../../core/notifications/notification-sound.service';
 import { LanguageService } from '../../core/services/language.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { NotificationItemComponent } from '../../shared/components/notification-item/notification-item.component';
@@ -40,6 +41,7 @@ export class AppHeaderComponent {
   /** The user's picture from /me (absolute URL), or null for initials. */
   readonly picture = computed(() => this.access.current()?.user.profile_picture ?? null);
   readonly notifications = inject(NotificationCenterService);
+  readonly sound = inject(NotificationSoundService);
   /** The bell shows the latest few; the notifications page shows them all. */
   readonly latest = computed(() => this.notifications.items().slice(0, 6));
 

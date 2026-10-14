@@ -5,10 +5,22 @@ export interface AppNotification {
   id: number;
   title: string;
   message: string;
+  /** Arabic text; older notifications may have none (then `title` / `message` are shown). */
+  title_ar?: string | null;
+  message_ar?: string | null;
   notif_type: NotificationType;
   is_read: boolean;
   created_at: string;
   data: Record<string, unknown>;
+}
+
+/** The title and message in the UI language: Arabic when the notification has it, otherwise the default text. */
+export function notificationText(notification: AppNotification, lang: string): { title: string; message: string } {
+  const arabic = lang === 'ar';
+  return {
+    title: (arabic && notification.title_ar) || notification.title,
+    message: (arabic && notification.message_ar) || notification.message,
+  };
 }
 
 /** Messages the server sends on the notifications WebSocket; notifications have the HTTP API's shape. */
