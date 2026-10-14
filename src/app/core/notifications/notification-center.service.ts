@@ -6,8 +6,9 @@ import { AuthService } from '../auth/auth.service';
 import { TokenStorageService } from '../auth/token-storage.service';
 import { AppNotification, SocketMessage } from './notification.model';
 
-/** The socket was refused for good (4001 bad token, 4003 wrong user): don't reconnect. */
-const FINAL_CLOSE_CODES = new Set([4001, 4003]);
+/** 4001: the access token was refused (expired or rotated) → refresh once, then reconnect. 4003: wrong user, final. */
+const TOKEN_REFUSED = 4001;
+const WRONG_USER = 4003;
 const PING_EVERY_MS = 30_000;
 const MAX_RETRY_DELAY_MS = 60_000;
 
@@ -28,6 +29,8 @@ export class NotificationCenterService extends BaseApiService {
   private retryTimer?: ReturnType<typeof setTimeout>;
   private retryDelay = 2_000;
   private started = false;
+  /** One token refresh per refused connection, so a server that keeps refusing doesn't loop. */
+  private refreshedForSocket = false;
 
   /** Most recent first (the backend returns the latest 20). */
   readonly items = this.itemsState.asReadonly();
@@ -106,12 +109,25 @@ export class NotificationCenterService extends BaseApiService {
     this.socket = socket;
     socket.onopen = () => {
       this.retryDelay = 2_000;
+      this.refreshedForSocket = false;
       this.pingTimer = setInterval(() => socket.send(JSON.stringify({ action: 'ping' })), PING_EVERY_MS);
     };
     socket.onmessage = (event) => this.onMessage(JSON.parse(event.data) as SocketMessage);
     socket.onclose = (event) => {
       clearInterval(this.pingTimer);
-      if (this.socket !== socket || FINAL_CLOSE_CODES.has(event.code)) {
+      if (this.socket !== socket || event.code === WRONG_USER) {
+        return;
+      }
+      if (event.code === TOKEN_REFUSED) {
+        // The token is only checked on connect: after 30 minutes it has expired, so get a new one and come back.
+        if (this.refreshedForSocket) {
+          return;
+        }
+        this.refreshedForSocket = true;
+        this.auth.refreshAccessToken().subscribe({
+          next: () => this.socket === socket && this.connect(),
+          error: () => this.auth.endSession(),
+        });
         return;
       }
       this.retryTimer = setTimeout(() => this.connect(), this.retryDelay);

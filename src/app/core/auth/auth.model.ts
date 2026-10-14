@@ -23,10 +23,20 @@ export interface LoginResponse {
   user: string;
   role: AuthRole;
   is_staff?: boolean;
+  /** This device's session (`id` in the signed-in devices list). */
+  session_id?: string;
+  /** Access token lifetime in seconds (30 minutes). */
+  expires_in?: number;
+  /** Refresh token lifetime in seconds (7 days). */
+  refresh_expires_in?: number;
 }
 
+/** POST /api/refresh/: both tokens rotate; the refresh token that was sent is spent. */
 export interface RefreshResponse {
   access: string;
+  refresh: string;
+  expires_in?: number;
+  refresh_expires_in?: number;
 }
 
 export interface AccessTokenPayload {
