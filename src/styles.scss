@@ -142,3 +142,8 @@
     background: var(--p-surface-900);
   }
 }
+
+/* Error toasts put the support code on its own line. */
+.p-toast-detail {
+  white-space: pre-line;
+}

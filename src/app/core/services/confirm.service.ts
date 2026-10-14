@@ -165,7 +165,7 @@ export class ConfirmService {
 
   private showClientError(error: AppError): void {
     if (error.status >= 400 && error.status < 500 && error.status !== 401) {
-      this.notifications.error(error.message);
+      this.notifications.failure(error);
     }
   }
 }

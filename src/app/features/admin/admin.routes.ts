@@ -21,6 +21,13 @@ export const ADMIN_ROUTES: Routes = [
       import('./companies/tenant-company-form.component').then((m) => m.TenantCompanyFormComponent),
     data: { titleKey: 'admin.companies.edit' },
   },
+  // Every company's system log; the same screen company users see, with a company filter.
+  {
+    path: 'system-logs',
+    loadComponent: () =>
+      import('../company/system-logs/system-log-list.component').then((m) => m.SystemLogListComponent),
+    data: { titleKey: 'systemLogs.title' },
+  },
   { path: 'billing', pathMatch: 'full', redirectTo: 'billing/subscriptions' },
   // Subscriptions & platform billing (staff). Short forms also open as dialogs from their lists.
   {

@@ -38,7 +38,8 @@
     "backToList": "Back to list",
     "backToDashboard": "Back to dashboard",
     "viewAll": "View all",
-    "reasonOptional": "Reason (optional)"
+    "reasonOptional": "Reason (optional)",
+    "selectedCount": "{0} selected"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -172,7 +173,8 @@
   "errors": {
     "network": "Unable to reach the server. Please check your connection.",
     "server": "Server error. Please try again later.",
-    "unexpected": "An unexpected error occurred."
+    "unexpected": "An unexpected error occurred.",
+    "supportCode": "Support code: {{code}}"
   },
   "validation": {
     "required": "This field is required.",
@@ -2036,7 +2038,8 @@
       "device": "Device",
       "field": "Field",
       "before": "Before",
-      "after": "After"
+      "after": "After",
+      "company": "Company"
     },
     "actions": {
       "create": "Created",
@@ -2045,6 +2048,7 @@
       "restore": "Restored",
       "bulk_update": "Bulk update",
       "bulk_delete": "Bulk delete",
+      "bulk_create": "Bulk create",
       "import": "Import",
       "login": "Signed in",
       "login_failed": "Failed sign-in",
@@ -2057,6 +2061,16 @@
       "import": "Import",
       "task": "Background task",
       "system": "System"
+    },
+    "meta": {
+      "count": "Records",
+      "ids": "Record IDs",
+      "reason": "Reason",
+      "countValue": "{{count}} records"
+    },
+    "reasons": {
+      "invalid_credentials": "Wrong email or password",
+      "company_inactive": "Company is inactive"
     }
   },
   "palette": {

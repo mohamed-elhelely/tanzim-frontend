@@ -9,6 +9,7 @@ export const AUDIT_ACTIONS = [
   'restore',
   'bulk_update',
   'bulk_delete',
+  'bulk_create',
   'import',
   'login',
   'login_failed',
@@ -22,6 +23,20 @@ export type AuditSource = (typeof AUDIT_SOURCES)[number];
 
 /** A field change: `[old, new]`; many-to-many fields list what was added and removed. */
 export type AuditFieldChange = [unknown, unknown] | { added: unknown[]; removed: unknown[] };
+
+/** Why a sign-in failed (`meta.reason` on `login_failed`). */
+export const AUDIT_LOGIN_FAILURE_REASONS = ['invalid_credentials', 'company_inactive'] as const;
+
+/**
+ * Extra facts about the entry: bulk actions and imports say how many records they touched (and which), a failed
+ * sign-in says why. Other keys may come; they are shown as they are.
+ */
+export interface AuditLogMeta {
+  count?: number;
+  ids?: (number | string)[];
+  reason?: string;
+  [key: string]: unknown;
+}
 
 export interface AuditLogEntry {
   id: number;
@@ -38,6 +53,9 @@ export interface AuditLogEntry {
   ip_address: string | null;
   user_agent: string;
   request_id: string;
+  /** The company the entry belongs to; platform staff see every company's entries. */
+  company?: number | { id: number; name: string } | null;
+  meta?: AuditLogMeta | null;
 }
 
 export type AuditSeverity = 'success' | 'info' | 'warn' | 'danger' | 'secondary';
@@ -49,6 +67,7 @@ export const AUDIT_ACTION_SEVERITY: Record<AuditAction, AuditSeverity> = {
   restore: 'success',
   bulk_update: 'warn',
   bulk_delete: 'danger',
+  bulk_create: 'success',
   import: 'info',
   login: 'secondary',
   login_failed: 'warn',
@@ -81,4 +100,41 @@ function displayValue(value: unknown): string {
     return '—';
   }
   return typeof value === 'object' ? JSON.stringify(value) : String(value);
+}
+
+/** The company's name when the row carries it, otherwise its id (for staff, who see every company). */
+export function auditCompanyLabel(company: AuditLogEntry['company'], names: ReadonlyMap<number, string>): string {
+  if (company === null || company === undefined) {
+    return '—';
+  }
+  if (typeof company === 'object') {
+    return company.name || String(company.id);
+  }
+  return names.get(company) ?? String(company);
+}
+
+/** One line of the drawer's "details" list: a translation key and its value. */
+export interface AuditMetaRow {
+  labelKey: string;
+  value: string;
+  /** Translate `value` too (e.g. the reason a sign-in failed). */
+  translateValue?: boolean;
+}
+
+/** `meta` as display rows: count, ids and the sign-in failure reason get labels, other keys show as they come. */
+export function auditMetaRows(meta: AuditLogMeta | null | undefined): AuditMetaRow[] {
+  return Object.entries(meta ?? {})
+    .filter(([, value]) => value !== null && value !== undefined && value !== '')
+    .map(([key, value]): AuditMetaRow => {
+      if (key === 'count' || key === 'ids') {
+        return { labelKey: `systemLogs.meta.${key}`, value: Array.isArray(value) ? listValue(value) : displayValue(value) };
+      }
+      if (key === 'reason') {
+        const known = (AUDIT_LOGIN_FAILURE_REASONS as readonly unknown[]).includes(value);
+        return known
+          ? { labelKey: 'systemLogs.meta.reason', value: `systemLogs.reasons.${value}`, translateValue: true }
+          : { labelKey: 'systemLogs.meta.reason', value: displayValue(value) };
+      }
+      return { labelKey: key, value: Array.isArray(value) ? listValue(value) : displayValue(value) };
+    });
 }

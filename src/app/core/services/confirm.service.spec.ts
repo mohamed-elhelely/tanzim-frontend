@@ -12,7 +12,7 @@ describe('ConfirmService', () => {
 
   beforeEach(() => {
     lastConfirmation = undefined;
-    notifications = jasmine.createSpyObj('NotificationService', ['success', 'error']);
+    notifications = jasmine.createSpyObj('NotificationService', ['success', 'error', 'failure']);
     TestBed.configureTestingModule({
       providers: [...provideApiTesting(), { provide: NotificationService, useValue: notifications }],
     });
@@ -42,12 +42,12 @@ describe('ConfirmService', () => {
   it('shows the backend message for a 4xx, but not for 5xx (the interceptor already did)', () => {
     service.confirmDelete('Sales', () => throwError(() => ({ status: 400, message: 'In use', errors: {} })), () => undefined);
     lastConfirmation?.accept?.();
-    expect(notifications.error).toHaveBeenCalledWith('In use');
+    expect(notifications.failure).toHaveBeenCalledWith(jasmine.objectContaining({ message: 'In use' }));
 
-    notifications.error.calls.reset();
+    notifications.failure.calls.reset();
     service.confirmDelete('Sales', () => throwError(() => ({ status: 500, message: 'Boom', errors: {} })), () => undefined);
     lastConfirmation?.accept?.();
-    expect(notifications.error).not.toHaveBeenCalled();
+    expect(notifications.failure).not.toHaveBeenCalled();
   });
 
   it('bulk-deletes one at a time, keeps going after a refusal and reports both counts', () => {
@@ -83,7 +83,7 @@ describe('ConfirmService', () => {
   it('shows the backend message when a workflow action is refused', () => {
     const onDone = jasmine.createSpy('onDone');
     service.runAction(() => throwError(() => ({ status: 400, message: 'Order exceeds customer credit limit', errors: {} })), 'x', onDone);
-    expect(notifications.error).toHaveBeenCalledWith('Order exceeds customer credit limit');
+    expect(notifications.failure).toHaveBeenCalledWith(jasmine.objectContaining({ message: 'Order exceeds customer credit limit' }));
     expect(onDone).not.toHaveBeenCalled();
   });
 });

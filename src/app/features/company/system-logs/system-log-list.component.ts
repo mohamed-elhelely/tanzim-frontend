@@ -1,14 +1,17 @@
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { DrawerModule } from 'primeng/drawer';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
+import { MultiSelectModule } from 'primeng/multiselect';
 import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
+import { AccessService } from '../../../core/auth/access.service';
 import { AppError } from '../../../core/errors/app-error';
 import { LanguageService } from '../../../core/services/language.service';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -22,6 +25,7 @@ import { ServerTable } from '../../../shared/table/server-table';
 import { saveFile } from '../../../shared/utils/save-file';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { SelectOption } from '../company.models';
+import { TenantCompanyService } from '../../admin/companies/tenant-company.service';
 import { CompanyUserService } from '../users/company-user.service';
 import {
   AUDIT_ACTIONS,
@@ -32,6 +36,8 @@ import {
   AuditSeverity,
   AuditSource,
   auditChangeRows,
+  auditCompanyLabel,
+  auditMetaRows,
 } from './system-log.models';
 import { SystemLogService } from './system-log.service';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
@@ -48,9 +54,17 @@ function resourceLabels(items: NavItem[]): Map<string, string> {
   return labels;
 }
 
+/** A comma-separated filter value (as saved views keep it) back into the list a multi-select holds. */
+function splitList(value: string | number | undefined): string[] {
+  return value === undefined || value === '' ? [] : String(value).split(',');
+}
+
 /**
  * Who changed what and when, newest first: every create, update and delete on company data, plus sign-ins.
  * A row opens a drawer with the field changes (before → after) and where the change came from.
+ *
+ * Company users see their company (`/company/system-logs`); platform staff see every company and can filter by
+ * one (`/admin/system-logs`). Staff have no company, so they get the company filter instead of the user filter.
  */
 @Component({
   selector: 'app-system-log-list',
@@ -65,6 +79,7 @@ function resourceLabels(items: NavItem[]): Map<string, string> {
     IconFieldModule,
     InputIconModule,
     InputTextModule,
+    MultiSelectModule,
     SelectModule,
     PageHeaderComponent,
     EmptyStateComponent,
@@ -78,13 +93,16 @@ function resourceLabels(items: NavItem[]): Map<string, string> {
 export class SystemLogListComponent implements OnInit {
   private readonly api = inject(SystemLogService);
   private readonly users = inject(CompanyUserService);
+  private readonly companies = inject(TenantCompanyService);
   private readonly notifications = inject(NotificationService);
   readonly language = inject(LanguageService);
+  readonly staff = inject(AccessService).isStaff;
 
-  action: AuditAction | null = null;
-  resource: string | null = null;
+  actions: AuditAction[] = [];
+  resources: string[] = [];
+  sources: AuditSource[] = [];
   user: number | null = null;
-  source: AuditSource | null = null;
+  company: number | null = null;
   dateFrom = '';
   dateTo = '';
 
@@ -92,26 +110,29 @@ export class SystemLogListComponent implements OnInit {
     (query) => this.api.list({ ...query, ordering: query.ordering ?? '-timestamp' }),
     {
       filters: () => ({
-        action: this.action,
-        resource: this.resource,
+        action: this.actions,
+        resource: this.resources,
+        source: this.sources,
         user: this.user,
-        source: this.source,
+        company: this.company,
         date_from: this.dateFrom,
         date_to: this.dateTo,
       }),
       reset: () => {
-        this.action = null;
-        this.resource = null;
+        this.actions = [];
+        this.resources = [];
+        this.sources = [];
         this.user = null;
-        this.source = null;
+        this.company = null;
         this.dateFrom = '';
         this.dateTo = '';
       },
       restore: (filters) => {
-        this.action = (filters['action'] ?? null) as SystemLogListComponent['action'];
-        this.resource = (filters['resource'] ?? null) as SystemLogListComponent['resource'];
+        this.actions = splitList(filters['action']) as AuditAction[];
+        this.resources = splitList(filters['resource']);
+        this.sources = splitList(filters['source']) as AuditSource[];
         this.user = filters['user'] === undefined ? null : Number(filters['user']);
-        this.source = (filters['source'] ?? null) as SystemLogListComponent['source'];
+        this.company = filters['company'] === undefined ? null : Number(filters['company']);
         this.dateFrom = String(filters['date_from'] ?? '');
         this.dateTo = String(filters['date_to'] ?? '');
       },
@@ -120,10 +141,25 @@ export class SystemLogListComponent implements OnInit {
   readonly errorTitleKey = errorTitleKey;
 
   private readonly resourceLabelKeys = resourceLabels(NAV_ITEMS);
-  readonly resourceOptions = [...this.resourceLabelKeys].map(([value, label]) => ({ value, label }));
-  readonly actionOptions = AUDIT_ACTIONS.map((action) => ({ value: action, label: `systemLogs.actions.${action}` }));
-  readonly sourceOptions = AUDIT_SOURCES.map((source) => ({ value: source, label: `systemLogs.sources.${source}` }));
+  private readonly actionKeys = AUDIT_ACTIONS.map((action) => [action, `systemLogs.actions.${action}`] as const);
+  private readonly sourceKeys = AUDIT_SOURCES.map((source) => [source, `systemLogs.sources.${source}`] as const);
+  // The multi-selects show (and search) translated labels, so they follow the language.
+  private readonly labels = toSignal(
+    inject(TranslateService).stream([
+      ...this.resourceLabelKeys.values(),
+      ...this.actionKeys.map(([, key]) => key),
+      ...this.sourceKeys.map(([, key]) => key),
+    ]),
+    { initialValue: {} as Record<string, string> },
+  );
+  readonly resourceOptions = computed(() => this.options([...this.resourceLabelKeys]));
+  readonly actionOptions = computed(() => this.options(this.actionKeys));
+  readonly sourceOptions = computed(() => this.options(this.sourceKeys));
   readonly userOptions = signal<SelectOption[]>([]);
+  readonly companyOptions = signal<SelectOption[]>([]);
+  private readonly companyNames = computed(
+    () => new Map(this.companyOptions().map((option) => [Number(option.value), option.label])),
+  );
 
   readonly exporting = signal(false);
   readonly headerActions = computed<PageHeaderAction[]>(() => [
@@ -136,14 +172,32 @@ export class SystemLogListComponent implements OnInit {
     },
   ]);
 
-  /** The row shown in the drawer. */
+  /** The row shown in the drawer: the list row at once, then the full entry from `logs/{id}/`. */
   readonly selected = signal<AuditLogEntry | null>(null);
+  readonly loadingDetail = signal(false);
   readonly changeRows = auditChangeRows;
+  readonly metaRows = auditMetaRows;
 
   ngOnInit(): void {
     this.table.load();
-    // The user filter is optional: without the dropdown the rest of the screen still works.
-    this.users.userOptions().subscribe({ next: (options) => this.userOptions.set(options), error: () => undefined });
+    // The user and company filters are optional: without their dropdowns the rest of the screen still works.
+    if (this.staff()) {
+      this.companies.all().subscribe({
+        next: (companies) => this.companyOptions.set(companies.map((c) => ({ value: c.id, label: c.name }))),
+        error: () => undefined,
+      });
+    } else {
+      this.users.userOptions().subscribe({ next: (options) => this.userOptions.set(options), error: () => undefined });
+    }
+  }
+
+  private options(entries: readonly (readonly [string, string])[]): { value: string; label: string }[] {
+    const labels = this.labels();
+    return entries.map(([value, key]) => ({ value, label: labels[key] ?? key }));
+  }
+
+  companyLabel(company: AuditLogEntry['company']): string {
+    return auditCompanyLabel(company, this.companyNames());
   }
 
   resourceLabel(resource: string): string {
@@ -171,9 +225,25 @@ export class SystemLogListComponent implements OnInit {
 
   open(row: AuditLogEntry): void {
     this.selected.set(row);
+    this.loadingDetail.set(true);
+    // If the full entry can't be loaded, the row already shown is enough.
+    this.api.retrieve(row.id).subscribe({
+      next: (entry) => {
+        if (this.selected()?.id === row.id) {
+          this.selected.set(entry);
+          this.loadingDetail.set(false);
+        }
+      },
+      error: () => {
+        if (this.selected()?.id === row.id) {
+          this.loadingDetail.set(false);
+        }
+      },
+    });
   }
 
   close(): void {
     this.selected.set(null);
+    this.loadingDetail.set(false);
   }
 }

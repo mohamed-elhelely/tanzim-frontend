@@ -38,7 +38,8 @@
     "backToList": "العودة إلى القائمة",
     "backToDashboard": "العودة للوحة التحكم",
     "viewAll": "عرض الكل",
-    "reasonOptional": "السبب (اختياري)"
+    "reasonOptional": "السبب (اختياري)",
+    "selectedCount": "{0} محددة"
   },
   "nav": {
     "dashboard": "لوحة التحكم",
@@ -172,7 +173,8 @@
   "errors": {
     "network": "تعذّر الوصول إلى الخادم. تحقق من اتصالك.",
     "server": "خطأ في الخادم. يرجى المحاولة لاحقًا.",
-    "unexpected": "حدث خطأ غير متوقع."
+    "unexpected": "حدث خطأ غير متوقع.",
+    "supportCode": "رمز الدعم: {{code}}"
   },
   "validation": {
     "required": "هذا الحقل مطلوب.",
@@ -2036,7 +2038,8 @@
       "device": "الجهاز",
       "field": "الحقل",
       "before": "قبل",
-      "after": "بعد"
+      "after": "بعد",
+      "company": "الشركة"
     },
     "actions": {
       "create": "إضافة",
@@ -2045,6 +2048,7 @@
       "restore": "استرجاع",
       "bulk_update": "تعديل جماعي",
       "bulk_delete": "حذف جماعي",
+      "bulk_create": "إنشاء جماعي",
       "import": "استيراد",
       "login": "تسجيل دخول",
       "login_failed": "محاولة دخول فاشلة",
@@ -2057,6 +2061,16 @@
       "import": "استيراد",
       "task": "مهمة في الخلفية",
       "system": "النظام"
+    },
+    "meta": {
+      "count": "عدد السجلات",
+      "ids": "أرقام السجلات",
+      "reason": "السبب",
+      "countValue": "{{count}} سجل"
+    },
+    "reasons": {
+      "invalid_credentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة",
+      "company_inactive": "الشركة غير مفعّلة"
     }
   },
   "palette": {

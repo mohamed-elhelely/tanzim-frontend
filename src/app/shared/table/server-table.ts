@@ -18,10 +18,13 @@ import { Paginated } from '../../core/models/api-response.model';
  * using the filters that were last applied rather than half-edited ones. `changed()` says whether
  * applying would fetch anything new, so the Apply button can stay disabled until then.
  */
-export type FilterValues = Record<string, string | number | boolean | null | undefined>;
+export type FilterValues = Record<string, string | number | boolean | readonly (string | number)[] | null | undefined>;
 
 export interface ServerTableOptions {
-  /** Reads the screen's filter fields; empty values (null, undefined, '') are dropped. */
+  /**
+   * Reads the screen's filter fields; empty values (null, undefined, '', []) are dropped. A list (a multi-select)
+   * is sent comma-separated (`status=draft,issued`), which the choice filters accept.
+   */
   filters?: () => FilterValues;
   /** Puts the screen's filter fields back to their defaults (used by `clear()`). */
   reset?: () => void;
@@ -147,8 +150,12 @@ export class ServerTable<T> {
   private readFilters(): Record<string, string | number> {
     const filters: Record<string, string | number> = {};
     for (const [key, value] of Object.entries(this.options.filters?.() ?? {})) {
-      if (value !== null && value !== undefined && value !== '') {
-        filters[key] = typeof value === 'boolean' ? String(value) : value;
+      if (Array.isArray(value)) {
+        if (value.length) {
+          filters[key] = value.join(',');
+        }
+      } else if (value !== null && value !== undefined && value !== '') {
+        filters[key] = typeof value === 'boolean' ? String(value) : (value as string | number);
       }
     }
     return filters;

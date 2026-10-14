@@ -14,7 +14,7 @@ describe('ImportExportPageComponent', () => {
 
   function setup(modules: string[] = ['inventory', 'location'], permissions: string[] = ['add_department']) {
     const mods = signal(modules);
-    notifications = jasmine.createSpyObj('NotificationService', ['success', 'error']);
+    notifications = jasmine.createSpyObj('NotificationService', ['success', 'error', 'failure']);
     TestBed.configureTestingModule({
       imports: [ImportExportPageComponent],
       providers: [

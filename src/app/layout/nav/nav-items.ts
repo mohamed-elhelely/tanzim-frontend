@@ -40,6 +40,7 @@ export const NAV_ITEMS: NavItem[] = [
       { labelKey: 'nav.billingReports', icon: 'pi pi-chart-bar', routerLink: '/admin/billing/reports' },
     ],
   },
+  { labelKey: 'nav.systemLogs', icon: 'pi pi-history', routerLink: '/admin/system-logs', staffOnly: true },
   {
     labelKey: 'nav.company',
     icon: 'pi pi-building',

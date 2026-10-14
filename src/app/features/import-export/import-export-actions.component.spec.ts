@@ -12,7 +12,7 @@ describe('ImportExportActionsComponent', () => {
   let notifications: jasmine.SpyObj<NotificationService>;
 
   function setup(resource = 'category', modules: string[] = ['inventory'], permissions: string[] = []) {
-    notifications = jasmine.createSpyObj('NotificationService', ['success', 'error']);
+    notifications = jasmine.createSpyObj('NotificationService', ['success', 'error', 'failure']);
     TestBed.configureTestingModule({
       imports: [ImportExportActionsComponent],
       providers: [
