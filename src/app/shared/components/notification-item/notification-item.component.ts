@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, inject } from '@angular/core';
-import { AppNotification, NotificationType } from '../../../core/notifications/notification.model';
+import { AppNotification, NotificationType, accountChange } from '../../../core/notifications/notification.model';
 import { LanguageService } from '../../../core/services/language.service';
 import { TimeAgoPipe } from '../../pipes/time-ago.pipe';
 
@@ -9,6 +9,8 @@ const STYLES: Record<NotificationType, { icon: string; tone: string }> = {
   warning: { icon: 'pi-exclamation-triangle', tone: 'bg-amber-100 text-amber-600 dark:bg-amber-500/15 dark:text-amber-300' },
   error: { icon: 'pi-times-circle', tone: 'bg-red-100 text-red-600 dark:bg-red-500/15 dark:text-red-300' },
 };
+/** Changes to the user's own account or access stand out from operational notifications. */
+const ACCOUNT_CHANGE = { icon: 'pi-shield', tone: 'bg-violet-100 text-violet-600 dark:bg-violet-500/15 dark:text-violet-300' };
 
 /** One notification row (header bell and notifications page). Clicking it emits `open`, used to mark it read. */
 @Component({
@@ -24,6 +26,9 @@ export class NotificationItemComponent {
   readonly lang = inject(LanguageService).currentLang;
 
   get style(): { icon: string; tone: string } {
+    if (accountChange(this.notification)) {
+      return ACCOUNT_CHANGE;
+    }
     return STYLES[this.notification.notif_type] ?? STYLES.info;
   }
 }

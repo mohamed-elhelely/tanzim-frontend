@@ -32,7 +32,7 @@
       role="combobox"
       aria-controls="palette-results"
       [attr.aria-expanded]="true"
-      [attr.aria-activedescendant]="results().length ? 'palette-item-' + active() : null"
+      [attr.aria-activedescendant]="items().length ? 'palette-item-' + active() : null"
       [placeholder]="'palette.placeholder' | translate"
       [value]="query()"
       (input)="setQuery($any($event.target).value)"
@@ -58,7 +58,37 @@
           <span class="text-xs text-gray-400">{{ entry.groupKey | translate }}</span>
         }
       </li>
-    } @empty {
+    }
+    @for (group of recordGroups(); track group.type) {
+      <li role="presentation" class="px-3 pb-1 pt-3 text-xs font-semibold uppercase tracking-wide text-gray-400">
+        {{ group.headingKey | translate }}
+      </li>
+      @for (hit of group.hits; track hit.id) {
+        @let i = recordIndex(hit);
+        <li
+          [id]="'palette-item-' + i"
+          role="option"
+          [attr.aria-selected]="i === active()"
+          class="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-sm"
+          [class]="i === active() ? 'bg-primary-50 dark:bg-primary-500/15' : ''"
+          (mouseenter)="active.set(i)"
+          (click)="openRecord(hit)"
+        >
+          <i [class]="recordIcon(hit) + ' text-gray-500 dark:text-gray-400'"></i>
+          <span class="flex min-w-0 flex-1 flex-col">
+            <span class="truncate font-medium">{{ hit.label }}</span>
+            @if (hit.sublabel) {
+              <span class="truncate text-xs text-gray-500 dark:text-gray-400">{{ hit.sublabel }}</span>
+            }
+          </span>
+        </li>
+      }
+    }
+    @if (searching()) {
+      <li role="status" class="flex items-center gap-2 px-3 py-2 text-xs text-gray-500 dark:text-gray-400">
+        <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>{{ 'palette.searching' | translate }}
+      </li>
+    } @else if (!items().length) {
       <li class="px-3 py-6 text-center text-sm text-gray-500 dark:text-gray-400">{{ 'palette.noResults' | translate }}</li>
     }
   </ul>

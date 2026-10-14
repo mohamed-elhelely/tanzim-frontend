@@ -4,7 +4,7 @@
   <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403" (retry)="table.load()"></app-error-state>
 } @else {
   <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
-    <div class="flex flex-col gap-3 border-b border-gray-100 p-4 sm:flex-row sm:items-center dark:border-gray-800">
+    <div class="flex flex-col flex-wrap gap-3 border-b border-gray-100 p-4 sm:flex-row sm:items-center dark:border-gray-800">
       <p-iconfield class="w-full sm:w-80">
         <p-inputicon class="pi pi-search"></p-inputicon>
         <input
@@ -17,20 +17,9 @@
           class="w-full"
         />
       </p-iconfield>
-      <p-select
-        [(ngModel)]="status"
-        [options]="statusOptions"
-        optionLabel="label"
-        optionValue="value"
-        [showClear]="true"
-        [placeholder]="'sales.fields.status' | translate"
-        [ariaLabel]="'sales.fields.status' | translate"
-        styleClass="w-full sm:w-56"
-        appendTo="body"
-      >
-        <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
-        <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
-      </p-select>
+      <app-choice-filter [(value)]="status" [options]="statusOptions" placeholder="sales.fields.status" width="sm:w-56"></app-choice-filter>
+      <app-choice-filter [(value)]="priority" [options]="priorityOptions" placeholder="sales.fields.priority" width="sm:w-44"></app-choice-filter>
+      <app-date-range-filter [(from)]="dateFrom" [(to)]="dateTo"></app-date-range-filter>
       <app-saved-views [table]="table" screen="sales-order"></app-saved-views>
       <p-button
         [label]="'common.apply' | translate"
@@ -57,6 +46,7 @@
           styleClass="w-full sm:ms-auto sm:w-auto"
         ></p-button>
       }
+      <app-filter-errors [table]="table"></app-filter-errors>
     </div>
     <div class="overflow-x-auto">
       <p-table

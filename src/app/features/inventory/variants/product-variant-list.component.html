@@ -1,5 +1,5 @@
 <app-page-header title="inventory.variants.title" [actions]="headerActions">
-  <app-import-export-actions resource="productVariant" (imported)="table.load()"></app-import-export-actions>
+  <app-import-export-actions resource="productVariant" [table]="table" (imported)="table.load()"></app-import-export-actions>
 </app-page-header>
 
 @if (table.error(); as err) {

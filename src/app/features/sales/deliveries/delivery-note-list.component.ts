@@ -6,13 +6,15 @@ import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
-import { ServerTable } from '../../../shared/table/server-table';
+import { ChoiceFilterComponent } from '../../../shared/table/choice-filter.component';
+import { DateRangeFilterComponent } from '../../../shared/table/date-range-filter.component';
+import { FilterErrorsComponent } from '../../../shared/table/filter-errors.component';
+import { ServerTable, splitFilter } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { DELIVERY_STATUSES, DELIVERY_STATUS_SEVERITY, DeliveryNoteListItem, DeliveryStatus } from '../sales.models';
 import { DeliveryNoteService } from './delivery-note.service';
@@ -30,7 +32,9 @@ import { SavedViewsComponent } from '../../../shared/table/saved-views.component
     InputTextModule,
     IconFieldModule,
     InputIconModule,
-    SelectModule,
+    ChoiceFilterComponent,
+    DateRangeFilterComponent,
+    FilterErrorsComponent,
     PageHeaderComponent,
     EmptyStateComponent,
     ErrorStateComponent,
@@ -43,16 +47,22 @@ export class DeliveryNoteListComponent implements OnInit {
   private readonly api = inject(DeliveryNoteService);
   private readonly router = inject(Router);
 
-  status: DeliveryStatus | null = null;
+  status: DeliveryStatus[] = [];
+  dateFrom = '';
+  dateTo = '';
   readonly table = new ServerTable<DeliveryNoteListItem>(
     (query) => this.api.list(query),
     {
-      filters: () => ({ status: this.status }),
+      filters: () => ({ status: this.status, date_from: this.dateFrom, date_to: this.dateTo }),
       reset: () => {
-        this.status = null;
+        this.status = [];
+        this.dateFrom = '';
+        this.dateTo = '';
       },
       restore: (filters) => {
-        this.status = (filters['status'] ?? null) as DeliveryNoteListComponent['status'];
+        this.status = splitFilter(filters['status']) as DeliveryNoteListComponent['status'];
+        this.dateFrom = String(filters['date_from'] ?? '');
+        this.dateTo = String(filters['date_to'] ?? '');
       },
     },
   );

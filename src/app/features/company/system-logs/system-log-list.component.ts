@@ -42,6 +42,21 @@ import {
 import { SystemLogService } from './system-log.service';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
+/**
+ * Resources the log records that have no screen of their own (document lines, sign-ins on the user, stock
+ * reservations), or whose screen is named for something else. They get their own labels and win over the menu.
+ */
+const AUDIT_EXTRA_RESOURCES = ['user', 'companyuser', 'salesorderline', 'deliverynoteline', 'journalline', 'stockreservation'];
+
+/** The resource filter's options and labels: every screen's `view_<resource>`, plus AUDIT_EXTRA_RESOURCES. */
+function auditResourceLabels(items: NavItem[]): Map<string, string> {
+  const labels = resourceLabels(items);
+  for (const resource of AUDIT_EXTRA_RESOURCES) {
+    labels.set(resource, `systemLogs.resources.${resource}`);
+  }
+  return labels;
+}
+
 /** Screens' `view_<resource>` permissions give the resource filter its options and labels (nav.* keys). */
 function resourceLabels(items: NavItem[]): Map<string, string> {
   const labels = new Map<string, string>();
@@ -135,7 +150,7 @@ export class SystemLogListComponent implements OnInit {
   );
   readonly errorTitleKey = errorTitleKey;
 
-  private readonly resourceLabelKeys = resourceLabels(NAV_ITEMS);
+  private readonly resourceLabelKeys = auditResourceLabels(NAV_ITEMS);
   private readonly actionKeys = AUDIT_ACTIONS.map((action) => [action, `systemLogs.actions.${action}`] as const);
   private readonly sourceKeys = AUDIT_SOURCES.map((source) => [source, `systemLogs.sources.${source}`] as const);
   // The multi-selects show (and search) translated labels, so they follow the language.

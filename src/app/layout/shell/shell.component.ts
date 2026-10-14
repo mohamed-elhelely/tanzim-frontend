@@ -5,6 +5,7 @@ import { DrawerModule } from 'primeng/drawer';
 import { ToastModule } from 'primeng/toast';
 import { LanguageService } from '../../core/services/language.service';
 import { AccessService } from '../../core/auth/access.service';
+import { LiveNotificationsService } from '../../core/notifications/live-notifications.service';
 import { NotificationCenterService } from '../../core/notifications/notification-center.service';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { LoadingBarComponent } from '../../shared/components/loading-bar/loading-bar.component';
@@ -40,6 +41,8 @@ export class ShellComponent {
     inject(AccessService).load().subscribe();
     // Notifications list, unread count and the live socket for the header bell.
     inject(NotificationCenterService).start();
+    // A toast for each pushed notification; account changes by others also refresh access or sign out.
+    inject(LiveNotificationsService).start();
   }
 
   openMobileNav(): void {

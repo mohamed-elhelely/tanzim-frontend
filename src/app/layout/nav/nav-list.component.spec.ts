@@ -30,6 +30,7 @@ describe('NavListComponent', () => {
             hasModule: (code: string) => modules.includes(code),
             can: (codename: string) => permissions.includes(codename),
             isStaff: () => role === 'ADMIN',
+            role: () => role,
           },
         },
       ],
@@ -101,7 +102,7 @@ describe('NavListComponent', () => {
 
   it('expands a module group opened by URL once the subscription loads', async () => {
     const loaded = signal(false);
-    const fixture = await render('/inventory/products', 'COMPANY', [], { hasModule: () => loaded(), can: () => true, isStaff: () => false });
+    const fixture = await render('/inventory/products', 'COMPANY', [], { hasModule: () => loaded(), can: () => true, isStaff: () => false, role: () => 'COMPANY' });
     expect(links(fixture)).not.toContain('/inventory/products');
     loaded.set(true);
     fixture.detectChanges();
@@ -123,7 +124,7 @@ describe('NavListComponent', () => {
   });
 
   it('shows Companies to platform staff only, not to every user without a company', async () => {
-    const fixture = await render('/dashboard', 'ADMIN', [], { hasModule: () => false, can: () => false, isStaff: () => false });
+    const fixture = await render('/dashboard', 'ADMIN', [], { hasModule: () => false, can: () => false, isStaff: () => false, role: () => 'ADMIN' });
     expect(links(fixture)).toEqual(['/dashboard', '/notifications']);
   });
 });

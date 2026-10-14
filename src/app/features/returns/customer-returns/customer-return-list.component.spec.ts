@@ -27,8 +27,8 @@ describe('CustomerReturnListComponent', () => {
     expect(text).toContain('RMA-2026-00001');
     expect(text).toContain('returns.reasons.defective');
     expect(text).toContain('returns.customerStatuses.requested');
-    fixture.componentInstance.status = 'approved';
-    fixture.componentInstance.reason = 'wrong_item';
+    fixture.componentInstance.status = ['approved'];
+    fixture.componentInstance.reason = ['wrong_item'];
     fixture.componentInstance.table.apply();
     httpMock.expectOne((r) => r.url === URL && r.params.get('status') === 'approved' && r.params.get('return_reason') === 'wrong_item').flush(envelope([], 0));
     fixture.componentInstance.open(makeCustomerReturn({ id: 4 }));

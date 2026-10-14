@@ -20,7 +20,19 @@ function makeJwt(payload: Record<string, unknown>): string {
 const future = (): number => Math.floor(Date.now() / 1000) + 3600;
 const past = (): number => Math.floor(Date.now() / 1000) - 60;
 /** Lets the Web Lock (granted asynchronously) start the refresh request. */
-const settle = () => new Promise((resolve) => setTimeout(resolve, 20));
+/** Waits (up to a second) until requests to `url` are pending, then takes them. */
+async function waitForRequests(httpMock: HttpTestingController, url: string) {
+  for (let waited = 0; waited < 1000; waited += 10) {
+    const requests = httpMock.match(url);
+    if (requests.length) {
+      // Give a second, wrongly duplicated refresh the same chance to show up.
+      await new Promise((resolve) => setTimeout(resolve, 20));
+      return requests.concat(httpMock.match(url));
+    }
+    await new Promise((resolve) => setTimeout(resolve, 10));
+  }
+  return [];
+}
 const ok = <T>(data: T) => ({ success: true, data, metadata: { timestamp: '', version: '1.0' } });
 
 describe('AuthService', () => {
@@ -99,9 +111,8 @@ describe('AuthService', () => {
 
     const first = firstValueFrom(service.refreshAccessToken());
     const second = firstValueFrom(service.refreshAccessToken());
-    await settle();
-
-    const requests = httpMock.match(`${BASE_URL}refresh/`);
+    // The refresh runs inside a Web Lock, granted asynchronously: wait for its request rather than a fixed delay.
+    const requests = await waitForRequests(httpMock, `${BASE_URL}refresh/`);
     expect(requests.length).toBe(1);
     expect(requests[0].request.body).toEqual({ refresh: refreshToken });
 

@@ -2,7 +2,7 @@ import { Injectable, computed, effect, inject, signal, untracked } from '@angula
 import { Observable, catchError, finalize, map, of, shareReplay } from 'rxjs';
 import { BaseApiService } from '../api/base-api.service';
 import { AuthService } from './auth.service';
-import { CurrentUser } from './auth.model';
+import { AuthRole, CurrentUser } from './auth.model';
 import { codenameModule, moduleCodename } from './permission-catalog';
 
 type LoadState = 'idle' | 'loading' | 'ready' | 'error';
@@ -27,6 +27,18 @@ export class AccessService extends BaseApiService {
   readonly isStaff = computed(() => this.me()?.is_staff ?? this.auth.user()?.isStaff ?? false);
   /** The /me payload (null until it answers): user picture, company name, logo and colors. */
   readonly current = this.me.asReadonly();
+  /**
+   * The login role, corrected by /me once it answers: the company-admin flag can change during the session
+   * (someone else edits this user's membership) while the token still carries the old one.
+   */
+  readonly role = computed<AuthRole | null>(() => {
+    const role = this.auth.role();
+    const me = this.me();
+    if (!me || role === null || role === 'ADMIN' || !me.company) {
+      return role;
+    }
+    return me.is_company_admin ? 'COMPANY' : 'EMPLOYEE';
+  });
   /** True once /me answered (or failed); guards wait for this. */
   readonly settled = computed(() => this.state() === 'ready' || this.state() === 'error');
 
@@ -77,13 +89,15 @@ export class AccessService extends BaseApiService {
 
   /**
    * Fetches /me again (e.g. after the company's subscription modules changed) so menus follow without a
-   * re-login. Keeps the current answer until the new one arrives, so nothing flashes.
+   * re-login. Keeps the current answer until the new one arrives, so nothing flashes. `then` runs once the
+   * new answer is applied (not on failure).
    */
-  reload(): void {
+  reload(then?: () => void): void {
     this.get<CurrentUser>('company/v1/me/').subscribe({
       next: (response) => {
         this.me.set(response.data);
         this.state.set('ready');
+        then?.();
       },
       error: () => undefined,
     });

@@ -1,5 +1,5 @@
 <app-page-header title="inventory.zones.title" [actions]="headerActions">
-  <app-import-export-actions resource="zone" (imported)="table.load()"></app-import-export-actions>
+  <app-import-export-actions resource="zone" [table]="table" (imported)="table.load()"></app-import-export-actions>
 </app-page-header>
 
 @if (table.error(); as err) {

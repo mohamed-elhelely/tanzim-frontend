@@ -1,6 +1,7 @@
 import { signal } from '@angular/core';
 import { Subject, of, throwError } from 'rxjs';
 import { TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
 import { HttpTestingController } from '@angular/common/http/testing';
 import { envelope, provideApiTesting } from '../../testing/api-testing';
 import { AuthService } from '../auth/auth.service';
@@ -107,6 +108,26 @@ describe('NotificationCenterService', () => {
     httpMock.expectOne('/api/notifications/mark-read/4/').flush(envelope({ status: 'success' }));
     expect(center.items().every((n) => n.is_read)).toBeTrue();
     expect(center.unread()).toBe(0);
+  });
+
+  it('passes pushed notifications on, and opens the profile for a change to the own account', () => {
+    const center = start();
+    const pushed: number[] = [];
+    center.incoming$.subscribe((n) => pushed.push(n.id));
+    const navigate = spyOn(TestBed.inject(Router), 'navigate').and.resolveTo(true);
+    FakeSocket.last?.receive({
+      type: 'new_notification',
+      notification: note(8, { data: { event: 'account_change', resource: 'user', action: 'update' } }),
+    });
+    expect(pushed).toEqual([8]);
+
+    center.open(center.items()[0]);
+    httpMock.expectOne('/api/notifications/mark-read/8/').flush(envelope({ status: 'success' }));
+    expect(navigate).toHaveBeenCalledWith(['/profile']);
+
+    center.open(note(9, { data: { event: 'account_change', resource: 'role', action: 'update' } }));
+    httpMock.expectOne('/api/notifications/mark-read/9/').flush(envelope({ status: 'success' }));
+    expect(navigate).toHaveBeenCalledTimes(1);
   });
 
   it('closes the socket and forgets everything when the user signs out', () => {

@@ -4,21 +4,9 @@
   <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403" (retry)="table.load()"></app-error-state>
 } @else {
   <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
-    <div class="flex flex-col gap-3 border-b border-gray-100 p-4 sm:flex-row sm:items-center dark:border-gray-800">
-      <p-select
-        [(ngModel)]="method"
-        [options]="methodOptions"
-        optionLabel="label"
-        optionValue="value"
-        [showClear]="true"
-        [placeholder]="'sales.fields.paymentMethod' | translate"
-        [ariaLabel]="'sales.fields.paymentMethod' | translate"
-        styleClass="w-full sm:w-56"
-        appendTo="body"
-      >
-        <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
-        <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
-      </p-select>
+    <div class="flex flex-col flex-wrap gap-3 border-b border-gray-100 p-4 sm:flex-row sm:items-center dark:border-gray-800">
+      <app-choice-filter [(value)]="method" [options]="methodOptions" placeholder="sales.fields.paymentMethod" width="sm:w-56"></app-choice-filter>
+      <app-date-range-filter [(from)]="dateFrom" [(to)]="dateTo"></app-date-range-filter>
       <app-saved-views [table]="table" screen="sales-payment"></app-saved-views>
       <p-button
         [label]="'common.apply' | translate"
@@ -37,6 +25,7 @@
           styleClass="w-full sm:w-auto"
         ></p-button>
       }
+      <app-filter-errors [table]="table"></app-filter-errors>
     </div>
     <div class="overflow-x-auto">
       <p-table

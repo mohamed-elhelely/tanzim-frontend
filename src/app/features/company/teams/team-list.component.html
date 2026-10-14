@@ -1,5 +1,5 @@
 <app-page-header title="company.teams.title" [actions]="headerActions()">
-  <app-import-export-actions resource="team" (imported)="table.load()"></app-import-export-actions>
+  <app-import-export-actions resource="team" [table]="table" (imported)="table.load()"></app-import-export-actions>
 </app-page-header>
 
 @if (table.error(); as err) {

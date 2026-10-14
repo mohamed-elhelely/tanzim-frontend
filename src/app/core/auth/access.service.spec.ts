@@ -27,14 +27,18 @@ function me(overrides: Partial<CurrentUser> = {}): CurrentUser {
 describe('AccessService', () => {
   let httpMock: HttpTestingController;
   const user = signal<{ id: string; isStaff: boolean } | null>({ id: '7', isStaff: false });
+  const role = signal<'ADMIN' | 'COMPANY' | 'EMPLOYEE' | null>('EMPLOYEE');
 
   function setup(): AccessService {
-    TestBed.configureTestingModule({ providers: [...provideApiTesting(), { provide: AuthService, useValue: { user } }] });
+    TestBed.configureTestingModule({ providers: [...provideApiTesting(), { provide: AuthService, useValue: { user, role } }] });
     httpMock = TestBed.inject(HttpTestingController);
     return TestBed.inject(AccessService);
   }
 
-  beforeEach(() => user.set({ id: '7', isStaff: false }));
+  beforeEach(() => {
+    user.set({ id: '7', isStaff: false });
+    role.set('EMPLOYEE');
+  });
   afterEach(() => httpMock.verify());
 
   it('denies everything while loading, then answers from /me', () => {
@@ -114,5 +118,19 @@ describe('AccessService', () => {
     expect(access.settled()).toBeTrue();
     access.load().subscribe();
     httpMock.expectNone(URL);
+  });
+
+  it("follows /me's company-admin flag, which can change after the token was issued", () => {
+    const access = setup();
+    expect(access.role()).toBe('EMPLOYEE');
+    access.load().subscribe();
+    httpMock.expectOne(URL).flush(envelope(me({ is_company_admin: true })));
+    expect(access.role()).toBe('COMPANY');
+
+    const done = jasmine.createSpy('done');
+    access.reload(done);
+    httpMock.expectOne(URL).flush(envelope(me({ is_company_admin: false })));
+    expect(access.role()).toBe('EMPLOYEE');
+    expect(done).toHaveBeenCalled();
   });
 });

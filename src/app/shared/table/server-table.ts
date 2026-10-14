@@ -142,6 +142,15 @@ export class ServerTable<T> {
     return { search: this.searchTerm || undefined, filters: { ...(this.appliedFilters ?? this.readFilters()) } };
   }
 
+  /**
+   * The list's request without paging: applied search, filters and sort. Export endpoints take exactly these, so
+   * "export" downloads the rows the table shows (every page of them).
+   */
+  exportParams(): Record<string, string | number> {
+    const { search, filters } = this.appliedQuery();
+    return { ...filters, ...(search ? { search } : {}), ...(this.ordering ? { ordering: this.ordering } : {}) };
+  }
+
   /** Shows a saved query: fills the search box and the filter fields, then applies them. */
   applyQuery(query: TableQuery): void {
     this.searchDraft.set(query.search ?? '');

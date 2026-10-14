@@ -65,6 +65,14 @@ export class AppHeaderComponent {
     const full = user ? `${user.first_name} ${user.last_name}`.trim() : '';
     return full || this.auth.user()?.name || '';
   });
+  /** The role's name from /me (it follows changes made by others during the session), else the token's. */
+  readonly roleName = computed(() => {
+    const role = this.access.current()?.role;
+    if (!role) {
+      return this.auth.user()?.companyRole ?? '';
+    }
+    return (this.language.currentLang() === 'ar' && role.name_ar) || role.name_en;
+  });
   readonly displayName = computed(() => this.name() || this.translate.instant('header.account'));
   readonly initials = computed(() => {
     const name = this.name().trim();
@@ -76,7 +84,7 @@ export class AppHeaderComponent {
   });
 
   openNotification(notification: AppNotification): void {
-    this.notifications.markRead(notification);
+    this.notifications.open(notification);
   }
 
   get userMenuItems(): MenuItem[] {

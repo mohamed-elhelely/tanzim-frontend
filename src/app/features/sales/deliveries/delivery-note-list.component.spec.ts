@@ -27,7 +27,7 @@ describe('DeliveryNoteListComponent', () => {
     expect(text).toContain('DN-2026-00001');
     expect(text).toContain('sales.deliveryStatuses.in_transit');
     expect(text).toContain('AWB-1');
-    fixture.componentInstance.status = 'delivered';
+    fixture.componentInstance.status = ['delivered'];
     fixture.componentInstance.table.apply();
     httpMock.expectOne((r) => r.url === URL && r.params.get('status') === 'delivered').flush(envelope([], 0));
   });

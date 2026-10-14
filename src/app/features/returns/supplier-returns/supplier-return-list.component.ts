@@ -6,13 +6,15 @@ import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
 import { PageHeaderAction, PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
-import { ServerTable } from '../../../shared/table/server-table';
+import { ChoiceFilterComponent } from '../../../shared/table/choice-filter.component';
+import { DateRangeFilterComponent } from '../../../shared/table/date-range-filter.component';
+import { FilterErrorsComponent } from '../../../shared/table/filter-errors.component';
+import { ServerTable, splitFilter } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { SUPPLIER_RETURN_SEVERITY, SUPPLIER_RETURN_STATUSES, SupplierReturnListItem, SupplierReturnStatus } from '../returns.models';
 import { SupplierReturnService } from './supplier-return.service';
@@ -29,7 +31,9 @@ import { SavedViewsComponent } from '../../../shared/table/saved-views.component
     InputTextModule,
     IconFieldModule,
     InputIconModule,
-    SelectModule,
+    ChoiceFilterComponent,
+    DateRangeFilterComponent,
+    FilterErrorsComponent,
     PageHeaderComponent,
     EmptyStateComponent,
     ErrorStateComponent,
@@ -42,16 +46,22 @@ export class SupplierReturnListComponent implements OnInit {
   private readonly api = inject(SupplierReturnService);
   private readonly router = inject(Router);
 
-  status: SupplierReturnStatus | null = null;
+  status: SupplierReturnStatus[] = [];
+  dateFrom = '';
+  dateTo = '';
   readonly table = new ServerTable<SupplierReturnListItem>(
     (query) => this.api.list(query),
     {
-      filters: () => ({ status: this.status }),
+      filters: () => ({ status: this.status, date_from: this.dateFrom, date_to: this.dateTo }),
       reset: () => {
-        this.status = null;
+        this.status = [];
+        this.dateFrom = '';
+        this.dateTo = '';
       },
       restore: (filters) => {
-        this.status = (filters['status'] ?? null) as SupplierReturnListComponent['status'];
+        this.status = splitFilter(filters['status']) as SupplierReturnListComponent['status'];
+        this.dateFrom = String(filters['date_from'] ?? '');
+        this.dateTo = String(filters['date_to'] ?? '');
       },
     },
   );

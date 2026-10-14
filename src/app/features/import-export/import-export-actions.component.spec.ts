@@ -1,3 +1,4 @@
+import { ServerTable } from '../../shared/table/server-table';
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController } from '@angular/common/http/testing';
 import { AccessService } from '../../core/auth/access.service';
@@ -51,6 +52,21 @@ describe('ImportExportActionsComponent', () => {
     expect(req.request.responseType).toBe('blob');
     req.flush(new Blob(['x']));
     expect(HTMLAnchorElement.prototype.click).toHaveBeenCalled();
+  });
+
+  it('exports only what the list shows: its applied search, filters and sort', () => {
+    const component = setup().componentInstance;
+    spyOn(URL, 'createObjectURL').and.returnValue('blob:x');
+    spyOn(HTMLAnchorElement.prototype, 'click');
+    component.table = { exportParams: () => ({ status: 'draft,issued', search: 'acme', ordering: '-date' }) } as unknown as ServerTable<unknown>;
+    component.exportData('csv');
+    const req = httpMock.expectOne((r) => r.url === '/api/inventory/v1/category/export/');
+    expect(req.request.params.get('format')).toBe('csv');
+    expect(req.request.params.get('status')).toBe('draft,issued');
+    expect(req.request.params.get('search')).toBe('acme');
+    expect(req.request.params.get('ordering')).toBe('-date');
+    expect(req.request.params.has('page')).toBeFalse();
+    req.flush(new Blob(['x']));
   });
 
   it('downloads the template', () => {

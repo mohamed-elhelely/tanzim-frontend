@@ -13859,6 +13859,8 @@ Async export files are downloaded from `GET /api/common/v1/api/download/export/{
 | `GET` | `/api/notifications/unread-count/` | — | `{"unread_count": 3}` |
 | `POST` | `/api/notifications/mark-read/{notification_id}/` | — | `{"status": "success"}` or 404 |
 
+**Account changes.** When someone else changes a user's profile or password, their company membership (role, department, team, admin/manager/lead flags, removed/restored), their role (permissions, groups, admin flag, name, deleted) or a permission group in their role, the user gets an ordinary notification, saved and pushed over the socket. Their own changes never produce one. `data` looks like `{"event": "account_change", "resource": "user" | "companyuser" | "role" | "permissiongroup", "object_id": "42", "action": "update" | "bulk_update" | "delete" | "bulk_delete" | "restore" | "password_change", "changed_by": "Mona Adel", "audit_log_id": 9876}`. `title` and `message` are complete sentences to show as they are (e.g. "Removed from company"). The frontend handles them in `LiveNotificationsService`.
+
 <details><summary>Example: My notifications → <code>200</code></summary>
 
 ```http

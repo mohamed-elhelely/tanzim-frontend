@@ -105,7 +105,7 @@
       }
       <span class="hidden max-w-40 flex-col text-start leading-tight md:flex">
         <span class="truncate text-sm font-semibold text-gray-900 dark:text-gray-100">{{ displayName() }}</span>
-        @if (auth.user()?.companyRole; as role) {
+        @if (roleName(); as role) {
           <span class="truncate text-xs text-gray-500 dark:text-gray-400">{{ role }}</span>
         }
       </span>

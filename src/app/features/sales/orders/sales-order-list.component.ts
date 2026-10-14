@@ -8,7 +8,6 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { ProgressBarModule } from 'primeng/progressbar';
-import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { AccessService } from '../../../core/auth/access.service';
 import { ConfirmService } from '../../../core/services/confirm.service';
@@ -16,9 +15,13 @@ import { EmptyStateComponent } from '../../../shared/components/empty-state/empt
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
 import { PageHeaderAction, PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
-import { ServerTable } from '../../../shared/table/server-table';
+import { ChoiceFilterComponent } from '../../../shared/table/choice-filter.component';
+import { DateRangeFilterComponent } from '../../../shared/table/date-range-filter.component';
+import { FilterErrorsComponent } from '../../../shared/table/filter-errors.component';
+import { ServerTable, splitFilter } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
 import {
+  ORDER_PRIORITIES,
   ORDER_STATUS_SEVERITY,
   OrderPriority,
   PRIORITY_SEVERITY,
@@ -41,7 +44,9 @@ import { SavedViewsComponent } from '../../../shared/table/saved-views.component
     InputTextModule,
     IconFieldModule,
     InputIconModule,
-    SelectModule,
+    ChoiceFilterComponent,
+    DateRangeFilterComponent,
+    FilterErrorsComponent,
     ProgressBarModule,
     PageHeaderComponent,
     EmptyStateComponent,
@@ -57,16 +62,25 @@ export class SalesOrderListComponent implements OnInit {
   private readonly confirm = inject(ConfirmService);
   private readonly access = inject(AccessService);
 
-  status: SalesOrderStatus | null = null;
+  status: SalesOrderStatus[] = [];
+  priority: OrderPriority[] = [];
+  dateFrom = '';
+  dateTo = '';
   readonly table = new ServerTable<SalesOrderListItem>(
     (query) => this.api.list(query),
     {
-      filters: () => ({ status: this.status }),
+      filters: () => ({ status: this.status, priority: this.priority, date_from: this.dateFrom, date_to: this.dateTo }),
       reset: () => {
-        this.status = null;
+        this.status = [];
+        this.priority = [];
+        this.dateFrom = '';
+        this.dateTo = '';
       },
       restore: (filters) => {
-        this.status = (filters['status'] ?? null) as SalesOrderListComponent['status'];
+        this.status = splitFilter(filters['status']) as SalesOrderListComponent['status'];
+        this.priority = splitFilter(filters['priority']) as SalesOrderListComponent['priority'];
+        this.dateFrom = String(filters['date_from'] ?? '');
+        this.dateTo = String(filters['date_to'] ?? '');
       },
     },
   );
@@ -76,6 +90,7 @@ export class SalesOrderListComponent implements OnInit {
   /** The ticked rows the bulk action applies to (drafts only). */
   readonly selectedDrafts = computed(() => this.table.selection().filter((row) => row.status === 'draft'));
   readonly errorTitleKey = errorTitleKey;
+  readonly priorityOptions = ORDER_PRIORITIES.map((priority) => ({ value: priority, label: `sales.priorities.${priority}` }));
   readonly statusOptions = SALES_ORDER_STATUSES.map((status) => ({ value: status, label: `sales.orderStatuses.${status}` }));
 
   readonly headerActions: PageHeaderAction[] = [

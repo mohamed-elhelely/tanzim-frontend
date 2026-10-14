@@ -14,7 +14,7 @@ describe('NotificationsPageComponent', () => {
     items,
     hasUnread: () => true,
     refresh: jasmine.createSpy('refresh'),
-    markRead: jasmine.createSpy('markRead'),
+    open: jasmine.createSpy('open'),
     markAllRead: jasmine.createSpy('markAllRead'),
   };
 
@@ -25,7 +25,7 @@ describe('NotificationsPageComponent', () => {
     });
   });
 
-  it('refreshes on open, filters unread, and marks read on click', () => {
+  it('refreshes on open, filters unread, and opens it on click', () => {
     const fixture = TestBed.createComponent(NotificationsPageComponent);
     fixture.detectChanges();
     expect(center.refresh).toHaveBeenCalled();
@@ -36,7 +36,7 @@ describe('NotificationsPageComponent', () => {
     expect(fixture.nativeElement.textContent).not.toContain('Welcome');
 
     (fixture.nativeElement.querySelector('app-notification-item button') as HTMLButtonElement).click();
-    expect(center.markRead).toHaveBeenCalledWith(jasmine.objectContaining({ id: 2 }));
+    expect(center.open).toHaveBeenCalledWith(jasmine.objectContaining({ id: 2 }));
     expect(fixture.componentInstance.headerActions().length).toBe(1);
   });
 });

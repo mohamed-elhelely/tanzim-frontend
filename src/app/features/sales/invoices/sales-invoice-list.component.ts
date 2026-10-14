@@ -7,7 +7,6 @@ import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { AccessService } from '../../../core/auth/access.service';
 import { ConfirmService } from '../../../core/services/confirm.service';
@@ -15,7 +14,10 @@ import { EmptyStateComponent } from '../../../shared/components/empty-state/empt
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
-import { ServerTable } from '../../../shared/table/server-table';
+import { ChoiceFilterComponent } from '../../../shared/table/choice-filter.component';
+import { DateRangeFilterComponent } from '../../../shared/table/date-range-filter.component';
+import { FilterErrorsComponent } from '../../../shared/table/filter-errors.component';
+import { ServerTable, splitFilter } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
 import {
   INVOICE_STATUSES,
@@ -43,7 +45,9 @@ import { SavedViewsComponent } from '../../../shared/table/saved-views.component
     InputTextModule,
     IconFieldModule,
     InputIconModule,
-    SelectModule,
+    ChoiceFilterComponent,
+    DateRangeFilterComponent,
+    FilterErrorsComponent,
     PageHeaderComponent,
     EmptyStateComponent,
     ErrorStateComponent,
@@ -58,19 +62,25 @@ export class SalesInvoiceListComponent implements OnInit {
   private readonly access = inject(AccessService);
   private readonly confirm = inject(ConfirmService);
 
-  status: SalesInvoiceStatus | null = null;
-  paymentStatus: InvoicePaymentStatus | null = null;
+  status: SalesInvoiceStatus[] = [];
+  paymentStatus: InvoicePaymentStatus[] = [];
+  dateFrom = '';
+  dateTo = '';
   readonly table = new ServerTable<SalesInvoiceListItem>(
     (query) => this.api.list(query),
     {
-      filters: () => ({ status: this.status, payment_status: this.paymentStatus }),
+      filters: () => ({ status: this.status, payment_status: this.paymentStatus, date_from: this.dateFrom, date_to: this.dateTo }),
       reset: () => {
-        this.status = null;
-        this.paymentStatus = null;
+        this.status = [];
+        this.paymentStatus = [];
+        this.dateFrom = '';
+        this.dateTo = '';
       },
       restore: (filters) => {
-        this.status = (filters['status'] ?? null) as SalesInvoiceListComponent['status'];
-        this.paymentStatus = (filters['payment_status'] ?? null) as SalesInvoiceListComponent['paymentStatus'];
+        this.status = splitFilter(filters['status']) as SalesInvoiceListComponent['status'];
+        this.paymentStatus = splitFilter(filters['payment_status']) as SalesInvoiceListComponent['paymentStatus'];
+        this.dateFrom = String(filters['date_from'] ?? '');
+        this.dateTo = String(filters['date_to'] ?? '');
       },
     },
   );
