@@ -108,6 +108,15 @@ You are working on the backend of Tanzim, a bilingual (English/Arabic) multi-ten
    creates the default chart as a side effect. Is there a read-only way to know whether a company's chart exists
    (e.g. a `chart_ready` flag on `GET /api/company/v1/me/`, or a count that doesn't create anything)?
 
+10. Question: the test company admin from docs/BACKEND_REQUESTS.md (admin@testcompany.com / testpass123) is refused by
+    the new server ("Unable to log in with provided credentials"). Is there a seed command or fixture that creates a
+    company account for local testing? The frontend can't verify items 1–6 without one.
+11. Question (system log): is a row's `company` the company id or `{ id, name }`? The frontend handles both; the name
+    saves staff a lookup.
+12. Question (export): when `async=true`, or when a list is too big to export at once, what does `/…/export/` answer
+    (status code and body), and does the finished file appear in `GET /api/common/v1/tasks/`?
+13. Question (global search): are hits already limited to the types the user may view? The frontend sends `types`
+    with only the screens the user can open, but the endpoint should not rely on that.
 ```
 
 ## Fixed
