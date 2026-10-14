@@ -166,6 +166,12 @@ describe('SystemLogListComponent', () => {
     expect(component.resources).toEqual(['salesorder', 'customer']);
   });
 
+  it('names resources that have no screen of their own, such as document lines', () => {
+    const fixture = create([makeLogEntry({ resource: 'salesorderline', object_repr: 'SO-1-L1' })]);
+    expect(fixture.nativeElement.textContent).toContain('systemLogs.resources.salesorderline');
+    expect(fixture.componentInstance.resourceOptions().some((option) => option.value === 'stockreservation')).toBeTrue();
+  });
+
   it('offers the new bulk create action', () => {
     const fixture = create();
     const action = fixture.componentInstance.actionOptions().find((option) => option.value === 'bulk_create');

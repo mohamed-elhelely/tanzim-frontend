@@ -111,12 +111,17 @@ You are working on the backend of Tanzim, a bilingual (English/Arabic) multi-ten
 10. Question: the test company admin from docs/BACKEND_REQUESTS.md (admin@testcompany.com / testpass123) is refused by
     the new server ("Unable to log in with provided credentials"). Is there a seed command or fixture that creates a
     company account for local testing? The frontend can't verify items 1–6 without one.
-11. Question (system log): is a row's `company` the company id or `{ id, name }`? The frontend handles both; the name
-    saves staff a lookup.
+11. System log: a row's `company` is the company id. Could staff rows also carry the company name (e.g.
+    `company_name`)? The frontend looks it up from the company list meanwhile.
 12. Question (export): when `async=true`, or when a list is too big to export at once, what does `/…/export/` answer
     (status code and body), and does the finished file appear in `GET /api/common/v1/tasks/`?
 13. Question (global search): are hits already limited to the types the user may view? The frontend sends `types`
     with only the screens the user can open, but the endpoint should not rely on that.
+14. Backend issues seen while verifying the system log on 2026-10-15:
+    - `object_repr` repeats the number prefix: sales orders show `SO-SO-2026-00007`, delivery notes `DN-DN-2026-00004`
+      (the number already starts with `SO-` / `DN-`).
+    - Stock reservations have no readable name: `object_repr` is `StockReservation object (10)`.
+    - The test company admin in item 10 is still refused; another seeded account works.
 ```
 
 ## Fixed

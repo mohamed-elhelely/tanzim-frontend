@@ -2073,6 +2073,14 @@
     "reasons": {
       "invalid_credentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة",
       "company_inactive": "الشركة غير مفعّلة"
+    },
+    "resources": {
+      "user": "حسابات المستخدمين",
+      "companyuser": "مستخدمو الشركة",
+      "salesorderline": "بنود أوامر البيع",
+      "deliverynoteline": "بنود أذون التسليم",
+      "journalline": "بنود القيود",
+      "stockreservation": "حجوزات المخزون"
     }
   },
   "palette": {

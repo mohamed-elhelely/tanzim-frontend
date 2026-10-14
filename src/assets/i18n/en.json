@@ -2073,6 +2073,14 @@
     "reasons": {
       "invalid_credentials": "Wrong email or password",
       "company_inactive": "Company is inactive"
+    },
+    "resources": {
+      "user": "User accounts",
+      "companyuser": "Company users",
+      "salesorderline": "Sales order lines",
+      "deliverynoteline": "Delivery note lines",
+      "journalline": "Journal lines",
+      "stockreservation": "Stock reservations"
     }
   },
   "palette": {
