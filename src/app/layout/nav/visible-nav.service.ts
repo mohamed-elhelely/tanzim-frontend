@@ -1,13 +1,12 @@
 import { Injectable, computed, inject } from '@angular/core';
 import { AccessService } from '../../core/auth/access.service';
-import { AuthService } from '../../core/auth/auth.service';
 import { NAV_ITEMS, NavItem } from './nav-items';
 
 /** The menu this user may see, shared by the sidebar and the command palette so both follow the same rules. */
 @Injectable({ providedIn: 'root' })
 export class VisibleNavService {
-  private readonly role = inject(AuthService).role;
   private readonly access = inject(AccessService);
+  private readonly role = this.access.role;
 
   /** By role, staff flag, subscription module and permission; empty groups drop out. */
   readonly items = computed(() =>

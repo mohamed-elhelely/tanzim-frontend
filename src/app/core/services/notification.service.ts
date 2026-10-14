@@ -3,7 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { MessageService } from 'primeng/api';
 import { AppError } from '../errors/app-error';
 
-type NotificationSeverity = 'success' | 'info' | 'warn' | 'error';
+export type NotificationSeverity = 'success' | 'info' | 'warn' | 'error';
 
 /** Toasts (PrimeNG MessageService) with a translated title. Messages passed in are shown as-is. */
 @Injectable({ providedIn: 'root' })
@@ -39,6 +39,11 @@ export class NotificationService {
     const code = this.injector.get(TranslateService).instant('errors.supportCode', { code: error.requestId });
     this.show('error', `${detail}
 ${code}`, 10000);
+  }
+
+  /** A toast with its own title (e.g. a pushed notification's), shown as-is. `sticky` stays until closed. */
+  notify(severity: NotificationSeverity, summary: string, detail: string, options: { life?: number; sticky?: boolean } = {}): void {
+    this.messages.add({ severity, summary, detail, life: options.life ?? 6000, sticky: options.sticky });
   }
 
   private show(severity: NotificationSeverity, detail: string, life = 4000): void {

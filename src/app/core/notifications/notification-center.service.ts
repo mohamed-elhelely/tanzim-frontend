@@ -1,10 +1,11 @@
 import { Injectable, computed, effect, inject, signal, untracked } from '@angular/core';
-import { forkJoin } from 'rxjs';
+import { Router } from '@angular/router';
+import { Subject, forkJoin } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { BaseApiService } from '../api/base-api.service';
 import { AuthService } from '../auth/auth.service';
 import { TokenStorageService } from '../auth/token-storage.service';
-import { AppNotification, SocketMessage } from './notification.model';
+import { AppNotification, SocketMessage, accountChange } from './notification.model';
 
 /** 4001: the access token was refused (expired or rotated) → refresh once, then reconnect. 4003: wrong user, final. */
 const TOKEN_REFUSED = 4001;
@@ -22,6 +23,8 @@ const MAX_RETRY_DELAY_MS = 60_000;
 export class NotificationCenterService extends BaseApiService {
   private readonly auth = inject(AuthService);
   private readonly tokens = inject(TokenStorageService);
+  private readonly router = inject(Router);
+  private readonly incoming = new Subject<AppNotification>();
   private readonly itemsState = signal<AppNotification[]>([]);
   private readonly unreadState = signal(0);
   private socket: WebSocket | null = null;
@@ -36,6 +39,8 @@ export class NotificationCenterService extends BaseApiService {
   readonly items = this.itemsState.asReadonly();
   readonly unread = this.unreadState.asReadonly();
   readonly hasUnread = computed(() => this.unreadState() > 0);
+  /** Each notification the socket pushes, as it arrives (toasts and account-change handling listen here). */
+  readonly incoming$ = this.incoming.asObservable();
 
   constructor() {
     super();
@@ -79,6 +84,14 @@ export class NotificationCenterService extends BaseApiService {
       next: () => this.applyRead([notification.id]),
       error: () => undefined,
     });
+  }
+
+  /** A click on a notification: marks it read; a change to the user's own account opens their profile. */
+  open(notification: AppNotification): void {
+    this.markRead(notification);
+    if (accountChange(notification)?.resource === 'user') {
+      void this.router.navigate(['/profile']);
+    }
   }
 
   /** There is no bulk endpoint: one request per unread notification in the list. */
@@ -147,6 +160,7 @@ export class NotificationCenterService extends BaseApiService {
         if (!notification.is_read) {
           this.unreadState.update((count) => count + 1);
         }
+        this.incoming.next(notification);
         break;
       }
     }

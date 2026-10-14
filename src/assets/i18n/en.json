@@ -715,7 +715,8 @@
     "all": "All",
     "unread": "Unread",
     "markAllRead": "Mark all as read",
-    "empty": "No notifications yet."
+    "empty": "No notifications yet.",
+    "accessLost": "You no longer have access to that page."
   },
   "billing": {
     "subscription": "Subscription",

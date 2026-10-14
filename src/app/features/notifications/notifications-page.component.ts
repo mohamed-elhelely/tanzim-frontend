@@ -39,6 +39,6 @@ export class NotificationsPageComponent implements OnInit {
   }
 
   open(notification: AppNotification): void {
-    this.center.markRead(notification);
+    this.center.open(notification);
   }
 }
