@@ -37,7 +37,8 @@ describe('CustomerListComponent', () => {
     fixture.detectChanges();
     httpMock.expectOne((r) => r.url === URL).flush(envelope([], 0));
     fixture.componentInstance.table.first.set(10);
-    fixture.componentInstance.onTypeChange('government');
+    fixture.componentInstance.customerType = 'government';
+    fixture.componentInstance.table.apply();
     httpMock.expectOne((r) => r.url === URL && r.params.get('customer_type') === 'government' && r.params.get('page') === '1').flush(envelope([], 0));
   });
 
@@ -47,6 +48,14 @@ describe('CustomerListComponent', () => {
     httpMock.expectOne((r) => r.url === URL).flush(errorEnvelope(403, 'Forbidden'), { status: 403, statusText: 'Forbidden' });
     fixture.detectChanges();
     expect(fixture.nativeElement.textContent).toContain('common.forbidden');
+  });
+
+  it('opens the customer statement in the accounting reports', () => {
+    const fixture = TestBed.createComponent(CustomerListComponent);
+    fixture.componentInstance.statement({ id: 7 });
+    expect(TestBed.inject(Router).navigate).toHaveBeenCalledWith(['/accounting/reports'], {
+      queryParams: { type: 'customer_statement', customer: 7 },
+    });
   });
 
   it('opens the edit page', () => {

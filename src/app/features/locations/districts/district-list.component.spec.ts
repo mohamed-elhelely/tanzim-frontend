@@ -63,8 +63,7 @@ describe('DistrictListComponent', () => {
     fixture.componentInstance.table.onLazyLoad({ first: 20, rows: 10, sortField: 'name_en', sortOrder: -1 });
     expectList({ page: '3', page_size: '10', ordering: '-name_en' }, []);
 
-    fixture.componentInstance.table.onSearch('ca ');
-    tick(300);
+    fixture.componentInstance.table.apply('ca ');
     expectList({ page: '1', search: 'ca' }, [makeDistrict()]);
   }));
 

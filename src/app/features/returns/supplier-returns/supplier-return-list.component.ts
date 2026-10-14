@@ -16,10 +16,12 @@ import { ServerTable } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { SUPPLIER_RETURN_SEVERITY, SUPPLIER_RETURN_STATUSES, SupplierReturnListItem, SupplierReturnStatus } from '../returns.models';
 import { SupplierReturnService } from './supplier-return.service';
+import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 @Component({
   selector: 'app-supplier-return-list',
   imports: [
+    SavedViewsComponent,
     FormsModule,
     TranslatePipe,
     TableModule,
@@ -41,8 +43,17 @@ export class SupplierReturnListComponent implements OnInit {
   private readonly router = inject(Router);
 
   status: SupplierReturnStatus | null = null;
-  readonly table = new ServerTable<SupplierReturnListItem>((query) =>
-    this.api.list({ ...query, filters: this.status ? { status: this.status } : {} }),
+  readonly table = new ServerTable<SupplierReturnListItem>(
+    (query) => this.api.list(query),
+    {
+      filters: () => ({ status: this.status }),
+      reset: () => {
+        this.status = null;
+      },
+      restore: (filters) => {
+        this.status = (filters['status'] ?? null) as SupplierReturnListComponent['status'];
+      },
+    },
   );
   readonly errorTitleKey = errorTitleKey;
   readonly statusOptions = SUPPLIER_RETURN_STATUSES.map((status) => ({ value: status, label: `returns.supplierStatuses.${status}` }));
@@ -52,11 +63,6 @@ export class SupplierReturnListComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-    this.table.load();
-  }
-
-  onFilterChange(): void {
-    this.table.first.set(0);
     this.table.load();
   }
 

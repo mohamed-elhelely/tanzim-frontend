@@ -14,11 +14,13 @@ import { ServerTable } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { InvoicePayment, PAYMENT_METHODS, PAYMENT_RECORD_SEVERITY, PaymentMethod, PaymentRecordStatus } from '../sales.models';
 import { InvoicePaymentService } from './invoice-payment.service';
+import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 /** Every payment received, newest first. Payments are recorded and refunded from their invoice. */
 @Component({
   selector: 'app-payment-list',
   imports: [
+    SavedViewsComponent,
     DecimalPipe,
     FormsModule,
     TranslatePipe,
@@ -38,18 +40,22 @@ export class PaymentListComponent implements OnInit {
   private readonly router = inject(Router);
 
   method: PaymentMethod | null = null;
-  readonly table = new ServerTable<InvoicePayment>((query) =>
-    this.api.list({ ...query, filters: this.method ? { payment_method: this.method } : {} }),
+  readonly table = new ServerTable<InvoicePayment>(
+    (query) => this.api.list(query),
+    {
+      filters: () => ({ payment_method: this.method }),
+      reset: () => {
+        this.method = null;
+      },
+      restore: (filters) => {
+        this.method = (filters['payment_method'] ?? null) as PaymentListComponent['method'];
+      },
+    },
   );
   readonly errorTitleKey = errorTitleKey;
   readonly methodOptions = PAYMENT_METHODS.map((method) => ({ value: method, label: `sales.paymentMethods.${method}` }));
 
   ngOnInit(): void {
-    this.table.load();
-  }
-
-  onMethodChange(): void {
-    this.table.first.set(0);
     this.table.load();
   }
 

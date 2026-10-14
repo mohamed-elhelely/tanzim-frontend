@@ -1,0 +1,65 @@
+<button
+  type="button"
+  class="flex h-9 items-center gap-2 rounded-lg border border-gray-200 px-2.5 text-sm text-gray-500 transition-colors hover:bg-gray-100 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800"
+  [attr.aria-label]="'palette.open' | translate"
+  (click)="show()"
+>
+  <i class="pi pi-search"></i>
+  <span class="hidden md:inline">{{ 'palette.placeholder' | translate }}</span>
+  <kbd class="hidden rounded border border-gray-200 px-1 font-sans text-[0.65rem] dark:border-gray-700 md:inline" dir="ltr">Ctrl K</kbd>
+</button>
+
+<p-dialog
+  [visible]="open()"
+  (visibleChange)="open.set($event)"
+  (onShow)="focusInput()"
+  [modal]="true"
+  [dismissableMask]="true"
+  [showHeader]="false"
+  [draggable]="false"
+  [resizable]="false"
+  position="top"
+  appendTo="body"
+  styleClass="mt-16 w-[95vw] max-w-xl"
+  contentStyleClass="!p-0"
+>
+  <div class="flex items-center gap-3 border-b border-gray-200 px-4 dark:border-gray-800">
+    <i class="pi pi-search text-gray-400"></i>
+    <input
+      #queryInput
+      type="text"
+      class="h-14 flex-1 bg-transparent text-base outline-none"
+      role="combobox"
+      aria-controls="palette-results"
+      [attr.aria-expanded]="true"
+      [attr.aria-activedescendant]="results().length ? 'palette-item-' + active() : null"
+      [placeholder]="'palette.placeholder' | translate"
+      [value]="query()"
+      (input)="setQuery($any($event.target).value)"
+      (keydown)="onKey($event)"
+    />
+    <kbd class="rounded border border-gray-200 px-1.5 text-xs text-gray-400 dark:border-gray-700" dir="ltr">Esc</kbd>
+  </div>
+
+  <ul id="palette-results" role="listbox" class="max-h-96 overflow-y-auto p-2">
+    @for (entry of results(); track entry.routerLink; let i = $index) {
+      <li
+        [id]="'palette-item-' + i"
+        role="option"
+        [attr.aria-selected]="i === active()"
+        class="flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-sm"
+        [class]="i === active() ? 'bg-primary-50 dark:bg-primary-500/15' : ''"
+        (mouseenter)="active.set(i)"
+        (click)="go(entry)"
+      >
+        <i [class]="entry.icon + ' text-gray-500 dark:text-gray-400'"></i>
+        <span class="flex-1 font-medium">{{ entry.labelKey | translate }}</span>
+        @if (entry.groupKey) {
+          <span class="text-xs text-gray-400">{{ entry.groupKey | translate }}</span>
+        }
+      </li>
+    } @empty {
+      <li class="px-3 py-6 text-center text-sm text-gray-500 dark:text-gray-400">{{ 'palette.noResults' | translate }}</li>
+    }
+  </ul>
+</p-dialog>

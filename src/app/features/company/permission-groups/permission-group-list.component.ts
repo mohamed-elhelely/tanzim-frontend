@@ -16,10 +16,12 @@ import { ServerTable } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { PermissionGroup } from '../company.models';
 import { PermissionGroupService } from './permission-group.service';
+import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 @Component({
   selector: 'app-permission-group-list',
   imports: [
+    SavedViewsComponent,
     TranslatePipe,
     TableModule,
     ButtonModule,
@@ -62,5 +64,13 @@ export class PermissionGroupListComponent implements OnInit {
 
   confirmDelete(row: PermissionGroup): void {
     this.confirm.confirmDelete(row.name_en, () => this.api.remove(row.id), () => this.table.afterDelete());
+  }
+
+  confirmBulkDelete(): void {
+    this.confirm.confirmBulkDelete(
+      this.table.selection(),
+      (row: PermissionGroup) => this.api.remove(row.id),
+      (deleted) => this.table.afterBulkDelete(deleted),
+    );
   }
 }

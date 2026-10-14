@@ -14,10 +14,12 @@ import { ServerTable } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { SUPPLIER_PAYMENT_METHODS, SupplierPayment, SupplierPaymentMethod } from '../accounting.models';
 import { SupplierPaymentService } from './supplier-payment.service';
+import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 @Component({
   selector: 'app-supplier-payment-list',
   imports: [
+    SavedViewsComponent,
     DecimalPipe,
     FormsModule,
     TranslatePipe,
@@ -38,16 +40,20 @@ export class SupplierPaymentListComponent implements OnInit {
 
   status: 'completed' | 'voided' | null = null;
   method: SupplierPaymentMethod | null = null;
-  readonly table = new ServerTable<SupplierPayment>((query) => {
-    const filters: Record<string, string> = {};
-    if (this.status) {
-      filters['status'] = this.status;
-    }
-    if (this.method) {
-      filters['payment_method'] = this.method;
-    }
-    return this.api.list({ page: query.page, pageSize: query.pageSize, filters });
-  });
+  readonly table = new ServerTable<SupplierPayment>(
+    (query) => this.api.list({ page: query.page, pageSize: query.pageSize, filters: query.filters }),
+    {
+      filters: () => ({ status: this.status, payment_method: this.method }),
+      reset: () => {
+        this.status = null;
+        this.method = null;
+      },
+      restore: (filters) => {
+        this.status = (filters['status'] ?? null) as SupplierPaymentListComponent['status'];
+        this.method = (filters['payment_method'] ?? null) as SupplierPaymentListComponent['method'];
+      },
+    },
+  );
   readonly errorTitleKey = errorTitleKey;
   readonly statusOptions = (['completed', 'voided'] as const).map((status) => ({ value: status, label: `accounting.paymentStatuses.${status}` }));
   readonly methodOptions = SUPPLIER_PAYMENT_METHODS.map((method) => ({ value: method, label: `sales.paymentMethods.${method}` }));
@@ -57,11 +63,6 @@ export class SupplierPaymentListComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-    this.table.load();
-  }
-
-  onFilterChange(): void {
-    this.table.first.set(0);
     this.table.load();
   }
 

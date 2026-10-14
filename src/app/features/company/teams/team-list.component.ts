@@ -20,10 +20,12 @@ import { FormDialogService } from '../../../shared/forms/form-dialog.service';
 import { Team } from '../company.models';
 import { TeamFormComponent } from './team-form.component';
 import { TeamService } from './team.service';
+import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 @Component({
   selector: 'app-team-list',
   imports: [
+    SavedViewsComponent,
     TranslatePipe,
     TableModule,
     ButtonModule,
@@ -80,5 +82,13 @@ export class TeamListComponent implements OnInit {
 
   confirmDelete(row: Team): void {
     this.confirm.confirmDelete(row.name_en, () => this.api.remove(row.id), () => this.table.afterDelete());
+  }
+
+  confirmBulkDelete(): void {
+    this.confirm.confirmBulkDelete(
+      this.table.selection(),
+      (row: Team) => this.api.remove(row.id),
+      (deleted) => this.table.afterBulkDelete(deleted),
+    );
   }
 }

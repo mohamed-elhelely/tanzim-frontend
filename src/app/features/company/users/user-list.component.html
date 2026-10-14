@@ -11,10 +11,19 @@
           pInputText
           type="search"
           [placeholder]="'common.search' | translate"
-          (input)="table.filterGlobal($any($event.target).value, 'contains')"
+          [value]="searchDraft()"
+          (input)="searchDraft.set($any($event.target).value)"
+          (keydown.enter)="appliedSearch.set(searchDraft().trim()); table.filterGlobal(appliedSearch(), 'contains')"
           class="w-full"
         />
       </p-iconfield>
+      <p-button
+        [label]="'common.search' | translate"
+        icon="pi pi-search"
+        [disabled]="searchDraft().trim() === appliedSearch()"
+        (onClick)="appliedSearch.set(searchDraft().trim()); table.filterGlobal(appliedSearch(), 'contains')"
+        styleClass="w-full sm:w-auto"
+      ></p-button>
     </div>
     <div class="overflow-x-auto">
       <p-table

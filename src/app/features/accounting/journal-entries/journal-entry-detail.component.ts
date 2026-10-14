@@ -18,6 +18,7 @@ import { StatusBadgeComponent } from '../../../shared/components/status-badge/st
 import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { JournalEntry } from '../accounting.models';
 import { JournalEntryService } from './journal-entry.service';
+import { RecordHistoryComponent } from '../../company/system-logs/record-history.component';
 
 /**
  * One journal entry. Drafts can be edited, posted or deleted; posted entries are final and can only be reversed
@@ -26,6 +27,7 @@ import { JournalEntryService } from './journal-entry.service';
 @Component({
   selector: 'app-journal-entry-detail',
   imports: [
+    RecordHistoryComponent,
     DatePipe,
     DecimalPipe,
     FormsModule,

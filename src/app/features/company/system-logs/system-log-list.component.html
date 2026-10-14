@@ -1,0 +1,259 @@
+<app-page-header title="systemLogs.title" subtitle="systemLogs.subtitle" [actions]="headerActions()"></app-page-header>
+
+@if (table.error(); as err) {
+  <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403" (retry)="table.load()"></app-error-state>
+} @else {
+  <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
+    <div class="flex flex-col flex-wrap gap-3 border-b border-gray-100 p-4 sm:flex-row sm:items-center dark:border-gray-800">
+      <p-iconfield class="w-full sm:w-64">
+        <p-inputicon class="pi pi-search"></p-inputicon>
+        <input
+          pInputText
+          type="search"
+          [placeholder]="'systemLogs.hints.search' | translate"
+          [value]="table.searchDraft()"
+          (input)="table.searchDraft.set($any($event.target).value)"
+          (keydown.enter)="table.apply()"
+          class="w-full"
+        />
+      </p-iconfield>
+      @if (staff()) {
+        <p-select
+          [(ngModel)]="company"
+          [options]="companyOptions()"
+          optionLabel="label"
+          optionValue="value"
+          [filter]="true"
+          [showClear]="true"
+          [placeholder]="'systemLogs.fields.company' | translate"
+          [ariaLabel]="'systemLogs.fields.company' | translate"
+          styleClass="w-full sm:w-56"
+          appendTo="body"
+        ></p-select>
+      } @else {
+        <p-select
+          [(ngModel)]="user"
+          [options]="userOptions()"
+          optionLabel="label"
+          optionValue="value"
+          [filter]="true"
+          [showClear]="true"
+          [placeholder]="'systemLogs.fields.user' | translate"
+          [ariaLabel]="'systemLogs.fields.user' | translate"
+          styleClass="w-full sm:w-56"
+          appendTo="body"
+        ></p-select>
+      }
+      <p-multiselect
+        [(ngModel)]="actions"
+        [options]="actionOptions()"
+        optionLabel="label"
+        optionValue="value"
+        [showClear]="true"
+        [maxSelectedLabels]="2"
+        [selectedItemsLabel]="'common.selectedCount' | translate"
+        [placeholder]="'systemLogs.fields.action' | translate"
+        [ariaLabel]="'systemLogs.fields.action' | translate"
+        styleClass="w-full sm:w-48"
+        appendTo="body"
+      ></p-multiselect>
+      <p-multiselect
+        [(ngModel)]="resources"
+        [options]="resourceOptions()"
+        optionLabel="label"
+        optionValue="value"
+        [filter]="true"
+        [showClear]="true"
+        [maxSelectedLabels]="2"
+        [selectedItemsLabel]="'common.selectedCount' | translate"
+        [placeholder]="'systemLogs.fields.resource' | translate"
+        [ariaLabel]="'systemLogs.fields.resource' | translate"
+        styleClass="w-full sm:w-52"
+        appendTo="body"
+      ></p-multiselect>
+      <p-multiselect
+        [(ngModel)]="sources"
+        [options]="sourceOptions()"
+        optionLabel="label"
+        optionValue="value"
+        [showClear]="true"
+        [maxSelectedLabels]="2"
+        [selectedItemsLabel]="'common.selectedCount' | translate"
+        [placeholder]="'systemLogs.fields.source' | translate"
+        [ariaLabel]="'systemLogs.fields.source' | translate"
+        styleClass="w-full sm:w-44"
+        appendTo="body"
+      ></p-multiselect>
+      <label class="flex items-center gap-2 text-sm">
+        <span class="text-gray-500 dark:text-gray-400">{{ 'systemLogs.fields.from' | translate }}</span>
+        <input pInputText type="date" [(ngModel)]="dateFrom" class="w-full sm:w-40" />
+      </label>
+      <label class="flex items-center gap-2 text-sm">
+        <span class="text-gray-500 dark:text-gray-400">{{ 'systemLogs.fields.to' | translate }}</span>
+        <input pInputText type="date" [(ngModel)]="dateTo" class="w-full sm:w-40" />
+      </label>
+      <app-saved-views [table]="table" screen="system-log"></app-saved-views>
+      <p-button
+        [label]="'common.apply' | translate"
+        icon="pi pi-filter"
+        [disabled]="!table.changed()"
+        (onClick)="table.apply()"
+        styleClass="w-full sm:w-auto"
+      ></p-button>
+      @if (table.filtered()) {
+        <p-button
+          [label]="'common.clearFilters' | translate"
+          icon="pi pi-filter-slash"
+          severity="secondary"
+          [text]="true"
+          (onClick)="table.clear()"
+          styleClass="w-full sm:w-auto"
+        ></p-button>
+      }
+    </div>
+    <div class="overflow-x-auto">
+      <p-table
+        [value]="table.rows()"
+        [lazy]="true"
+        [lazyLoadOnInit]="false"
+        (onLazyLoad)="table.onLazyLoad($event)"
+        [paginator]="true"
+        [first]="table.first()"
+        [rows]="table.pageSize()"
+        [totalRecords]="table.total()"
+        [rowsPerPageOptions]="[10, 25, 50]"
+        [loading]="table.loading()"
+        dataKey="id"
+        size="small"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="timestamp">
+              {{ 'systemLogs.fields.time' | translate }} <p-sortIcon field="timestamp"></p-sortIcon>
+            </th>
+            @if (staff()) {
+              <th>{{ 'systemLogs.fields.company' | translate }}</th>
+            }
+            <th>{{ 'systemLogs.fields.user' | translate }}</th>
+            <th>{{ 'systemLogs.fields.action' | translate }}</th>
+            <th>{{ 'systemLogs.fields.resource' | translate }}</th>
+            <th>{{ 'systemLogs.fields.record' | translate }}</th>
+            <th>{{ 'systemLogs.fields.changes' | translate }}</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-row>
+          <tr class="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50" (click)="open(row)" (keydown.enter)="open(row)" tabindex="0">
+            <td class="whitespace-nowrap text-xs" dir="ltr">{{ row.timestamp | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
+            @if (staff()) {
+              <td class="whitespace-nowrap">{{ companyLabel(row.company) }}</td>
+            }
+            <td class="whitespace-nowrap">{{ (row.user | userName) || ('systemLogs.systemUser' | translate) }}</td>
+            <td>
+              <app-status-badge
+                [value]="'systemLogs.actions.' + row.action | translate"
+                [severity]="actionSeverity(row.action)"
+              ></app-status-badge>
+            </td>
+            <td class="whitespace-nowrap">{{ resourceLabel(row.resource) | translate }}</td>
+            <td class="max-w-xs truncate font-medium">{{ row.object_repr || row.object_id || '—' }}</td>
+            <td class="max-w-sm truncate text-xs text-gray-500 dark:text-gray-400">
+              @for (change of changeRows(row.changes); track change.field; let last = $last) {
+                <span dir="ltr">{{ change.field }}</span>{{ last ? '' : ', ' }}
+              } @empty {
+                @if (row.meta?.count !== undefined && row.meta?.count !== null) {
+                  {{ 'systemLogs.meta.countValue' | translate: { count: row.meta.count } }}
+                } @else {
+                  —
+                }
+              }
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td [attr.colspan]="staff() ? 7 : 6"><app-empty-state icon="pi-history"></app-empty-state></td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+}
+
+<p-drawer
+  [visible]="!!selected()"
+  (visibleChange)="$event || close()"
+  [modal]="true"
+  [position]="language.direction() === 'rtl' ? 'left' : 'right'"
+  [header]="'systemLogs.detailTitle' | translate"
+  styleClass="w-full sm:w-[36rem]"
+>
+  @if (selected(); as entry) {
+    @if (loadingDetail()) {
+      <p class="mb-3 flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400" role="status">
+        <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>{{ 'common.loading' | translate }}
+      </p>
+    }
+    <dl class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
+      <dt class="text-gray-500 dark:text-gray-400">{{ 'systemLogs.fields.time' | translate }}</dt>
+      <dd dir="ltr" class="text-start">{{ entry.timestamp | date: 'yyyy-MM-dd HH:mm:ss' }}</dd>
+      @if (staff()) {
+        <dt class="text-gray-500 dark:text-gray-400">{{ 'systemLogs.fields.company' | translate }}</dt>
+        <dd>{{ companyLabel(entry.company) }}</dd>
+      }
+      <dt class="text-gray-500 dark:text-gray-400">{{ 'systemLogs.fields.user' | translate }}</dt>
+      <dd>
+        {{ (entry.user | userName) || ('systemLogs.systemUser' | translate) }}
+        @if (entry.user?.email) {
+          <span class="text-xs text-gray-500 dark:text-gray-400" dir="ltr">({{ entry.user?.email }})</span>
+        }
+      </dd>
+      <dt class="text-gray-500 dark:text-gray-400">{{ 'systemLogs.fields.action' | translate }}</dt>
+      <dd>
+        <app-status-badge
+          [value]="'systemLogs.actions.' + entry.action | translate"
+          [severity]="actionSeverity(entry.action)"
+        ></app-status-badge>
+      </dd>
+      <dt class="text-gray-500 dark:text-gray-400">{{ 'systemLogs.fields.record' | translate }}</dt>
+      <dd>{{ resourceLabel(entry.resource) | translate }} — {{ entry.object_repr || entry.object_id || '—' }}</dd>
+      <dt class="text-gray-500 dark:text-gray-400">{{ 'systemLogs.fields.source' | translate }}</dt>
+      <dd>{{ 'systemLogs.sources.' + entry.source | translate }}</dd>
+      <dt class="text-gray-500 dark:text-gray-400">{{ 'systemLogs.fields.ip' | translate }}</dt>
+      <dd dir="ltr" class="text-start">{{ entry.ip_address || '—' }}</dd>
+      <dt class="text-gray-500 dark:text-gray-400">{{ 'systemLogs.fields.device' | translate }}</dt>
+      <dd dir="ltr" class="break-all text-start text-xs">{{ entry.user_agent || '—' }}</dd>
+      @for (meta of metaRows(entry.meta); track meta.labelKey) {
+        <dt class="text-gray-500 dark:text-gray-400">{{ meta.labelKey | translate }}</dt>
+        <dd class="break-all">{{ meta.translateValue ? (meta.value | translate) : meta.value }}</dd>
+      }
+    </dl>
+
+    <h3 class="mb-2 mt-6 font-semibold">{{ 'systemLogs.fields.changes' | translate }}</h3>
+    @if (changeRows(entry.changes); as rows) {
+      @if (rows.length) {
+        <div class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-800">
+          <table class="w-full text-sm">
+            <thead class="bg-gray-50 text-start dark:bg-gray-800/50">
+              <tr>
+                <th class="p-2 text-start">{{ 'systemLogs.fields.field' | translate }}</th>
+                <th class="p-2 text-start">{{ 'systemLogs.fields.before' | translate }}</th>
+                <th class="p-2 text-start">{{ 'systemLogs.fields.after' | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (change of rows; track change.field) {
+                <tr class="border-t border-gray-100 align-top dark:border-gray-800">
+                  <td class="p-2 font-mono text-xs" dir="ltr">{{ change.field }}</td>
+                  <td class="break-all p-2 text-red-700 dark:text-red-400">{{ change.before }}</td>
+                  <td class="break-all p-2 text-green-700 dark:text-green-400">{{ change.after }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <p class="text-sm text-gray-500 dark:text-gray-400">{{ 'systemLogs.noChanges' | translate }}</p>
+      }
+    }
+  }
+</p-drawer>

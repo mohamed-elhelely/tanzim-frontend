@@ -45,8 +45,7 @@ describe('TenantCompanyListComponent', () => {
   it('searches on the server', fakeAsync(() => {
     const fixture = create();
     httpMock.expectOne((r) => r.url === URL).flush(envelope([makeTenantCompany()], 1));
-    fixture.componentInstance.table.onSearch('nile');
-    tick(300);
+    fixture.componentInstance.table.apply('nile');
     httpMock.expectOne((r) => r.url === URL && r.params.get('search') === 'nile').flush(envelope([], 0));
   }));
 

@@ -20,7 +20,6 @@ import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { DeliveryNoteService } from '../deliveries/delivery-note.service';
 import { SalesInvoiceService } from '../invoices/sales-invoice.service';
 import {
-  Address,
   DELIVERY_STATUS_SEVERITY,
   DeliveryNoteListItem,
   INVOICE_STATUS_SEVERITY,
@@ -29,8 +28,10 @@ import {
   SalesInvoiceListItem,
   SalesOrder,
   SalesOrderStatus,
+  formatAddress,
 } from '../sales.models';
 import { SalesOrderService } from './sales-order.service';
+import { RecordHistoryComponent } from '../../company/system-logs/record-history.component';
 
 /** Which workflow actions the backend allows from each status (sales/services.py). */
 const CAN_CANCEL: SalesOrderStatus[] = ['draft', 'confirmed', 'on_hold'];
@@ -52,6 +53,7 @@ interface ShipRow {
 @Component({
   selector: 'app-sales-order-detail',
   imports: [
+    RecordHistoryComponent,
     DatePipe,
     DecimalPipe,
     FormsModule,
@@ -109,7 +111,9 @@ export class SalesOrderDetailComponent implements OnInit {
     if (!order) {
       return [];
     }
-    const actions: PageHeaderAction[] = [];
+    const actions: PageHeaderAction[] = [
+      { label: 'print.print', icon: 'pi pi-print', severity: 'secondary', onClick: () => this.openPrint(order.id) },
+    ];
     if (order.status === 'draft') {
       actions.push({ label: 'common.edit', icon: 'pi pi-pencil', severity: 'secondary', onClick: () => this.edit() });
       actions.push({ label: 'sales.actions.confirmOrder', icon: 'pi pi-check', onClick: () => this.confirmOrder() });
@@ -153,14 +157,13 @@ export class SalesOrderDetailComponent implements OnInit {
     void this.router.navigate(['/sales/orders']);
   }
 
-  /** "Street · City, State ZIP · Country" with empty parts skipped. */
-  formatAddress(address: Address | null | undefined): string {
-    if (!address) {
-      return '';
-    }
-    const cityLine = [address.city, [address.state, address.zip].filter(Boolean).join(' ')].filter(Boolean).join(', ');
-    return [address.street, cityLine, address.country].filter(Boolean).join(' · ');
+  /** The printable order (an order confirmation for the customer) in a new tab; it prints by itself. */
+  openPrint(id: number): void {
+    const url = this.router.serializeUrl(this.router.createUrlTree(['/print/sales-orders', id], { queryParams: { print: 1 } }));
+    window.open(url, '_blank', 'noopener');
   }
+
+  readonly formatAddress = formatAddress;
 
   onCancelConfirmed(reason: string): void {
     this.confirm.runAction(

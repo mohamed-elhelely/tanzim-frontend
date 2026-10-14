@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, inject, computed } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
@@ -6,6 +6,7 @@ import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
+import { AccessService } from '../../../core/auth/access.service';
 import { ConfirmService } from '../../../core/services/confirm.service';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
@@ -16,10 +17,12 @@ import { ServerTable } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { Supplier } from '../inventory.models';
 import { SupplierService } from './supplier.service';
+import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 @Component({
   selector: 'app-supplier-list',
   imports: [
+    SavedViewsComponent,
     TranslatePipe,
     TableModule,
     ButtonModule,
@@ -39,6 +42,10 @@ export class SupplierListComponent implements OnInit {
   private readonly api = inject(SupplierService);
   private readonly router = inject(Router);
   private readonly confirm = inject(ConfirmService);
+  private readonly access = inject(AccessService);
+
+  /** The supplier statement lives in the accounting reports; offered when the user may open them. */
+  readonly canStatement = computed(() => this.access.can('view_accountingreport'));
 
   readonly table = new ServerTable<Supplier>((query) => this.api.list(query));
   readonly errorTitleKey = errorTitleKey;
@@ -61,5 +68,17 @@ export class SupplierListComponent implements OnInit {
 
   confirmDelete(row: Supplier): void {
     this.confirm.confirmDelete(row.name, () => this.api.remove(row.id), () => this.table.afterDelete());
+  }
+
+  statement(row: { id: number }): void {
+    void this.router.navigate(['/accounting/reports'], { queryParams: { type: 'supplier_statement', supplier: row.id } });
+  }
+
+  confirmBulkDelete(): void {
+    this.confirm.confirmBulkDelete(
+      this.table.selection(),
+      (row: Supplier) => this.api.remove(row.id),
+      (deleted) => this.table.afterBulkDelete(deleted),
+    );
   }
 }

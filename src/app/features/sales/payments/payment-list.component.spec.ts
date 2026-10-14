@@ -25,7 +25,7 @@ describe('PaymentListComponent', () => {
     fixture.detectChanges();
     expect(fixture.nativeElement.textContent).toContain('sales.paymentRecordStatuses.refunded');
     fixture.componentInstance.method = 'cash';
-    fixture.componentInstance.onMethodChange();
+    fixture.componentInstance.table.apply();
     httpMock.expectOne((r) => r.url === URL && r.params.get('payment_method') === 'cash').flush(envelope([], 0));
     fixture.componentInstance.openInvoice(makePayment({ invoice: 9 }));
     expect(TestBed.inject(Router).navigate).toHaveBeenCalledWith(['/sales/invoices', 9]);

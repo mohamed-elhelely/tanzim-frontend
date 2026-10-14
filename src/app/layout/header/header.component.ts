@@ -22,9 +22,11 @@ interface RouteInfo {
 }
 
 /** Top bar: breadcrumb from the route data (titleKey) and the nav group, language and theme toggles, user menu. */
+import { CommandPaletteComponent } from '../command-palette/command-palette.component';
+
 @Component({
   selector: 'app-header',
-  imports: [TranslatePipe, RouterLink, ButtonModule, MenuModule, PopoverModule, NotificationItemComponent],
+  imports: [TranslatePipe, RouterLink, ButtonModule, MenuModule, PopoverModule, NotificationItemComponent, CommandPaletteComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './header.component.html',
 })

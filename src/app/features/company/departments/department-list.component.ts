@@ -20,10 +20,12 @@ import { FormDialogService } from '../../../shared/forms/form-dialog.service';
 import { Department } from '../company.models';
 import { DepartmentFormComponent } from './department-form.component';
 import { DepartmentService } from './department.service';
+import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 @Component({
   selector: 'app-department-list',
   imports: [
+    SavedViewsComponent,
     TranslatePipe,
     TableModule,
     ButtonModule,
@@ -77,5 +79,13 @@ export class DepartmentListComponent implements OnInit {
 
   confirmDelete(row: Department): void {
     this.confirm.confirmDelete(row.name_en, () => this.api.remove(row.id), () => this.table.afterDelete());
+  }
+
+  confirmBulkDelete(): void {
+    this.confirm.confirmBulkDelete(
+      this.table.selection(),
+      (row: Department) => this.api.remove(row.id),
+      (deleted) => this.table.afterBulkDelete(deleted),
+    );
   }
 }

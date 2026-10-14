@@ -21,11 +21,13 @@ import { errorTitleKey, handleSaveError } from '../../../../shared/utils/server-
 import { TenantCompanyService } from '../../companies/tenant-company.service';
 import { MONEY, PAYMENT_SEVERITY, PlatformPayment, Severity } from '../platform-billing.models';
 import { PlatformPaymentService } from '../platform-billing.service';
+import { SavedViewsComponent } from '../../../../shared/table/saved-views.component';
 
 /** /admin/payments: payments of every company on platform invoices; completed ones can be refunded. */
 @Component({
   selector: 'app-payment-list',
   imports: [
+    SavedViewsComponent,
     DatePipe,
     DecimalPipe,
     FormsModule,
@@ -55,8 +57,17 @@ export class PaymentListComponent implements OnInit {
 
   company: number | null = null;
 
-  readonly table = new ServerTable<PlatformPayment>((query) =>
-    this.api.list({ ...query, filters: this.company !== null ? { company: this.company } : {} }),
+  readonly table = new ServerTable<PlatformPayment>(
+    (query) => this.api.list(query),
+    {
+      filters: () => ({ company: this.company }),
+      reset: () => {
+        this.company = null;
+      },
+      restore: (filters) => {
+        this.company = filters['company'] === undefined ? null : Number(filters['company']);
+      },
+    },
   );
   readonly errorTitleKey = errorTitleKey;
   /** Keyed by string: table rows are untyped in the template. */
@@ -77,11 +88,6 @@ export class PaymentListComponent implements OnInit {
       next: (companies) => this.companyOptions.set(companies.map((company) => ({ value: company.id, label: company.name }))),
       error: () => this.companyOptions.set([]),
     });
-    this.table.load();
-  }
-
-  onFilterChange(): void {
-    this.table.first.set(0);
     this.table.load();
   }
 

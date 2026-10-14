@@ -163,6 +163,21 @@ export class SalesOrderFormComponent implements OnInit {
     return { subtotal, tax, shipping, discount, total: subtotal + tax + shipping - discount };
   });
 
+  /** The chosen customer's remaining credit; null when they have no limit (or none is chosen). */
+  readonly availableCredit = computed(() => {
+    const customer = this.customers().find((c) => c.id === this.formValue().customer);
+    return customer?.available_credit == null ? null : Number(customer.available_credit);
+  });
+
+  /**
+   * A new order larger than the remaining credit will be refused when it is confirmed, so say so while it is
+   * typed. Edits are left out: the order may already count against the credit used.
+   */
+  readonly overCredit = computed(() => {
+    const available = this.availableCredit();
+    return !this.isEdit && available !== null && this.totals().total > available;
+  });
+
   get lines(): FormArray<LineForm> {
     return this.form.controls.lines;
   }

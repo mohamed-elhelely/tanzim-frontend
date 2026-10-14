@@ -40,21 +40,39 @@
   <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
     <div class="flex flex-col gap-3 border-b border-gray-100 p-4 sm:flex-row sm:items-center sm:justify-between dark:border-gray-800">
       <h2 class="font-semibold">{{ 'importExport.history.title' | translate }}</h2>
-      <p-select
-        [(ngModel)]="taskType"
-        (ngModelChange)="onTaskTypeChange()"
-        [options]="typeOptions"
-        optionLabel="label"
-        optionValue="value"
-        [showClear]="true"
-        [placeholder]="'importExport.fields.type' | translate"
-        [ariaLabel]="'importExport.fields.type' | translate"
-        styleClass="w-full sm:w-44"
-        appendTo="body"
-      >
-        <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
-        <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
-      </p-select>
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+        <p-select
+          [(ngModel)]="taskType"
+          [options]="typeOptions"
+          optionLabel="label"
+          optionValue="value"
+          [showClear]="true"
+          [placeholder]="'importExport.fields.type' | translate"
+          [ariaLabel]="'importExport.fields.type' | translate"
+          styleClass="w-full sm:w-44"
+          appendTo="body"
+        >
+          <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
+          <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
+        </p-select>
+        <p-button
+          [label]="'common.apply' | translate"
+          icon="pi pi-filter"
+          [disabled]="!tasks.changed()"
+          (onClick)="tasks.apply()"
+          styleClass="w-full sm:w-auto"
+        ></p-button>
+        @if (tasks.filtered()) {
+          <p-button
+            [label]="'common.clearFilters' | translate"
+            icon="pi pi-filter-slash"
+            severity="secondary"
+            [text]="true"
+            (onClick)="tasks.clear()"
+            styleClass="w-full sm:w-auto"
+          ></p-button>
+        }
+      </div>
     </div>
     @if (tasks.error(); as err) {
       <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403" (retry)="tasks.load()"></app-error-state>

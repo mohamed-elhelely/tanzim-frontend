@@ -16,6 +16,35 @@ export const routes: Routes = [
     ],
   },
   {
+    // Printable documents, outside the shell (no sidebar or header on paper).
+    path: 'print/sales-invoices/:id',
+    canActivate: [authGuard, companyMemberGuard, permissionGuard],
+    data: { permission: 'view_salesinvoice', titleKey: 'print.invoice' },
+    loadComponent: () =>
+      import('./features/sales/invoices/sales-invoice-print.component').then((m) => m.SalesInvoicePrintComponent),
+  },
+  {
+    path: 'print/delivery-notes/:id',
+    canActivate: [authGuard, companyMemberGuard, permissionGuard],
+    data: { permission: 'view_deliverynote', titleKey: 'print.deliveryNote' },
+    loadComponent: () =>
+      import('./features/sales/deliveries/delivery-note-print.component').then((m) => m.DeliveryNotePrintComponent),
+  },
+  {
+    path: 'print/sales-orders/:id',
+    canActivate: [authGuard, companyMemberGuard, permissionGuard],
+    data: { permission: 'view_salesorder', titleKey: 'print.orderConfirmation' },
+    loadComponent: () =>
+      import('./features/sales/orders/sales-order-print.component').then((m) => m.SalesOrderPrintComponent),
+  },
+  {
+    path: 'print/variant-labels',
+    canActivate: [authGuard, companyMemberGuard, permissionGuard],
+    data: { permission: 'view_productvariant', titleKey: 'labels.title' },
+    loadComponent: () =>
+      import('./features/inventory/variants/variant-labels-print.component').then((m) => m.VariantLabelsPrintComponent),
+  },
+  {
     path: '',
     component: ShellComponent,
     canActivate: [authGuard],

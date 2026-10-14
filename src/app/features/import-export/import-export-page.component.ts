@@ -79,7 +79,15 @@ export class ImportExportPageComponent implements OnInit {
   readonly selected = computed<DataResource | null>(() => this.resources().find((resource) => resource.key === this.selectedKey()) ?? null);
 
   taskType: 'import' | 'export' | null = null;
-  readonly tasks = new ServerTable<DataTask>((query) => this.api.tasks(query.page, query.pageSize, this.taskType));
+  readonly tasks = new ServerTable<DataTask>(
+    (query) => this.api.tasks(query.page, query.pageSize, (query.filters?.['type'] as 'import' | 'export' | undefined) ?? null),
+    {
+      filters: () => ({ type: this.taskType }),
+      reset: () => {
+        this.taskType = null;
+      },
+    },
+  );
   readonly typeOptions = (['import', 'export'] as const).map((type) => ({ value: type, label: `importExport.taskTypes.${type}` }));
   readonly errorTitleKey = errorTitleKey;
   readonly modelName = taskModelName;
@@ -94,11 +102,6 @@ export class ImportExportPageComponent implements OnInit {
 
   taskSeverity(status: TaskStatus): Severity {
     return TASK_SEVERITY[status] ?? 'secondary';
-  }
-
-  onTaskTypeChange(): void {
-    this.tasks.first.set(0);
-    this.tasks.load();
   }
 
   downloadTask(task: DataTask): void {

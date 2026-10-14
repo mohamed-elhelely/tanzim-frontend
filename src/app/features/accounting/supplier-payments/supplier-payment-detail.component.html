@@ -91,6 +91,8 @@
         <p class="text-sm text-gray-500 dark:text-gray-400">{{ 'accounting.hints.noAllocations' | translate }}</p>
       }
     </p-card>
+
+    <app-record-history resource="supplierpayment" [objectId]="payment.id"></app-record-history>
   </div>
 
   <app-reason-dialog

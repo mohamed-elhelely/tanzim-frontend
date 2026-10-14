@@ -18,10 +18,12 @@ import { FormDialogService } from '../../../shared/forms/form-dialog.service';
 import { City } from '../locations.models';
 import { CityFormComponent } from './city-form.component';
 import { CityService } from './city.service';
+import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 @Component({
   selector: 'app-city-list',
   imports: [
+    SavedViewsComponent,
     TranslatePipe,
     TableModule,
     ButtonModule,
@@ -72,5 +74,13 @@ export class CityListComponent implements OnInit {
 
   confirmDelete(row: City): void {
     this.confirm.confirmDelete(row.name_en, () => this.api.remove(row.id), () => this.table.afterDelete());
+  }
+
+  confirmBulkDelete(): void {
+    this.confirm.confirmBulkDelete(
+      this.table.selection(),
+      (row: City) => this.api.remove(row.id),
+      (deleted) => this.table.afterBulkDelete(deleted),
+    );
   }
 }

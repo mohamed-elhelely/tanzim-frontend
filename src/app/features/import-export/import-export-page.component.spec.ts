@@ -14,7 +14,7 @@ describe('ImportExportPageComponent', () => {
 
   function setup(modules: string[] = ['inventory', 'location'], permissions: string[] = ['add_department']) {
     const mods = signal(modules);
-    notifications = jasmine.createSpyObj('NotificationService', ['success', 'error']);
+    notifications = jasmine.createSpyObj('NotificationService', ['success', 'error', 'failure']);
     TestBed.configureTestingModule({
       imports: [ImportExportPageComponent],
       providers: [
@@ -44,7 +44,7 @@ describe('ImportExportPageComponent', () => {
   it('filters the history by type', () => {
     const component = setup().componentInstance;
     component.taskType = 'export';
-    component.onTaskTypeChange();
+    component.tasks.apply();
     httpMock.expectOne((r) => r.url === TASKS && r.params.get('type') === 'export').flush(envelope([], 0));
   });
 });

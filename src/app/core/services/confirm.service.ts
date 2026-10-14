@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmationService } from 'primeng/api';
-import { Observable } from 'rxjs';
+import { Observable, catchError, concatMap, from, map, of, toArray } from 'rxjs';
 import { AppError } from '../errors/app-error';
 import { NotificationService } from './notification.service';
 
@@ -23,6 +23,20 @@ export interface ConfirmActionOptions<T> {
   onCancel?: () => void;
   /** Called when the action fails (the message is already shown). */
   onError?: (error: AppError) => void;
+}
+
+export interface ConfirmBulkOptions<T> {
+  rows: T[];
+  /** Translation key of the question; gets `{ count }`. */
+  message: string;
+  /** Translation key of the accept button. */
+  accept: string;
+  /** Translation key of the success toast; gets `{ count }` (how many succeeded). */
+  success: string;
+  danger?: boolean;
+  run: (row: T) => Observable<unknown>;
+  /** Gets the number that succeeded; runs whenever anything was attempted, usually a reload. */
+  onDone: (succeeded: number) => void;
 }
 
 /** The confirm → act → toast flows: deletes on list screens and workflow actions (confirm, ship, issue…). */
@@ -54,6 +68,66 @@ export class ConfirmService {
           },
           error: (error: AppError) => this.showClientError(error),
         }),
+    });
+  }
+
+  /**
+   * Asks "Delete {count} items?", then deletes them one at a time (so one refusal doesn't stop the rest) and
+   * reports the outcome: "Deleted n", plus how many the backend refused and its first reason (e.g. "still used
+   * by …"). `onDone` gets the number deleted and runs whenever anything was attempted, usually a reload.
+   */
+  confirmBulkDelete<T>(rows: T[], remove: (row: T) => Observable<unknown>, onDone: (deleted: number) => void): void {
+    this.confirmBulk({
+      rows,
+      message: 'common.confirmBulkDelete',
+      accept: 'common.delete',
+      success: 'common.bulkDeleted',
+      danger: true,
+      run: remove,
+      onDone,
+    });
+  }
+
+  /**
+   * The same flow for any action on several rows (e.g. confirm the ticked draft orders): ask once, run the
+   * action row by row, then report how many succeeded and why the others failed.
+   */
+  confirmBulk<T>(options: ConfirmBulkOptions<T>): void {
+    const { rows } = options;
+    if (!rows.length) {
+      return;
+    }
+    this.confirmation.confirm({
+      key: CONFIRM_DIALOG_KEY,
+      header: this.translate.instant('common.confirm'),
+      message: this.translate.instant(options.message, { count: rows.length }),
+      icon: options.danger ? 'pi pi-exclamation-triangle' : 'pi pi-question-circle',
+      acceptLabel: this.translate.instant(options.accept),
+      rejectLabel: this.translate.instant('common.cancel'),
+      acceptButtonStyleClass: options.danger ? 'p-button-danger' : undefined,
+      accept: () =>
+        from(rows)
+          .pipe(
+            concatMap((row) =>
+              options.run(row).pipe(
+                map(() => null),
+                catchError((error: AppError) => of(error)),
+              ),
+            ),
+            toArray(),
+          )
+          .subscribe((results) => {
+            const failures = results.filter((result): result is AppError => result !== null);
+            const succeeded = results.length - failures.length;
+            if (succeeded) {
+              this.notifications.success(this.translate.instant(options.success, { count: succeeded }));
+            }
+            if (failures.length) {
+              const reason = failures.find((error) => error.status >= 400 && error.status < 500)?.message ?? '';
+              this.notifications.error(this.translate.instant('common.bulkFailed', { count: failures.length, reason }));
+            }
+            options.onDone(succeeded);
+          }),
     });
   }
 
@@ -91,7 +165,7 @@ export class ConfirmService {
 
   private showClientError(error: AppError): void {
     if (error.status >= 400 && error.status < 500 && error.status !== 401) {
-      this.notifications.error(error.message);
+      this.notifications.failure(error);
     }
   }
 }

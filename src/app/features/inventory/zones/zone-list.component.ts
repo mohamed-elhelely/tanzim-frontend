@@ -17,10 +17,12 @@ import { FormDialogService } from '../../../shared/forms/form-dialog.service';
 import { Zone } from '../inventory.models';
 import { ZoneFormComponent } from './zone-form.component';
 import { ZoneService } from './zone.service';
+import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 @Component({
   selector: 'app-zone-list',
   imports: [
+    SavedViewsComponent,
     TranslatePipe,
     TableModule,
     ButtonModule,
@@ -69,5 +71,13 @@ export class ZoneListComponent implements OnInit {
 
   confirmDelete(row: Zone): void {
     this.confirm.confirmDelete(row.name, () => this.api.remove(row.id), () => this.table.afterDelete());
+  }
+
+  confirmBulkDelete(): void {
+    this.confirm.confirmBulkDelete(
+      this.table.selection(),
+      (row: Zone) => this.api.remove(row.id),
+      (deleted) => this.table.afterBulkDelete(deleted),
+    );
   }
 }

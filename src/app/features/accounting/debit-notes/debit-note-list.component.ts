@@ -14,10 +14,12 @@ import { ServerTable } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { DEBIT_NOTE_SEVERITY, DebitNote, DebitNoteStatus } from '../accounting.models';
 import { DebitNoteService } from './debit-note.service';
+import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 @Component({
   selector: 'app-debit-note-list',
   imports: [
+    SavedViewsComponent,
     DecimalPipe,
     FormsModule,
     TranslatePipe,
@@ -37,8 +39,17 @@ export class DebitNoteListComponent implements OnInit {
   private readonly router = inject(Router);
 
   status: DebitNoteStatus | null = null;
-  readonly table = new ServerTable<DebitNote>((query) =>
-    this.api.list({ page: query.page, pageSize: query.pageSize, filters: this.status ? { status: this.status } : {} }),
+  readonly table = new ServerTable<DebitNote>(
+    (query) => this.api.list({ page: query.page, pageSize: query.pageSize, filters: query.filters }),
+    {
+      filters: () => ({ status: this.status }),
+      reset: () => {
+        this.status = null;
+      },
+      restore: (filters) => {
+        this.status = (filters['status'] ?? null) as DebitNoteListComponent['status'];
+      },
+    },
   );
   readonly errorTitleKey = errorTitleKey;
   readonly statusOptions = (['draft', 'issued', 'cancelled'] as const).map((status) => ({ value: status, label: `accounting.noteStatuses.${status}` }));
@@ -48,11 +59,6 @@ export class DebitNoteListComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-    this.table.load();
-  }
-
-  onFilterChange(): void {
-    this.table.first.set(0);
     this.table.load();
   }
 

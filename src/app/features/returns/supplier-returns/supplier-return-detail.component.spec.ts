@@ -20,7 +20,7 @@ describe('SupplierReturnDetailComponent', () => {
       imports: [SupplierReturnDetailComponent],
       providers: [
         ...provideApiTesting(),
-        { provide: AccessService, useValue: { hasModule: (code: string) => code === 'accounting' && modules() } },
+        { provide: AccessService, useValue: { hasModule: (code: string) => code === 'accounting' && modules(), can: () => false } },
         { provide: ActivatedRoute, useValue: { snapshot: { paramMap: convertToParamMap({ id: '1' }) } } },
       ],
     });

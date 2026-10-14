@@ -1,0 +1,107 @@
+<app-print-layout
+  titleKey="print.invoice"
+  [number]="invoice()?.invoice_number"
+  [warningKey]="warningKey()"
+  [ready]="!!invoice()"
+  [error]="error()"
+>
+  @if (invoice(); as invoice) {
+    <section class="mt-6 grid grid-cols-2 gap-6">
+      <div>
+        <p class="text-xs uppercase text-gray-500">{{ 'print.billTo' | translate }}</p>
+        <p class="mt-1 text-base font-semibold">{{ invoice.customer_name }}</p>
+      </div>
+      <dl class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-end">
+        <dt class="text-gray-500">{{ 'sales.fields.invoiceDate' | translate }}</dt>
+        <dd dir="ltr" class="text-end">{{ invoice.invoice_date }}</dd>
+        @if (invoice.due_date) {
+          <dt class="text-gray-500">{{ 'sales.fields.dueDate' | translate }}</dt>
+          <dd dir="ltr" class="text-end">{{ invoice.due_date }}</dd>
+        }
+        <dt class="text-gray-500">{{ 'sales.fields.orderNumber' | translate }}</dt>
+        <dd dir="ltr" class="text-end">{{ invoice.sales_order_number }}</dd>
+        @if (invoice.reference) {
+          <dt class="text-gray-500">{{ 'sales.fields.reference' | translate }}</dt>
+          <dd class="text-end">{{ invoice.reference }}</dd>
+        }
+        @if (invoice.payment_terms) {
+          <dt class="text-gray-500">{{ 'sales.fields.paymentTerms' | translate }}</dt>
+          <dd class="text-end">{{ invoice.payment_terms }}</dd>
+        }
+      </dl>
+    </section>
+
+    <table class="mt-8 w-full border-collapse">
+      <thead>
+        <tr class="border-b border-gray-300 text-xs uppercase text-gray-500">
+          <th class="py-2 text-start">#</th>
+          <th class="py-2 text-start">{{ 'sales.fields.item' | translate }}</th>
+          <th class="py-2 text-end">{{ 'sales.fields.quantity' | translate }}</th>
+          <th class="py-2 text-end">{{ 'sales.fields.unitPrice' | translate }}</th>
+          @if (hasDiscount(invoice)) {
+            <th class="py-2 text-end">{{ 'sales.fields.discountPercent' | translate }}</th>
+          }
+          <th class="py-2 text-end">{{ 'sales.fields.taxPercent' | translate }}</th>
+          <th class="py-2 text-end">{{ 'sales.fields.lineTotal' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (line of invoice.lines; track line.id) {
+          <tr class="border-b border-gray-100 align-top">
+            <td class="py-2">{{ line.line_number }}</td>
+            <td class="py-2">
+              <p class="font-medium">{{ line.product_name }}</p>
+              @if (line.sku) {
+                <p class="font-mono text-xs text-gray-500" dir="ltr">{{ line.sku }}</p>
+              }
+              @if (line.description) {
+                <p class="text-xs text-gray-500">{{ line.description }}</p>
+              }
+            </td>
+            <td class="py-2 text-end">{{ line.quantity | number: '1.0-3' }}</td>
+            <td class="py-2 text-end">{{ line.unit_price | number: '1.2-2' }}</td>
+            @if (hasDiscount(invoice)) {
+              <td class="py-2 text-end">{{ line.discount_percent | number: '1.0-2' }}</td>
+            }
+            <td class="py-2 text-end">{{ line.tax_percent | number: '1.0-2' }}</td>
+            <td class="py-2 text-end font-medium">{{ line.line_total | number: '1.2-2' }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    <section class="mt-6 flex justify-end">
+      <dl class="grid w-72 grid-cols-[1fr_auto] gap-x-6 gap-y-1">
+        <dt class="text-gray-500">{{ 'sales.fields.subtotal' | translate }}</dt>
+        <dd class="text-end">{{ invoice.subtotal | number: '1.2-2' }}</dd>
+        @if (+invoice.discount_amount) {
+          <dt class="text-gray-500">{{ 'print.discount' | translate }}</dt>
+          <dd class="text-end">−{{ invoice.discount_amount | number: '1.2-2' }}</dd>
+        }
+        <dt class="text-gray-500">{{ 'sales.fields.tax' | translate }}</dt>
+        <dd class="text-end">{{ invoice.tax_amount | number: '1.2-2' }}</dd>
+        @if (+invoice.shipping_cost) {
+          <dt class="text-gray-500">{{ 'sales.fields.shippingCost' | translate }}</dt>
+          <dd class="text-end">{{ invoice.shipping_cost | number: '1.2-2' }}</dd>
+        }
+        <dt class="border-t border-gray-300 pt-2 text-base font-bold">{{ 'sales.fields.total' | translate }}</dt>
+        <dd class="border-t border-gray-300 pt-2 text-end text-base font-bold">
+          {{ invoice.total_amount | number: '1.2-2' }} {{ invoice.currency }}
+        </dd>
+        @if (+invoice.amount_paid) {
+          <dt class="text-gray-500">{{ 'sales.fields.amountPaid' | translate }}</dt>
+          <dd class="text-end">{{ invoice.amount_paid | number: '1.2-2' }}</dd>
+          <dt class="font-semibold">{{ 'sales.fields.amountDue' | translate }}</dt>
+          <dd class="text-end font-semibold">{{ invoice.amount_due | number: '1.2-2' }} {{ invoice.currency }}</dd>
+        }
+      </dl>
+    </section>
+
+    @if (invoice.notes) {
+      <section class="mt-8 border-t border-gray-200 pt-4">
+        <p class="text-xs uppercase text-gray-500">{{ 'sales.fields.notes' | translate }}</p>
+        <p class="mt-1 whitespace-pre-line">{{ invoice.notes }}</p>
+      </section>
+  }
+  }
+</app-print-layout>

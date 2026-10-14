@@ -20,6 +20,7 @@ import { StatusBadgeComponent } from '../../../shared/components/status-badge/st
 import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { DELIVERY_STATUS_SEVERITY, DeliveryNote, SHIPPING_METHODS, ShippingMethod } from '../sales.models';
 import { DeliveryNoteService } from './delivery-note.service';
+import { RecordHistoryComponent } from '../../company/system-logs/record-history.component';
 
 /**
  * One delivery note and its workflow: draft → confirmed → in transit → delivered or failed
@@ -28,6 +29,7 @@ import { DeliveryNoteService } from './delivery-note.service';
 @Component({
   selector: 'app-delivery-note-detail',
   imports: [
+    RecordHistoryComponent,
     DecimalPipe,
     FormsModule,
     RouterLink,
@@ -70,7 +72,9 @@ export class DeliveryNoteDetailComponent implements OnInit {
     if (!note) {
       return [];
     }
-    const actions: PageHeaderAction[] = [];
+    const actions: PageHeaderAction[] = [
+      { label: 'print.print', icon: 'pi pi-print', severity: 'secondary', onClick: () => this.openPrint(note.id) },
+    ];
     if (note.status === 'draft') {
       actions.push({ label: 'sales.actions.editDetails', icon: 'pi pi-pencil', severity: 'secondary', onClick: () => this.openCarrier('details') });
       actions.push({ label: 'sales.actions.confirmDelivery', icon: 'pi pi-check', onClick: () => this.confirmDelivery() });
@@ -101,6 +105,12 @@ export class DeliveryNoteDetailComponent implements OnInit {
 
   goBack(): void {
     void this.router.navigate(['/sales/deliveries']);
+  }
+
+  /** The printable delivery note in a new tab; it opens the print dialog by itself. */
+  openPrint(id: number): void {
+    const url = this.router.serializeUrl(this.router.createUrlTree(['/print/delivery-notes', id], { queryParams: { print: 1 } }));
+    window.open(url, '_blank', 'noopener');
   }
 
   saveCarrier(): void {

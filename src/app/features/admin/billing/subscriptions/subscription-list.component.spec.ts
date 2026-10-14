@@ -49,7 +49,7 @@ describe('SubscriptionListComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('Acme');
 
     fixture.componentInstance.company = 1;
-    fixture.componentInstance.onFilterChange();
+    fixture.componentInstance.table.apply();
     httpMock.expectOne((r) => r.url === URL && r.params.get('company') === '1').flush(envelope([], 0));
   });
 });

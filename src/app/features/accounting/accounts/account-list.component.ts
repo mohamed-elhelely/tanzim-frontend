@@ -74,6 +74,9 @@ export class AccountListComponent implements OnInit {
   readonly error = signal<AppError | null>(null);
   readonly search = signal('');
   readonly type = signal<AccountType | null>(null);
+  /** What the filter fields show; copied into `search`/`type` only when the user applies. */
+  searchDraft = '';
+  typeDraft: AccountType | null = null;
   readonly errorTitleKey = errorTitleKey;
   readonly typeOptions = ACCOUNT_TYPES.map((type) => ({ value: type, label: `accounting.accountTypes.${type}` }));
 
@@ -112,6 +115,23 @@ export class AccountListComponent implements OnInit {
         this.loading.set(false);
       },
     });
+  }
+
+  filtersChanged(): boolean {
+    return this.searchDraft.trim() !== this.search().trim() || this.typeDraft !== this.type();
+  }
+
+  applyFilters(): void {
+    if (this.filtersChanged()) {
+      this.search.set(this.searchDraft);
+      this.type.set(this.typeDraft);
+    }
+  }
+
+  clearFilters(): void {
+    this.searchDraft = '';
+    this.typeDraft = null;
+    this.applyFilters();
   }
 
   typeSeverity(type: AccountType) {

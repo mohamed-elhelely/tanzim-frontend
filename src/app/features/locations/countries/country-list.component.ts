@@ -18,10 +18,12 @@ import { FormDialogService } from '../../../shared/forms/form-dialog.service';
 import { Country } from '../locations.models';
 import { CountryFormComponent } from './country-form.component';
 import { CountryService } from './country.service';
+import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 @Component({
   selector: 'app-country-list',
   imports: [
+    SavedViewsComponent,
     TranslatePipe,
     TableModule,
     ButtonModule,
@@ -72,5 +74,13 @@ export class CountryListComponent implements OnInit {
 
   confirmDelete(row: Country): void {
     this.confirm.confirmDelete(row.name_en, () => this.api.remove(row.id), () => this.table.afterDelete());
+  }
+
+  confirmBulkDelete(): void {
+    this.confirm.confirmBulkDelete(
+      this.table.selection(),
+      (row: Country) => this.api.remove(row.id),
+      (deleted) => this.table.afterBulkDelete(deleted),
+    );
   }
 }

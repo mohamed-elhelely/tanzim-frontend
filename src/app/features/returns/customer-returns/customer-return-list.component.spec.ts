@@ -29,7 +29,7 @@ describe('CustomerReturnListComponent', () => {
     expect(text).toContain('returns.customerStatuses.requested');
     fixture.componentInstance.status = 'approved';
     fixture.componentInstance.reason = 'wrong_item';
-    fixture.componentInstance.onFilterChange();
+    fixture.componentInstance.table.apply();
     httpMock.expectOne((r) => r.url === URL && r.params.get('status') === 'approved' && r.params.get('return_reason') === 'wrong_item').flush(envelope([], 0));
     fixture.componentInstance.open(makeCustomerReturn({ id: 4 }));
     expect(TestBed.inject(Router).navigate).toHaveBeenCalledWith(['/returns/customer', 4]);

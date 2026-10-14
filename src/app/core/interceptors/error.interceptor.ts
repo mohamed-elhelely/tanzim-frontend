@@ -18,7 +18,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
 
       if (appError.status === NETWORK_ERROR_STATUS || appError.status >= SERVER_ERROR_MIN_STATUS) {
         const messageKey = appError.status === NETWORK_ERROR_STATUS ? 'errors.network' : 'errors.server';
-        injector.get(NotificationService).error(injector.get(TranslateService).instant(messageKey));
+        injector.get(NotificationService).failure(appError, injector.get(TranslateService).instant(messageKey));
       }
 
       return throwError(() => appError);

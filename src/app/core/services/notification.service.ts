@@ -1,6 +1,7 @@
 import { Injectable, Injector, inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { MessageService } from 'primeng/api';
+import { AppError } from '../errors/app-error';
 
 type NotificationSeverity = 'success' | 'info' | 'warn' | 'error';
 
@@ -26,14 +27,28 @@ export class NotificationService {
     this.show('error', detail);
   }
 
-  private show(severity: NotificationSeverity, detail: string): void {
+  /**
+   * An error toast for a failed request: `detail` (or the backend's message) plus the response's support code
+   * (`X-Request-ID`), which stays longer so it can be copied and sent to support.
+   */
+  failure(error: AppError, detail = error.message): void {
+    if (!error.requestId) {
+      this.show('error', detail);
+      return;
+    }
+    const code = this.injector.get(TranslateService).instant('errors.supportCode', { code: error.requestId });
+    this.show('error', `${detail}
+${code}`, 10000);
+  }
+
+  private show(severity: NotificationSeverity, detail: string, life = 4000): void {
     const summaryKey = severity === 'warn' ? 'common.warning' : `common.${severity}`;
     const translate = this.injector.get(TranslateService);
     this.messages.add({
       severity,
       summary: translate.instant(summaryKey),
       detail,
-      life: 4000,
+      life,
     });
   }
 }

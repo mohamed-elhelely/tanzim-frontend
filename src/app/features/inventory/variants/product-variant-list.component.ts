@@ -19,10 +19,12 @@ import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { ProductVariant } from '../inventory.models';
 import { ProductService } from '../products/product.service';
 import { ProductVariantService } from './product-variant.service';
+import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 @Component({
   selector: 'app-product-variant-list',
   imports: [
+    SavedViewsComponent,
     TranslatePipe,
     RouterLink,
     TableModule,
@@ -89,5 +91,20 @@ export class ProductVariantListComponent {
 
   confirmDelete(row: ProductVariant): void {
     this.confirm.confirmDelete(row.sku, () => this.api.remove(row.id), () => this.table.afterDelete());
+  }
+
+  /** Barcode labels for the ticked variants, in a new tab. */
+  printLabels(): void {
+    const ids = this.table.selection().map((variant) => variant.id).join(',');
+    const url = this.router.serializeUrl(this.router.createUrlTree(['/print/variant-labels'], { queryParams: { ids } }));
+    window.open(url, '_blank', 'noopener');
+  }
+
+  confirmBulkDelete(): void {
+    this.confirm.confirmBulkDelete(
+      this.table.selection(),
+      (row: ProductVariant) => this.api.remove(row.id),
+      (deleted) => this.table.afterBulkDelete(deleted),
+    );
   }
 }

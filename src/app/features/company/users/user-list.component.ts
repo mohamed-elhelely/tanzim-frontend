@@ -50,6 +50,9 @@ export class UserListComponent implements OnInit {
   readonly error = signal<AppError | null>(null);
   readonly errorTitleKey = errorTitleKey;
   readonly searchFields = ['user.first_name', 'user.last_name', 'user.email'];
+  /** What the search box shows, and the term the table is currently filtered by. */
+  readonly searchDraft = signal('');
+  readonly appliedSearch = signal('');
 
   /** Buttons follow the user's permissions; the backend refuses the rest with 403. */
   readonly canAdd = computed(() => this.access.can('add_companyuser'));

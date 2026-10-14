@@ -35,8 +35,7 @@ describe('StockLedgerListComponent', () => {
     const fixture = TestBed.createComponent(StockLedgerListComponent);
     fixture.detectChanges();
     httpMock.expectOne((r) => r.url === URL).flush(envelope([], 0));
-    fixture.componentInstance.table.onSearch('DeliveryNote');
-    tick(300);
+    fixture.componentInstance.table.apply('DeliveryNote');
     httpMock.expectOne((r) => r.url === URL && r.params.get('search') === 'DeliveryNote').flush(envelope([], 0));
   }));
 });

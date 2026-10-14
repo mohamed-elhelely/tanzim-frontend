@@ -1,4 +1,5 @@
 import { signal } from '@angular/core';
+import { Subject, of, throwError } from 'rxjs';
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController } from '@angular/common/http/testing';
 import { envelope, provideApiTesting } from '../../testing/api-testing';
@@ -34,17 +35,26 @@ describe('NotificationCenterService', () => {
   let httpMock: HttpTestingController;
   let original: typeof WebSocket;
   const user = signal<{ id: string } | null>({ id: '7' });
+  let token = 'tok en';
+  const auth = {
+    user,
+    refreshAccessToken: jasmine.createSpy('refreshAccessToken'),
+    endSession: jasmine.createSpy('endSession'),
+  };
 
   beforeEach(() => {
     original = window.WebSocket;
     (window as unknown as { WebSocket: unknown }).WebSocket = FakeSocket;
     FakeSocket.last = null;
     user.set({ id: '7' });
+    token = 'tok en';
+    auth.refreshAccessToken.calls.reset();
+    auth.endSession.calls.reset();
     TestBed.configureTestingModule({
       providers: [
         ...provideApiTesting(),
-        { provide: AuthService, useValue: { user } },
-        { provide: TokenStorageService, useValue: { accessToken: () => 'tok en' } },
+        { provide: AuthService, useValue: auth },
+        { provide: TokenStorageService, useValue: { accessToken: () => token } },
       ],
     });
     httpMock = TestBed.inject(HttpTestingController);
@@ -109,14 +119,41 @@ describe('NotificationCenterService', () => {
     expect(center.unread()).toBe(0);
   });
 
-  it('does not reconnect after a final close (bad token)', () => {
+  it('refreshes the token once and reconnects when the socket refuses it (4001)', () => {
+    const refreshed = new Subject<string>();
+    auth.refreshAccessToken.and.returnValue(refreshed);
+    start();
+    const socket = FakeSocket.last!;
+    socket.onclose?.({ code: 4001 });
+    expect(auth.refreshAccessToken).toHaveBeenCalledTimes(1);
+
+    token = 'new';
+    refreshed.next('new');
+    expect(FakeSocket.last).not.toBe(socket);
+    expect(FakeSocket.last!.url).toContain('token=new');
+
+    // Refused again before ever opening: don't loop.
+    FakeSocket.last!.onclose?.({ code: 4001 });
+    expect(auth.refreshAccessToken).toHaveBeenCalledTimes(1);
+  });
+
+  it('ends the session when the socket refuses the token and the refresh fails', () => {
+    auth.refreshAccessToken.and.returnValue(throwError(() => ({ status: 401 })));
+    start();
+    FakeSocket.last!.onclose?.({ code: 4001 });
+    expect(auth.endSession).toHaveBeenCalled();
+  });
+
+  it('does not reconnect after a final close (wrong user, 4003)', () => {
+    auth.refreshAccessToken.and.returnValue(of('x'));
     jasmine.clock().install();
     try {
       start();
       const socket = FakeSocket.last!;
-      socket.onclose?.({ code: 4001 });
+      socket.onclose?.({ code: 4003 });
       jasmine.clock().tick(70_000);
       expect(FakeSocket.last).toBe(socket);
+      expect(auth.refreshAccessToken).not.toHaveBeenCalled();
     } finally {
       jasmine.clock().uninstall();
     }

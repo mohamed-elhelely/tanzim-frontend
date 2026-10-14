@@ -40,6 +40,7 @@ export const NAV_ITEMS: NavItem[] = [
       { labelKey: 'nav.billingReports', icon: 'pi pi-chart-bar', routerLink: '/admin/billing/reports' },
     ],
   },
+  { labelKey: 'nav.systemLogs', icon: 'pi pi-history', routerLink: '/admin/system-logs', staffOnly: true },
   {
     labelKey: 'nav.company',
     icon: 'pi pi-building',
@@ -54,6 +55,7 @@ export const NAV_ITEMS: NavItem[] = [
       { labelKey: 'nav.permissionGroups', icon: 'pi pi-th-large', routerLink: '/company/permission-groups', permission: 'view_permissiongroup' },
       { labelKey: 'nav.permissions', icon: 'pi pi-key', routerLink: '/company/permissions', permission: 'view_permission' },
       { labelKey: 'nav.companyProfile', icon: 'pi pi-palette', routerLink: '/company/profile', permission: 'view_company' },
+      { labelKey: 'nav.systemLogs', icon: 'pi pi-history', routerLink: '/company/system-logs', permission: 'view_auditlog' },
     ],
   },
   {

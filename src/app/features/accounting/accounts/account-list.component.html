@@ -11,14 +11,13 @@
           pInputText
           type="search"
           [placeholder]="'accounting.hints.searchAccounts' | translate"
-          [ngModel]="search()"
-          (ngModelChange)="search.set($event)"
+          [(ngModel)]="searchDraft"
+          (keydown.enter)="applyFilters()"
           class="w-full"
         />
       </p-iconfield>
       <p-select
-        [ngModel]="type()"
-        (ngModelChange)="type.set($event)"
+        [(ngModel)]="typeDraft"
         [options]="typeOptions"
         optionLabel="label"
         optionValue="value"
@@ -31,6 +30,23 @@
         <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
         <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
       </p-select>
+      <p-button
+        [label]="'common.apply' | translate"
+        icon="pi pi-filter"
+        [disabled]="!filtersChanged()"
+        (onClick)="applyFilters()"
+        styleClass="w-full sm:w-auto"
+      ></p-button>
+      @if (search().trim() || type()) {
+        <p-button
+          [label]="'common.clearFilters' | translate"
+          icon="pi pi-filter-slash"
+          severity="secondary"
+          [text]="true"
+          (onClick)="clearFilters()"
+          styleClass="w-full sm:w-auto"
+        ></p-button>
+      }
     </div>
     <div class="overflow-x-auto">
       <p-table [value]="rows()" [loading]="loading()" dataKey="id" size="small" [paginator]="rows().length > 50" [rows]="50">

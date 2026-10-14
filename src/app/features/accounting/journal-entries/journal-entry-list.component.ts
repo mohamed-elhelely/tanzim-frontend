@@ -15,6 +15,7 @@ import { ServerTable } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { JournalEntry, JournalStatus } from '../accounting.models';
 import { JournalEntryService } from './journal-entry.service';
+import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 type Origin = 'manual' | 'automatic';
 
@@ -22,6 +23,7 @@ type Origin = 'manual' | 'automatic';
 @Component({
   selector: 'app-journal-entry-list',
   imports: [
+    SavedViewsComponent,
     DecimalPipe,
     FormsModule,
     TranslatePipe,
@@ -45,23 +47,30 @@ export class JournalEntryListComponent implements OnInit {
   origin: Origin | null = null;
   startDate = '';
   endDate = '';
-  readonly table = new ServerTable<JournalEntry>((query) => {
-    const filters: Record<string, string> = {};
-    if (this.status) {
-      filters['status'] = this.status;
-    }
-    if (this.origin) {
-      filters['automatic'] = String(this.origin === 'automatic');
-    }
-    if (this.startDate) {
-      filters['start_date'] = this.startDate;
-    }
-    if (this.endDate) {
-      filters['end_date'] = this.endDate;
-    }
+  readonly table = new ServerTable<JournalEntry>(
     // The endpoint has no text search or sorting; only filters and paging.
-    return this.api.list({ page: query.page, pageSize: query.pageSize, filters });
-  });
+    (query) => this.api.list({ page: query.page, pageSize: query.pageSize, filters: query.filters }),
+    {
+      filters: () => ({
+        status: this.status,
+        automatic: this.origin ? this.origin === 'automatic' : null,
+        start_date: this.startDate,
+        end_date: this.endDate,
+      }),
+      reset: () => {
+        this.status = null;
+        this.origin = null;
+        this.startDate = '';
+        this.endDate = '';
+      },
+      restore: (filters) => {
+        this.status = (filters['status'] ?? null) as JournalEntryListComponent['status'];
+        this.origin = filters['automatic'] === undefined ? null : filters['automatic'] === 'true' ? 'automatic' : 'manual';
+        this.startDate = String(filters['start_date'] ?? '');
+        this.endDate = String(filters['end_date'] ?? '');
+      },
+    },
+  );
   readonly errorTitleKey = errorTitleKey;
   readonly statusOptions = (['draft', 'posted'] as const).map((status) => ({ value: status, label: `accounting.entryStatuses.${status}` }));
   readonly originOptions = (['manual', 'automatic'] as const).map((origin) => ({ value: origin, label: `accounting.origins.${origin}` }));
@@ -71,11 +80,6 @@ export class JournalEntryListComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-    this.table.load();
-  }
-
-  onFilterChange(): void {
-    this.table.first.set(0);
     this.table.load();
   }
 

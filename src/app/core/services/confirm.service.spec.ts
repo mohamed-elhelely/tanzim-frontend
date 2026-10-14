@@ -11,7 +11,8 @@ describe('ConfirmService', () => {
   let lastConfirmation: Confirmation | undefined;
 
   beforeEach(() => {
-    notifications = jasmine.createSpyObj('NotificationService', ['success', 'error']);
+    lastConfirmation = undefined;
+    notifications = jasmine.createSpyObj('NotificationService', ['success', 'error', 'failure']);
     TestBed.configureTestingModule({
       providers: [...provideApiTesting(), { provide: NotificationService, useValue: notifications }],
     });
@@ -41,12 +42,31 @@ describe('ConfirmService', () => {
   it('shows the backend message for a 4xx, but not for 5xx (the interceptor already did)', () => {
     service.confirmDelete('Sales', () => throwError(() => ({ status: 400, message: 'In use', errors: {} })), () => undefined);
     lastConfirmation?.accept?.();
-    expect(notifications.error).toHaveBeenCalledWith('In use');
+    expect(notifications.failure).toHaveBeenCalledWith(jasmine.objectContaining({ message: 'In use' }));
 
-    notifications.error.calls.reset();
+    notifications.failure.calls.reset();
     service.confirmDelete('Sales', () => throwError(() => ({ status: 500, message: 'Boom', errors: {} })), () => undefined);
     lastConfirmation?.accept?.();
-    expect(notifications.error).not.toHaveBeenCalled();
+    expect(notifications.failure).not.toHaveBeenCalled();
+  });
+
+  it('bulk-deletes one at a time, keeps going after a refusal and reports both counts', () => {
+    const onDone = jasmine.createSpy('onDone');
+    const remove = jasmine.createSpy('remove').and.callFake((id: number) =>
+      id === 2 ? throwError(() => ({ status: 400, message: 'Still used by 3 products', errors: {} })) : of(null),
+    );
+    service.confirmBulkDelete([1, 2, 3], remove, onDone);
+    expect(remove).not.toHaveBeenCalled();
+    lastConfirmation?.accept?.();
+    expect(remove.calls.allArgs()).toEqual([[1], [2], [3]]);
+    expect(notifications.success).toHaveBeenCalledWith('common.bulkDeleted');
+    expect(notifications.error).toHaveBeenCalledWith('common.bulkFailed');
+    expect(onDone).toHaveBeenCalledWith(2);
+  });
+
+  it('does not ask when nothing is selected', () => {
+    service.confirmBulkDelete([], () => of(null), () => undefined);
+    expect(lastConfirmation).toBeUndefined();
   });
 
   it('runs a workflow action after accepting, then toasts and hands over the result', () => {
@@ -63,7 +83,7 @@ describe('ConfirmService', () => {
   it('shows the backend message when a workflow action is refused', () => {
     const onDone = jasmine.createSpy('onDone');
     service.runAction(() => throwError(() => ({ status: 400, message: 'Order exceeds customer credit limit', errors: {} })), 'x', onDone);
-    expect(notifications.error).toHaveBeenCalledWith('Order exceeds customer credit limit');
+    expect(notifications.failure).toHaveBeenCalledWith(jasmine.objectContaining({ message: 'Order exceeds customer credit limit' }));
     expect(onDone).not.toHaveBeenCalled();
   });
 });

@@ -18,10 +18,12 @@ import { FormDialogService } from '../../../shared/forms/form-dialog.service';
 import { District } from '../locations.models';
 import { DistrictFormComponent } from './district-form.component';
 import { DistrictService } from './district.service';
+import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 @Component({
   selector: 'app-district-list',
   imports: [
+    SavedViewsComponent,
     TranslatePipe,
     TableModule,
     ButtonModule,
@@ -72,5 +74,13 @@ export class DistrictListComponent implements OnInit {
 
   confirmDelete(row: District): void {
     this.confirm.confirmDelete(row.name_en, () => this.api.remove(row.id), () => this.table.afterDelete());
+  }
+
+  confirmBulkDelete(): void {
+    this.confirm.confirmBulkDelete(
+      this.table.selection(),
+      (row: District) => this.api.remove(row.id),
+      (deleted) => this.table.afterBulkDelete(deleted),
+    );
   }
 }

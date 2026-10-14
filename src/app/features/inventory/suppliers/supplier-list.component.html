@@ -13,10 +13,40 @@
           pInputText
           type="search"
           [placeholder]="'common.search' | translate"
-          (input)="table.onSearch($any($event.target).value)"
+          [value]="table.searchDraft()"
+          (input)="table.searchDraft.set($any($event.target).value)"
+          (keydown.enter)="table.apply()"
           class="w-full"
         />
       </p-iconfield>
+      <app-saved-views [table]="table" screen="supplier"></app-saved-views>
+      <p-button
+        [label]="'common.search' | translate"
+        icon="pi pi-search"
+        [disabled]="!table.changed()"
+        (onClick)="table.apply()"
+        styleClass="w-full sm:w-auto"
+      ></p-button>
+      @if (table.filtered()) {
+        <p-button
+          [label]="'common.clearFilters' | translate"
+          icon="pi pi-filter-slash"
+          severity="secondary"
+          [text]="true"
+          (onClick)="table.clear()"
+          styleClass="w-full sm:w-auto"
+        ></p-button>
+      }
+      @if (table.selection().length) {
+        <p-button
+          [label]="'common.deleteSelected' | translate: { count: table.selection().length }"
+          icon="pi pi-trash"
+          severity="danger"
+          [outlined]="true"
+          (onClick)="confirmBulkDelete()"
+          styleClass="w-full sm:ms-auto sm:w-auto"
+        ></p-button>
+      }
     </div>
     <div class="overflow-x-auto">
       <p-table
@@ -31,10 +61,13 @@
         [rowsPerPageOptions]="[10, 25, 50]"
         [loading]="table.loading()"
         dataKey="id"
+        [selection]="table.selection()"
+        (selectionChange)="table.selection.set($event)"
         size="small"
       >
         <ng-template pTemplate="header">
           <tr>
+            <th class="w-12"><p-tableHeaderCheckbox></p-tableHeaderCheckbox></th>
             <th pSortableColumn="name">
               {{ 'inventory.fields.name' | translate }} <p-sortIcon field="name"></p-sortIcon>
             </th>
@@ -48,6 +81,7 @@
         </ng-template>
         <ng-template pTemplate="body" let-row>
           <tr>
+            <td (click)="$event.stopPropagation()"><p-tableCheckbox [value]="row"></p-tableCheckbox></td>
             <td class="font-medium">{{ row.name }}</td>
             <td>{{ 'inventory.supplierTypes.' + row.supplier_type | translate }}</td>
             <td>{{ row.lead_time_days }}</td>
@@ -67,6 +101,16 @@
               }
             </td>
             <td class="whitespace-nowrap text-end">
+              @if (canStatement()) {
+                <p-button
+                  icon="pi pi-book"
+                  [text]="true"
+                  [rounded]="true"
+                  severity="secondary"
+                  [ariaLabel]="'accounting.reports.supplier_statement' | translate"
+                  (onClick)="statement(row)"
+                ></p-button>
+              }
               <p-button
                 icon="pi pi-pencil"
                 [text]="true"
@@ -87,7 +131,7 @@
         </ng-template>
         <ng-template pTemplate="emptymessage">
           <tr>
-            <td colspan="7"><app-empty-state icon="pi-truck"></app-empty-state></td>
+            <td colspan="8"><app-empty-state icon="pi-truck"></app-empty-state></td>
           </tr>
         </ng-template>
       </p-table>

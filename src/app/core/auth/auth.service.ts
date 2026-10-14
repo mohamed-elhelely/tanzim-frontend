@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, computed, inject, signal } from '@angular/core';
+import { Injectable, computed, effect, inject, signal, untracked } from '@angular/core';
 import { Router } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
-import { Observable, finalize, map, shareReplay, throwError } from 'rxjs';
+import { Observable, defer, finalize, firstValueFrom, from, map, shareReplay, throwError } from 'rxjs';
 import { API_BASE_URL } from '../api/api.config';
 import { AppError } from '../errors/app-error';
 import { ApiResponse } from '../models/api-response.model';
@@ -10,6 +10,8 @@ import { AccessTokenPayload, AuthRole, AuthUser, LoginResponse, RefreshResponse 
 import { TokenStorageService } from './token-storage.service';
 
 const USER_STORAGE_KEY = 'tanzim.user';
+/** Web Locks name: one refresh at a time across every tab of this browser. */
+const REFRESH_LOCK = 'tanzim.refresh';
 
 interface StoredUser {
   id: string;
@@ -22,6 +24,10 @@ interface StoredUser {
  * decoded JWT (company_id, company_role, is_company_admin). `role` drives the menu and the route guards:
  * ADMIN = no company (platform staff when `isStaff`), COMPANY = company admin, EMPLOYEE = everyone else.
  * What a user may open or change comes from AccessService (GET /me).
+ *
+ * Tokens: the access token lives 30 minutes, the refresh token 7 days and rotates on every refresh (sending a spent
+ * one again ends the session). So only one refresh may run at a time, in this tab (a shared observable) and across
+ * tabs (a Web Lock; inside it, a token another tab already rotated is used instead of refreshing again).
  */
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -36,6 +42,15 @@ export class AuthService {
   readonly user = this.userState.asReadonly();
   readonly isAuthenticated = computed(() => this.userState() !== null);
   readonly role = computed<AuthRole | null>(() => this.userState()?.role ?? null);
+
+  constructor() {
+    // Another tab logged out (or its session ended): its storage event emptied the tokens, so leave here too.
+    effect(() => {
+      if (!this.tokens.refreshToken() && untracked(() => this.userState())) {
+        untracked(() => this.endSession());
+      }
+    });
+  }
 
   login(email: string, password: string): Observable<AuthUser> {
     return this.http
@@ -63,42 +78,75 @@ export class AuthService {
       );
   }
 
+  /** A fresh access token; every caller during a refresh shares the same one (see the class comment). */
   refreshAccessToken(): Observable<string> {
     if (this.refreshRequest$) {
       return this.refreshRequest$;
     }
 
-    const refreshToken = this.tokens.refreshToken();
-    if (!refreshToken) {
+    const staleRefresh = this.tokens.refreshToken();
+    if (!staleRefresh) {
       return throwError(() => this.unauthorized('Missing refresh token'));
     }
 
-    this.refreshRequest$ = this.http
-      .post<ApiResponse<RefreshResponse>>(`${this.baseUrl}refresh/`, { refresh: refreshToken })
-      .pipe(
-        map((response) => {
-          const access = response.data?.access;
-          if (!access) {
-            throw this.invalidResponse('refresh');
-          }
-          this.tokens.setTokens(access);
-          return access;
-        }),
-        finalize(() => {
-          this.refreshRequest$ = null;
-        }),
-        shareReplay({ bufferSize: 1, refCount: false }),
-      );
+    this.refreshRequest$ = defer(() => from(this.withRefreshLock(() => this.rotate(staleRefresh)))).pipe(
+      finalize(() => {
+        this.refreshRequest$ = null;
+      }),
+      shareReplay({ bufferSize: 1, refCount: false }),
+    );
 
     return this.refreshRequest$;
   }
 
+  /** Signing out on purpose: ends the session on the server (best effort), then locally. */
   logout(): void {
+    const refresh = this.tokens.refreshToken();
+    if (refresh) {
+      // With the refresh token in the body no Authorization header is needed, and it works after the access token expired.
+      this.http.post(`${this.baseUrl}logout/`, { refresh }).subscribe({ error: () => undefined });
+    }
+    this.endSession();
+  }
+
+  /** The session is over (refused, expired or ended elsewhere): forget it here without calling the server. */
+  endSession(): void {
     this.tokens.clear();
     this.userState.set(null);
     localStorage.removeItem(USER_STORAGE_KEY);
     this.refreshRequest$ = null;
     void this.router.navigate(['/auth/login']);
+  }
+
+  /**
+   * Inside the lock: if another tab already rotated the refresh token we started from, use the tokens it stored
+   * (sending ours again would count as reuse and end the session); otherwise refresh.
+   */
+  private async rotate(staleRefresh: string): Promise<string> {
+    this.tokens.reload();
+    const current = this.tokens.refreshToken();
+    const access = this.tokens.accessToken();
+    if (!current) {
+      throw this.unauthorized('Signed out');
+    }
+    if (current !== staleRefresh && access) {
+      return access;
+    }
+    const response = await firstValueFrom(
+      this.http.post<ApiResponse<RefreshResponse>>(`${this.baseUrl}refresh/`, { refresh: current }),
+    );
+    const data = response.data;
+    if (!data?.access || !data.refresh) {
+      throw this.invalidResponse('refresh');
+    }
+    this.tokens.setTokens(data.access, data.refresh);
+    return data.access;
+  }
+
+  /** Runs `task` under a browser-wide lock where Web Locks exist (all current browsers); otherwise just runs it. */
+  private withRefreshLock<T>(task: () => Promise<T>): Promise<T> {
+    const locks = typeof navigator !== 'undefined' ? navigator.locks : undefined;
+    return locks ? (locks.request(REFRESH_LOCK, task) as Promise<T>) : task();
   }
 
   private setUser(user: AuthUser): void {
@@ -113,8 +161,12 @@ export class AuthService {
       return null;
     }
 
+    // An expired access token is normal after 30 minutes: the first call refreshes it. Only a missing or expired
+    // refresh token means the session is over.
     const payload = this.decode(accessToken);
-    if (!payload || this.isExpired(payload)) {
+    const refreshToken = this.tokens.refreshToken();
+    const refreshPayload = refreshToken ? this.decode(refreshToken) : null;
+    if (!payload || !refreshPayload || this.isExpired(refreshPayload)) {
       this.tokens.clear();
       localStorage.removeItem(USER_STORAGE_KEY);
       return null;

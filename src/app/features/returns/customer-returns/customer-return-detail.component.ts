@@ -27,6 +27,7 @@ import {
   RESTOCKING_FOR,
 } from '../returns.models';
 import { CustomerReturnService } from './customer-return.service';
+import { RecordHistoryComponent } from '../../company/system-logs/record-history.component';
 
 const QUANTITY = /^\d+(\.\d{1,3})?$/;
 const MONEY = /^\d+(\.\d{1,4})?$/;
@@ -56,6 +57,7 @@ interface InspectRow {
 @Component({
   selector: 'app-customer-return-detail',
   imports: [
+    RecordHistoryComponent,
     DatePipe,
     DecimalPipe,
     FormsModule,

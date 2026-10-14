@@ -16,7 +16,7 @@ import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { CodedRef } from '../../inventory/inventory.models';
 import { WarehouseService } from '../../inventory/warehouses/warehouse.service';
 import { AnalyticsChartComponent } from '../analytics-chart.component';
-import { AnalyticsLabelPipe } from '../analytics-format';
+import { AnalyticsLabelPipe, formatKpi } from '../analytics-format';
 import { AnalyticsTableComponent } from '../analytics-table.component';
 import { AnalyticsService } from '../analytics.service';
 import { CHART_SPECS, ChartSpec, DASHBOARD_NAMES, Dashboard, DashboardName, DashboardRef, Kpi, fitsSpec } from '../analytics.models';
@@ -134,14 +134,7 @@ export class DashboardPageComponent implements OnInit {
   }
 
   /** The KPI value as text for its unit; days and ratios get their suffix in the template. */
-  kpiValue(kpi: Kpi): string {
-    if (kpi.value === null || kpi.value === undefined) {
-      return '—';
-    }
-    const digits = kpi.unit === 'currency' || kpi.unit === 'percent' || kpi.unit === 'ratio' ? 2 : 0;
-    const text = kpi.value.toLocaleString('en', { minimumFractionDigits: digits, maximumFractionDigits: kpi.unit === 'number' ? 2 : digits });
-    return kpi.unit === 'percent' ? `${text}%` : kpi.unit === 'ratio' ? `${text}×` : text;
-  }
+  readonly kpiValue = formatKpi;
 
   hasChange(kpi: Kpi): boolean {
     return kpi.change_percent !== undefined && kpi.change_percent !== null;

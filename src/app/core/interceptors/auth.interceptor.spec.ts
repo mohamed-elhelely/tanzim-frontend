@@ -13,14 +13,14 @@ describe('authInterceptor', () => {
   let httpMock: HttpTestingController;
   let tokens: TokenStorageService;
   let refresh$: Subject<string>;
-  let auth: { refreshAccessToken: jasmine.Spy; logout: jasmine.Spy };
+  let auth: { refreshAccessToken: jasmine.Spy; endSession: jasmine.Spy };
 
   beforeEach(() => {
     localStorage.clear();
     refresh$ = new Subject<string>();
     auth = {
       refreshAccessToken: jasmine.createSpy('refreshAccessToken').and.callFake(() => refresh$),
-      logout: jasmine.createSpy('logout'),
+      endSession: jasmine.createSpy('endSession'),
     };
 
     TestBed.configureTestingModule({
@@ -49,13 +49,18 @@ describe('authInterceptor', () => {
     req.flush({});
   });
 
-  it('does not add a token to the login and refresh endpoints', () => {
+  it('does not add a token to the login, refresh and logout endpoints, nor refresh when they fail', () => {
     http.post('/api/login/', {}).subscribe();
-    http.post('/api/refresh/', {}).subscribe();
+    http.post('/api/refresh/', {}).subscribe({ error: () => undefined });
+    http.post('/api/logout/', {}).subscribe({ error: () => undefined });
     httpMock.expectOne('/api/login/').flush({});
-    const refreshReq = httpMock.match('/api/refresh/')[0];
+    const refreshReq = httpMock.expectOne('/api/refresh/');
     expect(refreshReq.request.headers.has('Authorization')).toBeFalse();
-    refreshReq.flush({});
+    refreshReq.flush(null, UNAUTHORIZED);
+    const logoutReq = httpMock.expectOne('/api/logout/');
+    expect(logoutReq.request.headers.has('Authorization')).toBeFalse();
+    logoutReq.flush(null, UNAUTHORIZED);
+    expect(auth.refreshAccessToken).not.toHaveBeenCalled();
   });
 
   it('refreshes once and retries the original request after a 401', () => {
@@ -73,7 +78,7 @@ describe('authInterceptor', () => {
     retry.flush({ ok: true });
 
     expect(result).toEqual({ ok: true });
-    expect(auth.logout).not.toHaveBeenCalled();
+    expect(auth.endSession).not.toHaveBeenCalled();
   });
 
   it('retries every request that failed with 401 using the refreshed token', () => {
@@ -91,10 +96,10 @@ describe('authInterceptor', () => {
       expect(retry.request.headers.get('Authorization')).toBe('Bearer new-access');
       retry.flush({});
     }
-    expect(auth.logout).not.toHaveBeenCalled();
+    expect(auth.endSession).not.toHaveBeenCalled();
   });
 
-  it('logs out when the refresh request fails', () => {
+  it('ends the session when the refresh request fails', () => {
     let failed = false;
     http.get('/api/a/').subscribe({ error: () => (failed = true) });
 
@@ -102,12 +107,13 @@ describe('authInterceptor', () => {
     refresh$.error({ status: 401, message: 'expired', errors: {} });
 
     expect(failed).toBeTrue();
-    expect(auth.logout).toHaveBeenCalledTimes(1);
+    expect(auth.endSession).toHaveBeenCalledTimes(1);
   });
 
-  it('logs out without refreshing when there is no refresh token', () => {
+  it('ends the session without refreshing when there is no refresh token', () => {
     tokens.clear();
-    tokens.setTokens('old-access');
+    localStorage.setItem('tanzim.accessToken', 'old-access');
+    tokens.reload();
 
     let failed = false;
     http.get('/api/a/').subscribe({ error: () => (failed = true) });
@@ -115,10 +121,10 @@ describe('authInterceptor', () => {
 
     expect(failed).toBeTrue();
     expect(auth.refreshAccessToken).not.toHaveBeenCalled();
-    expect(auth.logout).toHaveBeenCalledTimes(1);
+    expect(auth.endSession).toHaveBeenCalledTimes(1);
   });
 
-  it('logs out instead of looping when the retried request is still unauthorized', () => {
+  it('ends the session instead of looping when the retried request is still unauthorized', () => {
     let failed = false;
     http.get('/api/a/').subscribe({ error: () => (failed = true) });
 
@@ -129,6 +135,6 @@ describe('authInterceptor', () => {
 
     expect(failed).toBeTrue();
     expect(auth.refreshAccessToken).toHaveBeenCalledTimes(1);
-    expect(auth.logout).toHaveBeenCalledTimes(1);
+    expect(auth.endSession).toHaveBeenCalledTimes(1);
   });
 });

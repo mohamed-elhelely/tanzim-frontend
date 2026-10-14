@@ -24,10 +24,12 @@ import {
   ReturnReason,
 } from '../returns.models';
 import { CustomerReturnService } from './customer-return.service';
+import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 @Component({
   selector: 'app-customer-return-list',
   imports: [
+    SavedViewsComponent,
     DatePipe,
     DecimalPipe,
     FormsModule,
@@ -52,16 +54,20 @@ export class CustomerReturnListComponent implements OnInit {
 
   status: CustomerReturnStatus | null = null;
   reason: ReturnReason | null = null;
-  readonly table = new ServerTable<CustomerReturnListItem>((query) => {
-    const filters: Record<string, string> = {};
-    if (this.status) {
-      filters['status'] = this.status;
-    }
-    if (this.reason) {
-      filters['return_reason'] = this.reason;
-    }
-    return this.api.list({ ...query, filters });
-  });
+  readonly table = new ServerTable<CustomerReturnListItem>(
+    (query) => this.api.list(query),
+    {
+      filters: () => ({ status: this.status, return_reason: this.reason }),
+      reset: () => {
+        this.status = null;
+        this.reason = null;
+      },
+      restore: (filters) => {
+        this.status = (filters['status'] ?? null) as CustomerReturnListComponent['status'];
+        this.reason = (filters['return_reason'] ?? null) as CustomerReturnListComponent['reason'];
+      },
+    },
+  );
   readonly errorTitleKey = errorTitleKey;
   readonly statusOptions = CUSTOMER_RETURN_STATUSES.map((status) => ({ value: status, label: `returns.customerStatuses.${status}` }));
   readonly reasonOptions = RETURN_REASONS.map((reason) => ({ value: reason, label: `returns.reasons.${reason}` }));
@@ -71,11 +77,6 @@ export class CustomerReturnListComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-    this.table.load();
-  }
-
-  onFilterChange(): void {
-    this.table.first.set(0);
     this.table.load();
   }
 

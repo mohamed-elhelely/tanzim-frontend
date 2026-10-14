@@ -1,0 +1,71 @@
+<app-print-layout
+  titleKey="print.deliveryNote"
+  [number]="note()?.delivery_number"
+  [warningKey]="warningKey()"
+  [ready]="!!note()"
+  [error]="error()"
+>
+  @if (note(); as note) {
+    <section class="mt-6 grid grid-cols-2 gap-6">
+      <div>
+        <p class="text-xs uppercase text-gray-500">{{ 'print.deliverTo' | translate }}</p>
+        <p class="mt-1 text-base font-semibold">{{ note.customer_name }}</p>
+      </div>
+      <dl class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-end">
+        <dt class="text-gray-500">{{ 'sales.fields.orderNumber' | translate }}</dt>
+        <dd dir="ltr" class="text-end">{{ note.sales_order_number }}</dd>
+        <dt class="text-gray-500">{{ 'sales.fields.warehouse' | translate }}</dt>
+        <dd class="text-end">{{ note.warehouse_name }}</dd>
+        @if (note.shipped_date) {
+          <dt class="text-gray-500">{{ 'sales.fields.shippedDate' | translate }}</dt>
+          <dd dir="ltr" class="text-end">{{ note.shipped_date }}</dd>
+        }
+        <dt class="text-gray-500">{{ 'sales.fields.shippingMethod' | translate }}</dt>
+        <dd class="text-end">{{ 'sales.shippingMethods.' + note.shipping_method | translate }}</dd>
+        @if (note.carrier) {
+          <dt class="text-gray-500">{{ 'sales.fields.carrier' | translate }}</dt>
+          <dd class="text-end">{{ note.carrier }}</dd>
+        }
+        @if (note.tracking_number) {
+          <dt class="text-gray-500">{{ 'sales.fields.trackingNumber' | translate }}</dt>
+          <dd dir="ltr" class="text-end">{{ note.tracking_number }}</dd>
+        }
+      </dl>
+    </section>
+
+    <table class="mt-8 w-full border-collapse">
+      <thead>
+        <tr class="border-b border-gray-300 text-xs uppercase text-gray-500">
+          <th class="py-2 text-start">#</th>
+          <th class="py-2 text-start">{{ 'sales.fields.item' | translate }}</th>
+          <th class="py-2 text-start">{{ 'sales.fields.sku' | translate }}</th>
+          <th class="py-2 text-end">{{ 'sales.fields.quantityDelivered' | translate }}</th>
+          <th class="w-24 py-2 text-end">{{ 'print.received' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (line of note.lines; track line.id; let i = $index) {
+          <tr class="border-b border-gray-100 align-top">
+            <td class="py-2">{{ i + 1 }}</td>
+            <td class="py-2 font-medium">{{ line.product_name }}</td>
+            <td class="py-2 font-mono text-xs" dir="ltr">{{ line.sku || '—' }}</td>
+            <td class="py-2 text-end font-semibold">{{ line.quantity_delivered | number: '1.0-3' }}</td>
+            <td class="py-2"><span class="ms-auto block h-5 w-16 border-b border-gray-400"></span></td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    @if (note.notes) {
+      <section class="mt-6">
+        <p class="text-xs uppercase text-gray-500">{{ 'sales.fields.notes' | translate }}</p>
+        <p class="mt-1 whitespace-pre-line">{{ note.notes }}</p>
+      </section>
+    }
+
+    <section class="mt-16 grid grid-cols-2 gap-12 text-xs text-gray-500">
+      <div class="border-t border-gray-400 pt-2">{{ 'print.deliveredBy' | translate }}</div>
+      <div class="border-t border-gray-400 pt-2">{{ 'print.receivedBy' | translate }}</div>
+    </section>
+  }
+</app-print-layout>

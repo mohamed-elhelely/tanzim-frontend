@@ -17,11 +17,13 @@ import { TenantCompanyService } from '../../companies/tenant-company.service';
 import { AdminInvoice, INVOICE_SEVERITY, INVOICE_STATUSES, Severity } from '../platform-billing.models';
 import { AdminInvoiceService } from '../platform-billing.service';
 import { InvoiceDraftFormComponent } from './invoice-draft-form.component';
+import { SavedViewsComponent } from '../../../../shared/table/saved-views.component';
 
 /** /admin/invoices: platform invoices of every company, filtered by company and status. */
 @Component({
   selector: 'app-invoice-list',
   imports: [
+    SavedViewsComponent,
     DecimalPipe,
     FormsModule,
     RouterLink,
@@ -46,16 +48,20 @@ export class InvoiceListComponent implements OnInit {
   company: number | null = null;
   status: string | null = null;
 
-  readonly table = new ServerTable<AdminInvoice>((query) => {
-    const filters: Record<string, string | number> = {};
-    if (this.company !== null) {
-      filters['company'] = this.company;
-    }
-    if (this.status) {
-      filters['status'] = this.status;
-    }
-    return this.api.list({ ...query, filters });
-  });
+  readonly table = new ServerTable<AdminInvoice>(
+    (query) => this.api.list(query),
+    {
+      filters: () => ({ company: this.company, status: this.status }),
+      reset: () => {
+        this.company = null;
+        this.status = null;
+      },
+      restore: (filters) => {
+        this.company = filters['company'] === undefined ? null : Number(filters['company']);
+        this.status = (filters['status'] ?? null) as InvoiceListComponent['status'];
+      },
+    },
+  );
   readonly errorTitleKey = errorTitleKey;
   /** Keyed by string: table rows are untyped in the template. */
   readonly severity: Record<string, Severity> = INVOICE_SEVERITY;
@@ -70,11 +76,6 @@ export class InvoiceListComponent implements OnInit {
       next: (companies) => this.companyOptions.set(companies.map((company) => ({ value: company.id, label: company.name }))),
       error: () => this.companyOptions.set([]),
     });
-    this.table.load();
-  }
-
-  onFilterChange(): void {
-    this.table.first.set(0);
     this.table.load();
   }
 

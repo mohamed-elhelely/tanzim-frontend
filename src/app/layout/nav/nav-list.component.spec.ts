@@ -75,9 +75,9 @@ describe('NavListComponent', () => {
     expect(links(await render('/dashboard', 'ADMIN'))).toContain('/admin/companies');
   });
 
-  it('shows platform admins the dashboard, Companies, the Subscriptions group and their notifications', async () => {
+  it('shows platform admins the dashboard, Companies, the Subscriptions group, the system log and their notifications', async () => {
     const fixture = await render('/dashboard', 'ADMIN');
-    expect(links(fixture)).toEqual(['/dashboard', '/admin/companies', '/notifications']);
+    expect(links(fixture)).toEqual(['/dashboard', '/admin/companies', '/admin/system-logs', '/notifications']);
     const groups = Array.from(fixture.nativeElement.querySelectorAll('button[aria-expanded]')) as HTMLButtonElement[];
     expect(groups.map((button) => button.textContent?.trim())).toEqual(['nav.platformBilling']);
   });

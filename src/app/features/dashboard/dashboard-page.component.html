@@ -15,6 +15,38 @@
   </div>
 </section>
 
+@if (kpis(); as kpis) {
+  @if (kpis.length) {
+    <section class="mb-6">
+      <div class="mb-3 flex items-center justify-between">
+        <h2 class="text-base font-semibold text-gray-900 dark:text-white">{{ 'dashboard.keyNumbers' | translate }}</h2>
+        <a routerLink="/analytics/dashboards/overview" class="text-sm font-medium text-primary-600 hover:underline dark:text-primary-300">
+          {{ 'dashboard.openAnalytics' | translate }}
+        </a>
+      </div>
+      <dl class="grid grid-cols-2 gap-4 xl:grid-cols-4">
+        @for (kpi of kpis; track kpi.key) {
+          <div class="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+            <dt class="truncate text-xs text-gray-500 dark:text-gray-400">{{ kpi.key | analyticsLabel: 'analytics.labels' : kpi.label }}</dt>
+            <dd class="mt-1 text-xl font-bold text-gray-900 dark:text-white" dir="ltr">{{ formatKpi(kpi) }}</dd>
+            @if (kpi.change_percent !== undefined && kpi.change_percent !== null) {
+              <dd
+                class="mt-1 text-xs font-medium"
+                [class.text-emerald-600]="kpi.change_percent > 0"
+                [class.text-rose-600]="kpi.change_percent < 0"
+                [class.text-gray-500]="kpi.change_percent === 0"
+                dir="ltr"
+              >
+                {{ kpi.change_percent > 0 ? '▲' : kpi.change_percent < 0 ? '▼' : '' }} {{ kpi.change_percent.toFixed(1) }}%
+              </dd>
+            }
+          </div>
+        }
+      </dl>
+    </section>
+  }
+}
+
 <section class="grid grid-cols-1 gap-4 sm:grid-cols-2" [class.xl:grid-cols-4]="stats().length > 3" [class.xl:grid-cols-3]="stats().length === 3">
   @for (stat of stats(); track stat.key) {
     <a

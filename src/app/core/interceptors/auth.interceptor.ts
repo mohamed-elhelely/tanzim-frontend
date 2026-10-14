@@ -8,8 +8,9 @@ import { AppError } from '../errors/app-error';
 const UNAUTHORIZED = 401;
 const RETRIED = new HttpContextToken<boolean>(() => false);
 
+/** Login, refresh and logout carry their own credentials in the body: no Bearer header, no refresh on 401. */
 function isAuthEndpoint(url: string): boolean {
-  return url.includes('/api/login/') || url.includes('/api/refresh/');
+  return url.includes('/api/login/') || url.includes('/api/refresh/') || url.includes('/api/logout/');
 }
 
 function statusOf(error: unknown): number | null {
@@ -26,7 +27,8 @@ function statusOf(error: unknown): number | null {
 /**
  * Adds the Bearer token. On a 401 it refreshes the access token once (shared between parallel requests,
  * see AuthService.refreshAccessToken) and retries; if there is no refresh token, the refresh fails, or the
- * retry is still 401, it logs out. Login and refresh calls pass through untouched.
+ * retry is still 401, the session is over and the user goes to the login page. Login, refresh and logout calls pass
+ * through untouched.
  */
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const injector = inject(Injector);
@@ -47,13 +49,13 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
       const auth = injector.get(AuthService);
       if (!tokens.refreshToken()) {
-        auth.logout();
+        auth.endSession();
         return throwError(() => error);
       }
 
       return auth.refreshAccessToken().pipe(
         catchError((refreshError: unknown) => {
-          auth.logout();
+          auth.endSession();
           return throwError(() => refreshError);
         }),
         switchMap((accessToken) =>
@@ -66,7 +68,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
             catchError((retryError: unknown) => {
               // A fresh token was still rejected: the session is no longer valid.
               if (statusOf(retryError) === UNAUTHORIZED) {
-                auth.logout();
+                auth.endSession();
               }
               return throwError(() => retryError);
             }),

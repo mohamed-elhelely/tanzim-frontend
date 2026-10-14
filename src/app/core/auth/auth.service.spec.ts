@@ -1,6 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { firstValueFrom } from 'rxjs';
 import { Router, provideRouter } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import { AuthService } from './auth.service';
@@ -17,6 +18,10 @@ function makeJwt(payload: Record<string, unknown>): string {
 }
 
 const future = (): number => Math.floor(Date.now() / 1000) + 3600;
+const past = (): number => Math.floor(Date.now() / 1000) - 60;
+/** Lets the Web Lock (granted asynchronously) start the refresh request. */
+const settle = () => new Promise((resolve) => setTimeout(resolve, 20));
+const ok = <T>(data: T) => ({ success: true, data, metadata: { timestamp: '', version: '1.0' } });
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -89,32 +94,92 @@ describe('AuthService', () => {
     expect(tokens.accessToken()).toBeNull();
   });
 
-  it('deduplicates concurrent refresh requests and updates the access token', () => {
+  it('shares one refresh between callers and stores both rotated tokens', async () => {
     tokens.setTokens(accessToken, refreshToken);
 
-    let first = null as string | null;
-    let second = null as string | null;
-    service.refreshAccessToken().subscribe((value) => (first = value));
-    service.refreshAccessToken().subscribe((value) => (second = value));
+    const first = firstValueFrom(service.refreshAccessToken());
+    const second = firstValueFrom(service.refreshAccessToken());
+    await settle();
 
     const requests = httpMock.match(`${BASE_URL}refresh/`);
     expect(requests.length).toBe(1);
+    expect(requests[0].request.body).toEqual({ refresh: refreshToken });
 
     const newAccess = makeJwt({ user_id: '7', exp: future() });
-    requests[0].flush({ success: true, data: { access: newAccess }, metadata: { timestamp: '', version: '1.0' } });
+    const newRefresh = makeJwt({ user_id: '7', exp: future(), jti: 'next' });
+    requests[0].flush(ok({ access: newAccess, refresh: newRefresh, expires_in: 1800, refresh_expires_in: 604800 }));
 
-    expect(first).toBe(newAccess);
-    expect(second).toBe(newAccess);
+    expect(await first).toBe(newAccess);
+    expect(await second).toBe(newAccess);
     expect(tokens.accessToken()).toBe(newAccess);
-    expect(tokens.refreshToken()).toBe(refreshToken);
+    expect(tokens.refreshToken()).toBe(newRefresh);
   });
 
-  it('clears tokens and state on logout', () => {
+  it("uses the tokens another tab already rotated instead of sending the spent refresh token", async () => {
+    tokens.setTokens(accessToken, refreshToken);
+    const refreshing = firstValueFrom(service.refreshAccessToken());
+    // Another tab refreshed meanwhile and stored its new pair.
+    const otherAccess = makeJwt({ user_id: '7', exp: future(), jti: 'other' });
+    localStorage.setItem('tanzim.accessToken', otherAccess);
+    localStorage.setItem('tanzim.refreshToken', makeJwt({ user_id: '7', exp: future(), jti: 'other-refresh' }));
+    expect(await refreshing).toBe(otherAccess);
+    httpMock.expectNone(`${BASE_URL}refresh/`);
+  });
+
+  it('ends the server session on logout (refresh token in the body), then clears everything', () => {
     tokens.setTokens(accessToken, refreshToken);
     service.logout();
 
+    const req = httpMock.expectOne(`${BASE_URL}logout/`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({ refresh: refreshToken });
+    req.flush(null, { status: 204, statusText: 'No Content' });
+
     expect(tokens.accessToken()).toBeNull();
     expect(tokens.refreshToken()).toBeNull();
+    expect(service.isAuthenticated()).toBeFalse();
+  });
+
+  it('endSession forgets the session without calling the server', () => {
+    tokens.setTokens(accessToken, refreshToken);
+    service.endSession();
+    httpMock.expectNone(`${BASE_URL}logout/`);
+    expect(tokens.refreshToken()).toBeNull();
+  });
+});
+
+describe('AuthService on reload', () => {
+  const user = { user_id: '7', company_id: 3, is_company_admin: false };
+
+  function boot(access: string, refresh: string) {
+    localStorage.clear();
+    localStorage.setItem('tanzim.accessToken', access);
+    localStorage.setItem('tanzim.refreshToken', refresh);
+    TestBed.configureTestingModule({ providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()] });
+    return TestBed.inject(AuthService);
+  }
+
+  afterEach(() => localStorage.clear());
+
+  it('stays signed in with an expired access token while the refresh token is valid', () => {
+    const service = boot(makeJwt({ ...user, exp: past() }), makeJwt({ user_id: '7', exp: future() }));
+    expect(service.isAuthenticated()).toBeTrue();
+    expect(service.role()).toBe('EMPLOYEE');
+  });
+
+  it('signs out when the refresh token has expired too', () => {
+    const service = boot(makeJwt({ ...user, exp: past() }), makeJwt({ user_id: '7', exp: past() }));
+    expect(service.isAuthenticated()).toBeFalse();
+    expect(localStorage.getItem('tanzim.accessToken')).toBeNull();
+  });
+
+  it('follows a logout in another tab', () => {
+    const service = boot(makeJwt({ ...user, exp: future() }), makeJwt({ user_id: '7', exp: future() }));
+    spyOn(TestBed.inject(Router), 'navigate').and.resolveTo(true);
+    expect(service.isAuthenticated()).toBeTrue();
+    localStorage.clear();
+    TestBed.inject(TokenStorageService).reload();
+    TestBed.tick();
     expect(service.isAuthenticated()).toBeFalse();
   });
 });

@@ -18,6 +18,7 @@ import { SUBSCRIPTION_SEVERITY, SUBSCRIPTION_STATUSES, Severity, Subscription } 
 import { SubscriptionService } from '../platform-billing.service';
 import { SubscriptionFormComponent } from './subscription-form.component';
 import { SubscriptionModulesComponent } from './subscription-modules.component';
+import { SavedViewsComponent } from '../../../../shared/table/saved-views.component';
 
 /**
  * /admin/subscriptions: every company's subscription, filtered by company and status; plan, dates and users are
@@ -26,6 +27,7 @@ import { SubscriptionModulesComponent } from './subscription-modules.component';
 @Component({
   selector: 'app-subscription-list',
   imports: [
+    SavedViewsComponent,
     FormsModule,
     TranslatePipe,
     ButtonModule,
@@ -51,16 +53,20 @@ export class SubscriptionListComponent implements OnInit {
   company: number | null = null;
   status: string | null = null;
 
-  readonly table = new ServerTable<Subscription>((query) => {
-    const filters: Record<string, string | number> = {};
-    if (this.company !== null) {
-      filters['company'] = this.company;
-    }
-    if (this.status) {
-      filters['status'] = this.status;
-    }
-    return this.api.list({ ...query, filters });
-  });
+  readonly table = new ServerTable<Subscription>(
+    (query) => this.api.list(query),
+    {
+      filters: () => ({ company: this.company, status: this.status }),
+      reset: () => {
+        this.company = null;
+        this.status = null;
+      },
+      restore: (filters) => {
+        this.company = filters['company'] === undefined ? null : Number(filters['company']);
+        this.status = (filters['status'] ?? null) as SubscriptionListComponent['status'];
+      },
+    },
+  );
   readonly errorTitleKey = errorTitleKey;
   /** Keyed by string: table rows are untyped in the template. */
   readonly severity: Record<string, Severity> = SUBSCRIPTION_SEVERITY;
@@ -83,11 +89,6 @@ export class SubscriptionListComponent implements OnInit {
 
   companyName(row: Subscription): string {
     return row.company_name || `#${row.company}`;
-  }
-
-  onFilterChange(): void {
-    this.table.first.set(0);
-    this.table.load();
   }
 
   /** Create (no id) or edit in a dialog over the list; the list reloads after a save. */

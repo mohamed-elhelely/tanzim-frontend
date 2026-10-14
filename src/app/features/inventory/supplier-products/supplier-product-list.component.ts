@@ -17,10 +17,12 @@ import { ServerTable } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { SupplierProduct } from '../inventory.models';
 import { SupplierProductService } from './supplier-product.service';
+import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 @Component({
   selector: 'app-supplier-product-list',
   imports: [
+    SavedViewsComponent,
     DecimalPipe,
     TranslatePipe,
     TableModule,
@@ -63,5 +65,13 @@ export class SupplierProductListComponent implements OnInit {
 
   confirmDelete(row: SupplierProduct): void {
     this.confirm.confirmDelete(`${row.supplier?.name ?? ''} · ${row.product_variant?.sku ?? ''}`, () => this.api.remove(row.id), () => this.table.afterDelete());
+  }
+
+  confirmBulkDelete(): void {
+    this.confirm.confirmBulkDelete(
+      this.table.selection(),
+      (row: SupplierProduct) => this.api.remove(row.id),
+      (deleted) => this.table.afterBulkDelete(deleted),
+    );
   }
 }
