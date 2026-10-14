@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { HttpTestingController } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
 import { Confirmation, ConfirmationService } from 'primeng/api';
-import { envelope, provideApiTesting } from '../../../testing/api-testing';
+import { envelope, errorEnvelope, provideApiTesting } from '../../../testing/api-testing';
 import { makeInvoice } from '../../../testing/sales-fixtures';
 import { SalesInvoiceListComponent } from './sales-invoice-list.component';
 
@@ -35,10 +35,37 @@ describe('SalesInvoiceListComponent', () => {
     const fixture = TestBed.createComponent(SalesInvoiceListComponent);
     fixture.detectChanges();
     httpMock.expectOne((r) => r.url === URL).flush(envelope([], 0));
-    fixture.componentInstance.status = 'issued';
-    fixture.componentInstance.paymentStatus = 'partial';
+    fixture.componentInstance.status = ['issued', 'paid'];
+    fixture.componentInstance.paymentStatus = ['partial'];
+    fixture.componentInstance.dateFrom = '2026-10-01';
+    fixture.componentInstance.dateTo = '2026-10-31';
     fixture.componentInstance.table.apply();
-    httpMock.expectOne((r) => r.url === URL && r.params.get('status') === 'issued' && r.params.get('payment_status') === 'partial').flush(envelope([], 0));
+    httpMock
+      .expectOne(
+        (r) =>
+          r.url === URL &&
+          r.params.get('status') === 'issued,paid' &&
+          r.params.get('payment_status') === 'partial' &&
+          r.params.get('date_from') === '2026-10-01' &&
+          r.params.get('date_to') === '2026-10-31',
+      )
+      .flush(envelope([], 0));
+  });
+
+  it('keeps the table and shows the reason when the backend refuses a filter', () => {
+    const fixture = TestBed.createComponent(SalesInvoiceListComponent);
+    fixture.detectChanges();
+    httpMock.expectOne((r) => r.url === URL).flush(envelope([], 0));
+    const component = fixture.componentInstance;
+    component.dateFrom = '2026-13-01';
+    component.table.apply();
+    httpMock
+      .expectOne((r) => r.url === URL && r.params.get('date_from') === '2026-13-01')
+      .flush(errorEnvelope(400, 'Unknown error', { date_from: ['Enter a valid date.'] }), { status: 400, statusText: 'Bad Request' });
+    fixture.detectChanges();
+    expect(component.table.error()).toBeNull();
+    expect(fixture.nativeElement.querySelector('[role="alert"]')?.textContent).toContain('Enter a valid date.');
+    expect(fixture.nativeElement.textContent).toContain('common.dateFrom');
   });
 
   it('restores saved filters into its fields', () => {
@@ -46,9 +73,10 @@ describe('SalesInvoiceListComponent', () => {
     fixture.detectChanges();
     httpMock.expectOne((r) => r.url === URL).flush(envelope([], 0));
     const component = fixture.componentInstance;
-    component.table.applyQuery({ search: 'INV-9', filters: { status: 'issued', payment_status: 'partial' } });
-    expect(component.status).toBe('issued');
-    expect(component.paymentStatus).toBe('partial');
+    component.table.applyQuery({ search: 'INV-9', filters: { status: 'issued,paid', payment_status: 'partial', date_from: '2026-10-01' } });
+    expect(component.status).toEqual(['issued', 'paid']);
+    expect(component.dateFrom).toBe('2026-10-01');
+    expect(component.paymentStatus).toEqual(['partial']);
     httpMock
       .expectOne((r) => r.url === URL && r.params.get('search') === 'INV-9' && r.params.get('payment_status') === 'partial')
       .flush(envelope([], 0));

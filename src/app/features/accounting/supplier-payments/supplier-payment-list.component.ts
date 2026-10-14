@@ -4,13 +4,15 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
-import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
 import { PageHeaderAction, PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
-import { ServerTable } from '../../../shared/table/server-table';
+import { ChoiceFilterComponent } from '../../../shared/table/choice-filter.component';
+import { DateRangeFilterComponent } from '../../../shared/table/date-range-filter.component';
+import { FilterErrorsComponent } from '../../../shared/table/filter-errors.component';
+import { ServerTable, splitFilter } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { SUPPLIER_PAYMENT_METHODS, SupplierPayment, SupplierPaymentMethod } from '../accounting.models';
 import { SupplierPaymentService } from './supplier-payment.service';
@@ -25,7 +27,9 @@ import { SavedViewsComponent } from '../../../shared/table/saved-views.component
     TranslatePipe,
     TableModule,
     ButtonModule,
-    SelectModule,
+    ChoiceFilterComponent,
+    DateRangeFilterComponent,
+    FilterErrorsComponent,
     PageHeaderComponent,
     EmptyStateComponent,
     ErrorStateComponent,
@@ -38,19 +42,25 @@ export class SupplierPaymentListComponent implements OnInit {
   private readonly api = inject(SupplierPaymentService);
   private readonly router = inject(Router);
 
-  status: 'completed' | 'voided' | null = null;
-  method: SupplierPaymentMethod | null = null;
+  status: ('completed' | 'voided')[] = [];
+  method: SupplierPaymentMethod[] = [];
+  dateFrom = '';
+  dateTo = '';
   readonly table = new ServerTable<SupplierPayment>(
     (query) => this.api.list({ page: query.page, pageSize: query.pageSize, filters: query.filters }),
     {
-      filters: () => ({ status: this.status, payment_method: this.method }),
+      filters: () => ({ status: this.status, payment_method: this.method, date_from: this.dateFrom, date_to: this.dateTo }),
       reset: () => {
-        this.status = null;
-        this.method = null;
+        this.status = [];
+        this.method = [];
+        this.dateFrom = '';
+        this.dateTo = '';
       },
       restore: (filters) => {
-        this.status = (filters['status'] ?? null) as SupplierPaymentListComponent['status'];
-        this.method = (filters['payment_method'] ?? null) as SupplierPaymentListComponent['method'];
+        this.status = splitFilter(filters['status']) as SupplierPaymentListComponent['status'];
+        this.method = splitFilter(filters['payment_method']) as SupplierPaymentListComponent['method'];
+        this.dateFrom = String(filters['date_from'] ?? '');
+        this.dateTo = String(filters['date_to'] ?? '');
       },
     },
   );

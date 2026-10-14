@@ -4,13 +4,15 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
-import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
-import { ServerTable } from '../../../shared/table/server-table';
+import { ChoiceFilterComponent } from '../../../shared/table/choice-filter.component';
+import { DateRangeFilterComponent } from '../../../shared/table/date-range-filter.component';
+import { FilterErrorsComponent } from '../../../shared/table/filter-errors.component';
+import { ServerTable, splitFilter } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { InvoicePayment, PAYMENT_METHODS, PAYMENT_RECORD_SEVERITY, PaymentMethod, PaymentRecordStatus } from '../sales.models';
 import { InvoicePaymentService } from './invoice-payment.service';
@@ -26,7 +28,9 @@ import { SavedViewsComponent } from '../../../shared/table/saved-views.component
     TranslatePipe,
     TableModule,
     ButtonModule,
-    SelectModule,
+    ChoiceFilterComponent,
+    DateRangeFilterComponent,
+    FilterErrorsComponent,
     PageHeaderComponent,
     EmptyStateComponent,
     ErrorStateComponent,
@@ -39,16 +43,22 @@ export class PaymentListComponent implements OnInit {
   private readonly api = inject(InvoicePaymentService);
   private readonly router = inject(Router);
 
-  method: PaymentMethod | null = null;
+  method: PaymentMethod[] = [];
+  dateFrom = '';
+  dateTo = '';
   readonly table = new ServerTable<InvoicePayment>(
     (query) => this.api.list(query),
     {
-      filters: () => ({ payment_method: this.method }),
+      filters: () => ({ payment_method: this.method, date_from: this.dateFrom, date_to: this.dateTo }),
       reset: () => {
-        this.method = null;
+        this.method = [];
+        this.dateFrom = '';
+        this.dateTo = '';
       },
       restore: (filters) => {
-        this.method = (filters['payment_method'] ?? null) as PaymentListComponent['method'];
+        this.method = splitFilter(filters['payment_method']) as PaymentListComponent['method'];
+        this.dateFrom = String(filters['date_from'] ?? '');
+        this.dateTo = String(filters['date_to'] ?? '');
       },
     },
   );

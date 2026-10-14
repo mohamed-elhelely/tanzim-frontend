@@ -4,13 +4,15 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
-import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
 import { PageHeaderAction, PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
-import { ServerTable } from '../../../shared/table/server-table';
+import { ChoiceFilterComponent } from '../../../shared/table/choice-filter.component';
+import { DateRangeFilterComponent } from '../../../shared/table/date-range-filter.component';
+import { FilterErrorsComponent } from '../../../shared/table/filter-errors.component';
+import { ServerTable, splitFilter } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { DEBIT_NOTE_SEVERITY, DebitNote, DebitNoteStatus } from '../accounting.models';
 import { DebitNoteService } from './debit-note.service';
@@ -25,7 +27,9 @@ import { SavedViewsComponent } from '../../../shared/table/saved-views.component
     TranslatePipe,
     TableModule,
     ButtonModule,
-    SelectModule,
+    ChoiceFilterComponent,
+    DateRangeFilterComponent,
+    FilterErrorsComponent,
     PageHeaderComponent,
     EmptyStateComponent,
     ErrorStateComponent,
@@ -38,16 +42,22 @@ export class DebitNoteListComponent implements OnInit {
   private readonly api = inject(DebitNoteService);
   private readonly router = inject(Router);
 
-  status: DebitNoteStatus | null = null;
+  status: DebitNoteStatus[] = [];
+  dateFrom = '';
+  dateTo = '';
   readonly table = new ServerTable<DebitNote>(
     (query) => this.api.list({ page: query.page, pageSize: query.pageSize, filters: query.filters }),
     {
-      filters: () => ({ status: this.status }),
+      filters: () => ({ status: this.status, date_from: this.dateFrom, date_to: this.dateTo }),
       reset: () => {
-        this.status = null;
+        this.status = [];
+        this.dateFrom = '';
+        this.dateTo = '';
       },
       restore: (filters) => {
-        this.status = (filters['status'] ?? null) as DebitNoteListComponent['status'];
+        this.status = splitFilter(filters['status']) as DebitNoteListComponent['status'];
+        this.dateFrom = String(filters['date_from'] ?? '');
+        this.dateTo = String(filters['date_to'] ?? '');
       },
     },
   );

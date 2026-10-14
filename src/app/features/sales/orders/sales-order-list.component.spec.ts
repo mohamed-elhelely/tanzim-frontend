@@ -59,7 +59,7 @@ describe('SalesOrderListComponent', () => {
     const fixture = TestBed.createComponent(SalesOrderListComponent);
     fixture.detectChanges();
     httpMock.expectOne((r) => r.url === URL).flush(envelope([], 0));
-    fixture.componentInstance.status = 'shipped';
+    fixture.componentInstance.status = ['shipped'];
     fixture.componentInstance.table.apply();
     httpMock.expectOne((r) => r.url === URL && r.params.get('status') === 'shipped').flush(envelope([], 0));
   });

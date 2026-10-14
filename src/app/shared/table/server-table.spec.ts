@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { Observable, Subject, of, throwError } from 'rxjs';
 import { ListQuery } from '../../core/api/crud-api';
 import { Paginated } from '../../core/models/api-response.model';
-import { ServerTable, ServerTableOptions } from './server-table';
+import { ServerTable, ServerTableOptions, splitFilter } from './server-table';
 
 type Fetch = (query: ListQuery) => Observable<Paginated<number>>;
 
@@ -20,6 +20,38 @@ function createTable(fetch: Fetch, options: ServerTableOptions = {}) {
 const page = (items: number[], total = items.length): Paginated<number> => ({ items, total, page: 1, pageSize: 10 });
 
 describe('ServerTable', () => {
+  it('sends a multi-select comma-separated and drops it when empty', () => {
+    const fetch = jasmine.createSpy('fetch').and.returnValue(of(page([])));
+    const fields: { status: string[] } = { status: ['draft', 'issued'] };
+    const { table } = createTable(fetch, { filters: () => ({ ...fields }) });
+    table.load();
+    expect(fetch.calls.mostRecent().args[0].filters).toEqual({ status: 'draft,issued' });
+    fields.status = [];
+    expect(table.changed()).toBeTrue();
+    table.apply();
+    expect(fetch.calls.mostRecent().args[0].filters).toEqual({});
+  });
+
+  it('keeps the rows when the backend refuses a filter, and forgets the refusal on the next good load', () => {
+    const fetch = jasmine.createSpy('fetch').and.returnValue(of(page([1])));
+    const { table } = createTable(fetch);
+    table.load();
+    fetch.and.returnValue(throwError(() => ({ status: 400, message: 'Bad', errors: { date_from: ['Enter a valid date.'] } })));
+    table.load();
+    expect(table.error()).toBeNull();
+    expect(table.rows()).toEqual([1]);
+    expect(table.filterErrors()).toEqual({ date_from: ['Enter a valid date.'] });
+    fetch.and.returnValue(of(page([2])));
+    table.load();
+    expect(table.filterErrors()).toEqual({});
+  });
+
+  it('splits a saved comma-separated filter', () => {
+    expect(splitFilter('draft,issued')).toEqual(['draft', 'issued']);
+    expect(splitFilter('')).toEqual([]);
+    expect(splitFilter(undefined)).toEqual([]);
+  });
+
   it('loads page 1 and turns PrimeNG paging/sorting into a ListQuery', () => {
     const fetch = jasmine.createSpy('fetch').and.returnValue(of(page([1, 2], 30)));
     const { table } = createTable(fetch);
