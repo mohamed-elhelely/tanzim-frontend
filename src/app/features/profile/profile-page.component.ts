@@ -16,6 +16,7 @@ import { LoadingStateComponent } from '../../shared/components/loading-state/loa
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 import { errorTitleKey, handleSaveError } from '../../shared/utils/server-errors';
 import { MeProfile, ProfileService } from './profile.service';
+import { SignedInDevicesComponent } from './signed-in-devices.component';
 
 /** The browser's IANA time zones, for the timezone picker. */
 const TIME_ZONES: string[] = (Intl as { supportedValuesOf?: (key: string) => string[] }).supportedValuesOf?.('timeZone') ?? [];
@@ -29,6 +30,7 @@ function passwordsMatch(group: AbstractControl): ValidationErrors | null {
 @Component({
   selector: 'app-profile-page',
   imports: [
+    SignedInDevicesComponent,
     ReactiveFormsModule,
     TranslatePipe,
     ButtonModule,

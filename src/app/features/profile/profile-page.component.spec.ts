@@ -33,7 +33,11 @@ describe('ProfilePageComponent', () => {
     return fixture;
   }
 
-  afterEach(() => httpMock.verify());
+  afterEach(() => {
+    // The signed-in devices card (its own spec) loads alongside the form.
+    httpMock.match('/api/company/v1/me/sessions/').forEach((req) => req.flush({ success: true, data: [] }));
+    httpMock.verify();
+  });
 
   it('fills the form and saves the details as JSON', () => {
     const fixture = setup();

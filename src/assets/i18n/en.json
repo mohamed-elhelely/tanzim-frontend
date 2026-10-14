@@ -1973,6 +1973,20 @@
     "tooLarge": "The image is larger than 5 MB."
   },
   "profile": {
+    "sessions": {
+      "title": "Signed-in devices",
+      "hint": "Every browser or phone signed in to your account. Sign out any you don't recognise.",
+      "thisDevice": "This device",
+      "unknownBrowser": "Unknown browser",
+      "lastUsed": "last used",
+      "signedIn": "signed in",
+      "signOut": "Sign out this device",
+      "signOutOthers": "Sign out all other devices",
+      "confirmSignOut": "Sign this device out? It will have to log in again.",
+      "confirmSignOutOthers": "Sign out every device except this one?",
+      "signedOut": "Device signed out.",
+      "signedOutOthers": "Other devices signed out."
+    },
     "title": "My profile",
     "myProfile": "My profile",
     "subtitle": "Your details, picture and password",
