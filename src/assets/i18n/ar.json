@@ -2077,8 +2077,16 @@
   },
   "palette": {
     "open": "ابحث في الشاشات (Ctrl+K)",
-    "placeholder": "انتقل إلى…",
-    "noResults": "لا توجد شاشات مطابقة"
+    "placeholder": "انتقل إلى شاشة أو ابحث عن سجل…",
+    "noResults": "لا توجد شاشات أو سجلات مطابقة",
+    "searching": "جارٍ البحث في السجلات…",
+    "types": {
+      "customer": "العملاء",
+      "salesorder": "أوامر البيع",
+      "salesinvoice": "فواتير البيع",
+      "product": "المنتجات",
+      "supplier": "الموردون"
+    }
   },
   "views": {
     "title": "العروض",

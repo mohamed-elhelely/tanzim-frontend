@@ -1,11 +1,14 @@
 import { signal } from '@angular/core';
-import { TestBed } from '@angular/core/testing';
+import { HttpTestingController } from '@angular/common/http/testing';
+import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { provideApiTesting } from '../../testing/api-testing';
+import { envelope, errorEnvelope, provideApiTesting } from '../../testing/api-testing';
 import { NavItem } from '../nav/nav-items';
 import { VisibleNavService } from '../nav/visible-nav.service';
-import { CommandPaletteComponent, normalizeSearch } from './command-palette.component';
+import { CommandPaletteComponent, SEARCH_DEBOUNCE_MS, normalizeSearch } from './command-palette.component';
+
+const SEARCH = '/api/common/v1/search/';
 
 const ITEMS: NavItem[] = [
   { labelKey: 'nav.dashboard', icon: 'pi pi-home', routerLink: '/dashboard' },
@@ -108,4 +111,111 @@ describe('normalizeSearch', () => {
     expect(normalizeSearch('إِدَارَة')).toBe('اداره');
     expect(normalizeSearch('مستشفى')).toBe('مستشفي');
   });
+});
+
+describe('CommandPaletteComponent record search', () => {
+  let navigate: jasmine.Spy;
+  let httpMock: HttpTestingController;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [CommandPaletteComponent],
+      providers: [...provideApiTesting(), { provide: VisibleNavService, useValue: { items: signal(ITEMS) } }],
+    }).compileComponents();
+    navigate = spyOn(TestBed.inject(Router), 'navigateByUrl').and.resolveTo(true);
+    httpMock = TestBed.inject(HttpTestingController);
+  });
+
+  afterEach(() => httpMock.verify());
+
+  function openPalette() {
+    const fixture = TestBed.createComponent(CommandPaletteComponent);
+    fixture.detectChanges();
+    fixture.componentInstance.show();
+    fixture.detectChanges();
+    return fixture;
+  }
+
+  function type(fixture: ReturnType<typeof openPalette>, text: string) {
+    fixture.componentInstance.setQuery(text);
+    fixture.detectChanges();
+  }
+
+  it('waits for a pause in typing, searches only the types the user can open, and groups the hits', fakeAsync(() => {
+    const fixture = openPalette();
+    const palette = fixture.componentInstance;
+    type(fixture, 'a');
+    tick(SEARCH_DEBOUNCE_MS);
+    httpMock.expectNone(SEARCH); // one character is not searched
+
+    type(fixture, 'ac');
+    tick(SEARCH_DEBOUNCE_MS - 50);
+    type(fixture, 'acm');
+    tick(SEARCH_DEBOUNCE_MS);
+    fixture.detectChanges();
+    expect(palette.searching()).toBeTrue();
+    const req = httpMock.expectOne((r) => r.url === SEARCH);
+    expect(req.request.params.get('q')).toBe('acm');
+    // Only sales orders and invoices are in this user's menu.
+    expect(req.request.params.get('types')).toBe('salesorder,salesinvoice');
+    req.flush(
+      envelope([
+        { type: 'salesinvoice', id: 9, label: 'INV-9', sublabel: 'Acme' },
+        { type: 'salesorder', id: 4, label: 'SO-4', sublabel: 'Acme' },
+      ]),
+    );
+    fixture.detectChanges();
+
+    expect(palette.searching()).toBeFalse();
+    expect(palette.recordGroups().map((group) => group.type)).toEqual(['salesorder', 'salesinvoice']);
+    const text = fixture.nativeElement.ownerDocument.body.textContent;
+    expect(text).toContain('palette.types.salesorder');
+    expect(text).toContain('SO-4');
+  }));
+
+  it('drops the answer to an older query', fakeAsync(() => {
+    const fixture = openPalette();
+    const palette = fixture.componentInstance;
+    type(fixture, 'acme');
+    tick(SEARCH_DEBOUNCE_MS);
+    const old = httpMock.expectOne((r) => r.url === SEARCH && r.params.get('q') === 'acme');
+    type(fixture, 'beta');
+    tick(SEARCH_DEBOUNCE_MS);
+    expect(old.cancelled).toBeTrue();
+    httpMock
+      .expectOne((r) => r.url === SEARCH && r.params.get('q') === 'beta')
+      .flush(envelope([{ type: 'salesorder', id: 5, label: 'SO-5', sublabel: '' }]));
+    expect(palette.recordGroups()[0].hits.map((hit) => hit.id)).toEqual([5]);
+  }));
+
+  it('moves from the screens into the records with the arrow keys and opens the record on Enter', fakeAsync(() => {
+    const fixture = openPalette();
+    const palette = fixture.componentInstance;
+    type(fixture, 'sales');
+    tick(SEARCH_DEBOUNCE_MS);
+    httpMock.expectOne((r) => r.url === SEARCH).flush(envelope([{ type: 'salesinvoice', id: 9, label: 'INV-9', sublabel: '' }]));
+    fixture.detectChanges();
+    const screens = palette.results().length;
+    expect(palette.items().length).toBe(screens + 1);
+
+    for (let i = 0; i < screens; i++) {
+      palette.onKey(new KeyboardEvent('keydown', { key: 'ArrowDown' }));
+    }
+    expect(palette.active()).toBe(screens);
+    palette.onKey(new KeyboardEvent('keydown', { key: 'Enter' }));
+    expect(navigate).toHaveBeenCalledWith('/sales/invoices/9');
+    expect(palette.open()).toBeFalse();
+  }));
+
+  it('still lists the screens when the search fails', fakeAsync(() => {
+    const fixture = openPalette();
+    const palette = fixture.componentInstance;
+    type(fixture, 'sales');
+    tick(SEARCH_DEBOUNCE_MS);
+    httpMock.expectOne((r) => r.url === SEARCH).flush(errorEnvelope(400, 'Bad'), { status: 400, statusText: 'Bad Request' });
+    fixture.detectChanges();
+    expect(palette.searching()).toBeFalse();
+    expect(palette.recordGroups()).toEqual([]);
+    expect(palette.results().length).toBeGreaterThan(0);
+  }));
 });

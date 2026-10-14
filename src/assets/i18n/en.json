@@ -2077,8 +2077,16 @@
   },
   "palette": {
     "open": "Search screens (Ctrl+K)",
-    "placeholder": "Go to…",
-    "noResults": "No matching screens"
+    "placeholder": "Go to a screen or find a record…",
+    "noResults": "No matching screens or records",
+    "searching": "Searching records…",
+    "types": {
+      "customer": "Customers",
+      "salesorder": "Sales orders",
+      "salesinvoice": "Sales invoices",
+      "product": "Products",
+      "supplier": "Suppliers"
+    }
   },
   "views": {
     "title": "Views",
