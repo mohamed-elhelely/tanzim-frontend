@@ -1,5 +1,5 @@
 <app-page-header title="locations.districts.title" [actions]="headerActions">
-  <app-import-export-actions resource="district" (imported)="table.load()"></app-import-export-actions>
+  <app-import-export-actions resource="district" [table]="table" (imported)="table.load()"></app-import-export-actions>
 </app-page-header>
 
 @if (table.error(); as err) {

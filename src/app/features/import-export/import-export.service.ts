@@ -27,8 +27,9 @@ export function fileToDataUri(file: File): Promise<string> {
 /** Import, export, templates and the background task list (common/base_import_export.py). */
 @Injectable({ providedIn: 'root' })
 export class ImportExportService extends BaseApiService {
-  exportFile(path: string, format: ExportFormat): Observable<Blob> {
-    return this.getBlob(`${path}export/`, { params: { format } });
+  /** `params` are the list's search, filters and sort, so only the rows it shows are exported. */
+  exportFile(path: string, format: ExportFormat, params: Record<string, string | number> = {}): Observable<Blob> {
+    return this.getBlob(`${path}export/`, { params: { ...params, format } });
   }
 
   /** An Excel file with the headers the import expects. */

@@ -46,6 +46,16 @@ describe('ServerTable', () => {
     expect(table.filterErrors()).toEqual({});
   });
 
+  it('gives exports the applied search, filters and sort, without paging', () => {
+    const fetch = jasmine.createSpy('fetch').and.returnValue(of(page([])));
+    const fields = { status: ['draft'] };
+    const { table } = createTable(fetch, { filters: () => ({ ...fields }) });
+    table.onLazyLoad({ first: 20, rows: 10, sortField: 'date', sortOrder: -1 });
+    table.apply('acme');
+    fields.status = ['issued'];
+    expect(table.exportParams()).toEqual({ status: 'draft', search: 'acme', ordering: '-date' });
+  });
+
   it('splits a saved comma-separated filter', () => {
     expect(splitFilter('draft,issued')).toEqual(['draft', 'issued']);
     expect(splitFilter('')).toEqual([]);

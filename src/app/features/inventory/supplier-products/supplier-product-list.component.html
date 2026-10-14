@@ -1,5 +1,5 @@
 <app-page-header title="inventory.supplierProducts.title" [actions]="headerActions">
-  <app-import-export-actions resource="supplierProduct" (imported)="table.load()"></app-import-export-actions>
+  <app-import-export-actions resource="supplierProduct" [table]="table" (imported)="table.load()"></app-import-export-actions>
 </app-page-header>
 
 @if (table.error(); as err) {
