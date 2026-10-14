@@ -17,6 +17,12 @@
     "edit": "Edit",
     "view": "View",
     "search": "Search",
+    "clearFilters": "Clear",
+    "deleteSelected": "Delete selected ({{count}})",
+    "confirmBulkDelete": "Delete {{count}} selected items? This cannot be undone.",
+    "bulkDeleted": "Deleted {{count}}.",
+    "bulkFailed": "{{count}} couldn't be done. {{reason}}",
+    "apply": "Apply",
     "back": "Back",
     "retry": "Retry",
     "yes": "Yes",
@@ -32,7 +38,10 @@
     "backToList": "Back to list",
     "backToDashboard": "Back to dashboard",
     "viewAll": "View all",
-    "reasonOptional": "Reason (optional)"
+    "reasonOptional": "Reason (optional)",
+    "selectedCount": "{0} selected",
+    "dateFrom": "From",
+    "dateTo": "To"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -85,6 +94,7 @@
     "dashboards": "Dashboards",
     "reports": "Reports",
     "companyProfile": "Company profile",
+    "systemLogs": "System log",
     "platformBilling": "Subscriptions",
     "subscriptions": "Company subscriptions",
     "plans": "Plans",
@@ -124,6 +134,8 @@
     "notifications": "Notifications"
   },
   "dashboard": {
+    "keyNumbers": "Key numbers",
+    "openAnalytics": "Open analytics",
     "subtitle": "Overview of your organisation",
     "welcome": "Welcome back, {{name}}",
     "welcomeNoName": "Welcome back",
@@ -151,7 +163,11 @@
       "locations": "Add your first location",
       "departments": "Create departments",
       "teams": "Organise people into teams",
-      "users": "Invite your colleagues"
+      "users": "Invite your colleagues",
+      "branding": "Add your company logo and colours",
+      "warehouses": "Create your first warehouse",
+      "products": "Add your products",
+      "customers": "Add your customers"
     },
     "setupDone": "Your organisation is all set up.",
     "welcomeTextPlatform": "Here's a quick look at the companies on Tanzim."
@@ -159,7 +175,8 @@
   "errors": {
     "network": "Unable to reach the server. Please check your connection.",
     "server": "Server error. Please try again later.",
-    "unexpected": "An unexpected error occurred."
+    "unexpected": "An unexpected error occurred.",
+    "supportCode": "Support code: {{code}}"
   },
   "validation": {
     "required": "This field is required.",
@@ -860,6 +877,8 @@
       "country": "Country"
     },
     "actions": {
+      "confirmSelected": "Confirm drafts ({{count}})",
+      "issueSelected": "Issue drafts ({{count}})",
       "sameAsBilling": "Same as billing",
       "addLine": "Add item",
       "removeLine": "Remove item",
@@ -880,6 +899,8 @@
       "cancelInvoice": "Cancel invoice"
     },
     "confirm": {
+      "confirmOrders": "Confirm {{count}} draft orders? Stock is reserved for each.",
+      "issueInvoices": "Issue {{count}} draft invoices? Issued invoices can't be edited.",
       "confirmOrder": "Confirm this order? Stock will be reserved for every item and the customer's credit limit checked.",
       "markDelivered": "Mark this order as delivered?",
       "clone": "Create a new draft order with the same customer and items?",
@@ -890,6 +911,8 @@
       "refund": "Refund this payment of {{amount}} in full?"
     },
     "toasts": {
+      "ordersConfirmed": "{{count}} orders confirmed.",
+      "invoicesIssued": "{{count}} invoices issued.",
       "confirmed": "Order confirmed.",
       "cancelled": "Order cancelled.",
       "cloned": "Draft copy created.",
@@ -906,6 +929,9 @@
       "invoiceCancelled": "Invoice cancelled."
     },
     "hints": {
+      "overdueDays": "Overdue {{days}} d",
+      "availableCredit": "Available credit",
+      "overCredit": "This order is more than the customer's available credit ({{available}}). It will be refused when confirmed unless the limit is raised or a payment comes in.",
       "noCreditLimit": "No limit",
       "creditLimit": "Leave empty for no limit.",
       "searchOrders": "Search by order no., customer or PO",
@@ -1951,6 +1977,20 @@
     "tooLarge": "The image is larger than 5 MB."
   },
   "profile": {
+    "sessions": {
+      "title": "Signed-in devices",
+      "hint": "Every browser or phone signed in to your account. Sign out any you don't recognise.",
+      "thisDevice": "This device",
+      "unknownBrowser": "Unknown browser",
+      "lastUsed": "last used",
+      "signedIn": "signed in",
+      "signOut": "Sign out this device",
+      "signOutOthers": "Sign out all other devices",
+      "confirmSignOut": "Sign this device out? It will have to log in again.",
+      "confirmSignOutOthers": "Sign out every device except this one?",
+      "signedOut": "Device signed out.",
+      "signedOutOthers": "Other devices signed out."
+    },
     "title": "My profile",
     "myProfile": "My profile",
     "subtitle": "Your details, picture and password",
@@ -1972,5 +2012,100 @@
     "passwordMismatch": "The passwords do not match.",
     "updatePassword": "Update password",
     "passwordChanged": "Password changed."
+  },
+  "systemLogs": {
+    "export": "Export to Excel",
+    "history": "History",
+    "noHistory": "No changes recorded yet.",
+    "loadMore": "Show more",
+    "title": "System log",
+    "subtitle": "Who changed what, and when",
+    "detailTitle": "Change details",
+    "systemUser": "System",
+    "noChanges": "No field changes recorded.",
+    "hints": {
+      "search": "Search by record or user"
+    },
+    "fields": {
+      "time": "Time",
+      "user": "User",
+      "action": "Action",
+      "resource": "Screen",
+      "record": "Record",
+      "changes": "Changes",
+      "source": "Source",
+      "from": "From",
+      "to": "To",
+      "ip": "IP address",
+      "device": "Device",
+      "field": "Field",
+      "before": "Before",
+      "after": "After",
+      "company": "Company"
+    },
+    "actions": {
+      "create": "Created",
+      "update": "Updated",
+      "delete": "Deleted",
+      "restore": "Restored",
+      "bulk_update": "Bulk update",
+      "bulk_delete": "Bulk delete",
+      "bulk_create": "Bulk create",
+      "import": "Import",
+      "login": "Signed in",
+      "login_failed": "Failed sign-in",
+      "logout": "Signed out",
+      "password_change": "Password changed"
+    },
+    "sources": {
+      "api": "App",
+      "admin": "Admin panel",
+      "import": "Import",
+      "task": "Background task",
+      "system": "System"
+    },
+    "meta": {
+      "count": "Records",
+      "ids": "Record IDs",
+      "reason": "Reason",
+      "countValue": "{{count}} records"
+    },
+    "reasons": {
+      "invalid_credentials": "Wrong email or password",
+      "company_inactive": "Company is inactive"
+    }
+  },
+  "palette": {
+    "open": "Search screens (Ctrl+K)",
+    "placeholder": "Go to…",
+    "noResults": "No matching screens"
+  },
+  "views": {
+    "title": "Views",
+    "empty": "No saved views yet.",
+    "namePlaceholder": "Name this view",
+    "save": "Save current filters",
+    "applyFirst": "Apply a search or filter first, then save it."
+  },
+  "print": {
+    "quotation": "Quotation",
+    "orderConfirmation": "Order confirmation",
+    "deliveryNote": "Delivery note",
+    "deliverTo": "Deliver to",
+    "received": "Received",
+    "deliveredBy": "Delivered by (name and signature)",
+    "receivedBy": "Received by (name, signature and date)",
+    "invoice": "Invoice",
+    "print": "Print / PDF",
+    "close": "Close",
+    "billTo": "Bill to",
+    "discount": "Discount"
+  },
+  "labels": {
+    "title": "Labels",
+    "printSelected": "Print labels ({{count}})",
+    "copies": "Copies of each",
+    "showPrice": "Show price",
+    "none": "No items chosen. Tick items on the variants list first."
   }
 }
