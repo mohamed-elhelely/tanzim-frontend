@@ -715,7 +715,8 @@
     "all": "الكل",
     "unread": "غير المقروءة",
     "markAllRead": "تعليم الكل كمقروء",
-    "empty": "لا توجد إشعارات بعد."
+    "empty": "لا توجد إشعارات بعد.",
+    "accessLost": "لم تعد لديك صلاحية لفتح هذه الصفحة."
   },
   "billing": {
     "subscription": "الاشتراك",
@@ -2073,12 +2074,28 @@
     "reasons": {
       "invalid_credentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة",
       "company_inactive": "الشركة غير مفعّلة"
+    },
+    "resources": {
+      "user": "حسابات المستخدمين",
+      "companyuser": "مستخدمو الشركة",
+      "salesorderline": "بنود أوامر البيع",
+      "deliverynoteline": "بنود أذون التسليم",
+      "journalline": "بنود القيود",
+      "stockreservation": "حجوزات المخزون"
     }
   },
   "palette": {
     "open": "ابحث في الشاشات (Ctrl+K)",
-    "placeholder": "انتقل إلى…",
-    "noResults": "لا توجد شاشات مطابقة"
+    "placeholder": "انتقل إلى شاشة أو ابحث عن سجل…",
+    "noResults": "لا توجد شاشات أو سجلات مطابقة",
+    "searching": "جارٍ البحث في السجلات…",
+    "types": {
+      "customer": "العملاء",
+      "salesorder": "أوامر البيع",
+      "salesinvoice": "فواتير البيع",
+      "product": "المنتجات",
+      "supplier": "الموردون"
+    }
   },
   "views": {
     "title": "العروض",

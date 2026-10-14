@@ -1,0 +1,1 @@
+import{a}from"./chunk-2C7Z4MS3.js";import{N as t,ka as r}from"./chunk-NNQP2ZOL.js";var c=class o extends a{path="company/v1/roles/";static \u0275fac=(()=>{let e;return function(i){return(e||(e=r(o)))(i||o)}})();static \u0275prov=t({token:o,factory:o.\u0275fac,providedIn:"root"})};export{c as a};

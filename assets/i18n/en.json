@@ -715,7 +715,8 @@
     "all": "All",
     "unread": "Unread",
     "markAllRead": "Mark all as read",
-    "empty": "No notifications yet."
+    "empty": "No notifications yet.",
+    "accessLost": "You no longer have access to that page."
   },
   "billing": {
     "subscription": "Subscription",
@@ -2073,12 +2074,28 @@
     "reasons": {
       "invalid_credentials": "Wrong email or password",
       "company_inactive": "Company is inactive"
+    },
+    "resources": {
+      "user": "User accounts",
+      "companyuser": "Company users",
+      "salesorderline": "Sales order lines",
+      "deliverynoteline": "Delivery note lines",
+      "journalline": "Journal lines",
+      "stockreservation": "Stock reservations"
     }
   },
   "palette": {
     "open": "Search screens (Ctrl+K)",
-    "placeholder": "Go to…",
-    "noResults": "No matching screens"
+    "placeholder": "Go to a screen or find a record…",
+    "noResults": "No matching screens or records",
+    "searching": "Searching records…",
+    "types": {
+      "customer": "Customers",
+      "salesorder": "Sales orders",
+      "salesinvoice": "Sales invoices",
+      "product": "Products",
+      "supplier": "Suppliers"
+    }
   },
   "views": {
     "title": "Views",

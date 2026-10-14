@@ -1,0 +1,1 @@
+import{_a as r}from"./chunk-NNQP2ZOL.js";function a(e){return e&&(e.full_name||`${e.first_name??""} ${e.last_name??""}`.trim()||e.email)||""}var i=class e{transform(n){return a(n)}static \u0275fac=function(t){return new(t||e)};static \u0275pipe=r({name:"userName",type:e,pure:!0})};export{a,i as b};
