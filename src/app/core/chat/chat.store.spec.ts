@@ -270,6 +270,22 @@ describe('ChatStore', () => {
     expect(store.current()?.id).toBe(13);
   }));
 
+  it('a failed read is retried on the next incoming message', fakeAsync(() => {
+    const store = create(2);
+    openDrawerWith(store);
+    openThread(store, 12, [chatMessage(1)]);
+    tick(READ_DEBOUNCE_MS);
+    http.expectOne(`${base}conversations/12/read/`).flush(errorEnvelope(500, 'Server error.'), { status: 500, statusText: 'Server Error' });
+    http.expectOne(`${base}unread/`).flush(envelope({ conversations: 1, messages: 2 }));
+    expect(store.unreadTotal()).toBe(2);
+    events.next({ type: 'chat.message', conversation_id: 12, message: chatMessage(2) });
+    tick(READ_DEBOUNCE_MS);
+    const retry = http.expectOne(`${base}conversations/12/read/`);
+    expect(retry.request.body).toEqual({ message_id: 2 });
+    retry.flush(envelope({ last_read_message_id: 2 }));
+    http.expectOne(`${base}unread/`).flush(envelope({ conversations: 0, messages: 0 }));
+  }));
+
   it('forgets everything when chat access is lost', () => {
     const store = create(3);
     openDrawerWith(store);

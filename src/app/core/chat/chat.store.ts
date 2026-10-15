@@ -317,13 +317,26 @@ export class ChatStore {
     if (newest <= (this.readSent.get(id) ?? 0)) {
       return;
     }
+    const previous = this.readSent.get(id);
     this.readSent.set(id, newest);
     this.api.read(id, newest).subscribe({
       next: () => {
         this.loadUnread();
         this.center.refresh();
       },
-      error: (error: AppError) => error.status === 404 && this.onGone(id),
+      error: (error: AppError) => {
+        if (error.status === 404) {
+          this.onGone(id);
+          return;
+        }
+        // The server never stored the read: allow a retry and bring the badge back in step.
+        if (previous === undefined) {
+          this.readSent.delete(id);
+        } else {
+          this.readSent.set(id, previous);
+        }
+        this.loadUnread();
+      },
     });
   }
 
