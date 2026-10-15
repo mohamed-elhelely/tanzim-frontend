@@ -41,12 +41,12 @@ export class ChatAttachmentComponent {
   private objectUrl: string | null = null;
 
   constructor() {
-    effect(() => {
+    effect((onCleanup) => {
       const attachment = this.attachment();
       if (!this.image() || !attachment.url) {
         return;
       }
-      untracked(() =>
+      const sub = untracked(() =>
         this.api.attachment(attachment.url).subscribe({
           next: (blob) => {
             this.release();
@@ -56,6 +56,7 @@ export class ChatAttachmentComponent {
           error: () => undefined,
         }),
       );
+      onCleanup(() => sub.unsubscribe());
     });
     inject(DestroyRef).onDestroy(() => this.release());
   }

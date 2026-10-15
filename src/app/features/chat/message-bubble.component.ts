@@ -13,7 +13,7 @@ import { ChatAttachmentComponent } from './chat-attachment.component';
   selector: 'app-message-bubble',
   imports: [TranslatePipe, MenuModule, ChatAttachmentComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'group flex', '[class.justify-end]': 'mine()', '[class.mt-2]': 'first()', '[class.mt-0.5]': '!first()' },
+  host: { class: 'group flex flex-wrap', '[class.justify-end]': 'mine()', '[class.mt-2]': 'first()', '[class.mt-0.5]': '!first()' },
   template: `
     <div class="flex max-w-[85%] items-start gap-1" [class.flex-row-reverse]="mine()">
       <div
