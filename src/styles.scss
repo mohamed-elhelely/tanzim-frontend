@@ -142,6 +142,29 @@
     background: var(--p-surface-900);
   }
 
+  /* The sidebar's scrollbar: narrow and faint on the dark background, still there when the menu scrolls. */
+  .app-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(255 255 255 / 0.18) transparent;
+  }
+
+  .app-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .app-scrollbar::-webkit-scrollbar-thumb {
+    border-radius: 9999px;
+    background: rgb(255 255 255 / 0.18);
+  }
+
+  .app-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgb(255 255 255 / 0.3);
+  }
+
+  .app-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
   /* Destructive entries (delete) in a table row's "⋮" menu. */
   .row-action-danger .p-menu-item-label,
   .row-action-danger .p-menu-item-icon {

@@ -127,4 +127,26 @@ describe('NavListComponent', () => {
     const fixture = await render('/dashboard', 'ADMIN', [], { hasModule: () => false, can: () => false, isStaff: () => false, role: () => 'ADMIN' });
     expect(links(fixture)).toEqual(['/dashboard', '/notifications']);
   });
+
+  it('shows icons only when collapsed, and asks to expand when a group is clicked', async () => {
+    const fixture = await render('/company/departments');
+    fixture.componentRef.setInput('collapsed', true);
+    fixture.detectChanges();
+    // The open group's pages are hidden beside the icons; top-level links stay, their labels for screen readers only.
+    expect(links(fixture)).not.toContain('/company/departments');
+    expect(links(fixture)).toContain('/dashboard');
+    expect(fixture.nativeElement.querySelector('a[href="/dashboard"] span').classList).toContain('sr-only');
+
+    let opened = 0;
+    fixture.componentInstance.groupOpened.subscribe(() => opened++);
+    const group = Array.from(fixture.nativeElement.querySelectorAll('button')).find((b) =>
+      (b as HTMLElement).textContent?.includes('nav.inventory'),
+    ) as HTMLButtonElement;
+    group.click();
+    expect(opened).toBe(1);
+
+    fixture.componentRef.setInput('collapsed', false);
+    fixture.detectChanges();
+    expect(links(fixture)).toContain('/inventory/products');
+  });
 });

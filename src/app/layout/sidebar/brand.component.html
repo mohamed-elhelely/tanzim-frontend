@@ -1,4 +1,4 @@
-<a routerLink="/dashboard" class="flex h-16 items-center gap-3 px-5">
+<a routerLink="/dashboard" class="flex h-16 items-center gap-3" [class.px-5]="!compact()" [class.justify-center]="compact()">
   @if (company()?.logo; as logo) {
     <span class="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white p-0.5 shadow-lg shadow-secondary-950/40">
       <img [src]="logo" alt="" class="h-full w-full object-contain" />
@@ -10,7 +10,7 @@
       <i class="pi pi-box text-base"></i>
     </span>
   }
-  <span class="flex min-w-0 flex-col leading-tight">
+  <span class="flex min-w-0 flex-col leading-tight" [class.sr-only]="compact()">
     @if (company(); as c) {
       <span class="truncate text-base font-bold text-white">{{ c.name }}</span>
       <span class="text-xs text-secondary-300">{{ 'app.name' | translate }}</span>

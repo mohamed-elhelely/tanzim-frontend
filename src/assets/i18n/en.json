@@ -44,6 +44,8 @@
     "dateTo": "To"
   },
   "nav": {
+    "collapse": "Collapse sidebar",
+    "expand": "Expand sidebar",
     "dashboard": "Dashboard",
     "company": "Company",
     "locations": "Locations",
