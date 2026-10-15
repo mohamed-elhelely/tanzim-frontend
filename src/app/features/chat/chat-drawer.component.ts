@@ -6,12 +6,13 @@ import { DrawerModule } from 'primeng/drawer';
 import { conversationTitle } from '../../core/chat/chat-format';
 import { ChatStore } from '../../core/chat/chat.store';
 import { LanguageService } from '../../core/services/language.service';
+import { ChatThreadComponent } from './chat-thread.component';
 import { ConversationListComponent } from './conversation-list.component';
 
 /** The floating chat: list ⇄ thread in one ~400px drawer at the end side. Hosted once by the shell, loaded on first open. */
 @Component({
   selector: 'app-chat-drawer',
-  imports: [TranslatePipe, PrimeTemplate, ButtonModule, DrawerModule, ConversationListComponent],
+  imports: [TranslatePipe, PrimeTemplate, ButtonModule, DrawerModule, ConversationListComponent, ChatThreadComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <p-drawer
@@ -57,8 +58,7 @@ import { ConversationListComponent } from './conversation-list.component';
       </ng-template>
 
       @if (store.thread(); as thread) {
-        <!-- Task 10 replaces this with <app-chat-thread>. -->
-        <div class="h-full"></div>
+        <app-chat-thread [thread]="thread"></app-chat-thread>
       } @else {
         <app-conversation-list></app-conversation-list>
       }

@@ -72,7 +72,7 @@ interface Candidate {
       <textarea
         #box
         rows="1"
-        class="max-h-32 min-h-9 flex-1 resize-none rounded-2xl border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-primary-500 dark:border-gray-700 dark:bg-gray-900"
+        class="[field-sizing:content] max-h-32 min-h-9 flex-1 resize-none rounded-2xl border border-gray-200 bg-white px-3 py-2 text-sm outline-none focus:border-primary-500 dark:border-gray-700 dark:bg-gray-900"
         [placeholder]="'chat.placeholder' | translate"
         [attr.aria-label]="'chat.placeholder' | translate"
         [value]="text()"
