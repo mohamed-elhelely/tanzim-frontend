@@ -141,6 +141,13 @@ You are working on the backend of Tanzim, a bilingual (English/Arabic) multi-ten
     record, e.g. `?related_to=salesorder:245` returning the order's entries plus its lines' (and, for `companyuser`,
     the linked `user`)? Lines' entries could carry the parent in `meta` (`{"parent": {"resource": "salesorder",
     "id": "245"}}`) so the frontend can show which line changed.
+
+17. Chat: people I can message. The chat drawer's "New chat" picker uses `GET /api/company/v1/company-user/?dropdown=true`
+    today, which also lists colleagues without `access_chat` + `view_chat`; picking one ends in
+    `400 This user cannot be messaged.` Please add `GET /api/chat/v1/users/?search=` returning the active users of my
+    active company who hold both permissions, excluding me, as `[{id, name}]` (`id` = login user id, as
+    `POST conversations/direct/` expects; `search` on first/last name, case-insensitive; unpaginated or optional
+    paging like `conversations/`). Same chat gate as the other chat endpoints. Document it in API_REFERENCE_CHAT.md.
 ```
 
 ## Fixed
