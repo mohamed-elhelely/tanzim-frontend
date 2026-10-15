@@ -113,7 +113,7 @@ export class ChatThreadComponent {
   readonly editing = signal<ChatMessage | null>(null);
   readonly unseen = signal(false);
   private atBottom = true;
-  private olderAnchor: { height: number; top: number } | null = null;
+  private olderAnchor: { height: number; top: number; firstId: number | undefined } | null = null;
   private lastKey: string | undefined;
 
   readonly moderator = computed(() => this.access.can('change_chatmoderation'));
@@ -146,6 +146,12 @@ export class ChatThreadComponent {
       const first = rows[0]?.key;
       const last = rows.at(-1)?.key;
       untracked(() => afterNextRender(() => this.afterRows(first, last), { injector: this.injector }));
+    });
+    // An older page that failed or added nothing must not leave its anchor for a later, unrelated row change.
+    effect(() => {
+      if (!this.thread().loadingOlder()) {
+        untracked(() => afterNextRender(() => (this.olderAnchor = null), { injector: this.injector }));
+      }
     });
   }
 
@@ -208,7 +214,7 @@ export class ChatThreadComponent {
       this.unseen.set(false);
     }
     if (el.scrollTop < LOAD_OLDER_PX && this.thread().hasOlder() && !this.thread().loadingOlder()) {
-      this.olderAnchor = { height: el.scrollHeight, top: el.scrollTop };
+      this.olderAnchor = { height: el.scrollHeight, top: el.scrollTop, firstId: this.thread().items()[0]?.message.id };
       this.thread().loadOlder();
     }
   }
@@ -228,7 +234,7 @@ export class ChatThreadComponent {
     if (!el) {
       return;
     }
-    if (this.olderAnchor && first !== undefined) {
+    if (this.olderAnchor && first !== undefined && this.thread().items()[0]?.message.id !== this.olderAnchor.firstId) {
       el.scrollTop = el.scrollHeight - this.olderAnchor.height + this.olderAnchor.top;
       this.olderAnchor = null;
     }

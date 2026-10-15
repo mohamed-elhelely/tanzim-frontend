@@ -58,7 +58,10 @@ import { ConversationListComponent } from './conversation-list.component';
       </ng-template>
 
       @if (store.thread(); as thread) {
-        <app-chat-thread [thread]="thread"></app-chat-thread>
+        <!-- Keyed by the thread instance so opening another chat starts from fresh component state. -->
+        @for (t of [thread]; track t) {
+          <app-chat-thread [thread]="t"></app-chat-thread>
+        }
       } @else {
         <app-conversation-list></app-conversation-list>
       }

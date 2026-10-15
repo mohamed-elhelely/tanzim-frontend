@@ -1,7 +1,8 @@
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { of } from 'rxjs';
+import { Subject, of, throwError } from 'rxjs';
+import { ChatMessage } from '../../core/chat/chat.models';
 import { provideApiTesting } from '../../testing/api-testing';
 import { ME, chatMember, chatMessage, conversation } from '../../testing/chat-fixtures';
 import { AccessService } from '../../core/auth/access.service';
@@ -94,5 +95,75 @@ describe('ChatThreadComponent', () => {
     fixture.componentInstance.onSend({ body: 'ok', files: [] });
     expect(thread.send).toHaveBeenCalledWith('ok', jasmine.objectContaining({ id: 1 }), []);
     expect(fixture.componentInstance.replyTo()).toBeNull();
+  });
+
+  describe('scrolling', () => {
+    const day = (id: number) => new Date(Date.UTC(2026, 0, 1, 0, id)).toISOString();
+    const page = (from: number, to: number): ChatMessage[] =>
+      Array.from({ length: to - from + 1 }, (_, i) => chatMessage(from + i, { body: `message number ${from + i} `.repeat(4), created_at: day(from + i) }));
+
+    function renderScrollable(initial: ChatMessage[]) {
+      api.messages.and.returnValue(of(initial));
+      const r = render();
+      const host: HTMLElement = r.fixture.nativeElement;
+      host.style.display = 'block';
+      host.style.height = '240px';
+      const scroller = host.querySelector('div.overflow-y-auto') as HTMLElement;
+      scroller.style.height = '240px';
+      scroller.style.overflowY = 'auto';
+      r.fixture.detectChanges();
+      return { ...r, scroller };
+    }
+
+    const settle = async (fixture: { detectChanges(): void; whenStable(): Promise<unknown> }) => {
+      fixture.detectChanges();
+      await fixture.whenStable();
+      fixture.detectChanges();
+    };
+
+    it('keeps the position and shows the pill when someone else writes while I read older messages', async () => {
+      const { fixture, thread, scroller } = renderScrollable(page(100, 129));
+      await settle(fixture);
+      scroller.scrollTop = 200;
+      scroller.dispatchEvent(new Event('scroll'));
+      thread.apply({ type: 'chat.message', conversation_id: 12, message: chatMessage(500, { created_at: day(500) }) });
+      await settle(fixture);
+      expect(fixture.componentInstance.unseen()).toBeTrue();
+      expect(scroller.scrollTop).toBe(200);
+    });
+
+    it('keeps the reading position when an older page is prepended', async () => {
+      const { fixture, scroller } = renderScrollable(page(100, 149));
+      const older = new Subject<ChatMessage[]>();
+      await settle(fixture);
+      api.messages.and.returnValue(older);
+      scroller.scrollTop = 0;
+      scroller.dispatchEvent(new Event('scroll'));
+      const before = scroller.scrollHeight;
+      older.next(page(50, 99));
+      await settle(fixture);
+      expect(scroller.scrollHeight).toBeGreaterThan(before);
+      expect(scroller.scrollTop).toBe(scroller.scrollHeight - before);
+    });
+
+    it('leaves no anchor behind when the older page adds nothing', async () => {
+      const { fixture, scroller } = renderScrollable(page(100, 149));
+      await settle(fixture);
+      api.messages.and.returnValue(of([]));
+      scroller.scrollTop = 0;
+      scroller.dispatchEvent(new Event('scroll'));
+      await settle(fixture);
+      expect((fixture.componentInstance as unknown as { olderAnchor: unknown }).olderAnchor).toBeNull();
+    });
+
+    it('leaves no anchor behind when the older page fails', async () => {
+      const { fixture, scroller } = renderScrollable(page(100, 149));
+      await settle(fixture);
+      api.messages.and.returnValue(throwError(() => ({ status: 500 })));
+      scroller.scrollTop = 0;
+      scroller.dispatchEvent(new Event('scroll'));
+      await settle(fixture);
+      expect((fixture.componentInstance as unknown as { olderAnchor: unknown }).olderAnchor).toBeNull();
+    });
   });
 });
