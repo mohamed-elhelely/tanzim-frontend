@@ -1,4 +1,4 @@
-<app-page-header title="locations.cities.title" [actions]="headerActions">
+<app-page-header [count]="table.loaded() ? table.total() : null" title="locations.cities.title" [actions]="headerActions">
   <app-import-export-actions resource="city" [table]="table" (imported)="table.load()"></app-import-export-actions>
 </app-page-header>
 
@@ -55,6 +55,8 @@
         [lazyLoadOnInit]="false"
         (onLazyLoad)="table.onLazyLoad($event)"
         [paginator]="true"
+        [showCurrentPageReport]="true"
+        [currentPageReportTemplate]="'common.pageReport' | translate"
         [first]="table.first()"
         [rows]="table.pageSize()"
         [totalRecords]="table.total()"

@@ -1,4 +1,4 @@
-<app-page-header title="company.users.title" [actions]="headerActions()"></app-page-header>
+<app-page-header [count]="loading() ? null : users().length" title="company.users.title" [actions]="headerActions()"></app-page-header>
 
 @if (error(); as err) {
   <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403" (retry)="load()"></app-error-state>
@@ -30,6 +30,8 @@
         #table
         [value]="users()"
         [paginator]="true"
+        [showCurrentPageReport]="true"
+        [currentPageReportTemplate]="'common.pageReport' | translate"
         [rows]="10"
         [rowsPerPageOptions]="[10, 25, 50]"
         [globalFilterFields]="searchFields"

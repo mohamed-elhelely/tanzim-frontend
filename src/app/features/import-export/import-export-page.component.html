@@ -84,6 +84,8 @@
           [lazyLoadOnInit]="false"
           (onLazyLoad)="tasks.onLazyLoad($event)"
           [paginator]="true"
+          [showCurrentPageReport]="true"
+          [currentPageReportTemplate]="'common.pageReport' | translate"
           [first]="tasks.first()"
           [rows]="tasks.pageSize()"
           [totalRecords]="tasks.total()"

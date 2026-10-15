@@ -1,4 +1,4 @@
-<app-page-header title="inventory.stock.title" subtitle="inventory.stock.subtitle"></app-page-header>
+<app-page-header [count]="loading() ? null : rows().length" title="inventory.stock.title" subtitle="inventory.stock.subtitle"></app-page-header>
 
 <div class="flex flex-col gap-4">
   <div class="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900">
@@ -100,8 +100,10 @@
         <p-table
           [value]="rows()"
           [paginator]="true"
-          [rows]="25"
-          [rowsPerPageOptions]="[25, 50, 100]"
+          [showCurrentPageReport]="true"
+          [currentPageReportTemplate]="'common.pageReport' | translate"
+          [rows]="10"
+          [rowsPerPageOptions]="[10, 25, 50, 100]"
           [loading]="loading()"
           dataKey="variant_id"
           sortField="sku"

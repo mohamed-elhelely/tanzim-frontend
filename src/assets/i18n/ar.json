@@ -4,6 +4,7 @@
     "tagline": "منصة التشغيل"
   },
   "common": {
+    "pageReport": "{first}–{last} من {totalRecords}",
     "loading": "جارٍ التحميل...",
     "empty": "لا توجد بيانات",
     "error": "حدث خطأ ما",

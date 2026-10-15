@@ -1,5 +1,5 @@
 @if (!scope()) {
-  <app-page-header title="systemLogs.title" subtitle="systemLogs.subtitle" [actions]="headerActions()"></app-page-header>
+  <app-page-header [count]="table.loaded() ? table.total() : null" title="systemLogs.title" subtitle="systemLogs.subtitle" [actions]="headerActions()"></app-page-header>
 }
 
 @if (table.error(); as err) {
@@ -124,6 +124,8 @@
         [lazyLoadOnInit]="false"
         (onLazyLoad)="table.onLazyLoad($event)"
         [paginator]="true"
+        [showCurrentPageReport]="true"
+        [currentPageReportTemplate]="'common.pageReport' | translate"
         [first]="table.first()"
         [rows]="table.pageSize()"
         [totalRecords]="table.total()"

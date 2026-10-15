@@ -4,6 +4,7 @@
     "tagline": "Operations suite"
   },
   "common": {
+    "pageReport": "{first}–{last} of {totalRecords}",
     "loading": "Loading...",
     "empty": "No data available",
     "error": "Something went wrong",

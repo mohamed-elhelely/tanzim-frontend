@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, computed, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { DecimalPipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { AccessService } from '../../../core/auth/access.service';
@@ -20,12 +21,14 @@ export interface PageHeaderAction {
  */
 @Component({
   selector: 'app-page-header',
-  imports: [TranslatePipe, ButtonModule],
+  imports: [DecimalPipe, TranslatePipe, ButtonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './page-header.component.html',
 })
 export class PageHeaderComponent {
   @Input() title = '';
+  /** The list's total from the API, shown as "Customers (125)"; null while unknown (loading or unavailable). */
+  @Input() count: number | null | undefined = null;
   @Input() subtitle?: string;
   @Input() showBack = false;
   @Input() backLabel = 'common.back';

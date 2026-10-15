@@ -20,6 +20,18 @@ function createTable(fetch: Fetch, options: ServerTableOptions = {}) {
 const page = (items: number[], total = items.length): Paginated<number> => ({ items, total, page: 1, pageSize: 10 });
 
 describe('ServerTable', () => {
+  it("asks for 10 rows by default and knows the API's total only once it answered", () => {
+    const answer = new Subject<Paginated<number>>();
+    const fetch = jasmine.createSpy('fetch').and.returnValue(answer);
+    const { table } = createTable(fetch);
+    table.load();
+    expect(fetch.calls.mostRecent().args[0]).toEqual(jasmine.objectContaining({ page: 1, pageSize: 10 }));
+    expect(table.loaded()).toBeFalse();
+    answer.next(page([1, 2], 125));
+    expect(table.loaded()).toBeTrue();
+    expect(table.total()).toBe(125);
+  });
+
   it('sends a multi-select comma-separated and drops it when empty', () => {
     const fetch = jasmine.createSpy('fetch').and.returnValue(of(page([])));
     const fields: { status: string[] } = { status: ['draft', 'issued'] };

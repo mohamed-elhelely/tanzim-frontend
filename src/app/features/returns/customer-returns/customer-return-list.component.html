@@ -1,4 +1,4 @@
-<app-page-header title="returns.customer.title" [actions]="headerActions"></app-page-header>
+<app-page-header [count]="table.loaded() ? table.total() : null" title="returns.customer.title" [actions]="headerActions"></app-page-header>
 
 @if (table.error(); as err) {
   <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403" (retry)="table.load()"></app-error-state>
@@ -47,6 +47,8 @@
         [lazyLoadOnInit]="false"
         (onLazyLoad)="table.onLazyLoad($event)"
         [paginator]="true"
+        [showCurrentPageReport]="true"
+        [currentPageReportTemplate]="'common.pageReport' | translate"
         [first]="table.first()"
         [rows]="table.pageSize()"
         [totalRecords]="table.total()"
