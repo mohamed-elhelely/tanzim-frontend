@@ -19,6 +19,8 @@ import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
+import { DialogService } from 'primeng/dynamicdialog';
+import { AccessService } from '../../../core/auth/access.service';
 import { AppError } from '../../../core/errors/app-error';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
@@ -32,7 +34,9 @@ import { ItemOption, toItemOption, trimZeros } from '../../inventory/variants/va
 import { WarehouseService } from '../../inventory/warehouses/warehouse.service';
 import { AddressFieldsComponent, addressGroup, patchAddress, toAddress } from '../address-fields/address-fields.component';
 import { CustomerService } from '../customers/customer.service';
+import { QuickCustomerDialogComponent } from '../customers/quick-customer-dialog.component';
 import {
+  Customer,
   CustomerListItem,
   ORDER_PRIORITIES,
   OrderPriority,
@@ -101,6 +105,7 @@ function today(): string {
 })
 export class SalesOrderFormComponent implements OnInit {
   private readonly api = inject(SalesOrderService);
+  private readonly access = inject(AccessService);
   private readonly customersApi = inject(CustomerService);
   private readonly warehousesApi = inject(WarehouseService);
   private readonly variantsApi = inject(ProductVariantService);
@@ -108,6 +113,9 @@ export class SalesOrderFormComponent implements OnInit {
   private readonly notifications = inject(NotificationService);
   private readonly translate = inject(TranslateService);
   private readonly fb = inject(NonNullableFormBuilder);
+  private readonly dialogs = inject(DialogService);
+  /** "Quick add customer" needs the right to create customers. */
+  readonly canQuickAddCustomer = computed(() => this.access.can('add_customer'));
 
   readonly id = Number(inject(ActivatedRoute).snapshot.paramMap.get('id')) || null;
   readonly isEdit = this.id !== null;
@@ -140,7 +148,6 @@ export class SalesOrderFormComponent implements OnInit {
     discount_amount: ['0', [Validators.pattern(MONEY)]],
     shipping_cost: ['0', [Validators.pattern(MONEY)]],
     shipping_address: addressGroup(this.fb),
-    billing_address: addressGroup(this.fb),
     notes: [''],
     internal_notes: [''],
     lines: this.fb.array<LineForm>([], Validators.required),
@@ -241,14 +248,35 @@ export class SalesOrderFormComponent implements OnInit {
     }
   }
 
-  /** On a new order, picking a customer fills in their terms, currency and addresses. */
+  /** Opens "Quick add customer"; the new customer is added to the list and chosen for this order. */
+  openQuickCustomer(): void {
+    const ref = this.dialogs.open(QuickCustomerDialogComponent, {
+      header: this.translate.instant('sales.quickCustomer.title'),
+      width: '28rem',
+      breakpoints: { '640px': '100vw' },
+      modal: true,
+      closable: true,
+      closeOnEscape: true,
+      focusOnShow: true,
+    });
+    ref?.onClose.subscribe((customer: Customer | undefined) => {
+      if (!customer) {
+        return;
+      }
+      this.customers.update((customers) => [...customers.filter((c) => c.id !== customer.id), customer]);
+      this.form.controls.customer.setValue(customer.id);
+      this.form.controls.customer.markAsDirty();
+      this.onCustomerChange(customer.id);
+    });
+  }
+
+  /** On a new order, picking a customer fills in their terms, currency and shipping address. */
   onCustomerChange(customerId: number | null): void {
     if (this.isEdit || customerId === null) {
       return;
     }
     this.customersApi.detail(customerId).subscribe((customer) => {
       this.form.patchValue({ payment_terms: customer.payment_terms, currency: customer.currency || 'USD' });
-      patchAddress(this.form.controls.billing_address, customer.billing_address);
       patchAddress(this.form.controls.shipping_address, customer.shipping_address);
     });
   }
@@ -270,7 +298,6 @@ export class SalesOrderFormComponent implements OnInit {
       discount_amount: value.discount_amount.trim() || '0',
       shipping_cost: value.shipping_cost.trim() || '0',
       shipping_address: toAddress(this.form.controls.shipping_address),
-      billing_address: toAddress(this.form.controls.billing_address),
       notes: value.notes.trim(),
       internal_notes: value.internal_notes.trim(),
       lines: value.lines.map((line) => ({
@@ -336,7 +363,6 @@ export class SalesOrderFormComponent implements OnInit {
       notes: order.notes,
       internal_notes: order.internal_notes,
     });
-    patchAddress(this.form.controls.billing_address, order.billing_address);
     patchAddress(this.form.controls.shipping_address, order.shipping_address);
     // Inactive items already on the order stay selectable.
     const known = new Set(this.items().map((item) => item.value));

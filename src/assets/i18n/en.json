@@ -773,6 +773,11 @@
     }
   },
   "sales": {
+    "quickCustomer": {
+      "button": "Quick add",
+      "title": "Quick add customer",
+      "created": "Customer {{name}} added and selected."
+    },
     "customers": {
       "title": "Customers",
       "new": "New customer",

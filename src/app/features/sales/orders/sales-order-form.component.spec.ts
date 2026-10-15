@@ -1,6 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController } from '@angular/common/http/testing';
 import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { of } from 'rxjs';
 import { envelope, errorEnvelope, provideApiTesting } from '../../../testing/api-testing';
 import { makeProduct, makeVariant } from '../../../testing/inventory-fixtures';
 import { makeCustomer, makeCustomerListItem, makeOrder } from '../../../testing/sales-fixtures';
@@ -90,8 +92,26 @@ describe('SalesOrderFormComponent', () => {
         ],
       }),
     );
+    // The billing address is no longer on the form, and not sent.
+    expect('billing_address' in req.request.body).toBeFalse();
     req.flush(envelope({ id: 9, order_number: 'SO-2026-00009', status: 'draft' }), { status: 201, statusText: 'Created' });
     expect(router.navigate).toHaveBeenCalledWith(['/sales/orders', 9]);
+  });
+
+  it('selects a customer made with "Quick add" and fills in their terms', () => {
+    const fixture = setup(null);
+    const component = fixture.componentInstance;
+    // Without add_customer (no /me loaded here) the button stays hidden.
+    expect(component.canQuickAddCustomer()).toBeFalse();
+    expect(fixture.nativeElement.textContent).not.toContain('sales.quickCustomer.button');
+
+    const created = makeCustomer({ id: 3, name: 'New Co', customer_number: 'CUST-0003' });
+    spyOn(TestBed.inject(DialogService), 'open').and.returnValue({ onClose: of(created) } as unknown as DynamicDialogRef);
+    component.openQuickCustomer();
+    expect(component.form.controls.customer.value).toBe(3);
+    expect(component.customerOptions().map((o) => o.value)).toContain(3);
+    httpMock.expectOne('/api/sales/customers/3/').flush(envelope(created));
+    expect(component.form.controls.currency.value).toBe('SAR');
   });
 
   it('needs at least one line and validates quantities and percentages', () => {

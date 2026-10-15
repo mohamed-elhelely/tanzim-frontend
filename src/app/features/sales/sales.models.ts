@@ -160,7 +160,6 @@ export interface SalesOrderPayload {
   warehouse: number;
   required_date: string | null;
   shipping_address: Address;
-  billing_address: Address;
   payment_terms: string;
   currency: string;
   discount_amount: string;

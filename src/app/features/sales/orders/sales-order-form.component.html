@@ -27,7 +27,18 @@
     <p-card>
       <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
         <div class="flex flex-col gap-1">
-          <label for="customer" class="text-sm font-medium">{{ 'sales.fields.customer' | translate }} *</label>
+          <div class="flex items-center justify-between gap-2">
+            <label for="customer" class="text-sm font-medium">{{ 'sales.fields.customer' | translate }} *</label>
+            @if (canQuickAddCustomer()) {
+              <button
+                type="button"
+                class="inline-flex items-center gap-1 text-xs font-medium text-primary-600 hover:underline dark:text-primary-300"
+                (click)="openQuickCustomer()"
+              >
+                <i class="pi pi-user-plus text-xs" aria-hidden="true"></i>{{ 'sales.quickCustomer.button' | translate }}
+              </button>
+            }
+          </div>
           <p-select
             inputId="customer"
             formControlName="customer"
@@ -272,10 +283,6 @@
         <div class="flex flex-col gap-3">
           <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'sales.sections.shippingAddress' | translate }}</h3>
           <app-address-fields [group]="form.controls.shipping_address" idPrefix="shipping"></app-address-fields>
-        </div>
-        <div class="flex flex-col gap-3">
-          <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'sales.sections.billingAddress' | translate }}</h3>
-          <app-address-fields [group]="form.controls.billing_address" idPrefix="billing"></app-address-fields>
         </div>
         <div class="flex flex-col gap-1">
           <label for="notes" class="text-sm font-medium">{{ 'sales.fields.notes' | translate }}</label>

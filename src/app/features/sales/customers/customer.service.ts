@@ -11,6 +11,11 @@ import { Customer, CustomerListItem, CustomerPayload } from '../sales.models';
 export class CustomerService extends CrudApi<CustomerListItem, CustomerPayload, Customer> {
   protected readonly path = 'sales/customers/';
 
+  /** A customer from just a name and phone (the order form's "Quick add"); the backend defaults the rest. */
+  quickCreate(body: Pick<CustomerPayload, 'name' | 'phone'>): Observable<Customer> {
+    return this.post<Customer>(this.path, body).pipe(map((response) => response.data as Customer));
+  }
+
   detail(id: number): Observable<Customer> {
     return this.get<Customer>(this.detailPath(id)).pipe(map((response) => response.data as Customer));
   }
