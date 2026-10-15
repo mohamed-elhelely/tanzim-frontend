@@ -2,6 +2,8 @@ import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } 
 import { TranslatePipe } from '@ngx-translate/core';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { FormsModule } from '@angular/forms';
+import { chatConversationId } from '../../core/chat/chat.models';
+import { ChatStore } from '../../core/chat/chat.store';
 import { AppNotification } from '../../core/notifications/notification.model';
 import { NotificationCenterService } from '../../core/notifications/notification-center.service';
 import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
@@ -19,6 +21,7 @@ type Filter = 'all' | 'unread';
 })
 export class NotificationsPageComponent implements OnInit {
   readonly center = inject(NotificationCenterService);
+  private readonly chat = inject(ChatStore);
 
   readonly filter = signal<Filter>('all');
   readonly filterOptions = [
@@ -40,5 +43,9 @@ export class NotificationsPageComponent implements OnInit {
 
   open(notification: AppNotification): void {
     this.center.open(notification);
+    const conversationId = chatConversationId(notification);
+    if (conversationId) {
+      this.chat.openDrawer(conversationId);
+    }
   }
 }

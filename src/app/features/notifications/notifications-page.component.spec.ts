@@ -1,6 +1,7 @@
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideTranslateService } from '@ngx-translate/core';
+import { ChatStore } from '../../core/chat/chat.store';
 import { AppNotification } from '../../core/notifications/notification.model';
 import { NotificationCenterService } from '../../core/notifications/notification-center.service';
 import { NotificationsPageComponent } from './notifications-page.component';
@@ -21,7 +22,9 @@ describe('NotificationsPageComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [NotificationsPageComponent],
-      providers: [provideTranslateService(), { provide: NotificationCenterService, useValue: center }],
+      providers: [provideTranslateService(), { provide: NotificationCenterService, useValue: center },
+        { provide: ChatStore, useValue: { openDrawer: jasmine.createSpy('openDrawer') } },
+      ],
     });
   });
 

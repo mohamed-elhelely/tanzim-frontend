@@ -35,3 +35,6 @@
 @defer (when recordDetails.current()) {
   <app-record-details-drawer></app-record-details-drawer>
 }
+@defer (when chat.drawerOpen()) {
+  <app-chat-drawer></app-chat-drawer>
+}
