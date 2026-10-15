@@ -13,12 +13,13 @@ import { FormDialogService } from '../../../../shared/forms/form-dialog.service'
 import { errorTitleKey } from '../../../../shared/utils/server-errors';
 import { Plan } from '../platform-billing.models';
 import { PlanService } from '../platform-billing.service';
+import { RowActionComponent, RowActionsComponent } from '../../../../shared/table/row-actions.component';
 import { PlanFormComponent } from './plan-form.component';
 
 /** /admin/plans: the plan catalog companies subscribe to (staff). */
 @Component({
   selector: 'app-plan-list',
-  imports: [DecimalPipe, TranslatePipe, ButtonModule, TableModule, PageHeaderComponent, EmptyStateComponent, ErrorStateComponent, StatusBadgeComponent],
+  imports: [RowActionsComponent, RowActionComponent, DecimalPipe, TranslatePipe, ButtonModule, TableModule, PageHeaderComponent, EmptyStateComponent, ErrorStateComponent, StatusBadgeComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './plan-list.component.html',
 })

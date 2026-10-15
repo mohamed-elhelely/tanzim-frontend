@@ -18,11 +18,14 @@ import { ServerTable, splitFilter } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { SUPPLIER_RETURN_SEVERITY, SUPPLIER_RETURN_STATUSES, SupplierReturnListItem, SupplierReturnStatus } from '../returns.models';
 import { SupplierReturnService } from './supplier-return.service';
+import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 @Component({
   selector: 'app-supplier-return-list',
   imports: [
+    RowActionsComponent,
+    RowActionComponent,
     SavedViewsComponent,
     FormsModule,
     TranslatePipe,

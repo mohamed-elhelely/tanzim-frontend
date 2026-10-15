@@ -30,12 +30,15 @@ import {
   daysOverdue,
 } from '../sales.models';
 import { SalesInvoiceService } from './sales-invoice.service';
+import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 /** Invoices are created from a delivered order ("Create invoice"), so this list has no New button. */
 @Component({
   selector: 'app-sales-invoice-list',
   imports: [
+    RowActionsComponent,
+    RowActionComponent,
     SavedViewsComponent,
     DecimalPipe,
     FormsModule,

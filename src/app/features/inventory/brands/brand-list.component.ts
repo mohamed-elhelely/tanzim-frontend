@@ -17,11 +17,14 @@ import { FormDialogService } from '../../../shared/forms/form-dialog.service';
 import { Brand } from '../inventory.models';
 import { BrandFormComponent } from './brand-form.component';
 import { BrandService } from './brand.service';
+import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 @Component({
   selector: 'app-brand-list',
   imports: [
+    RowActionsComponent,
+    RowActionComponent,
     SavedViewsComponent,
     TranslatePipe,
     TableModule,

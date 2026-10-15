@@ -52,6 +52,7 @@
             <th>{{ 'accounting.fields.status' | translate }}</th>
             <th class="text-end">{{ 'accounting.fields.amount' | translate }}</th>
             <th class="text-end">{{ 'accounting.fields.unallocated' | translate }}</th>
+            <th class="text-end">{{ 'common.actions' | translate }}</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-row>
@@ -68,11 +69,16 @@
             </td>
             <td class="whitespace-nowrap text-end font-medium">{{ row.amount | number: '1.2-2' }}</td>
             <td class="whitespace-nowrap text-end">{{ row.unallocated_amount | number: '1.2-2' }}</td>
+            <td class="whitespace-nowrap text-end">
+              <app-row-actions [recordId]="row.id" [recordName]="row.payment_number">
+                <app-row-action icon="pi pi-eye" label="common.view" (run)="open(row)"></app-row-action>
+              </app-row-actions>
+            </td>
           </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">
           <tr>
-            <td colspan="7"><app-empty-state icon="pi-wallet"></app-empty-state></td>
+            <td colspan="8"><app-empty-state icon="pi-wallet"></app-empty-state></td>
           </tr>
         </ng-template>
       </p-table>

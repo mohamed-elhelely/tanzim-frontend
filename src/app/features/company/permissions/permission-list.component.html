@@ -75,25 +75,14 @@
             <td>{{ groupNames(row) }}</td>
             @if (canEdit() || canDelete()) {
               <td class="whitespace-nowrap text-end">
-                @if (canEdit() && !isSystem(row)) {
-                  <p-button
-                    icon="pi pi-pencil"
-                    [text]="true"
-                    [rounded]="true"
-                    [ariaLabel]="'common.edit' | translate"
-                    (onClick)="edit(row)"
-                  ></p-button>
-                }
-                @if (canDelete() && !isSystem(row)) {
-                  <p-button
-                    icon="pi pi-trash"
-                    severity="danger"
-                    [text]="true"
-                    [rounded]="true"
-                    [ariaLabel]="'common.delete' | translate"
-                    (onClick)="confirmDelete(row)"
-                  ></p-button>
-                }
+                <app-row-actions [recordId]="row.id">
+                  @if (canEdit() && !isSystem(row)) {
+                    <app-row-action icon="pi pi-pencil" label="common.edit" (run)="edit(row)"></app-row-action>
+                  }
+                  @if (canDelete() && !isSystem(row)) {
+                    <app-row-action icon="pi pi-trash" label="common.delete" severity="danger" (run)="confirmDelete(row)"></app-row-action>
+                  }
+                </app-row-actions>
               </td>
             }
           </tr>

@@ -99,22 +99,11 @@
               </div>
             </td>
             <td class="whitespace-nowrap text-end">
-              <p-button
-                icon="pi pi-th-large"
-                [text]="true"
-                [rounded]="true"
-                [ariaLabel]="'admin.billing.subscriptions.manageModules' | translate"
-                (onClick)="openModules(row)"
-              ></p-button>
-              <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" [ariaLabel]="'common.edit' | translate" (onClick)="openForm(row.id)"></p-button>
-              <p-button
-                icon="pi pi-trash"
-                severity="danger"
-                [text]="true"
-                [rounded]="true"
-                [ariaLabel]="'common.delete' | translate"
-                (onClick)="confirmDelete(row)"
-              ></p-button>
+              <app-row-actions [recordId]="row.id">
+                <app-row-action icon="pi pi-th-large" label="admin.billing.subscriptions.manageModules" (run)="openModules(row)"></app-row-action>
+                <app-row-action icon="pi pi-pencil" label="common.edit" (run)="openForm(row.id)"></app-row-action>
+                <app-row-action icon="pi pi-trash" label="common.delete" severity="danger" (run)="confirmDelete(row)"></app-row-action>
+              </app-row-actions>
             </td>
           </tr>
         </ng-template>

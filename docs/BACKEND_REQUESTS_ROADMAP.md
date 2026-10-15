@@ -133,6 +133,14 @@ You are working on the backend of Tanzim, a bilingual (English/Arabic) multi-ten
     or a global catalog (then their button will always be empty)? (c) are sales invoice lines, customer/supplier
     return lines and debit note lines logged, and under which resource names? (d) does `view_auditlog` alone let a
     user read every module's entries, or should a module's log also require that module's `view_<resource>`?
+
+16. One record's log with its lines: every list row now has "View logs", which reads
+    `GET /api/audit/v1/logs/?resource=<resource>&object_id=<id>`. A document's lines are logged as their own resource
+    with their own ids (`salesorderline`, `deliverynoteline`, `journalline`), so an order's log misses changes to its
+    lines, and a company user's log misses their account (`user`, a different id). Can the log filter by the parent
+    record, e.g. `?related_to=salesorder:245` returning the order's entries plus its lines' (and, for `companyuser`,
+    the linked `user`)? Lines' entries could carry the parent in `meta` (`{"parent": {"resource": "salesorder",
+    "id": "245"}}`) so the frontend can show which line changed.
 ```
 
 ## Fixed

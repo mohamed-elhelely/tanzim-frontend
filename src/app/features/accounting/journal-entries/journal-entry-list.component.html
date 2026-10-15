@@ -83,6 +83,7 @@
             <th>{{ 'accounting.fields.origin' | translate }}</th>
             <th>{{ 'accounting.fields.status' | translate }}</th>
             <th class="text-end">{{ 'accounting.fields.amount' | translate }}</th>
+            <th class="text-end">{{ 'common.actions' | translate }}</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-row>
@@ -103,11 +104,16 @@
               }
             </td>
             <td class="whitespace-nowrap text-end font-medium">{{ row.total_debit | number: '1.2-2' }}</td>
+            <td class="whitespace-nowrap text-end">
+              <app-row-actions [recordId]="row.id" [recordName]="row.entry_number">
+                <app-row-action icon="pi pi-eye" label="common.view" (run)="open(row)"></app-row-action>
+              </app-row-actions>
+            </td>
           </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">
           <tr>
-            <td colspan="6"><app-empty-state icon="pi-book"></app-empty-state></td>
+            <td colspan="7"><app-empty-state icon="pi-book"></app-empty-state></td>
           </tr>
         </ng-template>
       </p-table>

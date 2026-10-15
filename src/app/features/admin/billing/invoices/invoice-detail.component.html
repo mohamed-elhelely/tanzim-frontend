@@ -98,15 +98,10 @@
               <td class="text-end font-medium" dir="ltr">{{ item.amount | number: '1.2-2' }}</td>
               @if (invoice.can_edit) {
                 <td class="whitespace-nowrap text-end">
-                  <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" [ariaLabel]="'common.edit' | translate" (onClick)="openItem(item)"></p-button>
-                  <p-button
-                    icon="pi pi-trash"
-                    severity="danger"
-                    [text]="true"
-                    [rounded]="true"
-                    [ariaLabel]="'common.delete' | translate"
-                    (onClick)="removeItem(item)"
-                  ></p-button>
+                  <app-row-actions>
+                    <app-row-action icon="pi pi-pencil" label="common.edit" (run)="openItem(item)"></app-row-action>
+                    <app-row-action icon="pi pi-trash" label="common.delete" severity="danger" (run)="removeItem(item)"></app-row-action>
+                  </app-row-actions>
                 </td>
               }
             </tr>

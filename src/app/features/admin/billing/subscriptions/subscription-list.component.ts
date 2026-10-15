@@ -18,6 +18,7 @@ import { SUBSCRIPTION_SEVERITY, SUBSCRIPTION_STATUSES, Severity, Subscription } 
 import { SubscriptionService } from '../platform-billing.service';
 import { SubscriptionFormComponent } from './subscription-form.component';
 import { SubscriptionModulesComponent } from './subscription-modules.component';
+import { RowActionComponent, RowActionsComponent } from '../../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../../shared/table/saved-views.component';
 
 /**
@@ -27,6 +28,8 @@ import { SavedViewsComponent } from '../../../../shared/table/saved-views.compon
 @Component({
   selector: 'app-subscription-list',
   imports: [
+    RowActionsComponent,
+    RowActionComponent,
     SavedViewsComponent,
     FormsModule,
     TranslatePipe,

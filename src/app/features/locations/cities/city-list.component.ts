@@ -18,11 +18,14 @@ import { FormDialogService } from '../../../shared/forms/form-dialog.service';
 import { City } from '../locations.models';
 import { CityFormComponent } from './city-form.component';
 import { CityService } from './city.service';
+import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 @Component({
   selector: 'app-city-list',
   imports: [
+    RowActionsComponent,
+    RowActionComponent,
     SavedViewsComponent,
     TranslatePipe,
     TableModule,

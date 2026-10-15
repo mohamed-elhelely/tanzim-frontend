@@ -16,11 +16,14 @@ import { ServerTable, splitFilter } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { SUPPLIER_PAYMENT_METHODS, SupplierPayment, SupplierPaymentMethod } from '../accounting.models';
 import { SupplierPaymentService } from './supplier-payment.service';
+import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 @Component({
   selector: 'app-supplier-payment-list',
   imports: [
+    RowActionsComponent,
+    RowActionComponent,
     SavedViewsComponent,
     DecimalPipe,
     FormsModule,

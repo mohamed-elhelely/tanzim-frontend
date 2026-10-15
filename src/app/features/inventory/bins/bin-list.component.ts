@@ -17,11 +17,14 @@ import { FormDialogService } from '../../../shared/forms/form-dialog.service';
 import { Bin } from '../inventory.models';
 import { BinFormComponent } from './bin-form.component';
 import { BinService } from './bin.service';
+import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 @Component({
   selector: 'app-bin-list',
   imports: [
+    RowActionsComponent,
+    RowActionComponent,
     SavedViewsComponent,
     TranslatePipe,
     TableModule,

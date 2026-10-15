@@ -13,6 +13,7 @@ import { StatusBadgeComponent } from '../../shared/components/status-badge/statu
 import { TimeAgoPipe } from '../../shared/pipes/time-ago.pipe';
 import { errorTitleKey } from '../../shared/utils/server-errors';
 import { CurrentSubscription, InvoiceStatus, PlatformInvoice, SubscriptionStatus } from './billing.models';
+import { RowActionComponent, RowActionsComponent } from '../../shared/table/row-actions.component';
 import { BillingService } from './billing.service';
 
 type Severity = 'success' | 'secondary' | 'info' | 'warn' | 'danger';
@@ -38,6 +39,8 @@ const INVOICE_SEVERITY: Record<InvoiceStatus, Severity> = {
 @Component({
   selector: 'app-billing-page',
   imports: [
+    RowActionsComponent,
+    RowActionComponent,
     TranslatePipe,
     ButtonModule,
     DialogModule,

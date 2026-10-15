@@ -17,11 +17,14 @@ import { FormDialogService } from '../../../shared/forms/form-dialog.service';
 import { Category } from '../inventory.models';
 import { CategoryFormComponent } from './category-form.component';
 import { CategoryService } from './category.service';
+import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 @Component({
   selector: 'app-category-list',
   imports: [
+    RowActionsComponent,
+    RowActionComponent,
     SavedViewsComponent,
     TranslatePipe,
     TableModule,

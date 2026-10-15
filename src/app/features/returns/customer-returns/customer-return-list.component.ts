@@ -26,11 +26,14 @@ import {
   ReturnReason,
 } from '../returns.models';
 import { CustomerReturnService } from './customer-return.service';
+import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 @Component({
   selector: 'app-customer-return-list',
   imports: [
+    RowActionsComponent,
+    RowActionComponent,
     SavedViewsComponent,
     DatePipe,
     DecimalPipe,

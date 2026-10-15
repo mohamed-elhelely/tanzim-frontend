@@ -20,11 +20,14 @@ import { FormDialogService } from '../../../shared/forms/form-dialog.service';
 import { Team } from '../company.models';
 import { TeamFormComponent } from './team-form.component';
 import { TeamService } from './team.service';
+import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 @Component({
   selector: 'app-team-list',
   imports: [
+    RowActionsComponent,
+    RowActionComponent,
     SavedViewsComponent,
     TranslatePipe,
     TableModule,

@@ -714,7 +714,10 @@
   "activityLog": {
     "button": "Activity log",
     "title": "Activity log — {{module}}",
-    "subtitle": "Every change to this module's records, newest first. Open a row for the full details."
+    "subtitle": "Every change to this module's records, newest first. Open a row for the full details.",
+    "viewLogs": "View logs",
+    "recordTitle": "Activity log — {{module}}: {{name}}",
+    "recordSubtitle": "Every change to this record, newest first. Open a row for the full details."
   },
   "notifications": {
     "all": "All",
@@ -970,7 +973,8 @@
     },
     "payments": {
       "title": "Payments",
-      "subtitle": "Recorded and refunded from their invoice."
+      "subtitle": "Recorded and refunded from their invoice.",
+      "viewInvoice": "View invoice"
     },
     "deliveryStatuses": {
       "draft": "Draft",

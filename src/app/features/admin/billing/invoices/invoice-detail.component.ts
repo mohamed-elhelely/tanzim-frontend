@@ -24,6 +24,7 @@ import { StatusBadgeComponent } from '../../../../shared/components/status-badge
 import { errorTitleKey, handleSaveError } from '../../../../shared/utils/server-errors';
 import { InvoiceItem } from '../../../billing/billing.models';
 import { AdminInvoice, BillingModule, INVOICE_SEVERITY, MONEY, WHOLE } from '../platform-billing.models';
+import { RowActionComponent, RowActionsComponent } from '../../../../shared/table/row-actions.component';
 import { AdminInvoiceService, BillingModuleService } from '../platform-billing.service';
 
 /**
@@ -33,6 +34,8 @@ import { AdminInvoiceService, BillingModuleService } from '../platform-billing.s
 @Component({
   selector: 'app-invoice-detail',
   imports: [
+    RowActionsComponent,
+    RowActionComponent,
     DatePipe,
     DecimalPipe,
     ReactiveFormsModule,

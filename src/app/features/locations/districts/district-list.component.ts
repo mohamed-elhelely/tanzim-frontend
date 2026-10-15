@@ -18,11 +18,14 @@ import { FormDialogService } from '../../../shared/forms/form-dialog.service';
 import { District } from '../locations.models';
 import { DistrictFormComponent } from './district-form.component';
 import { DistrictService } from './district.service';
+import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 @Component({
   selector: 'app-district-list',
   imports: [
+    RowActionsComponent,
+    RowActionComponent,
     SavedViewsComponent,
     TranslatePipe,
     TableModule,

@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { envelope, provideApiTesting } from '../../../testing/api-testing';
 import { makeAccount, makeChart } from '../../../testing/accounting-fixtures';
 import { AccountListComponent, toTree } from './account-list.component';
+import { rowActionIcons } from '../../../testing/row-actions';
 
 const URL = '/api/accounting/v1/accounts/';
 
@@ -57,6 +58,6 @@ describe('AccountListComponent', () => {
     fixture.detectChanges();
     httpMock.expectOne((r) => r.url === URL).flush(envelope(makeChart()));
     fixture.detectChanges();
-    expect(fixture.nativeElement.querySelectorAll('.pi-trash').length).toBe(4);
+    expect(rowActionIcons(fixture).filter((icon) => icon === 'pi pi-trash').length).toBe(4);
   });
 });

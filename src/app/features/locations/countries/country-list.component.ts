@@ -18,11 +18,14 @@ import { FormDialogService } from '../../../shared/forms/form-dialog.service';
 import { Country } from '../locations.models';
 import { CountryFormComponent } from './country-form.component';
 import { CountryService } from './country.service';
+import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 @Component({
   selector: 'app-country-list',
   imports: [
+    RowActionsComponent,
+    RowActionComponent,
     SavedViewsComponent,
     TranslatePipe,
     TableModule,

@@ -88,13 +88,9 @@
               }
             </td>
             <td class="whitespace-nowrap text-end">
-              <p-button
-                icon="pi pi-pencil"
-                [text]="true"
-                [rounded]="true"
-                [ariaLabel]="'common.edit' | translate"
-                (onClick)="edit(row)"
-              ></p-button>
+              <app-row-actions [recordId]="row.id">
+                <app-row-action icon="pi pi-pencil" label="common.edit" (run)="edit(row)"></app-row-action>
+              </app-row-actions>
             </td>
           </tr>
         </ng-template>

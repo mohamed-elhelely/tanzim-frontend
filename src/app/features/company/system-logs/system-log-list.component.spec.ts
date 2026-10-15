@@ -187,6 +187,17 @@ describe('SystemLogListComponent', () => {
     expect(fixture.componentInstance.table.error()?.status).toBe(403);
   });
 
+  it("as one record's log, asks for that record only", () => {
+    const fixture = TestBed.createComponent(SystemLogListComponent);
+    fixture.componentRef.setInput('scope', ['brand']);
+    fixture.componentRef.setInput('objectId', 7);
+    fixture.detectChanges();
+    httpMock
+      .expectOne((r) => r.url === URL && r.params.get('resource') === 'brand' && r.params.get('object_id') === '7')
+      .flush(envelope([makeLogEntry({ resource: 'brand', object_id: '7' })], 1));
+    httpMock.expectOne((r) => r.url === USERS).flush(envelope([]));
+  });
+
   it("as a module's activity log, always asks for that module's resources and hides the resource filter", () => {
     const fixture = TestBed.createComponent(SystemLogListComponent);
     fixture.componentRef.setInput('scope', ['salesorder', 'salesorderline']);

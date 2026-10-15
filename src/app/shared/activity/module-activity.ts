@@ -47,10 +47,16 @@ export const MODULE_ACTIVITY_RESOURCES: Readonly<Record<string, readonly string[
   '/accounting/debit-notes': ['debitnote'],
 };
 
-/** What the activity drawer shows: the module's name (a translation key) and its audit resources. */
+/**
+ * What the activity drawer shows: the module's name (a translation key) and its audit resources; with `objectId`,
+ * only the log of that one record (a row's "View logs").
+ */
 export interface ModuleActivity {
   titleKey: string;
   resources: readonly string[];
+  objectId?: string | number;
+  /** The record's name for the title (e.g. the brand's name, the order's number). */
+  objectName?: string;
 }
 
 /** The module activity for a screen's path (`/sales/orders`), or null when the screen has none. */

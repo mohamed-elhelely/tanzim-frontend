@@ -5,6 +5,7 @@ import { Confirmation, ConfirmationService } from 'primeng/api';
 import { envelope, provideApiTesting } from '../../../testing/api-testing';
 import { makeOrderListItem } from '../../../testing/sales-fixtures';
 import { SalesOrderListComponent } from './sales-order-list.component';
+import { rowActionIcons } from '../../../testing/row-actions';
 
 const URL = '/api/sales/sales-orders/';
 
@@ -52,7 +53,7 @@ describe('SalesOrderListComponent', () => {
     expect(text).toContain('SO-2026-00001');
     expect(text).toContain('sales.orderStatuses.confirmed');
     expect(text).toContain('232.00 SAR');
-    expect(fixture.nativeElement.querySelectorAll('.pi-trash').length).toBe(1);
+    expect(rowActionIcons(fixture)).toEqual(['pi pi-eye', 'pi pi-trash', 'pi pi-eye']);
   });
 
   it('filters by status', () => {

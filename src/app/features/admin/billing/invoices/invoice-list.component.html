@@ -74,6 +74,7 @@
             <th>{{ 'billing.fields.dueDate' | translate }}</th>
             <th class="text-end">{{ 'billing.fields.total' | translate }}</th>
             <th class="text-end">{{ 'billing.fields.amountDue' | translate }}</th>
+            <th class="text-end">{{ 'common.actions' | translate }}</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-row>
@@ -91,11 +92,16 @@
             <td class="whitespace-nowrap" dir="ltr">{{ row.due_date }}</td>
             <td class="text-end" dir="ltr">{{ row.total | number: '1.2-2' }}</td>
             <td class="text-end font-medium" dir="ltr">{{ row.amount_due | number: '1.2-2' }}</td>
+            <td class="whitespace-nowrap text-end">
+              <app-row-actions [recordId]="row.id">
+                <app-row-action icon="pi pi-eye" label="common.view" (run)="open(row)"></app-row-action>
+              </app-row-actions>
+            </td>
           </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">
           <tr>
-            <td colspan="7"><app-empty-state icon="pi-receipt"></app-empty-state></td>
+            <td colspan="8"><app-empty-state icon="pi-receipt"></app-empty-state></td>
           </tr>
         </ng-template>
       </p-table>

@@ -13,12 +13,13 @@ import { FormDialogService } from '../../../../shared/forms/form-dialog.service'
 import { errorTitleKey } from '../../../../shared/utils/server-errors';
 import { BillingModule } from '../platform-billing.models';
 import { BillingModuleService } from '../platform-billing.service';
+import { RowActionComponent, RowActionsComponent } from '../../../../shared/table/row-actions.component';
 import { ModuleFormComponent } from './module-form.component';
 
 /** /admin/modules: the feature modules companies can subscribe to (staff). */
 @Component({
   selector: 'app-module-list',
-  imports: [DecimalPipe, TranslatePipe, ButtonModule, TableModule, PageHeaderComponent, EmptyStateComponent, ErrorStateComponent, StatusBadgeComponent],
+  imports: [RowActionsComponent, RowActionComponent, DecimalPipe, TranslatePipe, ButtonModule, TableModule, PageHeaderComponent, EmptyStateComponent, ErrorStateComponent, StatusBadgeComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './module-list.component.html',
 })

@@ -21,12 +21,15 @@ import { errorTitleKey, handleSaveError } from '../../../../shared/utils/server-
 import { TenantCompanyService } from '../../companies/tenant-company.service';
 import { MONEY, PAYMENT_SEVERITY, PlatformPayment, Severity } from '../platform-billing.models';
 import { PlatformPaymentService } from '../platform-billing.service';
+import { RowActionComponent, RowActionsComponent } from '../../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../../shared/table/saved-views.component';
 
 /** /admin/payments: payments of every company on platform invoices; completed ones can be refunded. */
 @Component({
   selector: 'app-payment-list',
   imports: [
+    RowActionsComponent,
+    RowActionComponent,
     SavedViewsComponent,
     DatePipe,
     DecimalPipe,

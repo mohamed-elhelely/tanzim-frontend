@@ -99,21 +99,10 @@
               }
             </td>
             <td class="whitespace-nowrap text-end">
-              <p-button
-                icon="pi pi-pencil"
-                [text]="true"
-                [rounded]="true"
-                [ariaLabel]="'common.edit' | translate"
-                (onClick)="edit(row)"
-              ></p-button>
-              <p-button
-                icon="pi pi-trash"
-                severity="danger"
-                [text]="true"
-                [rounded]="true"
-                [ariaLabel]="'common.delete' | translate"
-                (onClick)="confirmDelete(row)"
-              ></p-button>
+              <app-row-actions [recordId]="row.id" [recordName]="row.name || row.code">
+                <app-row-action icon="pi pi-pencil" label="common.edit" (run)="edit(row)"></app-row-action>
+                <app-row-action icon="pi pi-trash" label="common.delete" severity="danger" (run)="confirmDelete(row)"></app-row-action>
+              </app-row-actions>
             </td>
           </tr>
         </ng-template>

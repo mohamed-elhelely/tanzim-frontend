@@ -114,23 +114,12 @@
               </div>
             </td>
             <td class="whitespace-nowrap text-end">
-              <p-button
-                icon="pi pi-eye"
-                [text]="true"
-                [rounded]="true"
-                [ariaLabel]="'common.view' | translate"
-                (onClick)="$event.stopPropagation(); open(row)"
-              ></p-button>
-              @if (row.status === 'draft') {
-                <p-button
-                  icon="pi pi-trash"
-                  severity="danger"
-                  [text]="true"
-                  [rounded]="true"
-                  [ariaLabel]="'common.delete' | translate"
-                  (onClick)="$event.stopPropagation(); confirmDelete(row)"
-                ></p-button>
-              }
+              <app-row-actions [recordId]="row.id" [recordName]="row.order_number">
+                <app-row-action icon="pi pi-eye" label="common.view" (run)="open(row)"></app-row-action>
+                @if (row.status === 'draft') {
+                  <app-row-action icon="pi pi-trash" label="common.delete" severity="danger" (run)="confirmDelete(row)"></app-row-action>
+                }
+              </app-row-actions>
             </td>
           </tr>
         </ng-template>

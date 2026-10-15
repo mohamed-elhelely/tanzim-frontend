@@ -17,12 +17,15 @@ import { StatusBadgeComponent } from '../../../shared/components/status-badge/st
 import { LocalizedNamePipe } from '../../../shared/pipes/localized-name.pipe';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { CompanyUser } from '../company.models';
+import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { CompanyUserService } from './company-user.service';
 
 /** The company-user endpoint returns the full list, so paging, sorting and search happen in the table. */
 @Component({
   selector: 'app-user-list',
   imports: [
+    RowActionsComponent,
+    RowActionComponent,
     TranslatePipe,
     TableModule,
     ButtonModule,

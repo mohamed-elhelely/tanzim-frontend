@@ -55,6 +55,7 @@
             <th pSortableColumn="amount" class="text-end">
               {{ 'sales.fields.amount' | translate }} <p-sortIcon field="amount"></p-sortIcon>
             </th>
+            <th class="text-end">{{ 'common.actions' | translate }}</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-row>
@@ -73,11 +74,16 @@
             </td>
             <td>{{ row.created_by_name || '—' }}</td>
             <td class="whitespace-nowrap text-end font-medium">{{ row.amount | number: '1.2-2' }}</td>
+            <td class="whitespace-nowrap text-end">
+              <app-row-actions [recordId]="row.id" [recordName]="row.reference || row.invoice_number">
+                <app-row-action icon="pi pi-eye" label="sales.payments.viewInvoice" (run)="openInvoice(row)"></app-row-action>
+              </app-row-actions>
+            </td>
           </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">
           <tr>
-            <td colspan="7"><app-empty-state icon="pi-wallet"></app-empty-state></td>
+            <td colspan="8"><app-empty-state icon="pi-wallet"></app-empty-state></td>
           </tr>
         </ng-template>
       </p-table>
