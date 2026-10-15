@@ -1,7 +1,6 @@
 import { EnvironmentProviders, Provider } from '@angular/core';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { provideTranslateService } from '@ngx-translate/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -40,7 +39,6 @@ export function provideApiTesting(): (Provider | EnvironmentProviders)[] {
     provideRouter([]),
     provideHttpClient(withInterceptors([errorInterceptor])),
     provideHttpClientTesting(),
-    provideAnimations(),
     provideTranslateService(),
     MessageService,
     ConfirmationService,

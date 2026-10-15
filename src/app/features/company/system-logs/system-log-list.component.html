@@ -185,9 +185,11 @@
   </div>
 }
 
+<!-- On the body: inside the module activity drawer it would stack under its own mask. -->
 <p-drawer
   [visible]="!!selected()"
   (visibleChange)="$event || close()"
+  appendTo="body"
   [modal]="true"
   [position]="language.direction() === 'rtl' ? 'left' : 'right'"
   [header]="'systemLogs.detailTitle' | translate"

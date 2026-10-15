@@ -1,7 +1,6 @@
 import { ApplicationConfig, ErrorHandler, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideTranslateService } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -20,7 +19,9 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideHttpClient(withInterceptors([apiHeadersInterceptor, authInterceptor, loadingInterceptor, errorInterceptor])),
-    provideAnimations(),
+    // No provideAnimations(): nothing uses @angular/animations (PrimeNG 21 animates with CSS). Its renderer only
+    // removes an element at the next change detection, and PrimeNG removes a drawer's mask outside Angular, so the
+    // mask stayed on screen after closing a drawer by clicking outside it and swallowed every later click.
     providePrimeNG({
       theme: {
         preset: TanzimPreset,
