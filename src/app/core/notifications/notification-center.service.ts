@@ -2,6 +2,7 @@ import { Injectable, computed, effect, inject, signal, untracked } from '@angula
 import { Router } from '@angular/router';
 import { Subject, forkJoin } from 'rxjs';
 import { environment } from '../../../environments/environment';
+import { ChatEvent } from '../chat/chat.models';
 import { BaseApiService } from '../api/base-api.service';
 import { AuthService } from '../auth/auth.service';
 import { TokenStorageService } from '../auth/token-storage.service';
@@ -10,6 +11,7 @@ import { AppNotification, SocketMessage, accountChange } from './notification.mo
 /** 4001: the access token was refused (expired or rotated) → refresh once, then reconnect. 4003: wrong user, final. */
 const TOKEN_REFUSED = 4001;
 const WRONG_USER = 4003;
+const SOCKET_OPEN = 1;
 const PING_EVERY_MS = 30_000;
 const MAX_RETRY_DELAY_MS = 60_000;
 
@@ -25,6 +27,10 @@ export class NotificationCenterService extends BaseApiService {
   private readonly tokens = inject(TokenStorageService);
   private readonly router = inject(Router);
   private readonly incoming = new Subject<AppNotification>();
+  private readonly chatEvents = new Subject<ChatEvent>();
+  private readonly reconnected = new Subject<void>();
+  /** True once this session's socket opened; later opens are reconnects. */
+  private openedBefore = false;
   private readonly itemsState = signal<AppNotification[]>([]);
   private readonly unreadState = signal(0);
   private socket: WebSocket | null = null;
@@ -41,6 +47,10 @@ export class NotificationCenterService extends BaseApiService {
   readonly hasUnread = computed(() => this.unreadState() > 0);
   /** Each notification the socket pushes, as it arrives (toasts and account-change handling listen here). */
   readonly incoming$ = this.incoming.asObservable();
+  /** Chat frames (`type` starts with `chat.`); ChatStore applies them. */
+  readonly chatEvents$ = this.chatEvents.asObservable();
+  /** Each time the socket opens again after a drop: chat refetches what it may have missed. */
+  readonly reconnected$ = this.reconnected.asObservable();
 
   constructor() {
     super();
@@ -106,6 +116,13 @@ export class NotificationCenterService extends BaseApiService {
     });
   }
 
+  /** A client frame (chat typing); dropped when the socket is not open. */
+  send(frame: object): void {
+    if (this.socket?.readyState === SOCKET_OPEN) {
+      this.socket.send(JSON.stringify(frame));
+    }
+  }
+
   private applyRead(ids: number[]): void {
     const set = new Set(ids);
     this.itemsState.update((items) => items.map((item) => (set.has(item.id) ? { ...item, is_read: true } : item)));
@@ -124,8 +141,12 @@ export class NotificationCenterService extends BaseApiService {
       this.retryDelay = 2_000;
       this.refreshedForSocket = false;
       this.pingTimer = setInterval(() => socket.send(JSON.stringify({ action: 'ping' })), PING_EVERY_MS);
+      if (this.openedBefore) {
+        this.reconnected.next();
+      }
+      this.openedBefore = true;
     };
-    socket.onmessage = (event) => this.onMessage(JSON.parse(event.data) as SocketMessage);
+    socket.onmessage = (event) => this.onMessage(JSON.parse(event.data) as SocketMessage | ChatEvent);
     socket.onclose = (event) => {
       clearInterval(this.pingTimer);
       if (this.socket !== socket || event.code === WRONG_USER) {
@@ -148,14 +169,18 @@ export class NotificationCenterService extends BaseApiService {
     };
   }
 
-  private onMessage(message: SocketMessage): void {
-    switch (message.type) {
+  private onMessage(message: SocketMessage | ChatEvent): void {
+    if (message.type.startsWith('chat.')) {
+      this.chatEvents.next(message as ChatEvent);
+      return;
+    }
+    switch ((message as SocketMessage).type) {
       case 'connection_established':
-        this.unreadState.set(message.unread_notification);
+        this.unreadState.set((message as { unread_notification: number }).unread_notification);
         break;
       case 'new_notification':
       case 'broadcast_notification': {
-        const notification = message.notification;
+        const notification = (message as { notification: AppNotification }).notification;
         this.itemsState.update((items) => [notification, ...items.filter((i) => i.id !== notification.id)]);
         if (!notification.is_read) {
           this.unreadState.update((count) => count + 1);
@@ -168,6 +193,7 @@ export class NotificationCenterService extends BaseApiService {
 
   private stop(): void {
     this.started = false;
+    this.openedBefore = false;
     clearTimeout(this.retryTimer);
     clearInterval(this.pingTimer);
     const socket = this.socket;
