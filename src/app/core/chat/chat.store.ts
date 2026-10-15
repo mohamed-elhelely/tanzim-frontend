@@ -43,6 +43,8 @@ export class ChatStore {
   private readTimer?: ReturnType<typeof setTimeout>;
   /** Messages that arrived in the open thread while the browser tab was hidden (counted as unread). */
   private unseen = 0;
+  /** Bumped by reset() (sign-out, user switch, chat access lost): answers from before it are ignored. */
+  private session = 0;
   /** The newest id already sent as read, per chat, so the same marker is not posted twice. */
   private readonly readSent = new Map<number, number>();
   private readonly typingSent = new Map<number, number>();
@@ -128,6 +130,7 @@ export class ChatStore {
       this.unreadState.update((n) => Math.max(0, n - known.unread_count));
       this.patch(id, (c) => ({ ...c, unread_count: 0 }));
     }
+    const session = this.session;
     const thread: ChatThread = new ChatThread(id, {
       api: this.api,
       me: () => this.me(),
@@ -136,7 +139,10 @@ export class ChatStore {
       refused: () => this.refetch(id),
       loaded: () => this.threadState() === thread && this.readIfBehind(thread),
       fail: (error) => this.toast.failure(error, errorText(error)),
-      lostSend: () => this.threadState() !== thread && this.toast.warn(this.translate.instant('chat.notSent', { name: this.titleOf(id) })),
+      lostSend: () =>
+        this.session === session &&
+        this.threadState() !== thread &&
+        this.toast.warn(this.translate.instant('chat.notSent', { name: this.titleOf(id) })),
     });
     this.threadState.set(thread);
     thread.load();
@@ -193,10 +199,21 @@ export class ChatStore {
     return document.visibilityState === 'visible';
   }
 
-  /** Back on the tab with a thread open: what arrived meanwhile is seen now. */
+  /**
+   * Tab hidden: a read still waiting for its debounce is sent now, so it covers only what was on screen.
+   * Back on the tab with a thread open: what arrived meanwhile is seen now.
+   */
   private onVisibility(): void {
     const thread = this.threadState();
-    if (!this.visible() || !thread) {
+    if (!this.visible()) {
+      if (this.readTimer !== undefined) {
+        clearTimeout(this.readTimer);
+        this.readTimer = undefined;
+        this.sendRead();
+      }
+      return;
+    }
+    if (!thread) {
       return;
     }
     if (this.unseen) {
@@ -432,6 +449,7 @@ export class ChatStore {
   }
 
   private reset(): void {
+    this.session++;
     this.leaveThread(false);
     this.drawerState.set(false);
     this.conversationsState.set([]);

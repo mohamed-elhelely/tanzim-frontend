@@ -261,14 +261,14 @@ describe('ChatStore', () => {
     const first = http.expectOne((r) => r.url === `${base}conversations/12/messages/`);
     const firstMembers = http.expectOne(`${base}conversations/12/members/`);
     store.openThread(13);
-    http.expectOne((r) => r.url === `${base}conversations/13/messages/`).flush(envelope([chatMessage(1, { conversation: 13 })]));
+    // 13's newest message is mine, so 13 has nothing to read: any read posted here would come from 12's stale load.
+    http.expectOne((r) => r.url === `${base}conversations/13/messages/`).flush(envelope([chatMessage(1, { conversation: 13, sender: ME })]));
     http.expectOne(`${base}conversations/13/members/`).flush(envelope([]));
     first.flush(envelope([chatMessage(1)]));
     firstMembers.flush(envelope([]));
     tick(READ_DEBOUNCE_MS);
     http.expectNone(`${base}conversations/12/read/`);
-    http.expectOne(`${base}conversations/13/read/`).flush(envelope({ last_read_message_id: 1 }));
-    http.expectOne(`${base}unread/`).flush(envelope({ conversations: 0, messages: 0 }));
+    http.expectNone(`${base}conversations/13/read/`);
     expect(store.current()?.id).toBe(13);
   }));
 
@@ -335,6 +335,18 @@ describe('ChatStore', () => {
     expect(toast.warn).toHaveBeenCalledWith('chat.notSent');
   });
 
+  it('a send that fails after sign-out or losing chat access does not warn', () => {
+    const store = create(0);
+    openDrawerWith(store, [conversation(12)]);
+    openThread(store, 12, [chatMessage(1, { sender: ME })]);
+    store.thread()!.send('hello', null, []);
+    const post = http.expectOne((r) => r.method === 'POST' && r.url === `${base}conversations/12/messages/`);
+    allowed.set(false);
+    TestBed.tick();
+    post.flush(errorEnvelope(500, 'Server error.'), { status: 500, statusText: 'Server Error' });
+    expect(toast.warn).not.toHaveBeenCalled();
+  });
+
   it('a failed send in the open thread does not warn', () => {
     const store = create(0);
     openDrawerWith(store, [conversation(12)]);
@@ -388,6 +400,24 @@ describe('ChatStore', () => {
       expect(read.request.body).toEqual({ message_id: 2 });
       read.flush(envelope({ last_read_message_id: 2 }));
       http.expectOne(`${base}unread/`).flush(envelope({ conversations: 0, messages: 0 }));
+    }));
+
+    it('a read waiting when the tab hides covers only what was seen', fakeAsync(() => {
+      const store = create(0);
+      openDrawerWith(store, [conversation(12)]);
+      openThread(store, 12, [chatMessage(1, { sender: ME })]);
+      events.next({ type: 'chat.message', conversation_id: 12, message: chatMessage(2) });
+      visibility.and.returnValue('hidden');
+      document.dispatchEvent(new Event('visibilitychange'));
+      const read = http.expectOne(`${base}conversations/12/read/`);
+      expect(read.request.body).toEqual({ message_id: 2 });
+      read.flush(envelope({ last_read_message_id: 2 }));
+      http.expectOne(`${base}unread/`).flush(envelope({ conversations: 0, messages: 0 }));
+
+      events.next({ type: 'chat.message', conversation_id: 12, message: chatMessage(3) });
+      tick(READ_DEBOUNCE_MS);
+      http.expectNone(`${base}conversations/12/read/`);
+      expect(store.unreadTotal()).toBe(1);
     }));
   });
 
