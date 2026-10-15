@@ -89,7 +89,7 @@
               }
             </td>
             <td class="whitespace-nowrap text-end">
-              <app-row-actions [recordId]="row.id" [recordName]="row.name">
+              <app-row-actions [recordId]="row.id" [record]="row" [recordName]="row.name">
                 <app-row-action icon="pi pi-pencil" label="common.edit" (run)="edit(row)"></app-row-action>
                 <app-row-action icon="pi pi-trash" label="common.delete" severity="danger" (run)="confirmDelete(row)"></app-row-action>
               </app-row-actions>

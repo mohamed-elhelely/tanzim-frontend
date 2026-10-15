@@ -96,7 +96,7 @@
             </td>
             @if (canEdit() || canDelete()) {
               <td class="whitespace-nowrap text-end">
-                <app-row-actions [recordId]="row.id" [recordName]="row">
+                <app-row-actions [recordId]="row.id" [record]="row" [recordName]="row">
                   @if (canEdit()) {
                     <app-row-action [icon]="row.is_core ? 'pi pi-eye' : 'pi pi-pencil'" [label]="row.is_core ? 'common.view' : 'common.edit'" (run)="edit(row)"></app-row-action>
                   }

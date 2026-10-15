@@ -101,7 +101,7 @@
               }
             </td>
             <td class="whitespace-nowrap text-end">
-              <app-row-actions [recordId]="row.id" [recordName]="row.name">
+              <app-row-actions [recordId]="row.id" [record]="row" [recordName]="row.name">
                 @if (canStatement()) {
                   <app-row-action icon="pi pi-book" label="accounting.reports.supplier_statement" (run)="statement(row)"></app-row-action>
                 }

@@ -99,7 +99,7 @@
               </div>
             </td>
             <td class="whitespace-nowrap text-end">
-              <app-row-actions [recordId]="row.id">
+              <app-row-actions [recordId]="row.id" [record]="row">
                 <app-row-action icon="pi pi-th-large" label="admin.billing.subscriptions.manageModules" (run)="openModules(row)"></app-row-action>
                 <app-row-action icon="pi pi-pencil" label="common.edit" (run)="openForm(row.id)"></app-row-action>
                 <app-row-action icon="pi pi-trash" label="common.delete" severity="danger" (run)="confirmDelete(row)"></app-row-action>

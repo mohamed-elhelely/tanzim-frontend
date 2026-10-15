@@ -105,7 +105,7 @@
             </td>
             <td class="whitespace-nowrap text-end font-medium">{{ row.total_debit | number: '1.2-2' }}</td>
             <td class="whitespace-nowrap text-end">
-              <app-row-actions [recordId]="row.id" [recordName]="row.entry_number">
+              <app-row-actions [recordId]="row.id" [record]="row" [recordName]="row.entry_number">
                 <app-row-action icon="pi pi-eye" label="common.view" (run)="open(row)"></app-row-action>
               </app-row-actions>
             </td>

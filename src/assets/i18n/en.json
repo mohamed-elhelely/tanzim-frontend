@@ -711,6 +711,9 @@
       "repair": "Repair"
     }
   },
+  "recordDetails": {
+    "details": "Details"
+  },
   "activityLog": {
     "button": "Activity log",
     "title": "Activity log — {{module}}",

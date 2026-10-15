@@ -75,7 +75,7 @@
             <td>{{ groupNames(row) }}</td>
             @if (canEdit() || canDelete()) {
               <td class="whitespace-nowrap text-end">
-                <app-row-actions [recordId]="row.id">
+                <app-row-actions [recordId]="row.id" [record]="row">
                   @if (canEdit() && !isSystem(row)) {
                     <app-row-action icon="pi pi-pencil" label="common.edit" (run)="edit(row)"></app-row-action>
                   }

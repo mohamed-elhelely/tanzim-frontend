@@ -94,7 +94,7 @@
             <td>{{ leadNames(row) }}</td>
             @if (canEdit() || canDelete()) {
               <td class="whitespace-nowrap text-end">
-                <app-row-actions [recordId]="row.id" [recordName]="row">
+                <app-row-actions [recordId]="row.id" [record]="row" [recordName]="row">
                   @if (canEdit()) {
                     <app-row-action icon="pi pi-pencil" label="common.edit" (run)="edit(row)"></app-row-action>
                   }

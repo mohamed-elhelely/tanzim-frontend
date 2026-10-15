@@ -711,6 +711,9 @@
       "repair": "إصلاح"
     }
   },
+  "recordDetails": {
+    "details": "التفاصيل"
+  },
   "activityLog": {
     "button": "سجل النشاط",
     "title": "سجل النشاط — {{module}}",

@@ -82,7 +82,7 @@
             <td class="text-end font-medium">{{ row.total }}</td>
             <td class="text-end">{{ row.amount_due }}</td>
             <td class="whitespace-nowrap text-end">
-              <app-row-actions [recordId]="row.id">
+              <app-row-actions [recordId]="row.id" [record]="row">
                 <app-row-action icon="pi pi-eye" label="common.view" (run)="selected.set(row)"></app-row-action>
               </app-row-actions>
             </td>

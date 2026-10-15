@@ -5,6 +5,7 @@ import { provideTranslateService } from '@ngx-translate/core';
 import { AccessService } from '../../core/auth/access.service';
 import { LanguageService } from '../../core/services/language.service';
 import { ModuleActivityService } from '../activity/module-activity';
+import { RecordDetailsService } from '../activity/record-details';
 import { RowActionComponent, RowActionsComponent } from './row-actions.component';
 
 @Component({
@@ -115,6 +116,48 @@ describe('RowActionsComponent', () => {
     it('is left out without view_auditlog', () => {
       const { actions } = renderOn(false);
       expect(actions.entries().map((entry) => entry.label)).toEqual(['common.view', 'common.delete']);
+    });
+  });
+
+  describe('View (record details)', () => {
+    @Component({
+      imports: [RowActionsComponent, RowActionComponent],
+      template: `
+        <app-row-actions [recordId]="7" [record]="row" recordName="ErgoSeat">
+          <app-row-action icon="pi pi-pencil" label="common.edit" (run)="0"></app-row-action>
+        </app-row-actions>
+      `,
+    })
+    class EditOnlyHost {
+      row = { id: 7, name: 'ErgoSeat' };
+    }
+
+    it("adds View before the row's own actions and opens the record's details with its log", () => {
+      const details = jasmine.createSpyObj<RecordDetailsService>('RecordDetailsService', ['open']);
+      TestBed.configureTestingModule({
+        imports: [EditOnlyHost],
+        providers: [
+          provideTranslateService(),
+          { provide: ActivatedRoute, useValue: { snapshot: { pathFromRoot: [{ url: [] }, { url: [{ path: 'inventory' }] }, { url: [{ path: 'brands' }] }] } } },
+          { provide: AccessService, useValue: { can: () => true } },
+          { provide: ModuleActivityService, useValue: jasmine.createSpyObj('ModuleActivityService', ['open']) },
+          { provide: RecordDetailsService, useValue: details },
+        ],
+      });
+      const fixture = TestBed.createComponent(EditOnlyHost);
+      fixture.detectChanges();
+      const actions = fixture.debugElement.query((d) => d.componentInstance instanceof RowActionsComponent).componentInstance as RowActionsComponent;
+      expect(actions.entries().map((entry) => entry.label)).toEqual(['common.view', 'common.edit', 'activityLog.viewLogs']);
+      actions.entries()[0].run();
+      expect(details.open).toHaveBeenCalledWith({
+        titleKey: 'nav.brands',
+        record: { id: 7, name: 'ErgoSeat' },
+        resource: 'brand',
+        objectId: 7,
+        name: 'ErgoSeat',
+        showLogs: true,
+        labelArea: 'inventory',
+      });
     });
   });
 });

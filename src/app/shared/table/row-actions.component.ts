@@ -7,7 +7,8 @@ import { Menu, MenuModule } from 'primeng/menu';
 import { AccessService } from '../../core/auth/access.service';
 import { LanguageService } from '../../core/services/language.service';
 import { Named, localizedName } from '../pipes/localized-name.pipe';
-import { ModuleActivity, ModuleActivityService, moduleActivityFor } from '../activity/module-activity';
+import { ModuleActivityService, moduleActivityFor } from '../activity/module-activity';
+import { RecordDetailsService } from '../activity/record-details';
 
 export type RowActionSeverity = 'danger' | 'secondary';
 
@@ -44,6 +45,7 @@ interface RowActionEntry {
  * button that opens a menu, so rows stay narrow and every screen looks the same. Clicks never reach the row (rows
  * that open a record on click).
  *
+ * With `record`, rows without a View of their own get one: the record details drawer (fields + activity log).
  * With `recordId`, on a module screen that has a system log (MODULE_ACTIVITY_RESOURCES) and for users who may read
  * it, a "View logs" entry opens the log of that one record (before any destructive action).
  *
@@ -96,12 +98,17 @@ export class RowActionsComponent {
   readonly recordId = input<string | number | null | undefined>(null);
   /** The row's name for the log's title: text, or a record with Arabic/English names. */
   readonly recordName = input<string | Named | null | undefined>(null);
+  /** The row itself: adds "View" (its fields in the record details drawer) when the row has no View of its own. */
+  readonly record = input<Readonly<Record<string, unknown>> | null | undefined>(null);
   private readonly language = inject(LanguageService);
 
-  /** The screen's module log, from its path (none on detail pages, dialogs or screens without a log). */
-  private readonly module = moduleActivity(inject(ActivatedRoute, { optional: true }));
+  /** The screen's path, e.g. `/inventory/brands` (undefined for partial test routes). */
+  private readonly path = screenPath(inject(ActivatedRoute, { optional: true }));
+  /** The screen's module log (none on detail pages, dialogs or screens without a log). */
+  private readonly module = this.path === undefined ? null : moduleActivityFor(this.path);
   private readonly access = this.module ? inject(AccessService) : null;
   private readonly activity = this.module ? inject(ModuleActivityService) : null;
+  private readonly recordDetails = this.module ? inject(RecordDetailsService) : null;
 
   readonly entries = computed<RowActionEntry[]>(() => {
     const declared: RowActionEntry[] = this.actions().map((action) => ({
@@ -111,13 +118,15 @@ export class RowActionsComponent {
       disabled: action.disabled(),
       run: () => action.run.emit(),
     }));
+    const view = declared.some((entry) => entry.label === 'common.view') ? null : this.viewEntry();
+    const withView = view ? [view, ...declared] : declared;
     const logs = this.logsEntry();
     if (!logs) {
-      return declared;
+      return withView;
     }
-    const firstDanger = declared.findIndex((entry) => entry.severity === 'danger');
-    const at = firstDanger === -1 ? declared.length : firstDanger;
-    return [...declared.slice(0, at), logs, ...declared.slice(at)];
+    const firstDanger = withView.findIndex((entry) => entry.severity === 'danger');
+    const at = firstDanger === -1 ? withView.length : firstDanger;
+    return [...withView.slice(0, at), logs, ...withView.slice(at)];
   });
 
   /** Built when the menu opens, so it shows the actions (and language) of that moment. */
@@ -136,6 +145,33 @@ export class RowActionsComponent {
     menu.toggle(event);
   }
 
+  private viewEntry(): RowActionEntry | null {
+    const record = this.record();
+    const module = this.module;
+    if (!module || !record) {
+      return null;
+    }
+    const open = () => {
+      const id = this.recordId() ?? (record['id'] as string | number | undefined);
+      const name = this.objectName();
+      this.recordDetails?.open({
+        titleKey: module.titleKey,
+        record,
+        resource: module.resources[0],
+        ...(id === null || id === undefined ? {} : { objectId: id }),
+        ...(name ? { name } : {}),
+        showLogs: id !== null && id !== undefined && !!this.access?.can('view_auditlog'),
+        labelArea: this.path?.split('/')[1],
+      });
+    };
+    return { icon: 'pi pi-eye', label: 'common.view', disabled: false, run: open };
+  }
+
+  private objectName(): string {
+    const name = this.recordName();
+    return (typeof name === 'string' ? name : localizedName(name, this.language.currentLang())).trim();
+  }
+
   private logsEntry(): RowActionEntry | null {
     const id = this.recordId();
     const module = this.module;
@@ -144,8 +180,7 @@ export class RowActionsComponent {
     }
     // The record's own resource: a document's lines are logged under their own ids.
     const open = () => {
-      const name = this.recordName();
-      const objectName = (typeof name === 'string' ? name : localizedName(name, this.language.currentLang())).trim();
+      const objectName = this.objectName();
       this.activity?.open({
         titleKey: module.titleKey,
         resources: [module.resources[0]],
@@ -157,8 +192,8 @@ export class RowActionsComponent {
   }
 }
 
-function moduleActivity(route: ActivatedRoute | null): ModuleActivity | null {
+function screenPath(route: ActivatedRoute | null): string | undefined {
   // Partial routes (test stubs) have no path: no module log then.
   const path = route?.snapshot?.pathFromRoot?.flatMap((r) => r.url?.map((segment) => segment.path) ?? []).join('/');
-  return path === undefined ? null : moduleActivityFor(`/${path}`);
+  return path === undefined ? undefined : `/${path}`;
 }

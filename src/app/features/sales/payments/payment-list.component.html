@@ -75,7 +75,7 @@
             <td>{{ row.created_by_name || '—' }}</td>
             <td class="whitespace-nowrap text-end font-medium">{{ row.amount | number: '1.2-2' }}</td>
             <td class="whitespace-nowrap text-end">
-              <app-row-actions [recordId]="row.id" [recordName]="row.reference || row.invoice_number">
+              <app-row-actions [recordId]="row.id" [record]="row" [recordName]="row.reference || row.invoice_number">
                 <app-row-action icon="pi pi-eye" label="sales.payments.viewInvoice" (run)="openInvoice(row)"></app-row-action>
               </app-row-actions>
             </td>

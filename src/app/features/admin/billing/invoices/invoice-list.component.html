@@ -93,7 +93,7 @@
             <td class="text-end" dir="ltr">{{ row.total | number: '1.2-2' }}</td>
             <td class="text-end font-medium" dir="ltr">{{ row.amount_due | number: '1.2-2' }}</td>
             <td class="whitespace-nowrap text-end">
-              <app-row-actions [recordId]="row.id">
+              <app-row-actions [recordId]="row.id" [record]="row">
                 <app-row-action icon="pi pi-eye" label="common.view" (run)="open(row)"></app-row-action>
               </app-row-actions>
             </td>

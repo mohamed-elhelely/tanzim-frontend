@@ -114,7 +114,7 @@
               </div>
             </td>
             <td class="whitespace-nowrap text-end">
-              <app-row-actions [recordId]="row.id" [recordName]="row.order_number">
+              <app-row-actions [recordId]="row.id" [record]="row" [recordName]="row.order_number">
                 <app-row-action icon="pi pi-eye" label="common.view" (run)="open(row)"></app-row-action>
                 @if (row.status === 'draft') {
                   <app-row-action icon="pi pi-trash" label="common.delete" severity="danger" (run)="confirmDelete(row)"></app-row-action>

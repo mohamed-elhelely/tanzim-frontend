@@ -8,6 +8,7 @@ import { AccessService } from '../../core/auth/access.service';
 import { LiveNotificationsService } from '../../core/notifications/live-notifications.service';
 import { NotificationCenterService } from '../../core/notifications/notification-center.service';
 import { ModuleActivityDrawerComponent } from '../../features/company/system-logs/module-activity-drawer.component';
+import { RecordDetailsDrawerComponent } from '../../features/company/system-logs/record-details-drawer.component';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { LoadingBarComponent } from '../../shared/components/loading-bar/loading-bar.component';
 import { AppHeaderComponent } from '../header/header.component';
@@ -17,7 +18,7 @@ import { AppSidebarComponent } from '../sidebar/sidebar.component';
 
 /**
  * Layout for every signed-in page: sidebar (desktop) or drawer (mobile), header, toasts, the confirm dialog and the
- * module activity log drawer.
+ * module activity log and record details drawers.
  */
 @Component({
   selector: 'app-shell',
@@ -33,6 +34,7 @@ import { AppSidebarComponent } from '../sidebar/sidebar.component';
     BrandComponent,
     ConfirmDialogComponent,
     ModuleActivityDrawerComponent,
+    RecordDetailsDrawerComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './shell.component.html',

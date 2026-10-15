@@ -90,7 +90,7 @@
             </td>
             <td class="whitespace-nowrap" dir="ltr">{{ row.shipped_date || '—' }}</td>
             <td class="text-end">
-              <app-row-actions [recordId]="row.id" [recordName]="row.delivery_number">
+              <app-row-actions [recordId]="row.id" [record]="row" [recordName]="row.delivery_number">
                 <app-row-action icon="pi pi-eye" label="common.view" (run)="open(row)"></app-row-action>
               </app-row-actions>
             </td>

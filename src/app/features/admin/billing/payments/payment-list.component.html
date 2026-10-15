@@ -81,7 +81,7 @@
             <td class="text-end" dir="ltr">{{ row.refunded_amount | number: '1.2-2' }}</td>
             <td class="text-end font-medium" dir="ltr">{{ row.net_amount | number: '1.2-2' }}</td>
             <td class="whitespace-nowrap text-end">
-              <app-row-actions [recordId]="row.id">
+              <app-row-actions [recordId]="row.id" [record]="row">
                 @if (canRefund(row)) {
                   <app-row-action icon="pi pi-replay" label="admin.billing.payments.refund" (run)="openRefund(row)"></app-row-action>
                 }
