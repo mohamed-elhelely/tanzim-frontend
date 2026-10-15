@@ -28,5 +28,10 @@
 
 <p-toast [position]="language.direction() === 'rtl' ? 'top-left' : 'top-right'"></p-toast>
 <app-confirm-dialog></app-confirm-dialog>
-<app-module-activity-drawer></app-module-activity-drawer>
-<app-record-details-drawer></app-record-details-drawer>
+<!-- Loaded the first time one is opened, so the system log list stays out of the first download. -->
+@defer (when activity.current()) {
+  <app-module-activity-drawer></app-module-activity-drawer>
+}
+@defer (when recordDetails.current()) {
+  <app-record-details-drawer></app-record-details-drawer>
+}

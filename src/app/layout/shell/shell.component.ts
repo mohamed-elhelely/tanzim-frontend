@@ -7,6 +7,8 @@ import { LanguageService } from '../../core/services/language.service';
 import { AccessService } from '../../core/auth/access.service';
 import { LiveNotificationsService } from '../../core/notifications/live-notifications.service';
 import { NotificationCenterService } from '../../core/notifications/notification-center.service';
+import { ModuleActivityService } from '../../shared/activity/module-activity';
+import { RecordDetailsService } from '../../shared/activity/record-details';
 import { ModuleActivityDrawerComponent } from '../../features/company/system-logs/module-activity-drawer.component';
 import { RecordDetailsDrawerComponent } from '../../features/company/system-logs/record-details-drawer.component';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
@@ -42,6 +44,9 @@ import { AppSidebarComponent } from '../sidebar/sidebar.component';
 export class ShellComponent {
   readonly language = inject(LanguageService);
   readonly mobileNavOpen = signal(false);
+  /** The drawers' state, to load each drawer the first time it opens. */
+  readonly activity = inject(ModuleActivityService);
+  readonly recordDetails = inject(RecordDetailsService);
 
   constructor() {
     // What this user may see (GET /me). Guards may already have started it; load() shares the request.
