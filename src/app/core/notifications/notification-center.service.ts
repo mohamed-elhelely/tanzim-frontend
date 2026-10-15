@@ -170,7 +170,7 @@ export class NotificationCenterService extends BaseApiService {
   }
 
   private onMessage(message: SocketMessage | ChatEvent): void {
-    if (message.type.startsWith('chat.')) {
+    if (message.type?.startsWith('chat.')) {
       this.chatEvents.next(message as ChatEvent);
       return;
     }
@@ -181,8 +181,10 @@ export class NotificationCenterService extends BaseApiService {
       case 'new_notification':
       case 'broadcast_notification': {
         const notification = (message as { notification: AppNotification }).notification;
+        // A collapsed chat bell comes back with the same id: replacing an item that was already unread keeps the count.
+        const alreadyUnread = this.itemsState().some((i) => i.id === notification.id && !i.is_read);
         this.itemsState.update((items) => [notification, ...items.filter((i) => i.id !== notification.id)]);
-        if (!notification.is_read) {
+        if (!notification.is_read && !alreadyUnread) {
           this.unreadState.update((count) => count + 1);
         }
         this.incoming.next(notification);

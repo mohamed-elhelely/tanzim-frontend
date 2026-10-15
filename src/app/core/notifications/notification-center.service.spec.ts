@@ -102,6 +102,24 @@ describe('NotificationCenterService', () => {
     expect(center.unread()).toBe(5);
   });
 
+  it('a re-pushed unread notification with the same id replaces it without counting it again', () => {
+    const center = start();
+    FakeSocket.last?.receive({ type: 'new_notification', notification: note(3, { message: 'first' }) });
+    expect(center.unread()).toBe(2);
+    FakeSocket.last?.receive({ type: 'new_notification', notification: note(3, { message: 'two messages' }) });
+    expect(center.unread()).toBe(2);
+    expect(center.items().filter((n) => n.id === 3).map((n) => n.message)).toEqual(['two messages']);
+    // A read item coming back unread counts again.
+    FakeSocket.last?.receive({ type: 'new_notification', notification: note(1) });
+    expect(center.unread()).toBe(3);
+  });
+
+  it('ignores a frame without a type', () => {
+    const center = start();
+    expect(() => FakeSocket.last?.receive({ unexpected: true })).not.toThrow();
+    expect(center.unread()).toBe(1);
+  });
+
   it('marks one or all as read', () => {
     const center = start();
     center.markRead(center.items()[0]);

@@ -209,7 +209,7 @@ describe('ChatStore', () => {
   it('sends typing at most every 3 seconds, only where I may post', fakeAsync(() => {
     const store = create(0);
     openDrawerWith(store, [conversation(12), conversation(13, { can_post: false })]);
-    openThread(store, 12);
+    openThread(store, 12, [chatMessage(1, { sender: ME })]);
     store.typed();
     store.typed();
     expect(center.send).toHaveBeenCalledTimes(1);
@@ -218,7 +218,7 @@ describe('ChatStore', () => {
     store.typed();
     expect(center.send).toHaveBeenCalledTimes(2);
     store.backToList();
-    openThread(store, 13);
+    openThread(store, 13, [chatMessage(1, { conversation: 13, sender: ME })]);
     store.typed();
     expect(center.send).toHaveBeenCalledTimes(2);
     discardPeriodicTasks();
@@ -227,12 +227,13 @@ describe('ChatStore', () => {
   it('resyncs after a reconnect', () => {
     const store = create(0);
     openDrawerWith(store, [conversation(12)]);
-    openThread(store, 12, [chatMessage(1)]);
+    openThread(store, 12, [chatMessage(1, { sender: ME })]);
     reconnected.next();
     http.expectOne(`${base}unread/`).flush(envelope({ conversations: 0, messages: 0 }));
     http.expectOne(`${base}conversations/`).flush(envelope([conversation(12)]));
     http.expectOne((r) => r.url === `${base}conversations/12/messages/` && r.params.get('after') === '1').flush(envelope([]));
-    http.expectOne((r) => r.url === `${base}conversations/12/messages/` && !r.params.has('after')).flush(envelope([chatMessage(1)]));
+    http.expectOne((r) => r.url === `${base}conversations/12/messages/` && !r.params.has('after')).flush(envelope([chatMessage(1, { sender: ME }), chatMessage(2, { sender: ME })]));
+    expect(store.thread()!.items().map((i) => i.message.id)).toEqual([1, 2]);
   });
 
   it('starts a direct chat and opens it', () => {
@@ -266,7 +267,8 @@ describe('ChatStore', () => {
     firstMembers.flush(envelope([]));
     tick(READ_DEBOUNCE_MS);
     http.expectNone(`${base}conversations/12/read/`);
-    http.expectNone(`${base}conversations/13/read/`);
+    http.expectOne(`${base}conversations/13/read/`).flush(envelope({ last_read_message_id: 1 }));
+    http.expectOne(`${base}unread/`).flush(envelope({ conversations: 0, messages: 0 }));
     expect(store.current()?.id).toBe(13);
   }));
 
@@ -285,6 +287,109 @@ describe('ChatStore', () => {
     retry.flush(envelope({ last_read_message_id: 2 }));
     http.expectOne(`${base}unread/`).flush(envelope({ conversations: 0, messages: 0 }));
   }));
+
+  it('Back within the read debounce posts the pending read at once', fakeAsync(() => {
+    const store = create(0);
+    openDrawerWith(store, [conversation(12)]);
+    openThread(store, 12, [chatMessage(1, { sender: ME })]);
+    events.next({ type: 'chat.message', conversation_id: 12, message: chatMessage(2) });
+    store.backToList();
+    const read = http.expectOne(`${base}conversations/12/read/`);
+    expect(read.request.body).toEqual({ message_id: 2 });
+    read.flush(envelope({ last_read_message_id: 2 }));
+    http.expectOne(`${base}unread/`).flush(envelope({ conversations: 0, messages: 0 }));
+    tick(READ_DEBOUNCE_MS);
+    http.expectNone(`${base}conversations/12/read/`);
+  }));
+
+  it('reopening a chat whose newest message is past the last read posts a read', fakeAsync(() => {
+    const store = create(0);
+    openDrawerWith(store, [conversation(12)]);
+    openThread(store, 12, [chatMessage(1)]);
+    tick(READ_DEBOUNCE_MS);
+    http.expectOne(`${base}conversations/12/read/`).flush(envelope({ last_read_message_id: 1 }));
+    http.expectOne(`${base}unread/`).flush(envelope({ conversations: 0, messages: 0 }));
+    store.backToList();
+    // The row says 0 unread, but a newer message exists on the server.
+    openThread(store, 12, [chatMessage(1), chatMessage(2)]);
+    tick(READ_DEBOUNCE_MS);
+    const read = http.expectOne(`${base}conversations/12/read/`);
+    expect(read.request.body).toEqual({ message_id: 2 });
+    read.flush(envelope({ last_read_message_id: 2 }));
+    http.expectOne(`${base}unread/`).flush(envelope({ conversations: 0, messages: 0 }));
+    // Same newest again: nothing to post.
+    store.backToList();
+    openThread(store, 12, [chatMessage(1), chatMessage(2)]);
+    tick(READ_DEBOUNCE_MS);
+    http.expectNone(`${base}conversations/12/read/`);
+  }));
+
+  it('warns when a send fails after leaving its thread', () => {
+    const store = create(0);
+    openDrawerWith(store, [conversation(12)]);
+    openThread(store, 12, [chatMessage(1, { sender: ME })]);
+    store.thread()!.send('hello', null, []);
+    const post = http.expectOne((r) => r.method === 'POST' && r.url === `${base}conversations/12/messages/`);
+    store.backToList();
+    post.flush(errorEnvelope(500, 'Server error.'), { status: 500, statusText: 'Server Error' });
+    expect(toast.warn).toHaveBeenCalledWith('chat.notSent');
+  });
+
+  it('a failed send in the open thread does not warn', () => {
+    const store = create(0);
+    openDrawerWith(store, [conversation(12)]);
+    openThread(store, 12, [chatMessage(1, { sender: ME })]);
+    store.thread()!.send('hello', null, []);
+    http
+      .expectOne((r) => r.method === 'POST' && r.url === `${base}conversations/12/messages/`)
+      .flush(errorEnvelope(500, 'Server error.'), { status: 500, statusText: 'Server Error' });
+    expect(toast.warn).not.toHaveBeenCalled();
+  });
+
+  it('opening the chat that is already open keeps the thread', () => {
+    const store = create(0);
+    openDrawerWith(store, [conversation(12)]);
+    openThread(store, 12, [chatMessage(1, { sender: ME })]);
+    const thread = store.thread();
+    store.openThread(12);
+    store.openDrawer(12);
+    http.expectNone((r) => r.url === `${base}conversations/12/messages/`);
+    expect(store.thread()).toBe(thread);
+  });
+
+  describe('with the browser tab hidden', () => {
+    let visibility: jasmine.Spy;
+
+    beforeEach(() => {
+      visibility = spyOnProperty(document, 'visibilityState').and.returnValue('visible');
+    });
+
+    it('counts messages in the open thread and reads them when the tab is visible again', fakeAsync(() => {
+      const store = create(0);
+      openDrawerWith(store, [conversation(12)]);
+      openThread(store, 12, [chatMessage(1, { sender: ME })]);
+      expect(store.isOpen(12)).toBeTrue();
+      visibility.and.returnValue('hidden');
+      document.dispatchEvent(new Event('visibilitychange'));
+      expect(store.isOpen(12)).toBeFalse();
+      events.next({ type: 'chat.message', conversation_id: 12, message: chatMessage(2) });
+      expect(store.unreadTotal()).toBe(1);
+      expect(store.conversations()[0].unread_count).toBe(1);
+      expect(store.thread()!.items().map((i) => i.message.id)).toEqual([1, 2]);
+      tick(READ_DEBOUNCE_MS);
+      http.expectNone(`${base}conversations/12/read/`);
+
+      visibility.and.returnValue('visible');
+      document.dispatchEvent(new Event('visibilitychange'));
+      expect(store.unreadTotal()).toBe(0);
+      expect(store.conversations()[0].unread_count).toBe(0);
+      tick(READ_DEBOUNCE_MS);
+      const read = http.expectOne(`${base}conversations/12/read/`);
+      expect(read.request.body).toEqual({ message_id: 2 });
+      read.flush(envelope({ last_read_message_id: 2 }));
+      http.expectOne(`${base}unread/`).flush(envelope({ conversations: 0, messages: 0 }));
+    }));
+  });
 
   it('forgets everything when chat access is lost', () => {
     const store = create(3);

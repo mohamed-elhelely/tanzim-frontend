@@ -780,6 +780,7 @@
     "deletedToast": "Message deleted",
     "removed": "You are no longer in this chat.",
     "gone": "This chat is no longer available.",
+    "notSent": "A message to {{name}} was not sent.",
     "mentionAll": "Everyone in this chat",
     "filesRejected": "Not attached: {{names}}",
     "fileRules": "Up to 5 files, 10 MB each",

@@ -20,6 +20,8 @@ export interface ChatThreadDeps {
   loaded: () => void;
   /** A 4xx on load, edit or members (not 404): show it. */
   fail: (error: AppError) => void;
+  /** A send failed (any error); the store warns when this thread is no longer the open one. */
+  lostSend?: () => void;
 }
 
 const PAGE = CHAT_LIMITS.pageSize;
@@ -189,6 +191,7 @@ export class ChatThread {
       error: (error: AppError) => {
         const retryable = error.status === 0 || error.status >= 500;
         this.items.update((items) => setStatus(items, draft.clientId, 'failed', retryable ? undefined : errorText(error), retryable));
+        this.deps.lostSend?.();
         if (error.status === 403) {
           this.deps.refused();
         } else if (error.status === 404) {

@@ -5,9 +5,10 @@ import { AccessService } from '../auth/access.service';
 import { AuthService } from '../auth/auth.service';
 import { AppError } from '../errors/app-error';
 import { NotificationCenterService } from '../notifications/notification-center.service';
+import { LanguageService } from '../services/language.service';
 import { NotificationService } from '../services/notification.service';
 import { ChatApiService } from './chat-api.service';
-import { errorText } from './chat-format';
+import { conversationTitle, errorText } from './chat-format';
 import { ChatThread } from './chat-thread';
 import { ChatEvent, ChatMessage, ChatUserRef, Conversation } from './chat.models';
 import { TypingTracker } from './typing-tracker';
@@ -30,6 +31,7 @@ export class ChatStore {
   private readonly auth = inject(AuthService);
   private readonly toast = inject(NotificationService);
   private readonly translate = inject(TranslateService);
+  private readonly language = inject(LanguageService);
 
   private readonly conversationsState = signal<Conversation[]>([]);
   private readonly listState = signal<'idle' | 'loading' | 'ready'>('idle');
@@ -37,7 +39,10 @@ export class ChatStore {
   private readonly drawerState = signal(false);
   private readonly threadState = signal<ChatThread | null>(null);
   private readonly currentState = signal<Conversation | null>(null);
+  /** Set while a read is waiting for the debounce; leaving the thread sends it at once. */
   private readTimer?: ReturnType<typeof setTimeout>;
+  /** Messages that arrived in the open thread while the browser tab was hidden (counted as unread). */
+  private unseen = 0;
   /** The newest id already sent as read, per chat, so the same marker is not posted twice. */
   private readonly readSent = new Map<number, number>();
   private readonly typingSent = new Map<number, number>();
@@ -69,6 +74,17 @@ export class ChatStore {
         }
       });
     });
+    const onVisibility = (): void => this.onVisibility();
+    document.addEventListener('visibilitychange', onVisibility);
+    inject(DestroyRef).onDestroy(() => {
+      document.removeEventListener('visibilitychange', onVisibility);
+      clearTimeout(this.readTimer);
+    });
+  }
+
+  /** The user is looking at this chat now: drawer open on its thread, browser tab visible. */
+  isOpen(conversationId: number): boolean {
+    return this.drawerState() && this.threadState()?.conversationId === conversationId && this.visible();
   }
 
   openDrawer(conversationId?: number): void {
@@ -96,6 +112,9 @@ export class ChatStore {
   }
 
   openThread(id: number): void {
+    if (this.threadState()?.conversationId === id) {
+      return;
+    }
     this.backToList();
     const known = this.conversationsState().find((c) => c.id === id) ?? null;
     this.currentState.set(known);
@@ -105,7 +124,6 @@ export class ChatStore {
         error: (error: AppError) => error.status === 404 && this.onGone(id),
       });
     }
-    const hadUnread = known ? known.unread_count > 0 : true;
     if (known?.unread_count) {
       this.unreadState.update((n) => Math.max(0, n - known.unread_count));
       this.patch(id, (c) => ({ ...c, unread_count: 0 }));
@@ -116,17 +134,17 @@ export class ChatStore {
       sent: (message) => this.onNewMessage(id, message, false),
       gone: () => this.onGone(id),
       refused: () => this.refetch(id),
-      loaded: () => hadUnread && this.threadState() === thread && this.scheduleRead(),
+      loaded: () => this.threadState() === thread && this.readIfBehind(thread),
       fail: (error) => this.toast.failure(error, errorText(error)),
+      lostSend: () => this.threadState() !== thread && this.toast.warn(this.translate.instant('chat.notSent', { name: this.titleOf(id) })),
     });
     this.threadState.set(thread);
     thread.load();
   }
 
+  /** Leaves the thread; a read still waiting for its debounce is sent now, not dropped. */
   backToList(): void {
-    clearTimeout(this.readTimer);
-    this.threadState.set(null);
-    this.currentState.set(null);
+    this.leaveThread(true);
   }
 
   startDirect(userId: number): void {
@@ -159,6 +177,51 @@ export class ChatStore {
     this.center.send({ action: 'typing', conversation_id: thread.conversationId });
   }
 
+  private leaveThread(sendPendingRead: boolean): void {
+    const pending = this.readTimer !== undefined;
+    clearTimeout(this.readTimer);
+    this.readTimer = undefined;
+    if (pending && sendPendingRead) {
+      this.sendRead();
+    }
+    this.unseen = 0;
+    this.threadState.set(null);
+    this.currentState.set(null);
+  }
+
+  private visible(): boolean {
+    return document.visibilityState === 'visible';
+  }
+
+  /** Back on the tab with a thread open: what arrived meanwhile is seen now. */
+  private onVisibility(): void {
+    const thread = this.threadState();
+    if (!this.visible() || !thread) {
+      return;
+    }
+    if (this.unseen) {
+      const unseen = this.unseen;
+      this.unseen = 0;
+      this.unreadState.update((n) => Math.max(0, n - unseen));
+      this.patch(thread.conversationId, (c) => ({ ...c, unread_count: 0 }));
+    }
+    this.readIfBehind(thread);
+  }
+
+  /** Schedules a read when the newest loaded message is someone else's and newer than the last read sent. */
+  private readIfBehind(thread: ChatThread): void {
+    const newest = [...thread.items()].reverse().find((item) => item.status === 'sent')?.message;
+    if (!newest || !this.visible() || newest.sender?.id === this.myId() || newest.id <= (this.readSent.get(thread.conversationId) ?? 0)) {
+      return;
+    }
+    this.scheduleRead();
+  }
+
+  private titleOf(id: number): string {
+    const known = this.conversationsState().find((c) => c.id === id);
+    return known ? conversationTitle(known, this.language.currentLang()) : this.translate.instant('chat.title');
+  }
+
   private me(): ChatUserRef {
     return { id: this.myId(), name: this.auth.user()?.name ?? '', is_active: true };
   }
@@ -170,9 +233,13 @@ export class ChatStore {
     switch (event.type) {
       case 'chat.message': {
         const mine = event.message.sender?.id === this.myId();
-        const counts = !mine && !open;
+        const seen = !!open && this.visible();
+        const counts = !mine && !seen;
         if (counts) {
           this.unreadState.update((n) => n + 1);
+          if (open) {
+            this.unseen++;
+          }
         }
         this.onNewMessage(id, event.message, counts);
         if (open) {
@@ -180,7 +247,7 @@ export class ChatStore {
           if (event.message.sender) {
             this.typing.clear(id, event.message.sender.id);
           }
-          if (!mine) {
+          if (seen && !mine) {
             this.scheduleRead();
           }
         }
@@ -215,7 +282,7 @@ export class ChatStore {
         this.conversationsState.update((list) => list.filter((c) => c.id !== id));
         this.loadUnread();
         if (open) {
-          this.backToList();
+          this.leaveThread(false);
           this.toast.warn(this.translate.instant('chat.removed'));
         }
         break;
@@ -296,7 +363,7 @@ export class ChatStore {
   private onGone(id: number): void {
     this.conversationsState.update((list) => list.filter((c) => c.id !== id));
     if (this.threadState()?.conversationId === id) {
-      this.backToList();
+      this.leaveThread(false);
       this.toast.warn(this.translate.instant('chat.gone'));
     }
     this.loadUnread();
@@ -304,7 +371,10 @@ export class ChatStore {
 
   private scheduleRead(): void {
     clearTimeout(this.readTimer);
-    this.readTimer = setTimeout(() => this.sendRead(), READ_DEBOUNCE_MS);
+    this.readTimer = setTimeout(() => {
+      this.readTimer = undefined;
+      this.sendRead();
+    }, READ_DEBOUNCE_MS);
   }
 
   private sendRead(): void {
@@ -362,7 +432,7 @@ export class ChatStore {
   }
 
   private reset(): void {
-    this.backToList();
+    this.leaveThread(false);
     this.drawerState.set(false);
     this.conversationsState.set([]);
     this.listState.set('idle');
