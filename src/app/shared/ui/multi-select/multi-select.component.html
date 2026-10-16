@@ -1,0 +1,29 @@
+<p-multiselect
+  [ngModel]="value()"
+  (onChange)="pick($event.value)"
+  (onBlur)="blur()"
+  [disabled]="isDisabled()"
+  [options]="$any(options())"
+  [optionLabel]="optionLabel()"
+  [optionValue]="optionValue()"
+  [placeholder]="placeholder()"
+  [inputId]="inputId()"
+  [ariaLabel]="ariaLabel()"
+  [filter]="filter()"
+  [showClear]="showClear()"
+  [maxSelectedLabels]="maxSelectedLabels()"
+  [selectedItemsLabel]="selectedItemsLabel()"
+  [display]="display()"
+  appendTo="body"
+  styleClass="w-full"
+>
+  <ng-template #item let-option>
+    @if (itemTemplate(); as custom) {
+      <ng-container *ngTemplateOutlet="custom.template; context: { $implicit: option }"></ng-container>
+    } @else if (translateLabels()) {
+      {{ labelOf(option) | translate }}
+    } @else {
+      {{ labelOf(option) }}
+    }
+  </ng-template>
+</p-multiselect>

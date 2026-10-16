@@ -1,0 +1,23 @@
+<p-dialog
+  [visible]="visible()"
+  (visibleChange)="visible.set($event)"
+  (onShow)="shown.emit()"
+  [header]="header()"
+  [showHeader]="!!header()"
+  [modal]="true"
+  [dismissableMask]="dismissable()"
+  [draggable]="draggable()"
+  [position]="position()"
+  [style]="style()"
+  [styleClass]="panelClass()"
+  [contentStyleClass]="flush() ? '!p-0' : ''"
+  appendTo="body"
+>
+  <ng-content></ng-content>
+  <!-- Only when a footer is given: the library draws (empty) footer space as soon as it gets a template. -->
+  @if (footerTemplate(); as custom) {
+    <ng-template #footer>
+      <ng-container *ngTemplateOutlet="custom.template"></ng-container>
+    </ng-template>
+  }
+</p-dialog>

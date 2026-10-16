@@ -1,0 +1,49 @@
+<p-select
+  [ngModel]="value()"
+  (onChange)="pick($event.value)"
+  (onBlur)="blur()"
+  [disabled]="isDisabled()"
+  [options]="$any(options())"
+  [optionLabel]="optionLabel()"
+  [optionValue]="optionValue()"
+  [placeholder]="placeholder()"
+  [inputId]="inputId()"
+  [ariaLabel]="ariaLabel()"
+  [filter]="filter()"
+  [filterBy]="filterBy() ?? optionLabel()"
+  [showClear]="showClear()"
+  [emptyMessage]="emptyMessage()"
+  [group]="this.group()"
+  [optionGroupLabel]="optionGroupLabel()"
+  [optionGroupChildren]="optionGroupChildren()"
+  [editable]="editable()"
+  appendTo="body"
+  styleClass="w-full"
+>
+  <ng-template #item let-option>
+    @if (itemTemplate(); as custom) {
+      <ng-container *ngTemplateOutlet="custom.template; context: { $implicit: option }"></ng-container>
+    } @else if (translateLabels()) {
+      {{ labelOf(option) | translate }}
+    } @else {
+      {{ labelOf(option) }}
+    }
+  </ng-template>
+  <ng-template #selectedItem let-option>
+    @if (selectedTemplate(); as custom) {
+      <ng-container *ngTemplateOutlet="custom.template; context: { $implicit: option }"></ng-container>
+    } @else if (translateLabels()) {
+      {{ labelOf(option) | translate }}
+    } @else {
+      {{ labelOf(option) }}
+    }
+  </ng-template>
+  <!-- Only used when [group]="true". #group shadows the input of that name here, hence this.group() above. -->
+  <ng-template #group let-heading>
+    @if (groupTemplate(); as custom) {
+      <ng-container *ngTemplateOutlet="custom.template; context: { $implicit: heading }"></ng-container>
+    } @else {
+      {{ heading[optionGroupLabel() ?? 'label'] }}
+    }
+  </ng-template>
+</p-select>
