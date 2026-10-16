@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, ElementRef, HostListener, computed,
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { DialogModule } from 'primeng/dialog';
 import { catchError, debounceTime, distinctUntilChanged, map, of, startWith, switchMap } from 'rxjs';
 import { LanguageService } from '../../core/services/language.service';
 import { VisibleNavService } from '../nav/visible-nav.service';
@@ -14,6 +13,7 @@ import {
   SearchHit,
   SearchType,
 } from './global-search.service';
+import { DialogComponent } from '../../shared/ui/dialog/dialog.component';
 
 export interface PaletteEntry {
   labelKey: string;
@@ -62,7 +62,7 @@ export function normalizeSearch(text: string): string {
  */
 @Component({
   selector: 'app-command-palette',
-  imports: [TranslatePipe, DialogModule],
+  imports: [DialogComponent, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './command-palette.component.html',
 })

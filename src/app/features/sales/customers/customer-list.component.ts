@@ -20,7 +20,7 @@ import { CUSTOMER_TYPES, CustomerListItem, CustomerType } from '../sales.models'
 import { CustomerService } from './customer.service';
 import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
-import { SelectComponent } from '../../../shared/ui';
+import { SelectComponent } from '../../../shared/ui/select/select.component';
 
 @Component({
   selector: 'app-customer-list',

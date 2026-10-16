@@ -26,7 +26,9 @@ import {
   ReportResult,
   ReportType,
 } from '../analytics.models';
-import { CardComponent, SelectComponent, SelectGroupDirective, SelectItemDirective, SelectSelectedDirective } from '../../../shared/ui';
+import { CardComponent } from '../../../shared/ui/card/card.component';
+import { SelectComponent } from '../../../shared/ui/select/select.component';
+import { SelectGroupDirective, SelectItemDirective, SelectSelectedDirective } from '../../../shared/ui/select/select-templates';
 
 interface ReportGroup {
   key: string;

@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { AccessService } from '../../../core/auth/access.service';
@@ -19,7 +18,8 @@ import { DebitNoteService } from '../../accounting/debit-notes/debit-note.servic
 import { SUPPLIER_RETURN_SEVERITY, SupplierReturn } from '../returns.models';
 import { SupplierReturnService } from './supplier-return.service';
 import { RecordHistoryComponent } from '../../company/system-logs/record-history.component';
-import { CardComponent } from '../../../shared/ui';
+import { CardComponent } from '../../../shared/ui/card/card.component';
+import { DialogComponent, DialogFooterDirective } from '../../../shared/ui/dialog/dialog.component';
 
 const MONEY = /^\d+(\.\d{1,4})?$/;
 
@@ -27,6 +27,8 @@ const MONEY = /^\d+(\.\d{1,4})?$/;
 @Component({
   selector: 'app-supplier-return-detail',
   imports: [
+    DialogFooterDirective,
+    DialogComponent,
     CardComponent,
     RecordHistoryComponent,
     DecimalPipe,
@@ -34,7 +36,6 @@ const MONEY = /^\d+(\.\d{1,4})?$/;
     RouterLink,
     TranslatePipe,
     ButtonModule,
-    DialogModule,
     InputTextModule,
     TableModule,
     PageHeaderComponent,

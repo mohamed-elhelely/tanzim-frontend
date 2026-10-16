@@ -16,7 +16,9 @@ import { handleSaveError } from '../../../shared/utils/server-errors';
 import { AddressFieldsComponent, addressGroup, patchAddress, toAddress } from '../address-fields/address-fields.component';
 import { CUSTOMER_TYPES, Customer, CustomerPayload, CustomerType } from '../sales.models';
 import { CustomerService } from './customer.service';
-import { CardComponent, SelectComponent, ToggleComponent } from '../../../shared/ui';
+import { CardComponent } from '../../../shared/ui/card/card.component';
+import { SelectComponent } from '../../../shared/ui/select/select.component';
+import { ToggleComponent } from '../../../shared/ui/toggle/toggle.component';
 
 @Component({
   selector: 'app-customer-form',

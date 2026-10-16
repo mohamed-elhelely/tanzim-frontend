@@ -19,7 +19,9 @@ import { CompanyUserService } from '../../company/users/company-user.service';
 import { LocationService } from '../../locations/sites/location.service';
 import { WAREHOUSE_TYPES, WarehousePayload, WarehouseType } from '../inventory.models';
 import { WarehouseService } from './warehouse.service';
-import { CardComponent, SelectComponent, ToggleComponent } from '../../../shared/ui';
+import { CardComponent } from '../../../shared/ui/card/card.component';
+import { SelectComponent } from '../../../shared/ui/select/select.component';
+import { ToggleComponent } from '../../../shared/ui/toggle/toggle.component';
 
 @Component({
   selector: 'app-warehouse-form',

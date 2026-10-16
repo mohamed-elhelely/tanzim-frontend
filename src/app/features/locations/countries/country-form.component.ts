@@ -13,7 +13,7 @@ import { injectFormContext } from '../../../shared/forms/form-context';
 import { handleSaveError } from '../../../shared/utils/server-errors';
 import { CountryPayload } from '../locations.models';
 import { CountryService } from './country.service';
-import { ToggleComponent } from '../../../shared/ui';
+import { ToggleComponent } from '../../../shared/ui/toggle/toggle.component';
 
 @Component({
   selector: 'app-country-form',

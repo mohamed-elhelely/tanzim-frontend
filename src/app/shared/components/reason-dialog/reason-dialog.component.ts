@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Out
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
 import { TextareaModule } from 'primeng/textarea';
+import { DialogComponent, DialogFooterDirective } from '../../ui/dialog/dialog.component';
 
 /**
  * A dialog that asks for an optional reason before a destructive workflow step (cancel an order or invoice,
@@ -11,7 +11,7 @@ import { TextareaModule } from 'primeng/textarea';
  */
 @Component({
   selector: 'app-reason-dialog',
-  imports: [FormsModule, TranslatePipe, ButtonModule, DialogModule, TextareaModule],
+  imports: [DialogFooterDirective, DialogComponent, FormsModule, TranslatePipe, ButtonModule, TextareaModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './reason-dialog.component.html',
 })

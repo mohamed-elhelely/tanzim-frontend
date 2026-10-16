@@ -28,7 +28,7 @@ import { ProductVariantService } from '../variants/product-variant.service';
 import { WarehouseService } from '../warehouses/warehouse.service';
 import { InventoryReportService } from './inventory-report.service';
 import { StockReservationService } from './stock-reservation.service';
-import { SelectComponent } from '../../../shared/ui';
+import { SelectComponent } from '../../../shared/ui/select/select.component';
 
 export interface StockLevel extends StockLevelRow {
   variantName: string;

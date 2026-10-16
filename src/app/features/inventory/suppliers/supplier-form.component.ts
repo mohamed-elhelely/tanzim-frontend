@@ -14,7 +14,9 @@ import { PageHeaderComponent } from '../../../shared/components/page-header/page
 import { handleSaveError } from '../../../shared/utils/server-errors';
 import { SUPPLIER_TYPES, SupplierPayload, SupplierType } from '../inventory.models';
 import { SupplierService } from './supplier.service';
-import { CardComponent, SelectComponent, ToggleComponent } from '../../../shared/ui';
+import { CardComponent } from '../../../shared/ui/card/card.component';
+import { SelectComponent } from '../../../shared/ui/select/select.component';
+import { ToggleComponent } from '../../../shared/ui/toggle/toggle.component';
 
 @Component({
   selector: 'app-supplier-form',

@@ -7,7 +7,7 @@ import { StatusBadgeComponent } from '../../shared/components/status-badge/statu
 import { errorTitleKey } from '../../shared/utils/server-errors';
 import { SessionsService, UserSession, describeUserAgent } from './sessions.service';
 import { AppDatePipe } from '../../shared/pipes/app-date.pipe';
-import { CardComponent } from '../../shared/ui';
+import { CardComponent } from '../../shared/ui/card/card.component';
 
 /**
  * "Signed-in devices" on the profile page: every session of this user with its browser, OS, IP and last use;

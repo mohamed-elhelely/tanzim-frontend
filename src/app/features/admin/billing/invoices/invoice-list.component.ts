@@ -18,7 +18,7 @@ import { AdminInvoiceService } from '../platform-billing.service';
 import { InvoiceDraftFormComponent } from './invoice-draft-form.component';
 import { RowActionComponent, RowActionsComponent } from '../../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../../shared/table/saved-views.component';
-import { SelectComponent } from '../../../../shared/ui';
+import { SelectComponent } from '../../../../shared/ui/select/select.component';
 
 /** /admin/invoices: platform invoices of every company, filtered by company and status. */
 @Component({

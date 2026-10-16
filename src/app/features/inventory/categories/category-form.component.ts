@@ -15,7 +15,8 @@ import { handleSaveError } from '../../../shared/utils/server-errors';
 import { SelectOption } from '../../company/company.models';
 import { Category, CategoryPayload } from '../inventory.models';
 import { CategoryService } from './category.service';
-import { SelectComponent, ToggleComponent } from '../../../shared/ui';
+import { SelectComponent } from '../../../shared/ui/select/select.component';
+import { ToggleComponent } from '../../../shared/ui/toggle/toggle.component';
 
 @Component({
   selector: 'app-category-form',

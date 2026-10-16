@@ -18,7 +18,8 @@ import { AnalyticsLabelPipe, formatKpi } from '../analytics-format';
 import { AnalyticsTableComponent } from '../analytics-table.component';
 import { AnalyticsService } from '../analytics.service';
 import { CHART_SPECS, ChartSpec, DASHBOARD_NAMES, Dashboard, DashboardName, DashboardRef, Kpi, fitsSpec } from '../analytics.models';
-import { CardComponent, SelectComponent } from '../../../shared/ui';
+import { CardComponent } from '../../../shared/ui/card/card.component';
+import { SelectComponent } from '../../../shared/ui/select/select.component';
 
 /** Dashboards that can be narrowed to one warehouse. */
 const WAREHOUSE_DASHBOARDS: DashboardName[] = ['overview', 'inventory'];

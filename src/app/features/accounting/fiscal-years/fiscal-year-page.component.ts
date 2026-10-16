@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@ang
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { AppError } from '../../../core/errors/app-error';
 import { ConfirmService } from '../../../core/services/confirm.service';
@@ -15,7 +14,8 @@ import { StatusBadgeComponent } from '../../../shared/components/status-badge/st
 import { FiscalPeriod, FiscalYear } from '../accounting.models';
 import { FiscalYearService } from './fiscal-year.service';
 import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
-import { CardComponent } from '../../../shared/ui';
+import { CardComponent } from '../../../shared/ui/card/card.component';
+import { DialogComponent, DialogFooterDirective } from '../../../shared/ui/dialog/dialog.component';
 
 /**
  * Fiscal years and their monthly periods on one page. Closing a period stops posting into it; closing the year
@@ -25,12 +25,13 @@ import { CardComponent } from '../../../shared/ui';
 @Component({
   selector: 'app-fiscal-year-page',
   imports: [
+    DialogFooterDirective,
+    DialogComponent,
     CardComponent,
     AppDatePipe,
     FormsModule,
     TranslatePipe,
     ButtonModule,
-    DialogModule,
     InputTextModule,
     PageHeaderComponent,
     LoadingStateComponent,

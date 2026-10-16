@@ -17,7 +17,7 @@ import { NamedRef, SelectOption } from '../../company/company.models';
 import { CountryService } from '../countries/country.service';
 import { RegionPayload } from '../locations.models';
 import { RegionService } from './region.service';
-import { SelectComponent } from '../../../shared/ui';
+import { SelectComponent } from '../../../shared/ui/select/select.component';
 
 @Component({
   selector: 'app-region-form',

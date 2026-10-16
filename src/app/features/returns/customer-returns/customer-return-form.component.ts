@@ -30,7 +30,8 @@ import {
   ReturnReason,
 } from '../returns.models';
 import { CustomerReturnService } from './customer-return.service';
-import { CardComponent, SelectComponent } from '../../../shared/ui';
+import { CardComponent } from '../../../shared/ui/card/card.component';
+import { SelectComponent } from '../../../shared/ui/select/select.component';
 
 const QUANTITY = /^\d+(\.\d{1,3})?$/;
 

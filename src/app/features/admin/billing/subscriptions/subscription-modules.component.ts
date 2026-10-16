@@ -6,7 +6,7 @@ import { AccessService } from '../../../../core/auth/access.service';
 import { ConfirmService } from '../../../../core/services/confirm.service';
 import { BillingModule, MODULE_EDITABLE_STATUSES, Subscription } from '../platform-billing.models';
 import { BillingModuleService, SubscriptionService } from '../platform-billing.service';
-import { ToggleComponent } from '../../../../shared/ui';
+import { ToggleComponent } from '../../../../shared/ui/toggle/toggle.component';
 
 /**
  * Switches a subscription's feature modules on (add_module) and off (remove_module, after a confirm), with the

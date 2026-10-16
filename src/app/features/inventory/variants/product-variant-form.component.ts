@@ -24,7 +24,9 @@ import { SelectOption } from '../../company/company.models';
 import { InventoryRef, ProductVariantPayload } from '../inventory.models';
 import { ProductService } from '../products/product.service';
 import { ProductVariantService } from './product-variant.service';
-import { CardComponent, SelectComponent, ToggleComponent } from '../../../shared/ui';
+import { CardComponent } from '../../../shared/ui/card/card.component';
+import { SelectComponent } from '../../../shared/ui/select/select.component';
+import { ToggleComponent } from '../../../shared/ui/toggle/toggle.component';
 
 const DECIMAL_4 = /^\d+(\.\d{1,4})?$/;
 const DECIMAL_3 = /^\d+(\.\d{1,3})?$/;

@@ -5,7 +5,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { TextareaModule } from 'primeng/textarea';
@@ -25,7 +24,9 @@ import { AdminInvoice, BillingModule, INVOICE_SEVERITY, MONEY, WHOLE } from '../
 import { RowActionComponent, RowActionsComponent } from '../../../../shared/table/row-actions.component';
 import { AdminInvoiceService, BillingModuleService } from '../platform-billing.service';
 import { AppDatePipe } from '../../../../shared/pipes/app-date.pipe';
-import { CardComponent, SelectComponent } from '../../../../shared/ui';
+import { CardComponent } from '../../../../shared/ui/card/card.component';
+import { DialogComponent } from '../../../../shared/ui/dialog/dialog.component';
+import { SelectComponent } from '../../../../shared/ui/select/select.component';
 
 /**
  * /admin/invoices/:id: one platform invoice. While it is a draft, staff edit its items and issue it; once issued,
@@ -34,6 +35,7 @@ import { CardComponent, SelectComponent } from '../../../../shared/ui';
 @Component({
   selector: 'app-invoice-detail',
   imports: [
+    DialogComponent,
     SelectComponent,
     CardComponent,
     RowActionsComponent,
@@ -43,7 +45,6 @@ import { CardComponent, SelectComponent } from '../../../../shared/ui';
     ReactiveFormsModule,
     TranslatePipe,
     ButtonModule,
-    DialogModule,
     InputTextModule,
     TableModule,
     TextareaModule,

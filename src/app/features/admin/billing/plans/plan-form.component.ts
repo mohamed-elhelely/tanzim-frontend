@@ -15,7 +15,9 @@ import { injectFormContext } from '../../../../shared/forms/form-context';
 import { handleSaveError } from '../../../../shared/utils/server-errors';
 import { BILLING_PERIODS, BillingPeriod, MONEY, PlanPayload, WHOLE } from '../platform-billing.models';
 import { BillingModuleService, PlanService } from '../platform-billing.service';
-import { MultiSelectComponent, SelectComponent, ToggleComponent } from '../../../../shared/ui';
+import { MultiSelectComponent } from '../../../../shared/ui/multi-select/multi-select.component';
+import { SelectComponent } from '../../../../shared/ui/select/select.component';
+import { ToggleComponent } from '../../../../shared/ui/toggle/toggle.component';
 
 /** Create / edit a plan (dialog from the plans list, or /admin/plans/new as a page). */
 @Component({

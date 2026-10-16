@@ -95,13 +95,12 @@
     <app-record-history resource="journalentry" [objectId]="entry.id"></app-record-history>
   </div>
 
-  <p-dialog
+  <app-dialog
     [header]="'accounting.actions.reverse' | translate"
     [visible]="reverseDialogOpen()"
     (visibleChange)="reverseDialogOpen.set($event)"
-    [modal]="true"
-    [dismissableMask]="true"
-    [style]="{ width: '30rem', maxWidth: 'calc(100vw - 2rem)' }"
+    [dismissable]="true"
+    width="30rem"
   >
     <p class="mb-3 text-sm text-gray-500 dark:text-gray-400">{{ 'accounting.hints.reverse' | translate }}</p>
     <div class="flex flex-col gap-4">
@@ -115,7 +114,7 @@
         <input pInputText id="reverse_description" [(ngModel)]="reverseDescription" maxlength="255" class="w-full" />
       </div>
     </div>
-    <ng-template pTemplate="footer">
+    <ng-template appDialogFooter>
       <p-button
         [label]="'common.cancel' | translate"
         severity="secondary"
@@ -130,7 +129,7 @@
         (onClick)="submitReverse()"
       ></p-button>
     </ng-template>
-  </p-dialog>
+  </app-dialog>
 } @else {
   <app-loading-state></app-loading-state>
 }

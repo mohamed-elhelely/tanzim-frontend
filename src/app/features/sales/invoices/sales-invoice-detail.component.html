@@ -202,13 +202,12 @@
     <app-record-history resource="salesinvoice" [objectId]="invoice.id"></app-record-history>
   </div>
 
-  <p-dialog
+  <app-dialog
     [header]="'sales.actions.editDetails' | translate"
     [visible]="detailsDialogOpen()"
     (visibleChange)="detailsDialogOpen.set($event)"
-    [modal]="true"
-    [dismissableMask]="true"
-    [style]="{ width: '32rem', maxWidth: 'calc(100vw - 2rem)' }"
+    [dismissable]="true"
+    width="32rem"
   >
     <div class="flex flex-col gap-4">
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -230,7 +229,7 @@
         <textarea pTextarea id="inv_notes" [(ngModel)]="details.notes" rows="3" class="w-full"></textarea>
       </div>
     </div>
-    <ng-template pTemplate="footer">
+    <ng-template appDialogFooter>
       <p-button
         [label]="'common.cancel' | translate"
         severity="secondary"
@@ -239,15 +238,14 @@
       ></p-button>
       <p-button [label]="'common.save' | translate" [loading]="saving()" [disabled]="saving()" (onClick)="saveDetails()"></p-button>
     </ng-template>
-  </p-dialog>
+  </app-dialog>
 
-  <p-dialog
+  <app-dialog
     [header]="'sales.actions.recordPayment' | translate"
     [visible]="paymentDialogOpen()"
     (visibleChange)="paymentDialogOpen.set($event)"
-    [modal]="true"
-    [dismissableMask]="true"
-    [style]="{ width: '32rem', maxWidth: 'calc(100vw - 2rem)' }"
+    [dismissable]="true"
+    width="32rem"
   >
     <div class="flex flex-col gap-4">
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -286,7 +284,7 @@
         <p role="alert" class="text-sm text-red-600">{{ key | translate }}</p>
       }
     </div>
-    <ng-template pTemplate="footer">
+    <ng-template appDialogFooter>
       <p-button
         [label]="'common.cancel' | translate"
         severity="secondary"
@@ -301,7 +299,7 @@
         (onClick)="savePayment()"
       ></p-button>
     </ng-template>
-  </p-dialog>
+  </app-dialog>
 
   <app-reason-dialog
     header="sales.actions.cancelInvoice"

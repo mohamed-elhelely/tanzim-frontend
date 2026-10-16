@@ -14,7 +14,7 @@ import { injectFormContext } from '../../../shared/forms/form-context';
 import { handleSaveError } from '../../../shared/utils/server-errors';
 import { BrandPayload } from '../inventory.models';
 import { BrandService } from './brand.service';
-import { ToggleComponent } from '../../../shared/ui';
+import { ToggleComponent } from '../../../shared/ui/toggle/toggle.component';
 
 @Component({
   selector: 'app-brand-form',

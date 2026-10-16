@@ -15,7 +15,8 @@ import { AnalyticsChartComponent } from '../../../analytics/analytics-chart.comp
 import { AnalyticsRow, ChartSpec } from '../../../analytics/analytics.models';
 import { CustomerBalanceRow, INVOICE_SEVERITY, OutstandingInvoiceRow, RevenueRow, Severity } from '../platform-billing.models';
 import { BillingReportService } from '../platform-billing.service';
-import { CardComponent, SelectComponent } from '../../../../shared/ui';
+import { CardComponent } from '../../../../shared/ui/card/card.component';
+import { SelectComponent } from '../../../../shared/ui/select/select.component';
 
 const REVENUE_CHART: ChartSpec = { type: 'bar', category: 'period', series: ['total_paid', 'total_outstanding'], stacked: true };
 

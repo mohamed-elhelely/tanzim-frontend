@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { ButtonComponent, CardComponent } from '../../../shared/ui';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
+import { CardComponent } from '../../../shared/ui/card/card.component';
 import { ShowcaseSectionComponent } from '../showcase-section.component';
 
 @Component({

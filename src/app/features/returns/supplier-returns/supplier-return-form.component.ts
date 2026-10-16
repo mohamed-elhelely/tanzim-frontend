@@ -19,7 +19,8 @@ import { ItemOption, toItemOption, trimZeros } from '../../inventory/variants/va
 import { WarehouseService } from '../../inventory/warehouses/warehouse.service';
 import { SupplierReturnPayload } from '../returns.models';
 import { SupplierReturnService } from './supplier-return.service';
-import { CardComponent, SelectComponent } from '../../../shared/ui';
+import { CardComponent } from '../../../shared/ui/card/card.component';
+import { SelectComponent } from '../../../shared/ui/select/select.component';
 
 const QUANTITY = /^\d+(\.\d{1,3})?$/;
 const MONEY = /^\d+(\.\d{1,4})?$/;

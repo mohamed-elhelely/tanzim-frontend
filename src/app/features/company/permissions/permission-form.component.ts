@@ -17,7 +17,8 @@ import { handleSaveError } from '../../../shared/utils/server-errors';
 import { NamedRef, PermissionGroupOption, PermissionPayload, PermissionType, SelectOption } from '../company.models';
 import { PermissionGroupService } from '../permission-groups/permission-group.service';
 import { PermissionService } from './permission.service';
-import { MultiSelectComponent, SelectComponent } from '../../../shared/ui';
+import { MultiSelectComponent } from '../../../shared/ui/multi-select/multi-select.component';
+import { SelectComponent } from '../../../shared/ui/select/select.component';
 
 @Component({
   selector: 'app-permission-form',

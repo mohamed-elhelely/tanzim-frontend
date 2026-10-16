@@ -19,7 +19,10 @@ import { TenantCompanyService } from '../../companies/tenant-company.service';
 import { BillingModule, MODULE_EDITABLE_STATUSES, SUBSCRIPTION_STATUSES, Subscription, SubscriptionPayload, WHOLE } from '../platform-billing.models';
 import { BillingModuleService, PlanService, SubscriptionService } from '../platform-billing.service';
 import { SubscriptionModulesComponent } from './subscription-modules.component';
-import { MultiSelectComponent, SelectComponent, SelectItemDirective, ToggleComponent } from '../../../../shared/ui';
+import { MultiSelectComponent } from '../../../../shared/ui/multi-select/multi-select.component';
+import { SelectComponent } from '../../../../shared/ui/select/select.component';
+import { SelectItemDirective } from '../../../../shared/ui/select/select-templates';
+import { ToggleComponent } from '../../../../shared/ui/toggle/toggle.component';
 
 /** `YYYY-MM-DD`, `months` from today. */
 function isoDate(months = 0): string {

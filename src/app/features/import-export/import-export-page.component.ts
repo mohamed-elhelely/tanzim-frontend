@@ -18,7 +18,9 @@ import { DATA_RESOURCES, DataResource, DataTask, TaskStatus, taskModelName } fro
 import { RowActionComponent, RowActionsComponent } from '../../shared/table/row-actions.component';
 import { ImportExportService } from './import-export.service';
 import { AppDatePipe } from '../../shared/pipes/app-date.pipe';
-import { CardComponent, SelectComponent, SelectGroupDirective, SelectItemDirective, SelectSelectedDirective } from '../../shared/ui';
+import { CardComponent } from '../../shared/ui/card/card.component';
+import { SelectComponent } from '../../shared/ui/select/select.component';
+import { SelectGroupDirective, SelectItemDirective, SelectSelectedDirective } from '../../shared/ui/select/select-templates';
 
 type Severity = 'success' | 'secondary' | 'info' | 'warn' | 'danger';
 

@@ -45,7 +45,8 @@ import {
   lineTotal,
 } from '../sales.models';
 import { SalesOrderService } from './sales-order.service';
-import { CardComponent, SelectComponent } from '../../../shared/ui';
+import { CardComponent } from '../../../shared/ui/card/card.component';
+import { SelectComponent } from '../../../shared/ui/select/select.component';
 
 const QUANTITY = /^\d+(\.\d{1,3})?$/;
 const MONEY = /^\d+(\.\d{1,4})?$/;

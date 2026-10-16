@@ -17,7 +17,7 @@ import { SelectOption } from '../../company/company.models';
 import { CityPayload, Region } from '../locations.models';
 import { RegionService } from '../regions/region.service';
 import { CityService } from './city.service';
-import { SelectComponent } from '../../../shared/ui';
+import { SelectComponent } from '../../../shared/ui/select/select.component';
 
 /** UTC, then the IANA zones known to the browser (some browsers leave UTC out of the list). */
 const TIMEZONE_OPTIONS: { value: string; label: string }[] = [

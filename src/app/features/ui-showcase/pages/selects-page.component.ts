@@ -1,7 +1,9 @@
 import { JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MultiSelectComponent, SelectComponent, SelectGroupDirective, SelectItemDirective } from '../../../shared/ui';
+import { MultiSelectComponent } from '../../../shared/ui/multi-select/multi-select.component';
+import { SelectComponent } from '../../../shared/ui/select/select.component';
+import { SelectGroupDirective, SelectItemDirective } from '../../../shared/ui/select/select-templates';
 import { ShowcaseSectionComponent } from '../showcase-section.component';
 
 @Component({

@@ -15,7 +15,8 @@ import { injectFormContext } from '../../../shared/forms/form-context';
 import { handleSaveError } from '../../../shared/utils/server-errors';
 import { ACCOUNT_TYPES, Account, AccountPayload, AccountType } from '../accounting.models';
 import { AccountService } from './account.service';
-import { SelectComponent, ToggleComponent } from '../../../shared/ui';
+import { SelectComponent } from '../../../shared/ui/select/select.component';
+import { ToggleComponent } from '../../../shared/ui/toggle/toggle.component';
 
 /**
  * Create or edit an account. The parent must be a group account of the same type (the backend's rule), and can't

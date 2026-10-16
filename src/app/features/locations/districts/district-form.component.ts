@@ -17,7 +17,7 @@ import { SelectOption } from '../../company/company.models';
 import { CityService } from '../cities/city.service';
 import { City, DistrictPayload } from '../locations.models';
 import { DistrictService } from './district.service';
-import { SelectComponent } from '../../../shared/ui';
+import { SelectComponent } from '../../../shared/ui/select/select.component';
 
 @Component({
   selector: 'app-district-form',

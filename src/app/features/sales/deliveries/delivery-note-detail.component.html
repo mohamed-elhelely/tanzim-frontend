@@ -96,13 +96,12 @@
     <app-record-history resource="deliverynote" [objectId]="note.id"></app-record-history>
   </div>
 
-  <p-dialog
+  <app-dialog
     [header]="(carrierDialog() === 'ship' ? 'sales.actions.handToCarrier' : 'sales.actions.editDetails') | translate"
     [visible]="carrierDialog() !== null"
     (visibleChange)="!$event && carrierDialog.set(null)"
-    [modal]="true"
-    [dismissableMask]="true"
-    [style]="{ width: '32rem', maxWidth: 'calc(100vw - 2rem)' }"
+    [dismissable]="true"
+    width="32rem"
   >
     <div class="flex flex-col gap-4">
       @if (carrierDialog() === 'details') {
@@ -133,7 +132,7 @@
         </div>
       }
     </div>
-    <ng-template pTemplate="footer">
+    <ng-template appDialogFooter>
       <p-button
         [label]="'common.cancel' | translate"
         severity="secondary"
@@ -147,7 +146,7 @@
         (onClick)="saveCarrier()"
       ></p-button>
     </ng-template>
-  </p-dialog>
+  </app-dialog>
 
   <app-reason-dialog
     header="sales.actions.markFailed"

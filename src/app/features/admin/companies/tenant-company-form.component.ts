@@ -14,7 +14,9 @@ import { PageHeaderComponent } from '../../../shared/components/page-header/page
 import { handleSaveError } from '../../../shared/utils/server-errors';
 import { TenantCompanyPayload } from '../admin.models';
 import { TenantCompanyService } from './tenant-company.service';
-import { CardComponent, SelectComponent, ToggleComponent } from '../../../shared/ui';
+import { CardComponent } from '../../../shared/ui/card/card.component';
+import { SelectComponent } from '../../../shared/ui/select/select.component';
+import { ToggleComponent } from '../../../shared/ui/toggle/toggle.component';
 
 const DEFAULT_TIMEZONE = 'Asia/Riyadh';
 

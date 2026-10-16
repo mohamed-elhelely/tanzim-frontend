@@ -19,7 +19,10 @@ import { DepartmentService } from '../departments/department.service';
 import { RoleService } from '../roles/role.service';
 import { TeamService } from '../teams/team.service';
 import { CompanyUserService } from './company-user.service';
-import { CardComponent, PasswordComponent, SelectComponent, ToggleComponent } from '../../../shared/ui';
+import { CardComponent } from '../../../shared/ui/card/card.component';
+import { PasswordComponent } from '../../../shared/ui/password/password.component';
+import { SelectComponent } from '../../../shared/ui/select/select.component';
+import { ToggleComponent } from '../../../shared/ui/toggle/toggle.component';
 
 /** Server errors arrive nested under "user"; map them to this form's flat controls. */
 const USER_FIELD_MAP: Record<string, string> = {

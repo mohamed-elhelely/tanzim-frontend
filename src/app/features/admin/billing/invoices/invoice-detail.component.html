@@ -150,14 +150,11 @@
     }
   </div>
 
-  <p-dialog
+  <app-dialog
     [visible]="editingItem() !== null"
     (visibleChange)="!$event && editingItem.set(null)"
-    [modal]="true"
     [header]="(editingItem() === 'new' ? 'admin.billing.invoices.addItem' : 'admin.billing.invoices.editItem') | translate"
-    [style]="{ width: '36rem' }"
-    [breakpoints]="{ '640px': '100vw' }"
-    appendTo="body"
+    width="36rem"
   >
     <form [formGroup]="itemForm" (ngSubmit)="saveItem()" class="flex flex-col gap-4" novalidate>
       @if (itemErrors().length) {
@@ -203,16 +200,13 @@
         <p-button type="submit" [label]="'common.save' | translate" icon="pi pi-check" [loading]="itemSaving()" [disabled]="itemSaving()"></p-button>
       </div>
     </form>
-  </p-dialog>
+  </app-dialog>
 
-  <p-dialog
+  <app-dialog
     [visible]="paymentOpen()"
     (visibleChange)="paymentOpen.set($event)"
-    [modal]="true"
     [header]="'admin.billing.invoices.addPayment' | translate"
-    [style]="{ width: '32rem' }"
-    [breakpoints]="{ '640px': '100vw' }"
-    appendTo="body"
+    width="32rem"
   >
     <form [formGroup]="paymentForm" (ngSubmit)="savePayment()" class="flex flex-col gap-4" novalidate>
       @if (paymentErrors().length) {
@@ -250,7 +244,7 @@
         ></p-button>
       </div>
     </form>
-  </p-dialog>
+  </app-dialog>
 
   <app-reason-dialog
     [visible]="cancelOpen()"

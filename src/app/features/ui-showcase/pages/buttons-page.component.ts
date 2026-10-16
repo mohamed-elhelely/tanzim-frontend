@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { ButtonComponent, ButtonSeverity, ButtonVariant } from '../../../shared/ui';
+import { ButtonComponent, ButtonSeverity, ButtonVariant } from '../../../shared/ui/button/button.component';
 import { ShowcaseSectionComponent } from '../showcase-section.component';
 
 @Component({

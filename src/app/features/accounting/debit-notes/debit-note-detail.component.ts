@@ -14,7 +14,7 @@ import { DEBIT_NOTE_SEVERITY, DebitNote } from '../accounting.models';
 import { DebitNoteService } from './debit-note.service';
 import { RecordHistoryComponent } from '../../company/system-logs/record-history.component';
 import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
-import { CardComponent } from '../../../shared/ui';
+import { CardComponent } from '../../../shared/ui/card/card.component';
 
 /** One debit note. Drafts: edit, issue (posts it), delete. Issued: cancel with a reason. */
 @Component({

@@ -3,7 +3,7 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { of, switchMap } from 'rxjs';
-import { MultiSelectComponent } from '../ui';
+import { MultiSelectComponent } from '../ui/multi-select/multi-select.component';
 
 /** A choice for a list filter; `label` is a translation key. */
 export interface ChoiceOption {

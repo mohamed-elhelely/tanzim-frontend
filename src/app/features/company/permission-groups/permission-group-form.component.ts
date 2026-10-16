@@ -15,7 +15,7 @@ import { handleSaveError } from '../../../shared/utils/server-errors';
 import { PermissionGroupPayload } from '../company.models';
 import { PermissionPickerComponent } from '../permissions/permission-picker.component';
 import { PermissionGroupService } from './permission-group.service';
-import { CardComponent } from '../../../shared/ui';
+import { CardComponent } from '../../../shared/ui/card/card.component';
 
 @Component({
   selector: 'app-permission-group-form',

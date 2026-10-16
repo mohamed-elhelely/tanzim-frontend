@@ -40,7 +40,8 @@ import { SystemLogService } from './system-log.service';
 import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
-import { MultiSelectComponent, SelectComponent } from '../../../shared/ui';
+import { MultiSelectComponent } from '../../../shared/ui/multi-select/multi-select.component';
+import { SelectComponent } from '../../../shared/ui/select/select.component';
 
 /**
  * Resources the log records that have no screen of their own (document lines, sign-ins on the user, stock

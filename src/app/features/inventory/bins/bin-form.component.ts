@@ -17,7 +17,8 @@ import { BinPayload, Zone } from '../inventory.models';
 import { trimZeros } from '../variants/variant-options';
 import { ZoneService } from '../zones/zone.service';
 import { BinService } from './bin.service';
-import { SelectComponent, ToggleComponent } from '../../../shared/ui';
+import { SelectComponent } from '../../../shared/ui/select/select.component';
+import { ToggleComponent } from '../../../shared/ui/toggle/toggle.component';
 
 @Component({
   selector: 'app-bin-form',

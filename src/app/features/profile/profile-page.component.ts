@@ -14,7 +14,9 @@ import { PageHeaderComponent } from '../../shared/components/page-header/page-he
 import { handleSaveError } from '../../shared/utils/server-errors';
 import { MeProfile, ProfileService } from './profile.service';
 import { SignedInDevicesComponent } from './signed-in-devices.component';
-import { CardComponent, PasswordComponent, SelectComponent } from '../../shared/ui';
+import { CardComponent } from '../../shared/ui/card/card.component';
+import { PasswordComponent } from '../../shared/ui/password/password.component';
+import { SelectComponent } from '../../shared/ui/select/select.component';
 
 /** The browser's IANA time zones, for the timezone picker. */
 const TIME_ZONES: string[] = (Intl as { supportedValuesOf?: (key: string) => string[] }).supportedValuesOf?.('timeZone') ?? [];

@@ -17,7 +17,8 @@ import { SupplierInvoiceRef, SupplierInvoiceService } from '../../inventory/supp
 import { SupplierService } from '../../inventory/suppliers/supplier.service';
 import { SUPPLIER_PAYMENT_METHODS, SupplierPaymentMethod, SupplierPaymentPayload } from '../accounting.models';
 import { SupplierPaymentService } from './supplier-payment.service';
-import { CardComponent, SelectComponent } from '../../../shared/ui';
+import { CardComponent } from '../../../shared/ui/card/card.component';
+import { SelectComponent } from '../../../shared/ui/select/select.component';
 
 const MONEY = /^\d+(\.\d{1,2})?$/;
 

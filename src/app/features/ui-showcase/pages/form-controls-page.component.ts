@@ -1,7 +1,8 @@
 import { JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { PasswordComponent, ToggleComponent } from '../../../shared/ui';
+import { PasswordComponent } from '../../../shared/ui/password/password.component';
+import { ToggleComponent } from '../../../shared/ui/toggle/toggle.component';
 import { ShowcaseSectionComponent } from '../showcase-section.component';
 
 @Component({

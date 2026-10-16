@@ -115,17 +115,14 @@
   </div>
 }
 
-<p-dialog
+<app-dialog
   [visible]="modulesFor() !== null"
   (visibleChange)="!$event && modulesFor.set(null)"
-  [modal]="true"
   [header]="'admin.billing.subscriptions.manageModules' | translate"
-  [style]="{ width: '32rem' }"
-  [breakpoints]="{ '640px': '100vw' }"
-  appendTo="body"
+  width="32rem"
 >
   @if (modulesFor(); as subscription) {
     <p class="mb-4 text-sm text-gray-500 dark:text-gray-400">{{ companyName(subscription) }} — {{ subscription.plan_name }}</p>
     <app-subscription-modules [subscription]="subscription" (changed)="table.load()"></app-subscription-modules>
   }
-</p-dialog>
+</app-dialog>

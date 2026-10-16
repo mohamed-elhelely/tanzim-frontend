@@ -5,7 +5,6 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { AppError } from '../../../core/errors/app-error';
@@ -32,7 +31,8 @@ import {
 import { SalesOrderService } from './sales-order.service';
 import { RecordHistoryComponent } from '../../company/system-logs/record-history.component';
 import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
-import { CardComponent } from '../../../shared/ui';
+import { CardComponent } from '../../../shared/ui/card/card.component';
+import { DialogComponent, DialogFooterDirective } from '../../../shared/ui/dialog/dialog.component';
 
 /** Which workflow actions the backend allows from each status (sales/services.py). */
 const CAN_CANCEL: SalesOrderStatus[] = ['draft', 'confirmed', 'on_hold'];
@@ -54,6 +54,8 @@ interface ShipRow {
 @Component({
   selector: 'app-sales-order-detail',
   imports: [
+    DialogFooterDirective,
+    DialogComponent,
     CardComponent,
     RecordHistoryComponent,
     AppDatePipe,
@@ -62,7 +64,6 @@ interface ShipRow {
     RouterLink,
     TranslatePipe,
     ButtonModule,
-    DialogModule,
     InputTextModule,
     TableModule,
     PageHeaderComponent,

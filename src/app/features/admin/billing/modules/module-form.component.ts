@@ -14,7 +14,7 @@ import { injectFormContext } from '../../../../shared/forms/form-context';
 import { handleSaveError } from '../../../../shared/utils/server-errors';
 import { BillingModulePayload, MONEY } from '../platform-billing.models';
 import { BillingModuleService } from '../platform-billing.service';
-import { ToggleComponent } from '../../../../shared/ui';
+import { ToggleComponent } from '../../../../shared/ui/toggle/toggle.component';
 
 /** Module codes are what the app checks (`/me.modules`), e.g. `inventory`: lowercase, digits and underscores. */
 const CODE = /^[a-z][a-z0-9_]*$/;

@@ -16,7 +16,7 @@ import { PageHeaderComponent } from '../../../shared/components/page-header/page
 import { handleSaveError } from '../../../shared/utils/server-errors';
 import { CompanyProfile } from '../company.models';
 import { CompanyProfileService } from './company-profile.service';
-import { CardComponent } from '../../../shared/ui';
+import { CardComponent } from '../../../shared/ui/card/card.component';
 
 const HEX_COLOR = /^#[0-9A-Fa-f]{6}$/;
 

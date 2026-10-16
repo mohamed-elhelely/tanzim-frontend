@@ -17,7 +17,9 @@ import { NamedRef, RolePayload, SelectOption } from '../company.models';
 import { PermissionGroupService } from '../permission-groups/permission-group.service';
 import { PermissionPickerComponent } from '../permissions/permission-picker.component';
 import { RoleService } from './role.service';
-import { CardComponent, MultiSelectComponent, ToggleComponent } from '../../../shared/ui';
+import { CardComponent } from '../../../shared/ui/card/card.component';
+import { MultiSelectComponent } from '../../../shared/ui/multi-select/multi-select.component';
+import { ToggleComponent } from '../../../shared/ui/toggle/toggle.component';
 
 @Component({
   selector: 'app-role-form',

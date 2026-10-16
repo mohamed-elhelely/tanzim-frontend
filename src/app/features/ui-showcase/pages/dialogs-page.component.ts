@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { ButtonComponent, DialogComponent, DialogFooterDirective } from '../../../shared/ui';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
+import { DialogComponent, DialogFooterDirective } from '../../../shared/ui/dialog/dialog.component';
 import { ShowcaseSectionComponent } from '../showcase-section.component';
 
 @Component({

@@ -13,7 +13,7 @@ import { injectFormContext } from '../../../../shared/forms/form-context';
 import { handleSaveError } from '../../../../shared/utils/server-errors';
 import { InvoiceDraftPayload, MONEY } from '../platform-billing.models';
 import { AdminInvoiceService, SubscriptionService } from '../platform-billing.service';
-import { SelectComponent } from '../../../../shared/ui';
+import { SelectComponent } from '../../../../shared/ui/select/select.component';
 
 /** A new draft platform invoice for one subscription; opens the invoice to add its items. */
 @Component({

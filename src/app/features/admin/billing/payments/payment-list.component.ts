@@ -4,7 +4,6 @@ import { FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } 
 import { RouterLink } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { TextareaModule } from 'primeng/textarea';
@@ -23,12 +22,14 @@ import { PlatformPaymentService } from '../platform-billing.service';
 import { RowActionComponent, RowActionsComponent } from '../../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../../shared/table/saved-views.component';
 import { AppDatePipe } from '../../../../shared/pipes/app-date.pipe';
-import { SelectComponent } from '../../../../shared/ui';
+import { DialogComponent } from '../../../../shared/ui/dialog/dialog.component';
+import { SelectComponent } from '../../../../shared/ui/select/select.component';
 
 /** /admin/payments: payments of every company on platform invoices; completed ones can be refunded. */
 @Component({
   selector: 'app-payment-list',
   imports: [
+    DialogComponent,
     SelectComponent,
     RowActionsComponent,
     RowActionComponent,
@@ -40,7 +41,6 @@ import { SelectComponent } from '../../../../shared/ui';
     RouterLink,
     TranslatePipe,
     ButtonModule,
-    DialogModule,
     InputTextModule,
     TableModule,
     TextareaModule,

@@ -9,7 +9,7 @@ import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { AUDIT_ACTION_SEVERITY, AuditLogEntry, auditChangeRows } from './system-log.models';
 import { SystemLogService } from './system-log.service';
 import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
-import { CardComponent } from '../../../shared/ui';
+import { CardComponent } from '../../../shared/ui/card/card.component';
 
 const PAGE_SIZE = 20;
 

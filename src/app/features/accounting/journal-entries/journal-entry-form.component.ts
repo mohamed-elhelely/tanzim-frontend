@@ -17,7 +17,8 @@ import { handleSaveError } from '../../../shared/utils/server-errors';
 import { AccountService } from '../accounts/account.service';
 import { Account, JournalEntry, JournalEntryPayload } from '../accounting.models';
 import { JournalEntryService } from './journal-entry.service';
-import { CardComponent, SelectComponent } from '../../../shared/ui';
+import { CardComponent } from '../../../shared/ui/card/card.component';
+import { SelectComponent } from '../../../shared/ui/select/select.component';
 
 const MONEY = /^\d+(\.\d{1,2})?$/;
 

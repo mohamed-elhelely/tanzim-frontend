@@ -16,7 +16,7 @@ import { handleSaveError } from '../../../shared/utils/server-errors';
 import { DepartmentPayload, NamedRef, SelectOption } from '../company.models';
 import { CompanyUserService } from '../users/company-user.service';
 import { DepartmentService } from './department.service';
-import { SelectComponent } from '../../../shared/ui';
+import { SelectComponent } from '../../../shared/ui/select/select.component';
 
 @Component({
   selector: 'app-department-form',

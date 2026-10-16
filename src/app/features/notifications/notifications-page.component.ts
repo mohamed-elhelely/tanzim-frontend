@@ -9,7 +9,7 @@ import { NotificationCenterService } from '../../core/notifications/notification
 import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
 import { NotificationItemComponent } from '../../shared/components/notification-item/notification-item.component';
 import { PageHeaderAction, PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
-import { SelectComponent } from '../../shared/ui';
+import { SelectComponent } from '../../shared/ui/select/select.component';
 
 type Filter = 'all' | 'unread';
 

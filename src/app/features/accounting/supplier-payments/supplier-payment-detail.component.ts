@@ -15,7 +15,7 @@ import { SupplierPayment } from '../accounting.models';
 import { SupplierPaymentService } from './supplier-payment.service';
 import { RecordHistoryComponent } from '../../company/system-logs/record-history.component';
 import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
-import { CardComponent } from '../../../shared/ui';
+import { CardComponent } from '../../../shared/ui/card/card.component';
 
 /** One supplier payment with its allocations. Completed payments can be voided (with a reason). */
 @Component({

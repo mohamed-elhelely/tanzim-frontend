@@ -19,7 +19,8 @@ import { CustomerService } from '../../sales/customers/customer.service';
 import { AccountService } from '../accounts/account.service';
 import { REPORT_PARAMS, REPORT_TYPES, ReportParam, ReportResult, ReportType, ReportValue } from '../accounting.models';
 import { AccountingReportService } from './accounting-report.service';
-import { CardComponent, SelectComponent } from '../../../shared/ui';
+import { CardComponent } from '../../../shared/ui/card/card.component';
+import { SelectComponent } from '../../../shared/ui/select/select.component';
 
 /** Columns and summary keys that hold text or dates; everything else numeric is shown as money. */
 const TEXT_KEYS = new Set([

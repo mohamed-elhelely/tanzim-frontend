@@ -22,7 +22,9 @@ import { DistrictService } from '../districts/district.service';
 import { City, District, LOCATION_TYPES, LocationPayload, LocationType, Region } from '../locations.models';
 import { RegionService } from '../regions/region.service';
 import { LocationService } from './location.service';
-import { CardComponent, SelectComponent, ToggleComponent } from '../../../shared/ui';
+import { CardComponent } from '../../../shared/ui/card/card.component';
+import { SelectComponent } from '../../../shared/ui/select/select.component';
+import { ToggleComponent } from '../../../shared/ui/toggle/toggle.component';
 
 /** A company location ("site"): an address under Country → Region → City → District. */
 @Component({

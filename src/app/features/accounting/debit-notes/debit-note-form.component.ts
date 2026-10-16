@@ -19,7 +19,8 @@ import { SupplierReturnService } from '../../returns/supplier-returns/supplier-r
 import { SupplierReturnListItem } from '../../returns/returns.models';
 import { DebitNote, DebitNotePayload } from '../accounting.models';
 import { DebitNoteService } from './debit-note.service';
-import { CardComponent, SelectComponent } from '../../../shared/ui';
+import { CardComponent } from '../../../shared/ui/card/card.component';
+import { SelectComponent } from '../../../shared/ui/select/select.component';
 
 const MONEY = /^\d+(\.\d{1,2})?$/;
 

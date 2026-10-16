@@ -100,14 +100,11 @@
   </div>
 }
 
-<p-dialog
+<app-dialog
   [visible]="refunding() !== null"
   (visibleChange)="!$event && refunding.set(null)"
-  [modal]="true"
   [header]="'admin.billing.payments.refund' | translate"
-  [style]="{ width: '32rem' }"
-  [breakpoints]="{ '640px': '100vw' }"
-  appendTo="body"
+  width="32rem"
 >
   @if (refunding(); as payment) {
     <form [formGroup]="refundForm" (ngSubmit)="saveRefund()" class="flex flex-col gap-4" novalidate>
@@ -143,4 +140,4 @@
       </div>
     </form>
   }
-</p-dialog>
+</app-dialog>

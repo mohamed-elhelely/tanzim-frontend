@@ -16,7 +16,7 @@ import { JournalEntry, JournalStatus } from '../accounting.models';
 import { JournalEntryService } from './journal-entry.service';
 import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
-import { SelectComponent } from '../../../shared/ui';
+import { SelectComponent } from '../../../shared/ui/select/select.component';
 
 type Origin = 'manual' | 'automatic';
 

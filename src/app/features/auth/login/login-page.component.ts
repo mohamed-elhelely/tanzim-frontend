@@ -8,7 +8,7 @@ import { AuthService } from '../../../core/auth/auth.service';
 import { AppError } from '../../../core/errors/app-error';
 import { LanguageService } from '../../../core/services/language.service';
 import { ThemeService } from '../../../core/services/theme.service';
-import { PasswordComponent } from '../../../shared/ui';
+import { PasswordComponent } from '../../../shared/ui/password/password.component';
 
 @Component({
   selector: 'app-login-page',

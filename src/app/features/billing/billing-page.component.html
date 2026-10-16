@@ -98,14 +98,13 @@
   }
 </section>
 
-<p-dialog
+<app-dialog
   [visible]="selected() !== null"
   (visibleChange)="!$event && selected.set(null)"
-  [modal]="true"
-  [dismissableMask]="true"
+  [dismissable]="true"
   [draggable]="false"
   [header]="selected()?.invoice_number ?? ''"
-  styleClass="w-[40rem] max-w-[calc(100vw-2rem)]"
+  width="40rem"
 >
   @if (selected(); as invoice) {
     <div class="flex flex-col gap-4 text-sm">
@@ -172,4 +171,4 @@
       }
     </div>
   }
-</p-dialog>
+</app-dialog>

@@ -18,7 +18,8 @@ import { NamedRef, SelectOption, TeamPayload } from '../company.models';
 import { DepartmentService } from '../departments/department.service';
 import { CompanyUserService } from '../users/company-user.service';
 import { TeamService } from './team.service';
-import { MultiSelectComponent, SelectComponent } from '../../../shared/ui';
+import { MultiSelectComponent } from '../../../shared/ui/multi-select/multi-select.component';
+import { SelectComponent } from '../../../shared/ui/select/select.component';
 
 export type LocationState = 'loading' | 'ready' | 'forbidden' | 'empty' | 'error';
 
