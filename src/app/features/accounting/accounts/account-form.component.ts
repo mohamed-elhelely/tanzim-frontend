@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } 
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { AppError } from '../../../core/errors/app-error';
@@ -17,6 +16,7 @@ import { ACCOUNT_TYPES, Account, AccountPayload, AccountType } from '../accounti
 import { AccountService } from './account.service';
 import { SelectComponent } from '../../../shared/ui/select/select.component';
 import { ToggleComponent } from '../../../shared/ui/toggle/toggle.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 /**
  * Create or edit an account. The parent must be a group account of the same type (the backend's rule), and can't
@@ -25,11 +25,11 @@ import { ToggleComponent } from '../../../shared/ui/toggle/toggle.component';
 @Component({
   selector: 'app-account-form',
   imports: [
+    ButtonComponent,
     SelectComponent,
     ToggleComponent,
     ReactiveFormsModule,
     TranslatePipe,
-    ButtonModule,
     InputTextModule,
     TextareaModule,
     FormLayoutComponent,

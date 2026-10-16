@@ -3,7 +3,6 @@ import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } 
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { AccessService } from '../../../core/auth/access.service';
@@ -20,6 +19,7 @@ import { SupplierReturnService } from './supplier-return.service';
 import { RecordHistoryComponent } from '../../company/system-logs/record-history.component';
 import { CardComponent } from '../../../shared/ui/card/card.component';
 import { DialogComponent, DialogFooterDirective } from '../../../shared/ui/dialog/dialog.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 const MONEY = /^\d+(\.\d{1,4})?$/;
 
@@ -27,6 +27,7 @@ const MONEY = /^\d+(\.\d{1,4})?$/;
 @Component({
   selector: 'app-supplier-return-detail',
   imports: [
+    ButtonComponent,
     DialogFooterDirective,
     DialogComponent,
     CardComponent,
@@ -35,7 +36,6 @@ const MONEY = /^\d+(\.\d{1,4})?$/;
     FormsModule,
     RouterLink,
     TranslatePipe,
-    ButtonModule,
     InputTextModule,
     TableModule,
     PageHeaderComponent,

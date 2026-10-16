@@ -15,8 +15,8 @@
       <input type="checkbox" [checked]="showPrice()" (change)="showPrice.set($any($event.target).checked)" />
       {{ 'labels.showPrice' | translate }}
     </label>
-    <p-button [label]="'print.close' | translate" icon="pi pi-times" severity="secondary" [outlined]="true" (onClick)="close()"></p-button>
-    <p-button [label]="'print.print' | translate" icon="pi pi-print" [disabled]="!labels().length" (onClick)="print()"></p-button>
+    <app-button [label]="'print.close' | translate" icon="pi pi-times" severity="secondary" (clicked)="close()" variant="outlined"></app-button>
+    <app-button [label]="'print.print' | translate" icon="pi pi-print" [disabled]="!labels().length" (clicked)="print()"></app-button>
   </div>
 
   @if (error(); as err) {

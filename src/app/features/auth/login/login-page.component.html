@@ -113,14 +113,14 @@
             }
           </div>
 
-          <p-button
+          <app-button
             type="submit"
-            styleClass="w-full"
             [loading]="submitting()"
             [disabled]="submitting()"
             [label]="'auth.signIn' | translate"
             icon="pi pi-sign-in rtl:rotate-180"
-          ></p-button>
+            width="always"
+          ></app-button>
         </form>
       </div>
     </div>

@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
@@ -18,16 +17,17 @@ import { Product } from '../inventory.models';
 import { ProductService } from './product.service';
 import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 @Component({
   selector: 'app-product-list',
   imports: [
+    ButtonComponent,
     RowActionsComponent,
     RowActionComponent,
     SavedViewsComponent,
     TranslatePipe,
     TableModule,
-    ButtonModule,
     InputTextModule,
     IconFieldModule,
     InputIconModule,

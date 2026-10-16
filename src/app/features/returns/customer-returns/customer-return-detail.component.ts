@@ -3,7 +3,6 @@ import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } 
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { AppError } from '../../../core/errors/app-error';
@@ -29,6 +28,7 @@ import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
 import { CardComponent } from '../../../shared/ui/card/card.component';
 import { DialogComponent, DialogFooterDirective } from '../../../shared/ui/dialog/dialog.component';
 import { SelectComponent } from '../../../shared/ui/select/select.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 const QUANTITY = /^\d+(\.\d{1,3})?$/;
 const MONEY = /^\d+(\.\d{1,4})?$/;
@@ -58,6 +58,7 @@ interface InspectRow {
 @Component({
   selector: 'app-customer-return-detail',
   imports: [
+    ButtonComponent,
     DialogFooterDirective,
     DialogComponent,
     SelectComponent,
@@ -68,7 +69,6 @@ interface InspectRow {
     FormsModule,
     RouterLink,
     TranslatePipe,
-    ButtonModule,
     InputTextModule,
     TableModule,
     PageHeaderComponent,

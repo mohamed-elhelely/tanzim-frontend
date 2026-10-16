@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, OnInit, computed, inject, input, si
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { DrawerModule } from 'primeng/drawer';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
@@ -42,6 +41,7 @@ import { SavedViewsComponent } from '../../../shared/table/saved-views.component
 import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
 import { MultiSelectComponent } from '../../../shared/ui/multi-select/multi-select.component';
 import { SelectComponent } from '../../../shared/ui/select/select.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 /**
  * Resources the log records that have no screen of their own (document lines, sign-ins on the user, stock
@@ -83,6 +83,7 @@ function resourceLabels(items: NavItem[]): Map<string, string> {
 @Component({
   selector: 'app-system-log-list',
   imports: [
+    ButtonComponent,
     SelectComponent,
     MultiSelectComponent,
     RowActionsComponent,
@@ -92,7 +93,6 @@ function resourceLabels(items: NavItem[]): Map<string, string> {
     FormsModule,
     TranslatePipe,
     TableModule,
-    ButtonModule,
     DrawerModule,
     IconFieldModule,
     InputIconModule,

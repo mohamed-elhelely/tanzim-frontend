@@ -72,7 +72,7 @@
       <div class="flex items-center justify-between gap-3 border-b border-gray-100 p-4 dark:border-gray-800">
         <h2 class="text-sm font-semibold text-gray-900 dark:text-gray-100">{{ 'admin.billing.invoices.items' | translate }}</h2>
         @if (invoice.can_edit) {
-          <p-button [label]="'admin.billing.invoices.addItem' | translate" icon="pi pi-plus" size="small" (onClick)="openItem('new')"></p-button>
+          <app-button [label]="'admin.billing.invoices.addItem' | translate" icon="pi pi-plus" size="small" (clicked)="openItem('new')"></app-button>
         }
       </div>
       <div class="overflow-x-auto">
@@ -196,8 +196,8 @@
         </div>
       }
       <div class="flex justify-end gap-2 border-t border-gray-100 pt-4 dark:border-gray-800">
-        <p-button type="button" [label]="'common.cancel' | translate" severity="secondary" [outlined]="true" (onClick)="editingItem.set(null)"></p-button>
-        <p-button type="submit" [label]="'common.save' | translate" icon="pi pi-check" [loading]="itemSaving()" [disabled]="itemSaving()"></p-button>
+        <app-button type="button" [label]="'common.cancel' | translate" severity="secondary" (clicked)="editingItem.set(null)" variant="outlined"></app-button>
+        <app-button type="submit" [label]="'common.save' | translate" icon="pi pi-check" [loading]="itemSaving()" [disabled]="itemSaving()"></app-button>
       </div>
     </form>
   </app-dialog>
@@ -234,14 +234,14 @@
         <textarea pTextarea id="payment_notes" formControlName="notes" rows="2" class="w-full"></textarea>
       </div>
       <div class="flex justify-end gap-2 border-t border-gray-100 pt-4 dark:border-gray-800">
-        <p-button type="button" [label]="'common.cancel' | translate" severity="secondary" [outlined]="true" (onClick)="paymentOpen.set(false)"></p-button>
-        <p-button
+        <app-button type="button" [label]="'common.cancel' | translate" severity="secondary" (clicked)="paymentOpen.set(false)" variant="outlined"></app-button>
+        <app-button
           type="submit"
           [label]="'admin.billing.invoices.recordPayment' | translate"
           icon="pi pi-check"
           [loading]="paymentSaving()"
           [disabled]="paymentSaving()"
-        ></p-button>
+        ></app-button>
       </div>
     </form>
   </app-dialog>

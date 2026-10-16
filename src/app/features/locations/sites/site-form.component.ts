@@ -3,7 +3,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { map } from 'rxjs';
 import { AppError } from '../../../core/errors/app-error';
@@ -25,17 +24,18 @@ import { LocationService } from './location.service';
 import { CardComponent } from '../../../shared/ui/card/card.component';
 import { SelectComponent } from '../../../shared/ui/select/select.component';
 import { ToggleComponent } from '../../../shared/ui/toggle/toggle.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 /** A company location ("site"): an address under Country → Region → City → District. */
 @Component({
   selector: 'app-site-form',
   imports: [
+    ButtonComponent,
     SelectComponent,
     ToggleComponent,
     CardComponent,
     ReactiveFormsModule,
     TranslatePipe,
-    ButtonModule,
     InputTextModule,
     PageHeaderComponent,
     LoadingStateComponent,

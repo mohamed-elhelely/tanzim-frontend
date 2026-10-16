@@ -3,7 +3,6 @@ import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@ang
 import { FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { TextareaModule } from 'primeng/textarea';
@@ -24,11 +23,13 @@ import { SavedViewsComponent } from '../../../../shared/table/saved-views.compon
 import { AppDatePipe } from '../../../../shared/pipes/app-date.pipe';
 import { DialogComponent } from '../../../../shared/ui/dialog/dialog.component';
 import { SelectComponent } from '../../../../shared/ui/select/select.component';
+import { ButtonComponent } from '../../../../shared/ui/button/button.component';
 
 /** /admin/payments: payments of every company on platform invoices; completed ones can be refunded. */
 @Component({
   selector: 'app-payment-list',
   imports: [
+    ButtonComponent,
     DialogComponent,
     SelectComponent,
     RowActionsComponent,
@@ -40,7 +41,6 @@ import { SelectComponent } from '../../../../shared/ui/select/select.component';
     ReactiveFormsModule,
     RouterLink,
     TranslatePipe,
-    ButtonModule,
     InputTextModule,
     TableModule,
     TextareaModule,

@@ -2,17 +2,17 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { AuthService } from '../../../core/auth/auth.service';
 import { AppError } from '../../../core/errors/app-error';
 import { LanguageService } from '../../../core/services/language.service';
 import { ThemeService } from '../../../core/services/theme.service';
 import { PasswordComponent } from '../../../shared/ui/password/password.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 @Component({
   selector: 'app-login-page',
-  imports: [PasswordComponent, ReactiveFormsModule, TranslatePipe, InputTextModule, ButtonModule],
+  imports: [ButtonComponent, PasswordComponent, ReactiveFormsModule, TranslatePipe, InputTextModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './login-page.component.html',
 })

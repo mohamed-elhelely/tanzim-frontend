@@ -4,7 +4,6 @@ import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
-import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { TextareaModule } from 'primeng/textarea';
@@ -27,6 +26,7 @@ import { AppDatePipe } from '../../../../shared/pipes/app-date.pipe';
 import { CardComponent } from '../../../../shared/ui/card/card.component';
 import { DialogComponent } from '../../../../shared/ui/dialog/dialog.component';
 import { SelectComponent } from '../../../../shared/ui/select/select.component';
+import { ButtonComponent } from '../../../../shared/ui/button/button.component';
 
 /**
  * /admin/invoices/:id: one platform invoice. While it is a draft, staff edit its items and issue it; once issued,
@@ -35,6 +35,7 @@ import { SelectComponent } from '../../../../shared/ui/select/select.component';
 @Component({
   selector: 'app-invoice-detail',
   imports: [
+    ButtonComponent,
     DialogComponent,
     SelectComponent,
     CardComponent,
@@ -44,7 +45,6 @@ import { SelectComponent } from '../../../../shared/ui/select/select.component';
     DecimalPipe,
     ReactiveFormsModule,
     TranslatePipe,
-    ButtonModule,
     InputTextModule,
     TableModule,
     TextareaModule,

@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { AppError } from '../../../core/errors/app-error';
 import { LanguageService } from '../../../core/services/language.service';
@@ -17,14 +16,15 @@ import { DepartmentPayload, NamedRef, SelectOption } from '../company.models';
 import { CompanyUserService } from '../users/company-user.service';
 import { DepartmentService } from './department.service';
 import { SelectComponent } from '../../../shared/ui/select/select.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 @Component({
   selector: 'app-department-form',
   imports: [
+    ButtonComponent,
     SelectComponent,
     ReactiveFormsModule,
     TranslatePipe,
-    ButtonModule,
     InputTextModule,
     FormLayoutComponent,
     LoadingStateComponent,

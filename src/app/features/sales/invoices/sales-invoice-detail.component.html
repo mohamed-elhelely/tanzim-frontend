@@ -180,14 +180,14 @@
                 <td class="text-end font-medium">{{ payment.amount | number: '1.2-2' }}</td>
                 <td class="text-end">
                   @if (canRefund(payment)) {
-                    <p-button
+                    <app-button
                       icon="pi pi-replay"
                       [label]="'sales.actions.refund' | translate"
                       severity="secondary"
-                      [text]="true"
                       size="small"
-                      (onClick)="refund(payment)"
-                    ></p-button>
+                      (clicked)="refund(payment)"
+                      variant="text"
+                    ></app-button>
                   }
                 </td>
               </tr>
@@ -230,13 +230,13 @@
       </div>
     </div>
     <ng-template appDialogFooter>
-      <p-button
+      <app-button
         [label]="'common.cancel' | translate"
         severity="secondary"
-        [outlined]="true"
-        (onClick)="detailsDialogOpen.set(false)"
-      ></p-button>
-      <p-button [label]="'common.save' | translate" [loading]="saving()" [disabled]="saving()" (onClick)="saveDetails()"></p-button>
+        (clicked)="detailsDialogOpen.set(false)"
+        variant="outlined"
+      ></app-button>
+      <app-button [label]="'common.save' | translate" [loading]="saving()" [disabled]="saving()" (clicked)="saveDetails()"></app-button>
     </ng-template>
   </app-dialog>
 
@@ -285,19 +285,19 @@
       }
     </div>
     <ng-template appDialogFooter>
-      <p-button
+      <app-button
         [label]="'common.cancel' | translate"
         severity="secondary"
-        [outlined]="true"
-        (onClick)="paymentDialogOpen.set(false)"
-      ></p-button>
-      <p-button
+        (clicked)="paymentDialogOpen.set(false)"
+        variant="outlined"
+      ></app-button>
+      <app-button
         [label]="'sales.actions.recordPayment' | translate"
         icon="pi pi-check"
         [loading]="saving()"
         [disabled]="saving()"
-        (onClick)="savePayment()"
-      ></p-button>
+        (clicked)="savePayment()"
+      ></app-button>
     </ng-template>
   </app-dialog>
 

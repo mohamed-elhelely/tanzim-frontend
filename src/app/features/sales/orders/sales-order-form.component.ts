@@ -14,7 +14,6 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { forkJoin } from 'rxjs';
-import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { DialogService } from 'primeng/dynamicdialog';
@@ -47,6 +46,7 @@ import {
 import { SalesOrderService } from './sales-order.service';
 import { CardComponent } from '../../../shared/ui/card/card.component';
 import { SelectComponent } from '../../../shared/ui/select/select.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 const QUANTITY = /^\d+(\.\d{1,3})?$/;
 const MONEY = /^\d+(\.\d{1,4})?$/;
@@ -79,13 +79,13 @@ function atMost100(control: AbstractControl<string>): ValidationErrors | null {
 @Component({
   selector: 'app-sales-order-form',
   imports: [
+    ButtonComponent,
     SelectComponent,
     CardComponent,
     DecimalPipe,
     UpperCasePipe,
     ReactiveFormsModule,
     TranslatePipe,
-    ButtonModule,
     InputTextModule,
     TextareaModule,
     PageHeaderComponent,

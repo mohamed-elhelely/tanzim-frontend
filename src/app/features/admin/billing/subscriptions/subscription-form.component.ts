@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } 
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { Observable, catchError, forkJoin, map, of, startWith } from 'rxjs';
 import { AccessService } from '../../../../core/auth/access.service';
@@ -23,6 +22,7 @@ import { MultiSelectComponent } from '../../../../shared/ui/multi-select/multi-s
 import { SelectComponent } from '../../../../shared/ui/select/select.component';
 import { SelectItemDirective } from '../../../../shared/ui/select/select-templates';
 import { ToggleComponent } from '../../../../shared/ui/toggle/toggle.component';
+import { ButtonComponent } from '../../../../shared/ui/button/button.component';
 
 /** `YYYY-MM-DD`, `months` from today. */
 function isoDate(months = 0): string {
@@ -38,13 +38,13 @@ function isoDate(months = 0): string {
 @Component({
   selector: 'app-subscription-form',
   imports: [
+    ButtonComponent,
     SelectComponent,
     SelectItemDirective,
     MultiSelectComponent,
     ToggleComponent,
     ReactiveFormsModule,
     TranslatePipe,
-    ButtonModule,
     InputTextModule,
     FormLayoutComponent,
     LoadingStateComponent,

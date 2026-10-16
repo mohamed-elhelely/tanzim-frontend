@@ -3,7 +3,6 @@ import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/cor
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
@@ -18,10 +17,12 @@ import { SUPPLIER_PAYMENT_METHODS, SupplierPayment, SupplierPaymentMethod } from
 import { SupplierPaymentService } from './supplier-payment.service';
 import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 @Component({
   selector: 'app-supplier-payment-list',
   imports: [
+    ButtonComponent,
     RowActionsComponent,
     RowActionComponent,
     SavedViewsComponent,
@@ -29,7 +30,6 @@ import { SavedViewsComponent } from '../../../shared/table/saved-views.component
     FormsModule,
     TranslatePipe,
     TableModule,
-    ButtonModule,
     ChoiceFilterComponent,
     DateRangeFilterComponent,
     FilterErrorsComponent,

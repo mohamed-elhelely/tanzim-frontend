@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, comput
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { MenuItem } from 'primeng/api';
-import { ButtonModule } from 'primeng/button';
 import { MenuModule } from 'primeng/menu';
 import { TableModule } from 'primeng/table';
 import { AccessService } from '../../core/auth/access.service';
@@ -16,6 +15,7 @@ import { ExportFormat, ImportFailure, ImportRowStatus, dataResource, importFailu
 import { ImportExportService, fileToDataUri } from './import-export.service';
 import { DialogComponent, DialogFooterDirective } from '../../shared/ui/dialog/dialog.component';
 import { ToggleComponent } from '../../shared/ui/toggle/toggle.component';
+import { ButtonComponent } from '../../shared/ui/button/button.component';
 
 type Severity = 'success' | 'secondary' | 'info' | 'warn' | 'danger';
 
@@ -37,7 +37,7 @@ const MAX_FILE_BYTES = 5 * 1024 * 1024;
  */
 @Component({
   selector: 'app-import-export-actions',
-  imports: [DialogFooterDirective, DialogComponent, ToggleComponent, FormsModule, TranslatePipe, ButtonModule, MenuModule, TableModule, EmptyStateComponent, StatusBadgeComponent],
+  imports: [ButtonComponent, DialogFooterDirective, DialogComponent, ToggleComponent, FormsModule, TranslatePipe, MenuModule, TableModule, EmptyStateComponent, StatusBadgeComponent],
   // The buttons sit directly in the page header's action row.
   host: { class: 'contents' },
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -1,7 +1,7 @@
 <p-button
   [label]="label()"
   [icon]="icon()"
-  [severity]="severity()"
+  [severity]="severity() ?? 'primary'"
   [outlined]="variant() === 'outlined'"
   [text]="variant() === 'text'"
   [size]="size()"

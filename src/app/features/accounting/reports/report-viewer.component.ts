@@ -3,7 +3,6 @@ import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } 
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { AppError } from '../../../core/errors/app-error';
@@ -21,6 +20,7 @@ import { REPORT_PARAMS, REPORT_TYPES, ReportParam, ReportResult, ReportType, Rep
 import { AccountingReportService } from './accounting-report.service';
 import { CardComponent } from '../../../shared/ui/card/card.component';
 import { SelectComponent } from '../../../shared/ui/select/select.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 /** Columns and summary keys that hold text or dates; everything else numeric is shown as money. */
 const TEXT_KEYS = new Set([
@@ -52,12 +52,12 @@ interface Option {
 @Component({
   selector: 'app-report-viewer',
   imports: [
+    ButtonComponent,
     SelectComponent,
     CardComponent,
     DecimalPipe,
     FormsModule,
     TranslatePipe,
-    ButtonModule,
     InputTextModule,
     TableModule,
     PageHeaderComponent,

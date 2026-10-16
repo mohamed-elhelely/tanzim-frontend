@@ -3,7 +3,6 @@ import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/cor
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
@@ -17,6 +16,7 @@ import { JournalEntryService } from './journal-entry.service';
 import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 import { SelectComponent } from '../../../shared/ui/select/select.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 type Origin = 'manual' | 'automatic';
 
@@ -24,6 +24,7 @@ type Origin = 'manual' | 'automatic';
 @Component({
   selector: 'app-journal-entry-list',
   imports: [
+    ButtonComponent,
     SelectComponent,
     RowActionsComponent,
     RowActionComponent,
@@ -32,7 +33,6 @@ type Origin = 'manual' | 'automatic';
     FormsModule,
     TranslatePipe,
     TableModule,
-    ButtonModule,
     InputTextModule,
     PageHeaderComponent,
     EmptyStateComponent,

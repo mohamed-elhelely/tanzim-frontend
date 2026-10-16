@@ -9,14 +9,13 @@ import { NotificationCenterService } from '../../core/notifications/notification
 import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
 import { NotificationItemComponent } from '../../shared/components/notification-item/notification-item.component';
 import { PageHeaderAction, PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
-import { SelectComponent } from '../../shared/ui/select/select.component';
 
 type Filter = 'all' | 'unread';
 
 /** The user's recent notifications (the backend keeps the latest 20); live through NotificationCenterService. */
 @Component({
   selector: 'app-notifications-page',
-  imports: [SelectComponent, TranslatePipe, FormsModule, SelectButtonModule, PageHeaderComponent, EmptyStateComponent, NotificationItemComponent],
+  imports: [TranslatePipe, FormsModule, SelectButtonModule, PageHeaderComponent, EmptyStateComponent, NotificationItemComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './notifications-page.component.html',
 })

@@ -1,7 +1,7 @@
 <div class="min-h-screen bg-gray-100 py-6 print:bg-white print:py-0" [attr.dir]="direction()">
   <div class="mx-auto mb-4 flex max-w-3xl justify-end gap-2 px-4 print:hidden">
-    <p-button [label]="'print.close' | translate" icon="pi pi-times" severity="secondary" [outlined]="true" (onClick)="close()"></p-button>
-    <p-button [label]="'print.print' | translate" icon="pi pi-print" [disabled]="!ready()" (onClick)="print()"></p-button>
+    <app-button [label]="'print.close' | translate" icon="pi pi-times" severity="secondary" (clicked)="close()" variant="outlined"></app-button>
+    <app-button [label]="'print.print' | translate" icon="pi pi-print" [disabled]="!ready()" (clicked)="print()"></app-button>
   </div>
 
   @if (error(); as err) {

@@ -4,7 +4,6 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormArray, FormControl, FormGroup, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { AppError } from '../../../core/errors/app-error';
@@ -19,6 +18,7 @@ import { SUPPLIER_PAYMENT_METHODS, SupplierPaymentMethod, SupplierPaymentPayload
 import { SupplierPaymentService } from './supplier-payment.service';
 import { CardComponent } from '../../../shared/ui/card/card.component';
 import { SelectComponent } from '../../../shared/ui/select/select.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 const MONEY = /^\d+(\.\d{1,2})?$/;
 
@@ -37,12 +37,12 @@ function today(): string {
 @Component({
   selector: 'app-supplier-payment-form',
   imports: [
+    ButtonComponent,
     SelectComponent,
     CardComponent,
     DecimalPipe,
     ReactiveFormsModule,
     TranslatePipe,
-    ButtonModule,
     InputTextModule,
     TextareaModule,
     PageHeaderComponent,

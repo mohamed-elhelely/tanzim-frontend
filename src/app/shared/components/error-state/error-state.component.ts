@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { AppError } from '../../../core/errors/app-error';
 import { errorTitleKey } from '../../utils/server-errors';
+import { ButtonComponent } from '../../ui/button/button.component';
 
 /**
  * Full-width error panel for a screen that failed to load. Pass the `error` and the title follows its status
@@ -10,7 +10,7 @@ import { errorTitleKey } from '../../utils/server-errors';
  */
 @Component({
   selector: 'app-error-state',
-  imports: [TranslatePipe, ButtonModule],
+  imports: [ButtonComponent, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './error-state.component.html',
 })

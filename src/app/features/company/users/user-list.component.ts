@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
@@ -19,16 +18,17 @@ import { LocalizedNamePipe } from '../../../shared/pipes/localized-name.pipe';
 import { CompanyUser } from '../company.models';
 import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { CompanyUserService } from './company-user.service';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 /** The company-user endpoint returns the full list, so paging, sorting and search happen in the table. */
 @Component({
   selector: 'app-user-list',
   imports: [
+    ButtonComponent,
     RowActionsComponent,
     RowActionComponent,
     TranslatePipe,
     TableModule,
-    ButtonModule,
     InputTextModule,
     IconFieldModule,
     InputIconModule,

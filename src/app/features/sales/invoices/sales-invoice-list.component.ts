@@ -3,7 +3,6 @@ import { ChangeDetectionStrategy, Component, OnInit, computed, inject } from '@a
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
@@ -32,11 +31,13 @@ import {
 import { SalesInvoiceService } from './sales-invoice.service';
 import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 /** Invoices are created from a delivered order ("Create invoice"), so this list has no New button. */
 @Component({
   selector: 'app-sales-invoice-list',
   imports: [
+    ButtonComponent,
     RowActionsComponent,
     RowActionComponent,
     SavedViewsComponent,
@@ -44,7 +45,6 @@ import { SavedViewsComponent } from '../../../shared/table/saved-views.component
     FormsModule,
     TranslatePipe,
     TableModule,
-    ButtonModule,
     InputTextModule,
     IconFieldModule,
     InputIconModule,

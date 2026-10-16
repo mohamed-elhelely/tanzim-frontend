@@ -105,14 +105,14 @@
       <div class="mb-3 flex items-center justify-between gap-2">
         <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'returns.sections.items' | translate }}</h3>
         @if (form.controls.sales_order.value === null) {
-          <p-button
+          <app-button
             type="button"
             icon="pi pi-plus"
             [label]="'returns.actions.addItem' | translate"
-            [outlined]="true"
             size="small"
-            (onClick)="addFreeRow()"
-          ></p-button>
+            (clicked)="addFreeRow()"
+            variant="outlined"
+          ></app-button>
         }
       </div>
 
@@ -210,15 +210,15 @@
                     />
                   </td>
                   <td class="py-2 text-end">
-                    <p-button
+                    <app-button
                       type="button"
                       icon="pi pi-trash"
                       severity="danger"
-                      [text]="true"
                       [rounded]="true"
                       [ariaLabel]="'returns.actions.removeItem' | translate"
-                      (onClick)="removeFreeRow(i)"
-                    ></p-button>
+                      (clicked)="removeFreeRow(i)"
+                      variant="text"
+                    ></app-button>
                   </td>
                 </tr>
               }
@@ -232,20 +232,20 @@
     </app-card>
 
     <div class="flex justify-end gap-2">
-      <p-button
+      <app-button
         type="button"
         [label]="'common.cancel' | translate"
         severity="secondary"
-        [outlined]="true"
-        (onClick)="goBack()"
-      ></p-button>
-      <p-button
+        (clicked)="goBack()"
+        variant="outlined"
+      ></app-button>
+      <app-button
         type="submit"
         [label]="'returns.actions.createReturn' | translate"
         icon="pi pi-check"
         [loading]="saving()"
         [disabled]="saving()"
-      ></p-button>
+      ></app-button>
     </div>
   </form>
 }

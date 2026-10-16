@@ -3,7 +3,6 @@ import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@ang
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { ErrorStateComponent } from '../../../../shared/components/error-state/error-state.component';
@@ -19,11 +18,13 @@ import { InvoiceDraftFormComponent } from './invoice-draft-form.component';
 import { RowActionComponent, RowActionsComponent } from '../../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../../shared/table/saved-views.component';
 import { SelectComponent } from '../../../../shared/ui/select/select.component';
+import { ButtonComponent } from '../../../../shared/ui/button/button.component';
 
 /** /admin/invoices: platform invoices of every company, filtered by company and status. */
 @Component({
   selector: 'app-invoice-list',
   imports: [
+    ButtonComponent,
     SelectComponent,
     RowActionsComponent,
     RowActionComponent,
@@ -32,7 +33,6 @@ import { SelectComponent } from '../../../../shared/ui/select/select.component';
     FormsModule,
     RouterLink,
     TranslatePipe,
-    ButtonModule,
     TableModule,
     PageHeaderComponent,
     EmptyStateComponent,

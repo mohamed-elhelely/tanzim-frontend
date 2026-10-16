@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
@@ -16,6 +15,7 @@ import { TenantCompany } from '../admin.models';
 import { TenantCompanyService } from './tenant-company.service';
 import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 /**
  * No delete action: the backend's DELETE deactivates the company, which the form's Active switch already does
@@ -24,12 +24,12 @@ import { SavedViewsComponent } from '../../../shared/table/saved-views.component
 @Component({
   selector: 'app-tenant-company-list',
   imports: [
+    ButtonComponent,
     RowActionsComponent,
     RowActionComponent,
     SavedViewsComponent,
     TranslatePipe,
     TableModule,
-    ButtonModule,
     InputTextModule,
     IconFieldModule,
     InputIconModule,

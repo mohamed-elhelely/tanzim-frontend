@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } 
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { Observable } from 'rxjs';
 import { AppError } from '../../../core/errors/app-error';
@@ -23,6 +22,7 @@ import { CardComponent } from '../../../shared/ui/card/card.component';
 import { PasswordComponent } from '../../../shared/ui/password/password.component';
 import { SelectComponent } from '../../../shared/ui/select/select.component';
 import { ToggleComponent } from '../../../shared/ui/toggle/toggle.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 /** Server errors arrive nested under "user"; map them to this form's flat controls. */
 const USER_FIELD_MAP: Record<string, string> = {
@@ -37,13 +37,13 @@ const USER_FIELD_MAP: Record<string, string> = {
 @Component({
   selector: 'app-user-form',
   imports: [
+    ButtonComponent,
     SelectComponent,
     PasswordComponent,
     ToggleComponent,
     CardComponent,
     ReactiveFormsModule,
     TranslatePipe,
-    ButtonModule,
     InputTextModule,
     PageHeaderComponent,
     LoadingStateComponent,

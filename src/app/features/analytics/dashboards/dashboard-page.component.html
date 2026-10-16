@@ -38,7 +38,7 @@
           ></app-select>
         </div>
       }
-      <p-button [label]="'analytics.show' | translate" icon="pi pi-refresh" [loading]="loading()" (onClick)="load()"></p-button>
+      <app-button [label]="'analytics.show' | translate" icon="pi pi-refresh" [loading]="loading()" (clicked)="load()"></app-button>
     </div>
   </div>
 

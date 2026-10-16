@@ -23,25 +23,25 @@
   <!-- Projected content (e.g. import/export buttons) shares the row with the action buttons. -->
   <div class="flex shrink-0 flex-wrap items-center gap-2 empty:hidden">
     @if (showActivity()) {
-      <p-button
+      <app-button
         [label]="'activityLog.button' | translate"
         icon="pi pi-history"
         severity="secondary"
-        [outlined]="true"
         [ariaLabel]="'activityLog.button' | translate"
-        (onClick)="openActivity()"
-      ></p-button>
+        (clicked)="openActivity()"
+        variant="outlined"
+      ></app-button>
     }
     <ng-content></ng-content>
     @if (actions.length) {
       @for (action of actions; track action.label) {
-        <p-button
+        <app-button
           [label]="action.label | translate"
           [icon]="action.icon"
           [severity]="action.severity ?? 'primary'"
           [disabled]="action.disabled ?? false"
-          (onClick)="action.onClick()"
-        ></p-button>
+          (clicked)="action.onClick()"
+        ></app-button>
       }
     }
   </div>

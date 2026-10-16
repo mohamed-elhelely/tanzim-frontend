@@ -5,13 +5,13 @@
       <p class="text-sm text-gray-500 dark:text-gray-400">{{ 'profile.sessions.hint' | translate }}</p>
     </div>
     @if (hasOthers()) {
-      <p-button
+      <app-button
         [label]="'profile.sessions.signOutOthers' | translate"
         icon="pi pi-sign-out"
         severity="danger"
-        [outlined]="true"
-        (onClick)="signOutOthers()"
-      ></p-button>
+        (clicked)="signOutOthers()"
+        variant="outlined"
+      ></app-button>
     }
   </div>
 
@@ -50,14 +50,14 @@
             </p>
           </div>
           @if (!session.current) {
-            <p-button
+            <app-button
               icon="pi pi-sign-out"
               severity="danger"
-              [text]="true"
               [rounded]="true"
               [ariaLabel]="'profile.sessions.signOut' | translate"
-              (onClick)="signOut(session)"
-            ></p-button>
+              (clicked)="signOut(session)"
+              variant="text"
+            ></app-button>
           }
         </li>
       }

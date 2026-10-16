@@ -85,15 +85,15 @@
       }
 
       <div class="flex flex-wrap gap-2">
-        <p-button [label]="'analytics.run' | translate" icon="pi pi-play" [loading]="running()" (onClick)="run()"></p-button>
-        <p-button
+        <app-button [label]="'analytics.run' | translate" icon="pi pi-play" [loading]="running()" (clicked)="run()"></app-button>
+        <app-button
           [label]="'inventory.stock.exportXlsx' | translate"
           icon="pi pi-file-excel"
           severity="secondary"
-          [outlined]="true"
           [loading]="exporting()"
-          (onClick)="exportXlsx()"
-        ></p-button>
+          (clicked)="exportXlsx()"
+          variant="outlined"
+        ></app-button>
       </div>
     </div>
     @if (missing(); as param) {

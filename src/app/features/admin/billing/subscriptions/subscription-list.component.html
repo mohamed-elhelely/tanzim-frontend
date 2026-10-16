@@ -28,22 +28,22 @@
         [translateLabels]="true"
       ></app-select>
       <app-saved-views [table]="table" screen="subscription"></app-saved-views>
-      <p-button
+      <app-button
         [label]="'common.apply' | translate"
         icon="pi pi-filter"
         [disabled]="!table.changed()"
-        (onClick)="table.apply()"
-        styleClass="w-full sm:w-auto"
-      ></p-button>
+        (clicked)="table.apply()"
+        width="mobile"
+      ></app-button>
       @if (table.filtered()) {
-        <p-button
+        <app-button
           [label]="'common.clearFilters' | translate"
           icon="pi pi-filter-slash"
           severity="secondary"
-          [text]="true"
-          (onClick)="table.clear()"
-          styleClass="w-full sm:w-auto"
-        ></p-button>
+          (clicked)="table.clear()"
+          variant="text"
+          width="mobile"
+        ></app-button>
       }
     </div>
     <div class="overflow-x-auto">

@@ -115,19 +115,19 @@
       </div>
     </div>
     <ng-template appDialogFooter>
-      <p-button
+      <app-button
         [label]="'common.cancel' | translate"
         severity="secondary"
-        [outlined]="true"
-        (onClick)="reverseDialogOpen.set(false)"
-      ></p-button>
-      <p-button
+        (clicked)="reverseDialogOpen.set(false)"
+        variant="outlined"
+      ></app-button>
+      <app-button
         [label]="'accounting.actions.reverse' | translate"
         icon="pi pi-undo"
         [loading]="saving()"
         [disabled]="saving()"
-        (onClick)="submitReverse()"
-      ></p-button>
+        (clicked)="submitReverse()"
+      ></app-button>
     </ng-template>
   </app-dialog>
 } @else {

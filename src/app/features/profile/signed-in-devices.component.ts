@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { AppError } from '../../core/errors/app-error';
 import { ConfirmService } from '../../core/services/confirm.service';
 import { StatusBadgeComponent } from '../../shared/components/status-badge/status-badge.component';
@@ -8,6 +7,7 @@ import { errorTitleKey } from '../../shared/utils/server-errors';
 import { SessionsService, UserSession, describeUserAgent } from './sessions.service';
 import { AppDatePipe } from '../../shared/pipes/app-date.pipe';
 import { CardComponent } from '../../shared/ui/card/card.component';
+import { ButtonComponent } from '../../shared/ui/button/button.component';
 
 /**
  * "Signed-in devices" on the profile page: every session of this user with its browser, OS, IP and last use;
@@ -15,7 +15,7 @@ import { CardComponent } from '../../shared/ui/card/card.component';
  */
 @Component({
   selector: 'app-signed-in-devices',
-  imports: [CardComponent, AppDatePipe, TranslatePipe, ButtonModule, StatusBadgeComponent],
+  imports: [ButtonComponent, CardComponent, AppDatePipe, TranslatePipe, StatusBadgeComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './signed-in-devices.component.html',
 })

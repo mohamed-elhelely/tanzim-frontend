@@ -3,7 +3,6 @@ import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@ang
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { AppError } from '../../../core/errors/app-error';
@@ -19,17 +18,18 @@ import { CustomerService } from './customer.service';
 import { CardComponent } from '../../../shared/ui/card/card.component';
 import { SelectComponent } from '../../../shared/ui/select/select.component';
 import { ToggleComponent } from '../../../shared/ui/toggle/toggle.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 @Component({
   selector: 'app-customer-form',
   imports: [
+    ButtonComponent,
     SelectComponent,
     ToggleComponent,
     CardComponent,
     DecimalPipe,
     ReactiveFormsModule,
     TranslatePipe,
-    ButtonModule,
     InputTextModule,
     TextareaModule,
     PageHeaderComponent,

@@ -106,14 +106,14 @@
       <p role="alert" class="mt-3 text-sm text-red-600">{{ key | translate }}</p>
     }
     <ng-template appDialogFooter>
-      <p-button [label]="'common.cancel' | translate" severity="secondary" [outlined]="true" (onClick)="closeDialogOpen.set(false)"></p-button>
-      <p-button
+      <app-button [label]="'common.cancel' | translate" severity="secondary" (clicked)="closeDialogOpen.set(false)" variant="outlined"></app-button>
+      <app-button
         [label]="'returns.actions.closeSupplier' | translate"
         icon="pi pi-flag"
         [loading]="saving()"
         [disabled]="saving()"
-        (onClick)="submitClose()"
-      ></p-button>
+        (clicked)="submitClose()"
+      ></app-button>
     </ng-template>
   </app-dialog>
 } @else {

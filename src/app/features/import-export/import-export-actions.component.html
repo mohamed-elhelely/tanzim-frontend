@@ -1,29 +1,29 @@
 @if (allowed()) {
   <p-menu #exportMenu [model]="exportItems" [popup]="true" appendTo="body"></p-menu>
-  <p-button
+  <app-button
     [label]="'importExport.actions.export' | translate"
     icon="pi pi-download"
     severity="secondary"
-    [outlined]="true"
     [loading]="exporting()"
-    (onClick)="exportMenu.toggle($event)"
-  ></p-button>
-  <p-button
+    (clicked)="exportMenu.toggle($event)"
+    variant="outlined"
+  ></app-button>
+  <app-button
     [label]="'importExport.actions.template' | translate"
     icon="pi pi-file-excel"
     severity="secondary"
-    [outlined]="true"
     [loading]="downloadingTemplate()"
-    (onClick)="downloadTemplate()"
-  ></p-button>
-  <p-button
+    (clicked)="downloadTemplate()"
+    variant="outlined"
+  ></app-button>
+  <app-button
     [label]="'importExport.actions.import' | translate"
     icon="pi pi-upload"
     severity="secondary"
-    [outlined]="true"
     [loading]="importing()"
-    (onClick)="fileInput.click()"
-  ></p-button>
+    (clicked)="fileInput.click()"
+    variant="outlined"
+  ></app-button>
   <input #fileInput type="file" accept=".csv,.xlsx" class="hidden" (change)="onFilePicked($event)" />
 
   <app-dialog
@@ -88,8 +88,8 @@
       </div>
     }
     <ng-template appDialogFooter>
-      <p-button [label]="'importExport.actions.template' | translate" icon="pi pi-file-excel" severity="secondary" [text]="true" (onClick)="downloadTemplate()"></p-button>
-      <p-button [label]="'importExport.actions.close' | translate" (onClick)="closeFailure()"></p-button>
+      <app-button [label]="'importExport.actions.template' | translate" icon="pi pi-file-excel" severity="secondary" (clicked)="downloadTemplate()" variant="text"></app-button>
+      <app-button [label]="'importExport.actions.close' | translate" (clicked)="closeFailure()"></app-button>
     </ng-template>
   </app-dialog>
 }

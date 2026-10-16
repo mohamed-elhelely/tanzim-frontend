@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { AppError } from '../../../core/errors/app-error';
@@ -15,14 +14,15 @@ import { handleSaveError } from '../../../shared/utils/server-errors';
 import { BrandPayload } from '../inventory.models';
 import { BrandService } from './brand.service';
 import { ToggleComponent } from '../../../shared/ui/toggle/toggle.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 @Component({
   selector: 'app-brand-form',
   imports: [
+    ButtonComponent,
     ToggleComponent,
     ReactiveFormsModule,
     TranslatePipe,
-    ButtonModule,
     InputTextModule,
     TextareaModule,
     FormLayoutComponent,

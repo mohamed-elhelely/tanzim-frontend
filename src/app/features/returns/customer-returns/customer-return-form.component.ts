@@ -4,7 +4,6 @@ import { FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } 
 import { Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { forkJoin } from 'rxjs';
-import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { AppError } from '../../../core/errors/app-error';
@@ -32,6 +31,7 @@ import {
 import { CustomerReturnService } from './customer-return.service';
 import { CardComponent } from '../../../shared/ui/card/card.component';
 import { SelectComponent } from '../../../shared/ui/select/select.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 const QUANTITY = /^\d+(\.\d{1,3})?$/;
 
@@ -61,13 +61,13 @@ interface FreeRow {
 @Component({
   selector: 'app-customer-return-form',
   imports: [
+    ButtonComponent,
     SelectComponent,
     CardComponent,
     DecimalPipe,
     FormsModule,
     ReactiveFormsModule,
     TranslatePipe,
-    ButtonModule,
     InputTextModule,
     TextareaModule,
     PageHeaderComponent,

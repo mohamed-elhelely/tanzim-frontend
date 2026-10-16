@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, input, signal } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { AccessService } from '../../../core/auth/access.service';
 import { AppError } from '../../../core/errors/app-error';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
@@ -10,6 +9,7 @@ import { AUDIT_ACTION_SEVERITY, AuditLogEntry, auditChangeRows } from './system-
 import { SystemLogService } from './system-log.service';
 import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
 import { CardComponent } from '../../../shared/ui/card/card.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 const PAGE_SIZE = 20;
 
@@ -21,7 +21,7 @@ const PAGE_SIZE = 20;
  */
 @Component({
   selector: 'app-record-history',
-  imports: [CardComponent, AppDatePipe, TranslatePipe, ButtonModule, StatusBadgeComponent, UserNamePipe],
+  imports: [ButtonComponent, CardComponent, AppDatePipe, TranslatePipe, StatusBadgeComponent, UserNamePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './record-history.component.html',
 })

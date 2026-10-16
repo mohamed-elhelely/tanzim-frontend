@@ -3,7 +3,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { MenuItem } from 'primeng/api';
-import { ButtonModule } from 'primeng/button';
 import { MenuModule } from 'primeng/menu';
 import { Popover, PopoverModule } from 'primeng/popover';
 import { filter, map, startWith } from 'rxjs';
@@ -26,10 +25,11 @@ interface RouteInfo {
 
 /** Top bar: breadcrumb from the route data (titleKey) and the nav group, language and theme toggles, user menu. */
 import { CommandPaletteComponent } from '../command-palette/command-palette.component';
+import { ButtonComponent } from '../../shared/ui/button/button.component';
 
 @Component({
   selector: 'app-header',
-  imports: [TranslatePipe, RouterLink, ButtonModule, MenuModule, PopoverModule, NotificationItemComponent, CommandPaletteComponent],
+  imports: [ButtonComponent, TranslatePipe, RouterLink, MenuModule, PopoverModule, NotificationItemComponent, CommandPaletteComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './header.component.html',
 })

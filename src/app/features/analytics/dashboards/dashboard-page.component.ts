@@ -4,7 +4,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { AppError } from '../../../core/errors/app-error';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
@@ -20,6 +19,7 @@ import { AnalyticsService } from '../analytics.service';
 import { CHART_SPECS, ChartSpec, DASHBOARD_NAMES, Dashboard, DashboardName, DashboardRef, Kpi, fitsSpec } from '../analytics.models';
 import { CardComponent } from '../../../shared/ui/card/card.component';
 import { SelectComponent } from '../../../shared/ui/select/select.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 /** Dashboards that can be narrowed to one warehouse. */
 const WAREHOUSE_DASHBOARDS: DashboardName[] = ['overview', 'inventory'];
@@ -39,6 +39,7 @@ interface ChartBlock {
 @Component({
   selector: 'app-dashboard-page',
   imports: [
+    ButtonComponent,
     SelectComponent,
     CardComponent,
     DecimalPipe,
@@ -46,7 +47,6 @@ interface ChartBlock {
     RouterLink,
     RouterLinkActive,
     TranslatePipe,
-    ButtonModule,
     InputTextModule,
     PageHeaderComponent,
     ErrorStateComponent,

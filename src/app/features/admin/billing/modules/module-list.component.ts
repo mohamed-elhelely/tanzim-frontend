@@ -1,7 +1,6 @@
 import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { AppError } from '../../../../core/errors/app-error';
 import { ConfirmService } from '../../../../core/services/confirm.service';
@@ -19,7 +18,7 @@ import { ModuleFormComponent } from './module-form.component';
 /** /admin/modules: the feature modules companies can subscribe to (staff). */
 @Component({
   selector: 'app-module-list',
-  imports: [RowActionsComponent, RowActionComponent, DecimalPipe, TranslatePipe, ButtonModule, TableModule, PageHeaderComponent, EmptyStateComponent, ErrorStateComponent, StatusBadgeComponent],
+  imports: [RowActionsComponent, RowActionComponent, DecimalPipe, TranslatePipe, TableModule, PageHeaderComponent, EmptyStateComponent, ErrorStateComponent, StatusBadgeComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './module-list.component.html',
 })

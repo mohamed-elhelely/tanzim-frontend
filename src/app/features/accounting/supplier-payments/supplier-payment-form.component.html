@@ -66,14 +66,14 @@
         <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'accounting.sections.allocations' | translate }}</h3>
         <p class="text-xs text-gray-500 dark:text-gray-400">{{ 'accounting.hints.allocations' | translate }}</p>
       </div>
-      <p-button
+      <app-button
         type="button"
         icon="pi pi-plus"
         [label]="'accounting.actions.addAllocation' | translate"
-        [outlined]="true"
         size="small"
-        (onClick)="addAllocation()"
-      ></p-button>
+        (clicked)="addAllocation()"
+        variant="outlined"
+      ></app-button>
     </div>
     @if (allocations.length) {
       <div formArrayName="allocations" class="flex flex-col gap-2">
@@ -104,15 +104,15 @@
               />
               <app-field-error [control]="row.controls.amount" patternKey="inventory.hints.decimal"></app-field-error>
             </div>
-            <p-button
+            <app-button
               type="button"
               icon="pi pi-trash"
               severity="danger"
-              [text]="true"
               [rounded]="true"
               [ariaLabel]="'accounting.actions.removeLine' | translate"
-              (onClick)="removeAllocation(i)"
-            ></p-button>
+              (clicked)="removeAllocation(i)"
+              variant="text"
+            ></app-button>
           </div>
         }
       </div>
@@ -126,13 +126,13 @@
   </app-card>
 
   <div class="flex justify-end gap-2">
-    <p-button type="button" [label]="'common.cancel' | translate" severity="secondary" [outlined]="true" (onClick)="goBack()"></p-button>
-    <p-button
+    <app-button type="button" [label]="'common.cancel' | translate" severity="secondary" (clicked)="goBack()" variant="outlined"></app-button>
+    <app-button
       type="submit"
       [label]="'accounting.actions.recordPayment' | translate"
       icon="pi pi-check"
       [loading]="saving()"
       [disabled]="saving()"
-    ></p-button>
+    ></app-button>
   </div>
 </form>

@@ -27,22 +27,22 @@
         class="sm:w-56"
         [translateLabels]="true"
       ></app-select>
-      <p-button
+      <app-button
         [label]="'common.apply' | translate"
         icon="pi pi-filter"
         [disabled]="!filtersChanged()"
-        (onClick)="applyFilters()"
-        styleClass="w-full sm:w-auto"
-      ></p-button>
+        (clicked)="applyFilters()"
+        width="mobile"
+      ></app-button>
       @if (search().trim() || type()) {
-        <p-button
+        <app-button
           [label]="'common.clearFilters' | translate"
           icon="pi pi-filter-slash"
           severity="secondary"
-          [text]="true"
-          (onClick)="clearFilters()"
-          styleClass="w-full sm:w-auto"
-        ></p-button>
+          (clicked)="clearFilters()"
+          variant="text"
+          width="mobile"
+        ></app-button>
       }
     </div>
     <div class="overflow-x-auto">

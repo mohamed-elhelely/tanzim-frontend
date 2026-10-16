@@ -115,14 +115,14 @@
     <app-card>
       <div class="mb-3 flex items-center justify-between gap-2">
         <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'sales.sections.lines' | translate }}</h3>
-        <p-button
+        <app-button
           type="button"
           icon="pi pi-plus"
           [label]="'sales.actions.addLine' | translate"
-          [outlined]="true"
           size="small"
-          (onClick)="addLine()"
-        ></p-button>
+          (clicked)="addLine()"
+          variant="outlined"
+        ></app-button>
       </div>
 
       @if (form.controls.lines.touched && form.controls.lines.hasError('required')) {
@@ -215,15 +215,15 @@
                 </td>
                 <td class="py-2 pt-4 text-end font-medium">{{ lineTotalAt(i) | number: '1.2-2' }}</td>
                 <td class="py-2 pt-2 text-end">
-                  <p-button
+                  <app-button
                     type="button"
                     icon="pi pi-trash"
                     severity="danger"
-                    [text]="true"
                     [rounded]="true"
                     [ariaLabel]="'sales.actions.removeLine' | translate"
-                    (onClick)="removeLine(i)"
-                  ></p-button>
+                    (clicked)="removeLine(i)"
+                    variant="text"
+                  ></app-button>
                 </td>
               </tr>
             }
@@ -288,20 +288,20 @@
     </app-card>
 
     <div class="flex justify-end gap-2">
-      <p-button
+      <app-button
         type="button"
         [label]="'common.cancel' | translate"
         severity="secondary"
-        [outlined]="true"
-        (onClick)="goBack()"
-      ></p-button>
-      <p-button
+        (clicked)="goBack()"
+        variant="outlined"
+      ></app-button>
+      <app-button
         type="submit"
         [label]="'common.save' | translate"
         icon="pi pi-check"
         [loading]="saving()"
         [disabled]="saving()"
-      ></p-button>
+      ></app-button>
     </div>
   </form>
 }

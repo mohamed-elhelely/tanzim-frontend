@@ -4,7 +4,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { AppError } from '../../../core/errors/app-error';
@@ -20,6 +19,7 @@ import { RecordHistoryComponent } from '../../company/system-logs/record-history
 import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
 import { CardComponent } from '../../../shared/ui/card/card.component';
 import { DialogComponent, DialogFooterDirective } from '../../../shared/ui/dialog/dialog.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 /**
  * One journal entry. Drafts can be edited, posted or deleted; posted entries are final and can only be reversed
@@ -28,6 +28,7 @@ import { DialogComponent, DialogFooterDirective } from '../../../shared/ui/dialo
 @Component({
   selector: 'app-journal-entry-detail',
   imports: [
+    ButtonComponent,
     DialogFooterDirective,
     DialogComponent,
     CardComponent,
@@ -37,7 +38,6 @@ import { DialogComponent, DialogFooterDirective } from '../../../shared/ui/dialo
     FormsModule,
     RouterLink,
     TranslatePipe,
-    ButtonModule,
     InputTextModule,
     TableModule,
     PageHeaderComponent,

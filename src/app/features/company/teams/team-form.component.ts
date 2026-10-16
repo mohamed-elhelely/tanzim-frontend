@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { AppError } from '../../../core/errors/app-error';
 import { LanguageService } from '../../../core/services/language.service';
@@ -20,17 +19,18 @@ import { CompanyUserService } from '../users/company-user.service';
 import { TeamService } from './team.service';
 import { MultiSelectComponent } from '../../../shared/ui/multi-select/multi-select.component';
 import { SelectComponent } from '../../../shared/ui/select/select.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 export type LocationState = 'loading' | 'ready' | 'forbidden' | 'empty' | 'error';
 
 @Component({
   selector: 'app-team-form',
   imports: [
+    ButtonComponent,
     SelectComponent,
     MultiSelectComponent,
     ReactiveFormsModule,
     TranslatePipe,
-    ButtonModule,
     InputTextModule,
     FormLayoutComponent,
     LoadingStateComponent,

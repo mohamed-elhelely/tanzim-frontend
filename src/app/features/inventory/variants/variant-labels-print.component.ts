@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { forkJoin } from 'rxjs';
-import { ButtonModule } from 'primeng/button';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { AppError } from '../../../core/errors/app-error';
 import { BarcodeComponent } from '../../../shared/components/barcode/barcode.component';
@@ -14,6 +13,7 @@ import { canEncodeCode128 } from '../../../shared/utils/code128';
 
 import { ProductVariant } from '../inventory.models';
 import { ProductVariantService } from './product-variant.service';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 /**
  * Shelf/product labels for the variants in `?ids=1,2,3`: name, SKU, price and a Code 128 barcode of the
@@ -22,10 +22,10 @@ import { ProductVariantService } from './product-variant.service';
 @Component({
   selector: 'app-variant-labels-print',
   imports: [
+    ButtonComponent,
     DecimalPipe,
     FormsModule,
     TranslatePipe,
-    ButtonModule,
     InputNumberModule,
     BarcodeComponent,
     ErrorStateComponent,

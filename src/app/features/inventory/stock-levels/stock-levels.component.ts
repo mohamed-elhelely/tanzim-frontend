@@ -2,7 +2,6 @@ import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
@@ -29,6 +28,7 @@ import { WarehouseService } from '../warehouses/warehouse.service';
 import { InventoryReportService } from './inventory-report.service';
 import { StockReservationService } from './stock-reservation.service';
 import { SelectComponent } from '../../../shared/ui/select/select.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 export interface StockLevel extends StockLevelRow {
   variantName: string;
@@ -45,11 +45,11 @@ export interface StockLevel extends StockLevelRow {
 @Component({
   selector: 'app-stock-levels',
   imports: [
+    ButtonComponent,
     SelectComponent,
     DecimalPipe,
     FormsModule,
     TranslatePipe,
-    ButtonModule,
     IconFieldModule,
     InputIconModule,
     InputTextModule,

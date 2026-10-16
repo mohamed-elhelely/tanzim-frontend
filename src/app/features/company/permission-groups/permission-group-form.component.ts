@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@ang
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { AppError } from '../../../core/errors/app-error';
@@ -16,14 +15,15 @@ import { PermissionGroupPayload } from '../company.models';
 import { PermissionPickerComponent } from '../permissions/permission-picker.component';
 import { PermissionGroupService } from './permission-group.service';
 import { CardComponent } from '../../../shared/ui/card/card.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 @Component({
   selector: 'app-permission-group-form',
   imports: [
+    ButtonComponent,
     CardComponent,
     ReactiveFormsModule,
     TranslatePipe,
-    ButtonModule,
     InputTextModule,
     TextareaModule,
     PageHeaderComponent,

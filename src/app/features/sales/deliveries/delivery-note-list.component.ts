@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/cor
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
@@ -20,18 +19,19 @@ import { DELIVERY_STATUSES, DELIVERY_STATUS_SEVERITY, DeliveryNoteListItem, Deli
 import { DeliveryNoteService } from './delivery-note.service';
 import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 /** Delivery notes are created from an order ("Ship"), so this list has no New button. */
 @Component({
   selector: 'app-delivery-note-list',
   imports: [
+    ButtonComponent,
     RowActionsComponent,
     RowActionComponent,
     SavedViewsComponent,
     FormsModule,
     TranslatePipe,
     TableModule,
-    ButtonModule,
     InputTextModule,
     IconFieldModule,
     InputIconModule,

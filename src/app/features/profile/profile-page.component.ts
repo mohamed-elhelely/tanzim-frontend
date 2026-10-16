@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal, viewChild } from '@angular/core';
 import { AbstractControl, NonNullableFormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { AccessService } from '../../core/auth/access.service';
 import { AppError } from '../../core/errors/app-error';
@@ -17,6 +16,7 @@ import { SignedInDevicesComponent } from './signed-in-devices.component';
 import { CardComponent } from '../../shared/ui/card/card.component';
 import { PasswordComponent } from '../../shared/ui/password/password.component';
 import { SelectComponent } from '../../shared/ui/select/select.component';
+import { ButtonComponent } from '../../shared/ui/button/button.component';
 
 /** The browser's IANA time zones, for the timezone picker. */
 const TIME_ZONES: string[] = (Intl as { supportedValuesOf?: (key: string) => string[] }).supportedValuesOf?.('timeZone') ?? [];
@@ -30,13 +30,13 @@ function passwordsMatch(group: AbstractControl): ValidationErrors | null {
 @Component({
   selector: 'app-profile-page',
   imports: [
+    ButtonComponent,
     SelectComponent,
     PasswordComponent,
     CardComponent,
     SignedInDevicesComponent,
     ReactiveFormsModule,
     TranslatePipe,
-    ButtonModule,
     InputTextModule,
     PageHeaderComponent,
     LoadingStateComponent,

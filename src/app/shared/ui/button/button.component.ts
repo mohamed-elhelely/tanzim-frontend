@@ -25,7 +25,8 @@ export type ButtonWidth = 'auto' | 'always' | 'mobile';
 export class ButtonComponent {
   readonly label = input<string>();
   readonly icon = input<string>();
-  readonly severity = input<ButtonSeverity>('primary');
+  /** No severity (undefined) is primary, as in the library. */
+  readonly severity = input<ButtonSeverity | undefined>('primary');
   readonly variant = input<ButtonVariant>('solid');
   readonly size = input<'small' | 'large'>();
   readonly type = input<'button' | 'submit' | 'reset'>('button');

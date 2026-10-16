@@ -10,7 +10,7 @@
     <textarea pTextarea id="reason_dialog_text" [(ngModel)]="reason" rows="3" class="w-full"></textarea>
   </div>
   <ng-template appDialogFooter>
-    <p-button [label]="'common.cancel' | translate" severity="secondary" [outlined]="true" (onClick)="close()"></p-button>
-    <p-button [label]="confirmLabel | translate" severity="danger" (onClick)="confirm()"></p-button>
+    <app-button [label]="'common.cancel' | translate" severity="secondary" (clicked)="close()" variant="outlined"></app-button>
+    <app-button [label]="confirmLabel | translate" severity="danger" (clicked)="confirm()"></app-button>
   </ng-template>
 </app-dialog>

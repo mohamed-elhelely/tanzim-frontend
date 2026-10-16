@@ -17,13 +17,13 @@
           class="w-full"
         />
       </p-iconfield>
-      <p-button
+      <app-button
         [label]="'common.search' | translate"
         icon="pi pi-search"
         [disabled]="searchDraft().trim() === appliedSearch()"
-        (onClick)="appliedSearch.set(searchDraft().trim()); table.filterGlobal(appliedSearch(), 'contains')"
-        styleClass="w-full sm:w-auto"
-      ></p-button>
+        (clicked)="appliedSearch.set(searchDraft().trim()); table.filterGlobal(appliedSearch(), 'contains')"
+        width="mobile"
+      ></app-button>
     </div>
     <div class="overflow-x-auto">
       <p-table

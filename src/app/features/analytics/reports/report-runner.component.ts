@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } 
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { AppError } from '../../../core/errors/app-error';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -29,6 +28,7 @@ import {
 import { CardComponent } from '../../../shared/ui/card/card.component';
 import { SelectComponent } from '../../../shared/ui/select/select.component';
 import { SelectGroupDirective, SelectItemDirective, SelectSelectedDirective } from '../../../shared/ui/select/select-templates';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 interface ReportGroup {
   key: string;
@@ -43,6 +43,7 @@ interface ReportGroup {
 @Component({
   selector: 'app-report-runner',
   imports: [
+    ButtonComponent,
     SelectGroupDirective,
     SelectSelectedDirective,
     SelectItemDirective,
@@ -50,7 +51,6 @@ interface ReportGroup {
     CardComponent,
     FormsModule,
     TranslatePipe,
-    ButtonModule,
     InputTextModule,
     PageHeaderComponent,
     ErrorStateComponent,

@@ -50,22 +50,22 @@
           class="sm:w-44"
           [translateLabels]="true"
         ></app-select>
-        <p-button
+        <app-button
           [label]="'common.apply' | translate"
           icon="pi pi-filter"
           [disabled]="!tasks.changed()"
-          (onClick)="tasks.apply()"
-          styleClass="w-full sm:w-auto"
-        ></p-button>
+          (clicked)="tasks.apply()"
+          width="mobile"
+        ></app-button>
         @if (tasks.filtered()) {
-          <p-button
+          <app-button
             [label]="'common.clearFilters' | translate"
             icon="pi pi-filter-slash"
             severity="secondary"
-            [text]="true"
-            (onClick)="tasks.clear()"
-            styleClass="w-full sm:w-auto"
-          ></p-button>
+            (clicked)="tasks.clear()"
+            variant="text"
+            width="mobile"
+          ></app-button>
         }
       </div>
     </div>

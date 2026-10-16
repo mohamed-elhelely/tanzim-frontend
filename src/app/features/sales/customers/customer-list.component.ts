@@ -3,7 +3,6 @@ import { ChangeDetectionStrategy, Component, OnInit, inject, computed } from '@a
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
@@ -21,10 +20,12 @@ import { CustomerService } from './customer.service';
 import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 import { SelectComponent } from '../../../shared/ui/select/select.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 @Component({
   selector: 'app-customer-list',
   imports: [
+    ButtonComponent,
     SelectComponent,
     RowActionsComponent,
     RowActionComponent,
@@ -33,7 +34,6 @@ import { SelectComponent } from '../../../shared/ui/select/select.component';
     DecimalPipe,
     TranslatePipe,
     TableModule,
-    ButtonModule,
     InputTextModule,
     IconFieldModule,
     InputIconModule,

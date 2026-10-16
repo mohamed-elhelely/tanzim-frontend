@@ -3,7 +3,6 @@ import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } 
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { TextareaModule } from 'primeng/textarea';
@@ -21,6 +20,7 @@ import { RecordHistoryComponent } from '../../company/system-logs/record-history
 import { CardComponent } from '../../../shared/ui/card/card.component';
 import { DialogComponent, DialogFooterDirective } from '../../../shared/ui/dialog/dialog.component';
 import { SelectComponent } from '../../../shared/ui/select/select.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 /**
  * One delivery note and its workflow: draft → confirmed → in transit → delivered or failed
@@ -29,6 +29,7 @@ import { SelectComponent } from '../../../shared/ui/select/select.component';
 @Component({
   selector: 'app-delivery-note-detail',
   imports: [
+    ButtonComponent,
     DialogFooterDirective,
     DialogComponent,
     SelectComponent,
@@ -38,7 +39,6 @@ import { SelectComponent } from '../../../shared/ui/select/select.component';
     FormsModule,
     RouterLink,
     TranslatePipe,
-    ButtonModule,
     InputTextModule,
     TableModule,
     TextareaModule,

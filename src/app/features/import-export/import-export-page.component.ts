@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { AccessService } from '../../core/auth/access.service';
 import { AppError } from '../../core/errors/app-error';
@@ -21,6 +20,7 @@ import { AppDatePipe } from '../../shared/pipes/app-date.pipe';
 import { CardComponent } from '../../shared/ui/card/card.component';
 import { SelectComponent } from '../../shared/ui/select/select.component';
 import { SelectGroupDirective, SelectItemDirective, SelectSelectedDirective } from '../../shared/ui/select/select-templates';
+import { ButtonComponent } from '../../shared/ui/button/button.component';
 
 type Severity = 'success' | 'secondary' | 'info' | 'warn' | 'danger';
 
@@ -39,6 +39,7 @@ const TASK_SEVERITY: Record<TaskStatus, Severity> = {
 @Component({
   selector: 'app-import-export-page',
   imports: [
+    ButtonComponent,
     SelectGroupDirective,
     SelectSelectedDirective,
     SelectItemDirective,
@@ -49,7 +50,6 @@ const TASK_SEVERITY: Record<TaskStatus, Severity> = {
     AppDatePipe,
     FormsModule,
     TranslatePipe,
-    ButtonModule,
     TableModule,
     PageHeaderComponent,
     EmptyStateComponent,

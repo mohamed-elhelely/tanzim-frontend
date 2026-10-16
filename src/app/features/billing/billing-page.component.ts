@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { AppError } from '../../core/errors/app-error';
 import { LanguageService } from '../../core/services/language.service';
@@ -43,7 +42,6 @@ const INVOICE_SEVERITY: Record<InvoiceStatus, Severity> = {
     RowActionsComponent,
     RowActionComponent,
     TranslatePipe,
-    ButtonModule,
     TableModule,
     PageHeaderComponent,
     LoadingStateComponent,

@@ -55,13 +55,13 @@
 
         @if (canChange()) {
           <div class="flex justify-end border-t border-gray-100 pt-5 dark:border-gray-800">
-            <p-button
+            <app-button
               type="submit"
               [label]="'common.save' | translate"
               icon="pi pi-check"
               [loading]="saving()"
               [disabled]="saving() || form.pristine"
-            ></p-button>
+            ></app-button>
           </div>
         }
       </form>

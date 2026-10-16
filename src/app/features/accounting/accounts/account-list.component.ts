@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
@@ -19,6 +18,7 @@ import { AccountFormComponent } from './account-form.component';
 import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { AccountService } from './account.service';
 import { SelectComponent } from '../../../shared/ui/select/select.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 export interface AccountRow extends Account {
   /** Nesting level under its parents, for the indentation. */
@@ -49,13 +49,13 @@ export function toTree(accounts: Account[]): AccountRow[] {
 @Component({
   selector: 'app-account-list',
   imports: [
+    ButtonComponent,
     SelectComponent,
     RowActionsComponent,
     RowActionComponent,
     FormsModule,
     TranslatePipe,
     TableModule,
-    ButtonModule,
     InputTextModule,
     IconFieldModule,
     InputIconModule,
