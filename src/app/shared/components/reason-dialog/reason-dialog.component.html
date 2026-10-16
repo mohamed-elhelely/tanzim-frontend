@@ -1,17 +1,16 @@
-<p-dialog
+<app-dialog
   [header]="header | translate"
   [visible]="visible"
   (visibleChange)="visibleChange.emit($event)"
-  [modal]="true"
-  [dismissableMask]="true"
-  [style]="{ width: '32rem', maxWidth: 'calc(100vw - 2rem)' }"
+  [dismissable]="true"
+  width="32rem"
 >
   <div class="flex flex-col gap-1">
     <label for="reason_dialog_text" class="text-sm font-medium">{{ label | translate }}</label>
     <textarea pTextarea id="reason_dialog_text" [(ngModel)]="reason" rows="3" class="w-full"></textarea>
   </div>
-  <ng-template pTemplate="footer">
-    <p-button [label]="'common.cancel' | translate" severity="secondary" [outlined]="true" (onClick)="close()"></p-button>
-    <p-button [label]="confirmLabel | translate" severity="danger" (onClick)="confirm()"></p-button>
+  <ng-template appDialogFooter>
+    <app-button [label]="'common.cancel' | translate" severity="secondary" (clicked)="close()" variant="outlined"></app-button>
+    <app-button [label]="confirmLabel | translate" severity="danger" (clicked)="confirm()"></app-button>
   </ng-template>
-</p-dialog>
+</app-dialog>

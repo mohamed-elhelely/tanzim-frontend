@@ -1,12 +1,12 @@
 @if (table().canRestore()) {
-  <p-button
+  <app-button
     [label]="'views.title' | translate"
     icon="pi pi-bookmark"
     severity="secondary"
-    [outlined]="true"
-    (onClick)="toggle($event, popover)"
-    styleClass="w-full sm:w-auto"
-  ></p-button>
+    (clicked)="toggle($event, popover)"
+    variant="outlined"
+    width="mobile"
+  ></app-button>
 
   <p-popover #popover appendTo="body">
     <div class="flex w-72 flex-col gap-3">
@@ -21,15 +21,15 @@
               >
                 <i class="pi pi-bookmark-fill me-2 text-xs text-primary-500"></i>{{ view.name }}
               </button>
-              <p-button
+              <app-button
                 icon="pi pi-trash"
                 severity="danger"
-                [text]="true"
                 [rounded]="true"
                 size="small"
                 [ariaLabel]="'common.delete' | translate"
-                (onClick)="remove(view)"
-              ></p-button>
+                (clicked)="remove(view)"
+                variant="text"
+              ></app-button>
             </li>
           }
         </ul>
@@ -49,13 +49,13 @@
           [disabled]="!table().filtered()"
           class="w-full"
         />
-        <p-button
+        <app-button
           [label]="'views.save' | translate"
           icon="pi pi-save"
           size="small"
           [disabled]="!canSave()"
-          (onClick)="save()"
-        ></p-button>
+          (clicked)="save()"
+        ></app-button>
         @if (!table().filtered()) {
           <p class="text-xs text-gray-500 dark:text-gray-400">{{ 'views.applyFirst' | translate }}</p>
         }

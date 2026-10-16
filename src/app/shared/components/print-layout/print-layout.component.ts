@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { AccessService } from '../../../core/auth/access.service';
 import { AppError } from '../../../core/errors/app-error';
 import { LanguageService } from '../../../core/services/language.service';
 
 import { ErrorStateComponent } from '../error-state/error-state.component';
 import { LoadingStateComponent } from '../loading-state/loading-state.component';
+import { ButtonComponent } from '../../ui/button/button.component';
 
 /**
  * The paper frame shared by printable documents: Print/Close toolbar (screen only), the company's logo, name and
@@ -18,7 +18,7 @@ import { LoadingStateComponent } from '../loading-state/loading-state.component'
  */
 @Component({
   selector: 'app-print-layout',
-  imports: [TranslatePipe, ButtonModule, ErrorStateComponent, LoadingStateComponent],
+  imports: [ButtonComponent, TranslatePipe, ErrorStateComponent, LoadingStateComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './print-layout.component.html',
 })

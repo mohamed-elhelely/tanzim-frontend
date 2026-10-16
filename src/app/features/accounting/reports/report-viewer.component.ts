@@ -3,11 +3,7 @@ import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } 
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
-import { TableModule } from 'primeng/table';
 import { AppError } from '../../../core/errors/app-error';
 import { NotificationService } from '../../../core/services/notification.service';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
@@ -21,6 +17,11 @@ import { CustomerService } from '../../sales/customers/customer.service';
 import { AccountService } from '../accounts/account.service';
 import { REPORT_PARAMS, REPORT_TYPES, ReportParam, ReportResult, ReportType, ReportValue } from '../accounting.models';
 import { AccountingReportService } from './accounting-report.service';
+import { CardComponent } from '../../../shared/ui/card/card.component';
+import { SelectComponent } from '../../../shared/ui/select/select.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
+import { TableComponent } from '../../../shared/ui/table/table.component';
+import { TableEmptyDirective, TableHeaderDirective, TableRowDirective } from '../../../shared/ui/table/table-templates';
 
 /** Columns and summary keys that hold text or dates; everything else numeric is shown as money. */
 const TEXT_KEYS = new Set([
@@ -52,14 +53,17 @@ interface Option {
 @Component({
   selector: 'app-report-viewer',
   imports: [
+    TableEmptyDirective,
+    TableRowDirective,
+    TableHeaderDirective,
+    TableComponent,
+    ButtonComponent,
+    SelectComponent,
+    CardComponent,
     DecimalPipe,
     FormsModule,
     TranslatePipe,
-    ButtonModule,
-    CardModule,
     InputTextModule,
-    SelectModule,
-    TableModule,
     PageHeaderComponent,
     ErrorStateComponent,
     EmptyStateComponent,

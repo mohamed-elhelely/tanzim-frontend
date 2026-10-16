@@ -2,7 +2,6 @@ import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
-import { CardModule } from 'primeng/card';
 import { AppError } from '../../../core/errors/app-error';
 import { ConfirmService } from '../../../core/services/confirm.service';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
@@ -15,17 +14,18 @@ import { DEBIT_NOTE_SEVERITY, DebitNote } from '../accounting.models';
 import { DebitNoteService } from './debit-note.service';
 import { RecordHistoryComponent } from '../../company/system-logs/record-history.component';
 import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
+import { CardComponent } from '../../../shared/ui/card/card.component';
 
 /** One debit note. Drafts: edit, issue (posts it), delete. Issued: cancel with a reason. */
 @Component({
   selector: 'app-debit-note-detail',
   imports: [
+    CardComponent,
     RecordHistoryComponent,
     AppDatePipe,
     DecimalPipe,
     RouterLink,
     TranslatePipe,
-    CardModule,
     PageHeaderComponent,
     LoadingStateComponent,
     ErrorStateComponent,

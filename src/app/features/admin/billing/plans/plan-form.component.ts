@@ -2,12 +2,8 @@ import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } 
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { MultiSelectModule } from 'primeng/multiselect';
-import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
-import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { AppError } from '../../../../core/errors/app-error';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { ErrorStateComponent } from '../../../../shared/components/error-state/error-state.component';
@@ -18,19 +14,23 @@ import { injectFormContext } from '../../../../shared/forms/form-context';
 import { handleSaveError } from '../../../../shared/utils/server-errors';
 import { BILLING_PERIODS, BillingPeriod, MONEY, PlanPayload, WHOLE } from '../platform-billing.models';
 import { BillingModuleService, PlanService } from '../platform-billing.service';
+import { MultiSelectComponent } from '../../../../shared/ui/multi-select/multi-select.component';
+import { SelectComponent } from '../../../../shared/ui/select/select.component';
+import { ToggleComponent } from '../../../../shared/ui/toggle/toggle.component';
+import { ButtonComponent } from '../../../../shared/ui/button/button.component';
 
 /** Create / edit a plan (dialog from the plans list, or /admin/plans/new as a page). */
 @Component({
   selector: 'app-plan-form',
   imports: [
+    ButtonComponent,
+    SelectComponent,
+    MultiSelectComponent,
+    ToggleComponent,
     ReactiveFormsModule,
     TranslatePipe,
-    ButtonModule,
     InputTextModule,
-    MultiSelectModule,
-    SelectModule,
     TextareaModule,
-    ToggleSwitchModule,
     FormLayoutComponent,
     LoadingStateComponent,
     ErrorStateComponent,

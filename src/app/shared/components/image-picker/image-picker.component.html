@@ -24,15 +24,15 @@
           <input type="file" accept="image/*" class="sr-only" (change)="onPicked($event)" />
         </label>
         @if (shown()) {
-          <p-button
+          <app-button
             type="button"
             [label]="'imagePicker.remove' | translate"
             icon="pi pi-trash"
             severity="danger"
-            [text]="true"
             size="small"
-            (onClick)="remove()"
-          ></p-button>
+            (clicked)="remove()"
+            variant="text"
+          ></app-button>
         }
       </div>
     }

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, input, output, signal } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
+import { ButtonComponent } from '../../ui/button/button.component';
 
 /** The backend's upload limit (profile picture, company logo). */
 export const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
@@ -11,7 +11,7 @@ export const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
  */
 @Component({
   selector: 'app-image-picker',
-  imports: [TranslatePipe, ButtonModule],
+  imports: [ButtonComponent, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './image-picker.component.html',
 })

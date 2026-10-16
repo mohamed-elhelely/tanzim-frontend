@@ -2,9 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@ang
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
 import { AppError } from '../../../../core/errors/app-error';
 import { NotificationService } from '../../../../core/services/notification.service';
@@ -14,11 +12,13 @@ import { injectFormContext } from '../../../../shared/forms/form-context';
 import { handleSaveError } from '../../../../shared/utils/server-errors';
 import { InvoiceDraftPayload, MONEY } from '../platform-billing.models';
 import { AdminInvoiceService, SubscriptionService } from '../platform-billing.service';
+import { SelectComponent } from '../../../../shared/ui/select/select.component';
+import { ButtonComponent } from '../../../../shared/ui/button/button.component';
 
 /** A new draft platform invoice for one subscription; opens the invoice to add its items. */
 @Component({
   selector: 'app-invoice-draft-form',
-  imports: [ReactiveFormsModule, TranslatePipe, ButtonModule, InputTextModule, SelectModule, TextareaModule, FormLayoutComponent, FieldErrorComponent],
+  imports: [ButtonComponent, SelectComponent, ReactiveFormsModule, TranslatePipe, InputTextModule, TextareaModule, FormLayoutComponent, FieldErrorComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './invoice-draft-form.component.html',
 })

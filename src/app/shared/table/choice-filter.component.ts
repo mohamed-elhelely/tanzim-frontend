@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, model } fr
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { MultiSelectModule } from 'primeng/multiselect';
 import { of, switchMap } from 'rxjs';
+import { MultiSelectComponent } from '../ui/multi-select/multi-select.component';
 
 /** A choice for a list filter; `label` is a translation key. */
 export interface ChoiceOption {
@@ -19,10 +19,10 @@ export interface ChoiceOption {
  */
 @Component({
   selector: 'app-choice-filter',
-  imports: [FormsModule, TranslatePipe, MultiSelectModule],
+  imports: [MultiSelectComponent, FormsModule, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <p-multiselect
+    <app-multi-select
       [ngModel]="value()"
       (ngModelChange)="value.set($event ?? [])"
       [options]="translatedOptions()"
@@ -34,9 +34,8 @@ export interface ChoiceOption {
       [selectedItemsLabel]="'common.selectedCount' | translate"
       [placeholder]="placeholder() | translate"
       [ariaLabel]="placeholder() | translate"
-      [styleClass]="'w-full ' + width()"
-      appendTo="body"
-    ></p-multiselect>
+      [class]="width()"
+    ></app-multi-select>
   `,
 })
 export class ChoiceFilterComponent {

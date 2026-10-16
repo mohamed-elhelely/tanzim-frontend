@@ -2,12 +2,8 @@ import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@ang
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
-import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { AppError } from '../../../core/errors/app-error';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
@@ -21,6 +17,10 @@ import { SupplierService } from '../suppliers/supplier.service';
 import { ProductVariantService } from '../variants/product-variant.service';
 import { trimZeros } from '../variants/variant-options';
 import { SupplierProductService } from './supplier-product.service';
+import { CardComponent } from '../../../shared/ui/card/card.component';
+import { SelectComponent } from '../../../shared/ui/select/select.component';
+import { ToggleComponent } from '../../../shared/ui/toggle/toggle.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 const DECIMAL_4 = /^\d+(\.\d{1,4})?$/;
 const DECIMAL_3 = /^\d+(\.\d{1,3})?$/;
@@ -34,14 +34,14 @@ function today(): string {
 @Component({
   selector: 'app-supplier-product-form',
   imports: [
+    ButtonComponent,
+    SelectComponent,
+    ToggleComponent,
+    CardComponent,
     ReactiveFormsModule,
     TranslatePipe,
-    ButtonModule,
-    CardModule,
     InputTextModule,
-    SelectModule,
     TextareaModule,
-    ToggleSwitchModule,
     PageHeaderComponent,
     LoadingStateComponent,
     ErrorStateComponent,

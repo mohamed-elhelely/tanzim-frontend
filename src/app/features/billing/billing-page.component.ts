@@ -1,8 +1,5 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
-import { TableModule } from 'primeng/table';
 import { AppError } from '../../core/errors/app-error';
 import { LanguageService } from '../../core/services/language.service';
 import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
@@ -15,6 +12,9 @@ import { TimeAgoPipe } from '../../shared/pipes/time-ago.pipe';
 import { CurrentSubscription, InvoiceStatus, PlatformInvoice, SubscriptionStatus } from './billing.models';
 import { RowActionComponent, RowActionsComponent } from '../../shared/table/row-actions.component';
 import { BillingService } from './billing.service';
+import { DialogComponent } from '../../shared/ui/dialog/dialog.component';
+import { TableComponent } from '../../shared/ui/table/table.component';
+import { TableEmptyDirective, TableHeaderDirective, TableRowDirective } from '../../shared/ui/table/table-templates';
 
 type Severity = 'success' | 'secondary' | 'info' | 'warn' | 'danger';
 
@@ -39,12 +39,14 @@ const INVOICE_SEVERITY: Record<InvoiceStatus, Severity> = {
 @Component({
   selector: 'app-billing-page',
   imports: [
+    TableEmptyDirective,
+    TableRowDirective,
+    TableHeaderDirective,
+    TableComponent,
+    DialogComponent,
     RowActionsComponent,
     RowActionComponent,
     TranslatePipe,
-    ButtonModule,
-    DialogModule,
-    TableModule,
     PageHeaderComponent,
     LoadingStateComponent,
     ErrorStateComponent,

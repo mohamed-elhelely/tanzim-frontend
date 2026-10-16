@@ -1,0 +1,83 @@
+<h1 class="mb-6 text-2xl font-bold">Selects <span class="text-base font-normal text-gray-500">app-select · app-multi-select</span></h1>
+
+<app-showcase-section
+  heading="In a reactive form"
+  note="formControlName / [formControl] or ngModel. Search box, clear button, placeholder. It fills its container: set widths on the element."
+  [code]="code.form"
+>
+  <div class="flex w-64 flex-col gap-1">
+    <label for="warehouse" class="text-sm font-medium">Warehouse</label>
+    <app-select
+      [formControl]="warehouse"
+      [options]="warehouses"
+      optionLabel="name"
+      optionValue="id"
+      inputId="warehouse"
+      [filter]="true"
+      [showClear]="true"
+      placeholder="Pick a warehouse"
+      (changed)="lastChange.set($event)"
+    ></app-select>
+    <span class="text-xs text-gray-500" dir="ltr">value: {{ warehouse.value | json }} · (changed): {{ lastChange() | json }}</span>
+  </div>
+  <div class="flex w-64 flex-col gap-1">
+    <label for="locked" class="text-sm font-medium">Disabled through the form</label>
+    <app-select [formControl]="locked" [options]="warehouses" optionLabel="name" optionValue="id" inputId="locked"></app-select>
+  </div>
+</app-showcase-section>
+
+<app-showcase-section heading="Translated labels" note="Options whose labels are translation keys. Switch to Arabic above." [code]="code.translate">
+  <div class="w-56">
+    <app-select [(ngModel)]="priority" [options]="priorities" optionValue="value" [translateLabels]="true" ariaLabel="Priority"></app-select>
+  </div>
+</app-showcase-section>
+
+<app-showcase-section heading="Custom option content" note="ng-template appSelectItem (list) and appSelectSelected (closed field)." [code]="code.custom">
+  <div class="w-64">
+    <app-select [formControl]="warehouse" [options]="warehouses" optionLabel="name" optionValue="id" ariaLabel="Warehouse">
+      <ng-template appSelectItem let-option>
+        <span class="font-mono text-xs text-gray-500">{{ option.code }}</span>
+        <span class="ms-2">{{ option.name }}</span>
+      </ng-template>
+    </app-select>
+  </div>
+</app-showcase-section>
+
+<app-showcase-section heading="Grouped options" note="[group]=true with optionGroupLabel / optionGroupChildren; appSelectGroup styles the headings.">
+  <div class="w-64">
+    <app-select
+      [(ngModel)]="report"
+      [options]="grouped"
+      [group]="true"
+      optionGroupLabel="label"
+      optionGroupChildren="items"
+      optionValue="value"
+      placeholder="Pick a report"
+      ariaLabel="Report"
+    >
+      <ng-template appSelectGroup let-group>
+        <span class="text-xs font-semibold uppercase text-gray-500">{{ group.label }}</span>
+      </ng-template>
+    </app-select>
+  </div>
+</app-showcase-section>
+
+<app-showcase-section heading="Several values" note="app-multi-select: an array value; more than maxSelectedLabels picks collapse into a count." [code]="code.multi">
+  <div class="flex w-72 flex-col gap-1">
+    <app-multi-select
+      [(ngModel)]="modules"
+      [options]="grouped[0].items.concat(grouped[1].items)"
+      optionValue="value"
+      [filter]="true"
+      [showClear]="true"
+      [maxSelectedLabels]="2"
+      selectedItemsLabel="{0} selected"
+      placeholder="Pick reports"
+      ariaLabel="Reports"
+    ></app-multi-select>
+    <span class="text-xs text-gray-500" dir="ltr">value: {{ modules | json }}</span>
+  </div>
+  <div class="w-72">
+    <app-multi-select [(ngModel)]="modules" [options]="grouped[0].items.concat(grouped[1].items)" optionValue="value" display="chip" ariaLabel="Reports as chips"></app-multi-select>
+  </div>
+</app-showcase-section>

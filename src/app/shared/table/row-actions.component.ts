@@ -2,13 +2,13 @@ import { ChangeDetectionStrategy, Component, computed, contentChildren, inject, 
 import { ActivatedRoute } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { MenuItem } from 'primeng/api';
-import { ButtonModule } from 'primeng/button';
 import { Menu, MenuModule } from 'primeng/menu';
 import { AccessService } from '../../core/auth/access.service';
 import { LanguageService } from '../../core/services/language.service';
 import { Named, localizedName } from '../pipes/localized-name.pipe';
 import { ModuleActivityService, moduleActivityFor } from '../activity/module-activity';
 import { RecordDetailsService } from '../activity/record-details';
+import { ButtonComponent } from '../ui/button/button.component';
 
 export type RowActionSeverity = 'danger' | 'secondary';
 
@@ -58,7 +58,7 @@ interface RowActionEntry {
  */
 @Component({
   selector: 'app-row-actions',
-  imports: [TranslatePipe, ButtonModule, MenuModule],
+  imports: [ButtonComponent, TranslatePipe, MenuModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     class: 'inline-flex items-center justify-end',
@@ -68,25 +68,25 @@ interface RowActionEntry {
   template: `
     @if (entries().length === 1) {
       @let action = entries()[0];
-      <p-button
+      <app-button
         [icon]="action.icon"
         [severity]="action.severity"
-        [text]="true"
         [rounded]="true"
         [disabled]="action.disabled"
         [ariaLabel]="action.label | translate"
-        (onClick)="action.run()"
-      ></p-button>
+        (clicked)="action.run()"
+        variant="text"
+      ></app-button>
     } @else if (entries().length > 1) {
-      <p-button
+      <app-button
         icon="pi pi-ellipsis-v"
         severity="secondary"
-        [text]="true"
         [rounded]="true"
         [ariaLabel]="'common.actions' | translate"
         aria-haspopup="menu"
-        (onClick)="toggle(menu, $event)"
-      ></p-button>
+        (clicked)="toggle(menu, $event)"
+        variant="text"
+      ></app-button>
       <p-menu #menu [model]="items()" [popup]="true" appendTo="body"></p-menu>
     }
   `,

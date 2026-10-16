@@ -9,19 +9,16 @@
   <kbd class="hidden rounded border border-gray-200 px-1 font-sans text-[0.65rem] dark:border-gray-700 md:inline" dir="ltr">Ctrl K</kbd>
 </button>
 
-<p-dialog
+<app-dialog
   [visible]="open()"
   (visibleChange)="open.set($event)"
-  (onShow)="focusInput()"
-  [modal]="true"
-  [dismissableMask]="true"
-  [showHeader]="false"
+  (shown)="focusInput()"
+  [dismissable]="true"
   [draggable]="false"
-  [resizable]="false"
   position="top"
-  appendTo="body"
-  styleClass="mt-16 w-[95vw] max-w-xl"
-  contentStyleClass="!p-0"
+  width="36rem"
+  panelClass="mt-16"
+  [flush]="true"
 >
   <div class="flex items-center gap-3 border-b border-gray-200 px-4 dark:border-gray-800">
     <i class="pi pi-search text-gray-400"></i>
@@ -95,4 +92,4 @@
       <li class="px-3 py-6 text-center text-sm text-gray-500 dark:text-gray-400">{{ 'palette.noResults' | translate }}</li>
     }
   </ul>
-</p-dialog>
+</app-dialog>

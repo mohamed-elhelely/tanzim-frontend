@@ -24,7 +24,7 @@
       </div>
     }
 
-    <p-card>
+    <app-card>
       <div class="grid grid-cols-1 gap-4 md:grid-cols-4">
         <div class="flex flex-col gap-1">
           <label for="date" class="text-sm font-medium">{{ 'accounting.fields.date' | translate }} *</label>
@@ -42,29 +42,29 @@
           <app-field-error [control]="form.controls.reference"></app-field-error>
         </div>
       </div>
-    </p-card>
+    </app-card>
 
-    <p-card>
+    <app-card>
       <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
         <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'accounting.sections.lines' | translate }}</h3>
         <div class="flex gap-2">
-          <p-button
+          <app-button
             type="button"
             icon="pi pi-equals"
             [label]="'accounting.actions.balance' | translate"
             severity="secondary"
-            [text]="true"
             size="small"
-            (onClick)="balanceLastLine()"
-          ></p-button>
-          <p-button
+            (clicked)="balanceLastLine()"
+            variant="text"
+          ></app-button>
+          <app-button
             type="button"
             icon="pi pi-plus"
             [label]="'accounting.actions.addLine' | translate"
-            [outlined]="true"
             size="small"
-            (onClick)="addLine()"
-          ></p-button>
+            (clicked)="addLine()"
+            variant="outlined"
+          ></app-button>
         </div>
       </div>
 
@@ -83,7 +83,7 @@
             @for (line of lines.controls; track line; let i = $index) {
               <tr [formGroupName]="i" class="border-b border-gray-100 align-top dark:border-gray-800">
                 <td class="py-2">
-                  <p-select
+                  <app-select
                     formControlName="account"
                     [options]="accountOptions()"
                     optionLabel="label"
@@ -92,9 +92,7 @@
                     filterBy="label"
                     [placeholder]="'common.select' | translate"
                     [ariaLabel]="'accounting.fields.account' | translate"
-                    styleClass="w-full"
-                    appendTo="body"
-                  ></p-select>
+                  ></app-select>
                   <app-field-error [control]="line.controls.account"></app-field-error>
                   @if (line.touched && line.hasError('oneSide')) {
                     <small class="text-sm text-red-600">{{ 'accounting.hints.oneSide' | translate }}</small>
@@ -131,15 +129,15 @@
                   <app-field-error [control]="line.controls.credit" patternKey="inventory.hints.decimal"></app-field-error>
                 </td>
                 <td class="py-2 text-end">
-                  <p-button
+                  <app-button
                     type="button"
                     icon="pi pi-trash"
                     severity="danger"
-                    [text]="true"
                     [rounded]="true"
                     [ariaLabel]="'accounting.actions.removeLine' | translate"
-                    (onClick)="removeLine(i)"
-                  ></p-button>
+                    (clicked)="removeLine(i)"
+                    variant="text"
+                  ></app-button>
                 </td>
               </tr>
             }
@@ -168,31 +166,31 @@
       @if (balanceError()) {
         <p role="alert" class="mt-2 text-end text-sm text-red-600">{{ 'accounting.hints.mustBalance' | translate }}</p>
       }
-    </p-card>
+    </app-card>
 
     <div class="flex flex-wrap justify-end gap-2">
-      <p-button
+      <app-button
         type="button"
         [label]="'common.cancel' | translate"
         severity="secondary"
-        [outlined]="true"
-        (onClick)="goBack()"
-      ></p-button>
-      <p-button
+        (clicked)="goBack()"
+        variant="outlined"
+      ></app-button>
+      <app-button
         type="submit"
         [label]="'accounting.actions.saveDraft' | translate"
         severity="secondary"
         [loading]="saving()"
         [disabled]="saving()"
-      ></p-button>
-      <p-button
+      ></app-button>
+      <app-button
         type="button"
         [label]="'accounting.actions.saveAndPost' | translate"
         icon="pi pi-check"
         [loading]="saving()"
         [disabled]="saving()"
-        (onClick)="submit(true)"
-      ></p-button>
+        (clicked)="submit(true)"
+      ></app-button>
     </div>
   </form>
 }

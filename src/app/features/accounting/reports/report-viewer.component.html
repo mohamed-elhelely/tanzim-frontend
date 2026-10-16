@@ -1,23 +1,20 @@
 <app-page-header title="accounting.reports.title" subtitle="accounting.reports.subtitle"></app-page-header>
 
 <div class="flex flex-col gap-4">
-  <p-card>
+  <app-card>
     <div class="flex flex-col flex-wrap gap-4 lg:flex-row lg:items-end">
       <div class="flex flex-col gap-1">
         <label for="report_type" class="text-sm font-medium">{{ 'accounting.reports.report' | translate }}</label>
-        <p-select
+        <app-select
           inputId="report_type"
           [ngModel]="type()"
           (ngModelChange)="onTypeChange($event)"
           [options]="typeOptions"
           optionLabel="label"
           optionValue="value"
-          styleClass="w-full lg:w-64"
-          appendTo="body"
-        >
-          <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
-          <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
-        </p-select>
+          class="lg:w-64"
+          [translateLabels]="true"
+        ></app-select>
       </div>
 
       @for (field of fields(); track field) {
@@ -30,7 +27,7 @@
           </label>
           @switch (field) {
             @case ('account') {
-              <p-select
+              <app-select
                 [inputId]="'param_' + field"
                 [(ngModel)]="params.account"
                 [options]="accounts()"
@@ -39,12 +36,11 @@
                 [filter]="true"
                 filterBy="label"
                 [placeholder]="'common.select' | translate"
-                styleClass="w-full lg:w-64"
-                appendTo="body"
-              ></p-select>
+                class="lg:w-64"
+              ></app-select>
             }
             @case ('customer') {
-              <p-select
+              <app-select
                 [inputId]="'param_' + field"
                 [(ngModel)]="params.customer"
                 [options]="customers()"
@@ -53,12 +49,11 @@
                 [filter]="true"
                 filterBy="label"
                 [placeholder]="'common.select' | translate"
-                styleClass="w-full lg:w-64"
-                appendTo="body"
-              ></p-select>
+                class="lg:w-64"
+              ></app-select>
             }
             @case ('supplier') {
-              <p-select
+              <app-select
                 [inputId]="'param_' + field"
                 [(ngModel)]="params.supplier"
                 [options]="suppliers()"
@@ -67,9 +62,8 @@
                 [filter]="true"
                 filterBy="label"
                 [placeholder]="'common.select' | translate"
-                styleClass="w-full lg:w-64"
-                appendTo="body"
-              ></p-select>
+                class="lg:w-64"
+              ></app-select>
             }
             @default {
               <input pInputText [id]="'param_' + field" type="date" [(ngModel)]="params[field]" class="w-full lg:w-44" />
@@ -79,15 +73,15 @@
       }
 
       <div class="flex gap-2">
-        <p-button [label]="'accounting.reports.run' | translate" icon="pi pi-play" [loading]="running()" (onClick)="run()"></p-button>
-        <p-button
+        <app-button [label]="'accounting.reports.run' | translate" icon="pi pi-play" [loading]="running()" (clicked)="run()"></app-button>
+        <app-button
           [label]="'accounting.reports.exportXlsx' | translate"
           icon="pi pi-file-excel"
           severity="secondary"
-          [outlined]="true"
           [loading]="exporting()"
-          (onClick)="exportXlsx()"
-        ></p-button>
+          (clicked)="exportXlsx()"
+          variant="outlined"
+        ></app-button>
       </div>
     </div>
     @if (missingParam(); as param) {
@@ -95,7 +89,7 @@
         {{ 'accounting.reports.pick' | translate: { field: ('accounting.reportParams.' + param | translate) } }}
       </p>
     }
-  </p-card>
+  </app-card>
 
   @if (error(); as err) {
     <app-error-state [title]="err.status === 403 ? 'common.forbidden' : 'common.error'" [message]="err.message" [showRetry]="false"></app-error-state>
@@ -124,15 +118,15 @@
 
     <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
       <div class="overflow-x-auto">
-        <p-table [value]="report.rows" size="small" [paginator]="report.rows.length > 50" [rows]="50">
-          <ng-template pTemplate="header">
+        <app-table [rows]="report.rows" [paginate]="report.rows.length > 50" [pageSize]="50" [pageSizes]="[]">
+          <ng-template appTableHeader>
             <tr>
               @for (column of report.columns; track column) {
                 <th [class.text-end]="!isText(column)">{{ 'accounting.reportColumns.' + column | translate }}</th>
               }
             </tr>
           </ng-template>
-          <ng-template pTemplate="body" let-row>
+          <ng-template appTableRow let-row>
             <tr>
               @for (column of report.columns; track column) {
                 <td [class.text-end]="!isText(column)" class="whitespace-nowrap">
@@ -147,12 +141,12 @@
               }
             </tr>
           </ng-template>
-          <ng-template pTemplate="emptymessage">
+          <ng-template appTableEmpty>
             <tr>
               <td [attr.colspan]="report.columns.length"><app-empty-state icon="pi-chart-bar"></app-empty-state></td>
             </tr>
           </ng-template>
-        </p-table>
+        </app-table>
       </div>
     </div>
   }

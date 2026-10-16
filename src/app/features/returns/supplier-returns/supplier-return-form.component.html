@@ -17,11 +17,11 @@
       </div>
     }
 
-    <p-card>
+    <app-card>
       <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
         <div class="flex flex-col gap-1">
           <label for="supplier" class="text-sm font-medium">{{ 'returns.fields.supplier' | translate }} *</label>
-          <p-select
+          <app-select
             inputId="supplier"
             formControlName="supplier"
             [options]="suppliers()"
@@ -30,23 +30,19 @@
             [filter]="true"
             filterBy="name"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-select>
+          ></app-select>
           <app-field-error [control]="form.controls.supplier"></app-field-error>
         </div>
         <div class="flex flex-col gap-1">
           <label for="warehouse" class="text-sm font-medium">{{ 'returns.fields.warehouse' | translate }} *</label>
-          <p-select
+          <app-select
             inputId="warehouse"
             formControlName="warehouse"
             [options]="warehouses()"
             optionLabel="name"
             optionValue="id"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-select>
+          ></app-select>
           <app-field-error [control]="form.controls.warehouse"></app-field-error>
         </div>
         <div class="flex flex-col gap-1">
@@ -55,19 +51,19 @@
           <app-field-error [control]="form.controls.return_reason"></app-field-error>
         </div>
       </div>
-    </p-card>
+    </app-card>
 
-    <p-card>
+    <app-card>
       <div class="mb-3 flex items-center justify-between gap-2">
         <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'returns.sections.items' | translate }}</h3>
-        <p-button
+        <app-button
           type="button"
           icon="pi pi-plus"
           [label]="'returns.actions.addItem' | translate"
-          [outlined]="true"
           size="small"
-          (onClick)="addRow()"
-        ></p-button>
+          (clicked)="addRow()"
+          variant="outlined"
+        ></app-button>
       </div>
       <div class="overflow-x-auto">
         <table class="w-full min-w-[40rem] text-sm">
@@ -83,7 +79,7 @@
             @for (row of rows; track $index; let i = $index) {
               <tr class="border-b border-gray-100 dark:border-gray-800">
                 <td class="py-2">
-                  <p-select
+                  <app-select
                     [(ngModel)]="row.variant"
                     [ngModelOptions]="{ standalone: true }"
                     [options]="items()"
@@ -93,10 +89,8 @@
                     filterBy="label"
                     [placeholder]="'common.select' | translate"
                     [ariaLabel]="'returns.fields.item' | translate"
-                    (onChange)="onItemChange(row)"
-                    styleClass="w-full"
-                    appendTo="body"
-                  ></p-select>
+                    (changed)="onItemChange(row)"
+                  ></app-select>
                 </td>
                 <td class="py-2 ps-3">
                   <input
@@ -121,15 +115,15 @@
                   />
                 </td>
                 <td class="py-2 text-end">
-                  <p-button
+                  <app-button
                     type="button"
                     icon="pi pi-trash"
                     severity="danger"
-                    [text]="true"
                     [rounded]="true"
                     [ariaLabel]="'returns.actions.removeItem' | translate"
-                    (onClick)="removeRow(i)"
-                  ></p-button>
+                    (clicked)="removeRow(i)"
+                    variant="text"
+                  ></app-button>
                 </td>
               </tr>
             }
@@ -139,23 +133,23 @@
       @if (linesError(); as key) {
         <p role="alert" class="mt-3 text-sm text-red-600">{{ key | translate }}</p>
       }
-    </p-card>
+    </app-card>
 
     <div class="flex justify-end gap-2">
-      <p-button
+      <app-button
         type="button"
         [label]="'common.cancel' | translate"
         severity="secondary"
-        [outlined]="true"
-        (onClick)="goBack()"
-      ></p-button>
-      <p-button
+        (clicked)="goBack()"
+        variant="outlined"
+      ></app-button>
+      <app-button
         type="submit"
         [label]="'returns.actions.createReturn' | translate"
         icon="pi pi-check"
         [loading]="saving()"
         [disabled]="saving()"
-      ></p-button>
+      ></app-button>
     </div>
   </form>
 }

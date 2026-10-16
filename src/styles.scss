@@ -19,6 +19,21 @@
   :root {
     --app-font: Inter, "IBM Plex Sans Arabic", ui-sans-serif, system-ui, sans-serif;
     --app-bg: #f4f5fa;
+    /*
+     * Design tokens: the shape of the whole app in one place. Tailwind's rounded-* / shadow-* classes
+     * (tailwind.config.js) and PrimeNG's border radius (core/theme/tanzim-preset.ts) read these, so a redesign
+     * changes values here instead of classes in every screen. The values are Tailwind's defaults.
+     */
+    --app-radius-sm: 0.125rem;
+    --app-radius: 0.25rem;
+    --app-radius-md: 0.375rem;
+    --app-radius-lg: 0.5rem;
+    --app-radius-xl: 0.75rem;
+    --app-radius-2xl: 1rem;
+    --app-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --app-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --app-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --app-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
     /* Brand palettes (RGB channels) used by tailwind.config.js: Tanzim's indigo until BrandThemeService
        applies the company's colors from /me. */
     --brand-primary-50: 238 242 255;

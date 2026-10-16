@@ -45,7 +45,7 @@
       </div>
     </dl>
 
-    <p-card>
+    <app-card>
       <dl class="grid grid-cols-2 gap-x-6 gap-y-3 text-sm md:grid-cols-4">
         <div>
           <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'accounting.fields.date' | translate }}</dt>
@@ -68,29 +68,29 @@
           <dd class="mt-0.5 whitespace-pre-line">{{ payment.notes || '—' }}</dd>
         </div>
       </dl>
-    </p-card>
+    </app-card>
 
-    <p-card>
+    <app-card>
       <h3 class="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'accounting.sections.allocations' | translate }}</h3>
       @if (payment.allocations.length) {
-        <p-table [value]="payment.allocations" dataKey="id" size="small">
-          <ng-template pTemplate="header">
+        <app-table [rows]="payment.allocations">
+          <ng-template appTableHeader>
             <tr>
               <th>{{ 'accounting.fields.supplierInvoice' | translate }}</th>
               <th class="text-end">{{ 'accounting.fields.amount' | translate }}</th>
             </tr>
           </ng-template>
-          <ng-template pTemplate="body" let-row>
+          <ng-template appTableRow let-row>
             <tr>
               <td class="font-mono text-xs" dir="ltr">{{ row.invoice_number }}</td>
               <td class="text-end">{{ row.amount | number: '1.2-2' }}</td>
             </tr>
           </ng-template>
-        </p-table>
+        </app-table>
       } @else {
         <p class="text-sm text-gray-500 dark:text-gray-400">{{ 'accounting.hints.noAllocations' | translate }}</p>
       }
-    </p-card>
+    </app-card>
 
     <app-record-history resource="supplierpayment" [objectId]="payment.id"></app-record-history>
   </div>

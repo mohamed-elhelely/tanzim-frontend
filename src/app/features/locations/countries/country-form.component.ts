@@ -1,8 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
-import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { InputTextModule } from 'primeng/inputtext';
 import { AppError } from '../../../core/errors/app-error';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -14,14 +12,16 @@ import { injectFormContext } from '../../../shared/forms/form-context';
 import { handleSaveError } from '../../../shared/utils/server-errors';
 import { CountryPayload } from '../locations.models';
 import { CountryService } from './country.service';
+import { ToggleComponent } from '../../../shared/ui/toggle/toggle.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 @Component({
   selector: 'app-country-form',
   imports: [
+    ButtonComponent,
+    ToggleComponent,
     ReactiveFormsModule,
     TranslatePipe,
-    ButtonModule,
-    ToggleSwitchModule,
     InputTextModule,
     FormLayoutComponent,
     LoadingStateComponent,

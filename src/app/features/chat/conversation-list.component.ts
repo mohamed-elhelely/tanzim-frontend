@@ -2,17 +2,17 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { debounceTime, map } from 'rxjs';
 import { chatTime, conversationIcon, conversationTitle, initials, messagePreview } from '../../core/chat/chat-format';
 import { ChatStore } from '../../core/chat/chat.store';
 import { LanguageService } from '../../core/services/language.service';
 import { NewChatDialogComponent } from './new-chat-dialog.component';
+import { ButtonComponent } from '../../shared/ui/button/button.component';
 
 /** The drawer's list view: search (on the loaded list), "New chat", one row per conversation. */
 @Component({
   selector: 'app-conversation-list',
-  imports: [FormsModule, TranslatePipe, ButtonModule, NewChatDialogComponent],
+  imports: [ButtonComponent, FormsModule, TranslatePipe, NewChatDialogComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'flex h-full min-h-0 flex-col' },
   template: `
@@ -28,7 +28,7 @@ import { NewChatDialogComponent } from './new-chat-dialog.component';
           (ngModelChange)="search.set($event)"
         />
       </span>
-      <p-button icon="pi pi-pen-to-square" [rounded]="true" [text]="true" [ariaLabel]="'chat.newChat' | translate" (onClick)="newChatOpen.set(true)"></p-button>
+      <app-button icon="pi pi-pen-to-square" [rounded]="true" [ariaLabel]="'chat.newChat' | translate" (clicked)="newChatOpen.set(true)" variant="text"></app-button>
     </div>
 
     <div class="min-h-0 flex-1 overflow-y-auto">

@@ -2,11 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } 
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { MultiSelectModule } from 'primeng/multiselect';
-import { SelectModule } from 'primeng/select';
-import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { Observable, catchError, forkJoin, map, of, startWith } from 'rxjs';
 import { AccessService } from '../../../../core/auth/access.service';
 import { AppError } from '../../../../core/errors/app-error';
@@ -22,6 +18,11 @@ import { TenantCompanyService } from '../../companies/tenant-company.service';
 import { BillingModule, MODULE_EDITABLE_STATUSES, SUBSCRIPTION_STATUSES, Subscription, SubscriptionPayload, WHOLE } from '../platform-billing.models';
 import { BillingModuleService, PlanService, SubscriptionService } from '../platform-billing.service';
 import { SubscriptionModulesComponent } from './subscription-modules.component';
+import { MultiSelectComponent } from '../../../../shared/ui/multi-select/multi-select.component';
+import { SelectComponent } from '../../../../shared/ui/select/select.component';
+import { SelectItemDirective } from '../../../../shared/ui/select/select-templates';
+import { ToggleComponent } from '../../../../shared/ui/toggle/toggle.component';
+import { ButtonComponent } from '../../../../shared/ui/button/button.component';
 
 /** `YYYY-MM-DD`, `months` from today. */
 function isoDate(months = 0): string {
@@ -37,13 +38,14 @@ function isoDate(months = 0): string {
 @Component({
   selector: 'app-subscription-form',
   imports: [
+    ButtonComponent,
+    SelectComponent,
+    SelectItemDirective,
+    MultiSelectComponent,
+    ToggleComponent,
     ReactiveFormsModule,
     TranslatePipe,
-    ButtonModule,
     InputTextModule,
-    MultiSelectModule,
-    SelectModule,
-    ToggleSwitchModule,
     FormLayoutComponent,
     LoadingStateComponent,
     ErrorStateComponent,

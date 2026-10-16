@@ -42,7 +42,7 @@
       </div>
     </dl>
 
-    <p-card>
+    <app-card>
       <dl class="grid grid-cols-2 gap-x-6 gap-y-3 text-sm md:grid-cols-4">
         <div>
           <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.carrier' | translate }}</dt>
@@ -69,57 +69,52 @@
           <dd class="mt-0.5">{{ note.created_by_name || '—' }}</dd>
         </div>
       </dl>
-    </p-card>
+    </app-card>
 
-    <p-card>
+    <app-card>
       <h3 class="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'sales.sections.lines' | translate }}</h3>
       <div class="overflow-x-auto">
-        <p-table [value]="note.lines" dataKey="id" size="small">
-          <ng-template pTemplate="header">
+        <app-table [rows]="note.lines">
+          <ng-template appTableHeader>
             <tr>
               <th>{{ 'sales.fields.sku' | translate }}</th>
               <th>{{ 'sales.fields.item' | translate }}</th>
               <th class="text-end">{{ 'sales.fields.quantityDelivered' | translate }}</th>
             </tr>
           </ng-template>
-          <ng-template pTemplate="body" let-line>
+          <ng-template appTableRow let-line>
             <tr>
               <td class="whitespace-nowrap font-mono text-xs" dir="ltr">{{ line.sku }}</td>
               <td class="font-medium">{{ line.product_name }}</td>
               <td class="text-end">{{ line.quantity_delivered | number: '1.0-3' }}</td>
             </tr>
           </ng-template>
-        </p-table>
+        </app-table>
       </div>
-    </p-card>
+    </app-card>
 
     <app-record-history resource="deliverynote" [objectId]="note.id"></app-record-history>
   </div>
 
-  <p-dialog
+  <app-dialog
     [header]="(carrierDialog() === 'ship' ? 'sales.actions.handToCarrier' : 'sales.actions.editDetails') | translate"
     [visible]="carrierDialog() !== null"
     (visibleChange)="!$event && carrierDialog.set(null)"
-    [modal]="true"
-    [dismissableMask]="true"
-    [style]="{ width: '32rem', maxWidth: 'calc(100vw - 2rem)' }"
+    [dismissable]="true"
+    width="32rem"
   >
     <div class="flex flex-col gap-4">
       @if (carrierDialog() === 'details') {
         <div class="flex flex-col gap-1">
           <label for="dn_method" class="text-sm font-medium">{{ 'sales.fields.shippingMethod' | translate }}</label>
-          <p-select
+          <app-select
             inputId="dn_method"
             [(ngModel)]="form.shipping_method"
             [options]="methodOptions"
             optionLabel="label"
             optionValue="value"
-            styleClass="w-full"
-            appendTo="body"
-          >
-            <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
-            <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
-          </p-select>
+            [translateLabels]="true"
+          ></app-select>
         </div>
       }
       <div class="flex flex-col gap-1">
@@ -137,21 +132,21 @@
         </div>
       }
     </div>
-    <ng-template pTemplate="footer">
-      <p-button
+    <ng-template appDialogFooter>
+      <app-button
         [label]="'common.cancel' | translate"
         severity="secondary"
-        [outlined]="true"
-        (onClick)="carrierDialog.set(null)"
-      ></p-button>
-      <p-button
+        (clicked)="carrierDialog.set(null)"
+        variant="outlined"
+      ></app-button>
+      <app-button
         [label]="(carrierDialog() === 'ship' ? 'sales.actions.handToCarrier' : 'common.save') | translate"
         [loading]="saving()"
         [disabled]="saving()"
-        (onClick)="saveCarrier()"
-      ></p-button>
+        (clicked)="saveCarrier()"
+      ></app-button>
     </ng-template>
-  </p-dialog>
+  </app-dialog>
 
   <app-reason-dialog
     header="sales.actions.markFailed"

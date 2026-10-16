@@ -10,7 +10,7 @@
 } @else if (loading()) {
   <app-loading-state></app-loading-state>
 } @else {
-  <p-card>
+  <app-card>
     <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-6" novalidate>
       @if (formErrors().length) {
         <div
@@ -40,7 +40,7 @@
           <label for="permission_groups" class="text-sm font-medium">
             {{ 'company.fields.permissionGroups' | translate }}
           </label>
-          <p-multiSelect
+          <app-multi-select
             inputId="permission_groups"
             formControlName="permission_groups"
             [options]="groupOptions()"
@@ -49,9 +49,7 @@
             [filter]="true"
             display="chip"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-multiSelect>
+          ></app-multi-select>
           <app-field-error [control]="form.controls.permission_groups"></app-field-error>
         </div>
 
@@ -63,27 +61,27 @@
         </div>
 
         <div class="flex items-center gap-3">
-          <p-toggleswitch inputId="is_admin" formControlName="is_admin"></p-toggleswitch>
+          <app-toggle inputId="is_admin" formControlName="is_admin"></app-toggle>
           <label for="is_admin" class="text-sm font-medium">{{ 'company.fields.isAdmin' | translate }}</label>
         </div>
       </div>
 
       <div class="flex justify-end gap-2 border-t border-gray-100 pt-5 dark:border-gray-800">
-        <p-button
+        <app-button
           type="button"
           [label]="'common.cancel' | translate"
           severity="secondary"
-          [outlined]="true"
-          (onClick)="goBack()"
-        ></p-button>
-        <p-button
+          (clicked)="goBack()"
+          variant="outlined"
+        ></app-button>
+        <app-button
           type="submit"
           [label]="'common.save' | translate"
           icon="pi pi-check"
           [loading]="saving()"
           [disabled]="saving()"
-        ></p-button>
+        ></app-button>
       </div>
     </form>
-  </p-card>
+  </app-card>
 }

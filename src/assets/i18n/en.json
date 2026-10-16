@@ -41,6 +41,8 @@
     "viewAll": "View all",
     "reasonOptional": "Reason (optional)",
     "selectedCount": "{0} selected",
+    "selectAll": "Select all on this page",
+    "selectRow": "Select row",
     "dateFrom": "From",
     "dateTo": "To"
   },

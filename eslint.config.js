@@ -39,17 +39,47 @@ module.exports = defineConfig([
     },
   },
   {
+    // Screens use the shared/ui wrappers, so a UI library update or swap only touches that folder. Add a module
+    // here when its wrapper lands.
+    files: ["src/**/*.ts"],
+    ignores: ["src/app/shared/ui/**"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          paths: [
+            ["primeng/button", "app-button"],
+            ["primeng/card", "app-card"],
+            ["primeng/dialog", "app-dialog"],
+            ["primeng/multiselect", "app-multi-select"],
+            ["primeng/password", "app-password"],
+            ["primeng/select", "app-select"],
+            ["primeng/table", "app-table"],
+            ["primeng/toggleswitch", "app-toggle"],
+          ].map(([name, wrapper]) => ({
+            name,
+            message: `Use ${wrapper} from src/app/shared/ui instead (wrapped so the UI library can change in one place).`,
+          })),
+        },
+      ],
+    },
+  },
+  {
     files: ["**/*.html"],
     extends: [
       angular.configs.templateRecommended,
       angular.configs.templateAccessibility,
     ],
     rules: {
-      // PrimeNG inputs count as form controls when wrapped in a <label>.
+      // The shared/ui form controls (and PrimeNG inputs not wrapped yet) count as form controls inside a <label>.
       "@angular-eslint/template/label-has-associated-control": [
         "error",
         {
           controlComponents: [
+            "app-multi-select",
+            "app-password",
+            "app-select",
+            "app-toggle",
             "p-checkbox",
             "p-datepicker",
             "p-inputnumber",

@@ -10,7 +10,7 @@
 } @else if (loading()) {
   <app-loading-state></app-loading-state>
 } @else {
-  <p-card>
+  <app-card>
     <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-6" novalidate>
       @if (formErrors().length) {
         <div
@@ -26,7 +26,7 @@
       <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         <div class="flex flex-col gap-1">
           <label for="supplier" class="text-sm font-medium">{{ 'inventory.fields.supplier' | translate }} *</label>
-          <p-select
+          <app-select
             inputId="supplier"
             formControlName="supplier"
             [options]="supplierOptions()"
@@ -34,15 +34,13 @@
             optionValue="value"
             [filter]="true"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-select>
+          ></app-select>
           <app-field-error [control]="form.controls.supplier"></app-field-error>
         </div>
 
         <div class="flex flex-col gap-1">
           <label for="product_variant" class="text-sm font-medium">{{ 'inventory.fields.variant' | translate }} *</label>
-          <p-select
+          <app-select
             inputId="product_variant"
             formControlName="product_variant"
             [options]="variantOptions()"
@@ -50,9 +48,7 @@
             optionValue="value"
             [filter]="true"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-select>
+          ></app-select>
           <app-field-error [control]="form.controls.product_variant"></app-field-error>
         </div>
 
@@ -119,11 +115,11 @@
           <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'inventory.sections.settings' | translate }}</h3>
           <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
             <div class="flex items-center gap-3">
-              <p-toggleswitch inputId="is_preferred" formControlName="is_preferred"></p-toggleswitch>
+              <app-toggle inputId="is_preferred" formControlName="is_preferred"></app-toggle>
               <label for="is_preferred" class="text-sm font-medium">{{ 'inventory.fields.isPreferred' | translate }}</label>
             </div>
             <div class="flex items-center gap-3">
-              <p-toggleswitch inputId="is_primary" formControlName="is_primary"></p-toggleswitch>
+              <app-toggle inputId="is_primary" formControlName="is_primary"></app-toggle>
               <label for="is_primary" class="text-sm font-medium">{{ 'inventory.fields.isPrimary' | translate }}</label>
             </div>
           </div>
@@ -137,21 +133,21 @@
       </div>
 
       <div class="flex justify-end gap-2 border-t border-gray-100 pt-5 dark:border-gray-800">
-        <p-button
+        <app-button
           type="button"
           [label]="'common.cancel' | translate"
           severity="secondary"
-          [outlined]="true"
-          (onClick)="goBack()"
-        ></p-button>
-        <p-button
+          (clicked)="goBack()"
+          variant="outlined"
+        ></app-button>
+        <app-button
           type="submit"
           [label]="'common.save' | translate"
           icon="pi pi-check"
           [loading]="saving()"
           [disabled]="saving()"
-        ></p-button>
+        ></app-button>
       </div>
     </form>
-  </p-card>
+  </app-card>
 }

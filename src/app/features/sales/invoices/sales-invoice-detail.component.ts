@@ -3,12 +3,7 @@ import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } 
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
-import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
-import { TableModule } from 'primeng/table';
 import { TextareaModule } from 'primeng/textarea';
 import { AppError } from '../../../core/errors/app-error';
 import { ConfirmService } from '../../../core/services/confirm.service';
@@ -33,6 +28,12 @@ import {
 import { SalesInvoiceService } from './sales-invoice.service';
 import { RecordHistoryComponent } from '../../company/system-logs/record-history.component';
 import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
+import { CardComponent } from '../../../shared/ui/card/card.component';
+import { DialogComponent, DialogFooterDirective } from '../../../shared/ui/dialog/dialog.component';
+import { SelectComponent } from '../../../shared/ui/select/select.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
+import { TableComponent } from '../../../shared/ui/table/table.component';
+import { TableHeaderDirective, TableRowDirective } from '../../../shared/ui/table/table-templates';
 
 const PAYABLE: SalesInvoiceStatus[] = ['issued', 'overdue'];
 const CANCELLABLE: SalesInvoiceStatus[] = ['draft', 'issued', 'overdue'];
@@ -51,18 +52,21 @@ function today(): string {
 @Component({
   selector: 'app-sales-invoice-detail',
   imports: [
+    TableRowDirective,
+    TableHeaderDirective,
+    TableComponent,
+    ButtonComponent,
+    DialogFooterDirective,
+    DialogComponent,
+    SelectComponent,
+    CardComponent,
     RecordHistoryComponent,
     AppDatePipe,
     DecimalPipe,
     FormsModule,
     RouterLink,
     TranslatePipe,
-    ButtonModule,
-    CardModule,
-    DialogModule,
     InputTextModule,
-    SelectModule,
-    TableModule,
     TextareaModule,
     PageHeaderComponent,
     LoadingStateComponent,

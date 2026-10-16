@@ -20,57 +20,44 @@
       <app-choice-filter [(value)]="status" [options]="statusOptions" placeholder="returns.fields.status" width="sm:w-48"></app-choice-filter>
       <app-date-range-filter [(from)]="dateFrom" [(to)]="dateTo"></app-date-range-filter>
       <app-saved-views [table]="table" screen="supplier-return"></app-saved-views>
-      <p-button
+      <app-button
         [label]="'common.apply' | translate"
         icon="pi pi-filter"
         [disabled]="!table.changed()"
-        (onClick)="table.apply()"
-        styleClass="w-full sm:w-auto"
-      ></p-button>
+        (clicked)="table.apply()"
+        width="mobile"
+      ></app-button>
       @if (table.filtered()) {
-        <p-button
+        <app-button
           [label]="'common.clearFilters' | translate"
           icon="pi pi-filter-slash"
           severity="secondary"
-          [text]="true"
-          (onClick)="table.clear()"
-          styleClass="w-full sm:w-auto"
-        ></p-button>
+          (clicked)="table.clear()"
+          variant="text"
+          width="mobile"
+        ></app-button>
       }
       <app-filter-errors [table]="table"></app-filter-errors>
     </div>
     <div class="overflow-x-auto">
-      <p-table
-        [value]="table.rows()"
-        [lazy]="true"
-        [lazyLoadOnInit]="false"
-        (onLazyLoad)="table.onLazyLoad($event)"
-        [paginator]="true"
-        [showCurrentPageReport]="true"
-        [currentPageReportTemplate]="'common.pageReport' | translate"
-        [first]="table.first()"
-        [rows]="table.pageSize()"
-        [totalRecords]="table.total()"
-        [rowsPerPageOptions]="[10, 25, 50]"
-        [loading]="table.loading()"
-        dataKey="id"
-        size="small"
+      <app-table
+        [table]="table"
       >
-        <ng-template pTemplate="header">
+        <ng-template appTableHeader>
           <tr>
-            <th pSortableColumn="return_number">
-              {{ 'returns.fields.returnNumber' | translate }} <p-sortIcon field="return_number"></p-sortIcon>
+            <th appSortable="return_number">
+              {{ 'returns.fields.returnNumber' | translate }}
             </th>
             <th>{{ 'returns.fields.supplier' | translate }}</th>
             <th>{{ 'returns.fields.warehouse' | translate }}</th>
             <th>{{ 'returns.fields.status' | translate }}</th>
-            <th pSortableColumn="shipped_date">
-              {{ 'returns.fields.shippedDate' | translate }} <p-sortIcon field="shipped_date"></p-sortIcon>
+            <th appSortable="shipped_date">
+              {{ 'returns.fields.shippedDate' | translate }}
             </th>
             <th class="text-end">{{ 'common.actions' | translate }}</th>
           </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-row>
+        <ng-template appTableRow let-row>
           <tr class="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50" (click)="open(row)">
             <td class="whitespace-nowrap font-mono text-xs font-semibold" dir="ltr">{{ row.return_number }}</td>
             <td class="font-medium">{{ row.supplier_name }}</td>
@@ -89,12 +76,12 @@
             </td>
           </tr>
         </ng-template>
-        <ng-template pTemplate="emptymessage">
+        <ng-template appTableEmpty>
           <tr>
             <td colspan="6"><app-empty-state icon="pi-truck"></app-empty-state></td>
           </tr>
         </ng-template>
-      </p-table>
+      </app-table>
     </div>
   </div>
 }

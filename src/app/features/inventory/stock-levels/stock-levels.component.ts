@@ -2,12 +2,9 @@ import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
-import { TableModule } from 'primeng/table';
 import { AppError } from '../../../core/errors/app-error';
 import { NotificationService } from '../../../core/services/notification.service';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
@@ -29,6 +26,11 @@ import { ProductVariantService } from '../variants/product-variant.service';
 import { WarehouseService } from '../warehouses/warehouse.service';
 import { InventoryReportService } from './inventory-report.service';
 import { StockReservationService } from './stock-reservation.service';
+import { SelectComponent } from '../../../shared/ui/select/select.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
+import { TableComponent } from '../../../shared/ui/table/table.component';
+import { TableEmptyDirective, TableHeaderDirective, TableRowDirective } from '../../../shared/ui/table/table-templates';
+import { SortableHeaderComponent } from '../../../shared/ui/table/sortable-header.component';
 
 export interface StockLevel extends StockLevelRow {
   variantName: string;
@@ -45,15 +47,19 @@ export interface StockLevel extends StockLevelRow {
 @Component({
   selector: 'app-stock-levels',
   imports: [
+    SortableHeaderComponent,
+    TableEmptyDirective,
+    TableRowDirective,
+    TableHeaderDirective,
+    TableComponent,
+    ButtonComponent,
+    SelectComponent,
     DecimalPipe,
     FormsModule,
     TranslatePipe,
-    ButtonModule,
     IconFieldModule,
     InputIconModule,
     InputTextModule,
-    SelectModule,
-    TableModule,
     PageHeaderComponent,
     EmptyStateComponent,
     ErrorStateComponent,

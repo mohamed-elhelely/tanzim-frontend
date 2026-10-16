@@ -13,39 +13,33 @@
           [placeholder]="'common.search' | translate"
           [value]="searchDraft()"
           (input)="searchDraft.set($any($event.target).value)"
-          (keydown.enter)="appliedSearch.set(searchDraft().trim()); table.filterGlobal(appliedSearch(), 'contains')"
+          (keydown.enter)="appliedSearch.set(searchDraft().trim())"
           class="w-full"
         />
       </p-iconfield>
-      <p-button
+      <app-button
         [label]="'common.search' | translate"
         icon="pi pi-search"
         [disabled]="searchDraft().trim() === appliedSearch()"
-        (onClick)="appliedSearch.set(searchDraft().trim()); table.filterGlobal(appliedSearch(), 'contains')"
-        styleClass="w-full sm:w-auto"
-      ></p-button>
+        (clicked)="appliedSearch.set(searchDraft().trim())"
+        width="mobile"
+      ></app-button>
     </div>
     <div class="overflow-x-auto">
-      <p-table
-        #table
-        [value]="users()"
-        [paginator]="true"
-        [showCurrentPageReport]="true"
-        [currentPageReportTemplate]="'common.pageReport' | translate"
-        [rows]="10"
-        [rowsPerPageOptions]="[10, 25, 50]"
-        [globalFilterFields]="searchFields"
+      <app-table
+        [rows]="users()"
+        [filterText]="appliedSearch()"
+        [filterFields]="searchFields"
         [loading]="loading()"
-        dataKey="id"
-        size="small"
+        [paginate]="true"
       >
-        <ng-template pTemplate="header">
+        <ng-template appTableHeader>
           <tr>
-            <th pSortableColumn="user.first_name">
-              {{ 'company.fields.name' | translate }} <p-sortIcon field="user.first_name"></p-sortIcon>
+            <th appSortable="user.first_name">
+              {{ 'company.fields.name' | translate }}
             </th>
-            <th pSortableColumn="user.email">
-              {{ 'company.fields.email' | translate }} <p-sortIcon field="user.email"></p-sortIcon>
+            <th appSortable="user.email">
+              {{ 'company.fields.email' | translate }}
             </th>
             <th>{{ 'company.fields.role' | translate }}</th>
             <th>{{ 'company.fields.department' | translate }}</th>
@@ -56,7 +50,7 @@
             }
           </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-row>
+        <ng-template appTableRow let-row>
           <tr>
             <td>{{ row.user.first_name }} {{ row.user.last_name }}</td>
             <td>{{ row.user.email }}</td>
@@ -82,12 +76,12 @@
             }
           </tr>
         </ng-template>
-        <ng-template pTemplate="emptymessage">
+        <ng-template appTableEmpty>
           <tr>
             <td [attr.colspan]="canEdit() || canDelete() ? 7 : 6"><app-empty-state icon="pi-users"></app-empty-state></td>
           </tr>
         </ng-template>
-      </p-table>
+      </app-table>
     </div>
   </div>
 }

@@ -5,7 +5,7 @@
     <div class="flex flex-col flex-wrap gap-4 lg:flex-row lg:items-end">
       <div class="flex flex-col gap-1">
         <label for="report_type" class="text-sm font-medium">{{ 'analytics.report' | translate }}</label>
-        <p-select
+        <app-select
           inputId="report_type"
           [ngModel]="type()"
           (ngModelChange)="onTypeChange($event)"
@@ -16,15 +16,14 @@
           optionValue="report_type"
           [filter]="true"
           filterBy="name"
-          styleClass="w-full lg:w-72"
-          appendTo="body"
+          class="lg:w-72"
         >
-          <ng-template pTemplate="group" let-group>
+          <ng-template appSelectGroup let-group>
             <span class="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400">{{ group.key | analyticsLabel: 'analytics.groups' }}</span>
           </ng-template>
-          <ng-template pTemplate="selectedItem" let-option>{{ option.report_type | analyticsLabel: 'analytics.reports' : option.name }}</ng-template>
-          <ng-template pTemplate="item" let-option>{{ option.report_type | analyticsLabel: 'analytics.reports' : option.name }}</ng-template>
-        </p-select>
+          <ng-template appSelectSelected let-option>{{ option.report_type | analyticsLabel: 'analytics.reports' : option.name }}</ng-template>
+          <ng-template appSelectItem let-option>{{ option.report_type | analyticsLabel: 'analytics.reports' : option.name }}</ng-template>
+        </app-select>
       </div>
 
       @for (field of fields(); track field) {
@@ -32,7 +31,7 @@
           <label [for]="'param_' + field" class="text-sm font-medium">{{ field | analyticsLabel: 'analytics.params' }}</label>
           @switch (field) {
             @case ('warehouse') {
-              <p-select
+              <app-select
                 [inputId]="'param_' + field"
                 [(ngModel)]="params.warehouse"
                 [options]="warehouseOptions()"
@@ -40,12 +39,11 @@
                 optionValue="value"
                 [showClear]="true"
                 [placeholder]="'inventory.stock.allWarehouses' | translate"
-                styleClass="w-full lg:w-56"
-                appendTo="body"
-              ></p-select>
+                class="lg:w-56"
+              ></app-select>
             }
             @case ('period') {
-              <p-select
+              <app-select
                 [inputId]="'param_' + field"
                 [(ngModel)]="params.period"
                 [options]="periodOptions"
@@ -53,15 +51,12 @@
                 optionValue="value"
                 [showClear]="true"
                 [placeholder]="'analytics.periods.month' | translate"
-                styleClass="w-full lg:w-36"
-                appendTo="body"
-              >
-                <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
-                <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
-              </p-select>
+                class="lg:w-36"
+                [translateLabels]="true"
+              ></app-select>
             }
             @case ('method') {
-              <p-select
+              <app-select
                 [inputId]="'param_' + field"
                 [(ngModel)]="params.method"
                 [options]="methodOptions"
@@ -69,12 +64,9 @@
                 optionValue="value"
                 [showClear]="true"
                 [placeholder]="'inventory.valuationMethods.AVERAGE' | translate"
-                styleClass="w-full lg:w-44"
-                appendTo="body"
-              >
-                <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
-                <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
-              </p-select>
+                class="lg:w-44"
+                [translateLabels]="true"
+              ></app-select>
             }
             @case ('limit') {
               <input pInputText [id]="'param_' + field" type="number" min="1" [(ngModel)]="params.limit" dir="ltr" class="w-full lg:w-24" />
@@ -93,15 +85,15 @@
       }
 
       <div class="flex flex-wrap gap-2">
-        <p-button [label]="'analytics.run' | translate" icon="pi pi-play" [loading]="running()" (onClick)="run()"></p-button>
-        <p-button
+        <app-button [label]="'analytics.run' | translate" icon="pi pi-play" [loading]="running()" (clicked)="run()"></app-button>
+        <app-button
           [label]="'inventory.stock.exportXlsx' | translate"
           icon="pi pi-file-excel"
           severity="secondary"
-          [outlined]="true"
           [loading]="exporting()"
-          (onClick)="exportXlsx()"
-        ></p-button>
+          (clicked)="exportXlsx()"
+          variant="outlined"
+        ></app-button>
       </div>
     </div>
     @if (missing(); as param) {
@@ -126,14 +118,14 @@
     }
 
     @for (table of summaryTables(); track table.key) {
-      <p-card>
+      <app-card>
         <h3 class="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-200">{{ table.key | analyticsLabel }}</h3>
         <app-analytics-table [rows]="table.rows"></app-analytics-table>
-      </p-card>
+      </app-card>
     }
 
-    <p-card>
+    <app-card>
       <app-analytics-table [rows]="report.rows" [columns]="report.columns" [paginate]="true"></app-analytics-table>
-    </p-card>
+    </app-card>
   }
 </div>

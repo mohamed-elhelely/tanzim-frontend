@@ -33,7 +33,7 @@
       </div>
     </dl>
 
-    <p-card>
+    <app-card>
       <dl class="grid grid-cols-2 gap-x-6 gap-y-3 text-sm md:grid-cols-4 xl:grid-cols-6">
         <div>
           <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'billing.fields.issueDate' | translate }}</dt>
@@ -66,18 +66,18 @@
           <dd class="mt-0.5 whitespace-pre-line">{{ invoice.notes || '—' }}</dd>
         </div>
       </dl>
-    </p-card>
+    </app-card>
 
     <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
       <div class="flex items-center justify-between gap-3 border-b border-gray-100 p-4 dark:border-gray-800">
         <h2 class="text-sm font-semibold text-gray-900 dark:text-gray-100">{{ 'admin.billing.invoices.items' | translate }}</h2>
         @if (invoice.can_edit) {
-          <p-button [label]="'admin.billing.invoices.addItem' | translate" icon="pi pi-plus" size="small" (onClick)="openItem('new')"></p-button>
+          <app-button [label]="'admin.billing.invoices.addItem' | translate" icon="pi pi-plus" size="small" (clicked)="openItem('new')"></app-button>
         }
       </div>
       <div class="overflow-x-auto">
-        <p-table [value]="invoice.items" dataKey="id" size="small">
-          <ng-template pTemplate="header">
+        <app-table [rows]="invoice.items">
+          <ng-template appTableHeader>
             <tr>
               <th>{{ 'billing.fields.description' | translate }}</th>
               <th>{{ 'admin.billing.fields.module' | translate }}</th>
@@ -89,7 +89,7 @@
               }
             </tr>
           </ng-template>
-          <ng-template pTemplate="body" let-item>
+          <ng-template appTableRow let-item>
             <tr>
               <td>{{ item.description }}</td>
               <td>{{ item.module_name || '—' }}</td>
@@ -106,14 +106,14 @@
               }
             </tr>
           </ng-template>
-          <ng-template pTemplate="emptymessage">
+          <ng-template appTableEmpty>
             <tr>
               <td [attr.colspan]="invoice.can_edit ? 6 : 5">
                 <app-empty-state icon="pi-list" message="admin.billing.invoices.noItems"></app-empty-state>
               </td>
             </tr>
           </ng-template>
-        </p-table>
+        </app-table>
       </div>
       <dl class="ms-auto grid w-full max-w-xs grid-cols-2 gap-x-6 gap-y-1 p-4 text-sm">
         <dt class="text-gray-500 dark:text-gray-400">{{ 'billing.fields.subtotal' | translate }}</dt>
@@ -126,7 +126,7 @@
     </div>
 
     @if (invoice.status_history.length) {
-      <p-card>
+      <app-card>
         <h2 class="mb-3 text-sm font-semibold text-gray-900 dark:text-gray-100">{{ 'billing.history' | translate }}</h2>
         <ol class="flex flex-col gap-3">
           @for (change of invoice.status_history; track change.id) {
@@ -146,18 +146,15 @@
             </li>
           }
         </ol>
-      </p-card>
+      </app-card>
     }
   </div>
 
-  <p-dialog
+  <app-dialog
     [visible]="editingItem() !== null"
     (visibleChange)="!$event && editingItem.set(null)"
-    [modal]="true"
     [header]="(editingItem() === 'new' ? 'admin.billing.invoices.addItem' : 'admin.billing.invoices.editItem') | translate"
-    [style]="{ width: '36rem' }"
-    [breakpoints]="{ '640px': '100vw' }"
-    appendTo="body"
+    width="36rem"
   >
     <form [formGroup]="itemForm" (ngSubmit)="saveItem()" class="flex flex-col gap-4" novalidate>
       @if (itemErrors().length) {
@@ -187,7 +184,7 @@
       @if (editingItem() === 'new') {
         <div class="flex flex-col gap-1">
           <label for="item_module" class="text-sm font-medium">{{ 'admin.billing.fields.module' | translate }}</label>
-          <p-select
+          <app-select
             inputId="item_module"
             formControlName="module"
             [options]="moduleOptions()"
@@ -195,26 +192,21 @@
             optionValue="value"
             [showClear]="true"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-select>
+          ></app-select>
         </div>
       }
       <div class="flex justify-end gap-2 border-t border-gray-100 pt-4 dark:border-gray-800">
-        <p-button type="button" [label]="'common.cancel' | translate" severity="secondary" [outlined]="true" (onClick)="editingItem.set(null)"></p-button>
-        <p-button type="submit" [label]="'common.save' | translate" icon="pi pi-check" [loading]="itemSaving()" [disabled]="itemSaving()"></p-button>
+        <app-button type="button" [label]="'common.cancel' | translate" severity="secondary" (clicked)="editingItem.set(null)" variant="outlined"></app-button>
+        <app-button type="submit" [label]="'common.save' | translate" icon="pi pi-check" [loading]="itemSaving()" [disabled]="itemSaving()"></app-button>
       </div>
     </form>
-  </p-dialog>
+  </app-dialog>
 
-  <p-dialog
+  <app-dialog
     [visible]="paymentOpen()"
     (visibleChange)="paymentOpen.set($event)"
-    [modal]="true"
     [header]="'admin.billing.invoices.addPayment' | translate"
-    [style]="{ width: '32rem' }"
-    [breakpoints]="{ '640px': '100vw' }"
-    appendTo="body"
+    width="32rem"
   >
     <form [formGroup]="paymentForm" (ngSubmit)="savePayment()" class="flex flex-col gap-4" novalidate>
       @if (paymentErrors().length) {
@@ -242,17 +234,17 @@
         <textarea pTextarea id="payment_notes" formControlName="notes" rows="2" class="w-full"></textarea>
       </div>
       <div class="flex justify-end gap-2 border-t border-gray-100 pt-4 dark:border-gray-800">
-        <p-button type="button" [label]="'common.cancel' | translate" severity="secondary" [outlined]="true" (onClick)="paymentOpen.set(false)"></p-button>
-        <p-button
+        <app-button type="button" [label]="'common.cancel' | translate" severity="secondary" (clicked)="paymentOpen.set(false)" variant="outlined"></app-button>
+        <app-button
           type="submit"
           [label]="'admin.billing.invoices.recordPayment' | translate"
           icon="pi pi-check"
           [loading]="paymentSaving()"
           [disabled]="paymentSaving()"
-        ></p-button>
+        ></app-button>
       </div>
     </form>
-  </p-dialog>
+  </app-dialog>
 
   <app-reason-dialog
     [visible]="cancelOpen()"

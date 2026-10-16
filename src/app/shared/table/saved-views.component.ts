@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { Popover, PopoverModule } from 'primeng/popover';
 import { SavedView, SavedViewsService } from './saved-views.service';
 import { ServerTable } from './server-table';
+import { ButtonComponent } from '../ui/button/button.component';
 
 /**
  * "Views" button for a list's filter bar: save the applied search and filters under a name, and bring them back
@@ -15,7 +15,7 @@ import { ServerTable } from './server-table';
  */
 @Component({
   selector: 'app-saved-views',
-  imports: [FormsModule, TranslatePipe, ButtonModule, InputTextModule, PopoverModule],
+  imports: [ButtonComponent, FormsModule, TranslatePipe, InputTextModule, PopoverModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './saved-views.component.html',
 })

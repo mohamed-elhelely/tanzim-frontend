@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { AppError } from '../../../core/errors/app-error';
@@ -9,6 +8,7 @@ import { NotificationService } from '../../../core/services/notification.service
 import { FieldErrorComponent } from '../../../shared/components/field-error/field-error.component';
 import { handleSaveError } from '../../../shared/utils/server-errors';
 import { CustomerService } from './customer.service';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 /**
  * "Quick add customer" from the sales order form: just a name and a phone number, saved through the customers API.
@@ -16,7 +16,7 @@ import { CustomerService } from './customer.service';
  */
 @Component({
   selector: 'app-quick-customer-dialog',
-  imports: [ReactiveFormsModule, TranslatePipe, ButtonModule, InputTextModule, FieldErrorComponent],
+  imports: [ButtonComponent, ReactiveFormsModule, TranslatePipe, InputTextModule, FieldErrorComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-4" novalidate>
@@ -41,15 +41,15 @@ import { CustomerService } from './customer.service';
         <app-field-error [control]="form.controls.phone"></app-field-error>
       </div>
       <div class="flex justify-end gap-2 pt-2">
-        <p-button
+        <app-button
           type="button"
           [label]="'common.cancel' | translate"
           severity="secondary"
-          [text]="true"
           [disabled]="saving()"
-          (onClick)="cancel()"
-        ></p-button>
-        <p-button type="submit" [label]="'common.save' | translate" icon="pi pi-check" [loading]="saving()" [disabled]="saving()"></p-button>
+          (clicked)="cancel()"
+          variant="text"
+        ></app-button>
+        <app-button type="submit" [label]="'common.save' | translate" icon="pi pi-check" [loading]="saving()" [disabled]="saving()"></app-button>
       </div>
     </form>
   `,

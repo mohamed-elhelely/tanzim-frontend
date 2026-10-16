@@ -10,7 +10,7 @@
 } @else if (loading()) {
   <app-loading-state></app-loading-state>
 } @else {
-  <p-card>
+  <app-card>
     <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-6" novalidate>
       @if (formErrors().length) {
         <div
@@ -32,25 +32,21 @@
 
         <div class="flex flex-col gap-1">
           <label for="product_type" class="text-sm font-medium">{{ 'inventory.fields.productType' | translate }} *</label>
-          <p-select
+          <app-select
             inputId="product_type"
             formControlName="product_type"
             [options]="productTypeOptions"
             optionLabel="label"
             optionValue="value"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
-          >
-            <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
-            <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
-          </p-select>
+            [translateLabels]="true"
+          ></app-select>
           <app-field-error [control]="form.controls.product_type"></app-field-error>
         </div>
 
         <div class="flex flex-col gap-1">
           <label for="category" class="text-sm font-medium">{{ 'inventory.fields.category' | translate }}</label>
-          <p-select
+          <app-select
             inputId="category"
             formControlName="category"
             [options]="categoryOptions()"
@@ -59,15 +55,13 @@
             [filter]="true"
             [showClear]="true"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-select>
+          ></app-select>
           <app-field-error [control]="form.controls.category"></app-field-error>
         </div>
 
         <div class="flex flex-col gap-1">
           <label for="brand" class="text-sm font-medium">{{ 'inventory.fields.brand' | translate }}</label>
-          <p-select
+          <app-select
             inputId="brand"
             formControlName="brand"
             [options]="brandOptions()"
@@ -76,9 +70,7 @@
             [filter]="true"
             [showClear]="true"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-select>
+          ></app-select>
           <app-field-error [control]="form.controls.brand"></app-field-error>
         </div>
 
@@ -90,19 +82,15 @@
 
         <div class="flex flex-col gap-1">
           <label for="valuation_method" class="text-sm font-medium">{{ 'inventory.fields.valuationMethod' | translate }} *</label>
-          <p-select
+          <app-select
             inputId="valuation_method"
             formControlName="valuation_method"
             [options]="valuationOptions"
             optionLabel="label"
             optionValue="value"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
-          >
-            <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
-            <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
-          </p-select>
+            [translateLabels]="true"
+          ></app-select>
           <app-field-error [control]="form.controls.valuation_method"></app-field-error>
         </div>
 
@@ -116,15 +104,15 @@
           <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'inventory.sections.tracking' | translate }}</h3>
           <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
             <div class="flex items-center gap-3">
-              <p-toggleswitch inputId="is_batch_tracked" formControlName="is_batch_tracked"></p-toggleswitch>
+              <app-toggle inputId="is_batch_tracked" formControlName="is_batch_tracked"></app-toggle>
               <label for="is_batch_tracked" class="text-sm font-medium">{{ 'inventory.fields.batchTracked' | translate }}</label>
             </div>
             <div class="flex items-center gap-3">
-              <p-toggleswitch inputId="is_serial_tracked" formControlName="is_serial_tracked"></p-toggleswitch>
+              <app-toggle inputId="is_serial_tracked" formControlName="is_serial_tracked"></app-toggle>
               <label for="is_serial_tracked" class="text-sm font-medium">{{ 'inventory.fields.serialTracked' | translate }}</label>
             </div>
             <div class="flex items-center gap-3">
-              <p-toggleswitch inputId="has_expiry" formControlName="has_expiry"></p-toggleswitch>
+              <app-toggle inputId="has_expiry" formControlName="has_expiry"></app-toggle>
               <label for="has_expiry" class="text-sm font-medium">{{ 'inventory.fields.hasExpiry' | translate }}</label>
             </div>
           </div>
@@ -142,15 +130,15 @@
           <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'inventory.sections.availability' | translate }}</h3>
           <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
             <div class="flex items-center gap-3">
-              <p-toggleswitch inputId="is_active" formControlName="is_active"></p-toggleswitch>
+              <app-toggle inputId="is_active" formControlName="is_active"></app-toggle>
               <label for="is_active" class="text-sm font-medium">{{ 'inventory.fields.isActive' | translate }}</label>
             </div>
             <div class="flex items-center gap-3">
-              <p-toggleswitch inputId="is_purchasable" formControlName="is_purchasable"></p-toggleswitch>
+              <app-toggle inputId="is_purchasable" formControlName="is_purchasable"></app-toggle>
               <label for="is_purchasable" class="text-sm font-medium">{{ 'inventory.fields.purchasable' | translate }}</label>
             </div>
             <div class="flex items-center gap-3">
-              <p-toggleswitch inputId="is_sellable" formControlName="is_sellable"></p-toggleswitch>
+              <app-toggle inputId="is_sellable" formControlName="is_sellable"></app-toggle>
               <label for="is_sellable" class="text-sm font-medium">{{ 'inventory.fields.sellable' | translate }}</label>
             </div>
           </div>
@@ -158,21 +146,21 @@
       </div>
 
       <div class="flex justify-end gap-2 border-t border-gray-100 pt-5 dark:border-gray-800">
-        <p-button
+        <app-button
           type="button"
           [label]="'common.cancel' | translate"
           severity="secondary"
-          [outlined]="true"
-          (onClick)="goBack()"
-        ></p-button>
-        <p-button
+          (clicked)="goBack()"
+          variant="outlined"
+        ></app-button>
+        <app-button
           type="submit"
           [label]="'common.save' | translate"
           icon="pi pi-check"
           [loading]="saving()"
           [disabled]="saving()"
-        ></p-button>
+        ></app-button>
       </div>
     </form>
-  </p-card>
+  </app-card>
 }

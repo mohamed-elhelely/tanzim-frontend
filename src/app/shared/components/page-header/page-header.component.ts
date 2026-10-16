@@ -2,9 +2,9 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, comput
 import { ActivatedRoute } from '@angular/router';
 import { DecimalPipe } from '@angular/common';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { AccessService } from '../../../core/auth/access.service';
 import { ModuleActivityService, moduleActivityFor } from '../../activity/module-activity';
+import { ButtonComponent } from '../../ui/button/button.component';
 
 export interface PageHeaderAction {
   label: string;
@@ -21,7 +21,7 @@ export interface PageHeaderAction {
  */
 @Component({
   selector: 'app-page-header',
-  imports: [DecimalPipe, TranslatePipe, ButtonModule],
+  imports: [ButtonComponent, DecimalPipe, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './page-header.component.html',
 })

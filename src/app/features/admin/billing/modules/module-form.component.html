@@ -38,7 +38,7 @@
           <app-field-error [control]="form.controls.icon"></app-field-error>
         </div>
         <div class="flex items-center gap-3">
-          <p-toggleswitch inputId="is_active" formControlName="is_active"></p-toggleswitch>
+          <app-toggle inputId="is_active" formControlName="is_active"></app-toggle>
           <label for="is_active" class="text-sm font-medium">{{ 'admin.billing.fields.active' | translate }}</label>
         </div>
         <div class="flex flex-col gap-1 md:col-span-2">
@@ -48,8 +48,8 @@
       </div>
 
       <div class="flex justify-end gap-2 border-t border-gray-100 pt-5 dark:border-gray-800">
-        <p-button type="button" [label]="'common.cancel' | translate" severity="secondary" [outlined]="true" (onClick)="goBack()"></p-button>
-        <p-button type="submit" [label]="'common.save' | translate" icon="pi pi-check" [loading]="saving()" [disabled]="saving()"></p-button>
+        <app-button type="button" [label]="'common.cancel' | translate" severity="secondary" (clicked)="goBack()" variant="outlined"></app-button>
+        <app-button type="submit" [label]="'common.save' | translate" icon="pi pi-check" [loading]="saving()" [disabled]="saving()"></app-button>
       </div>
     </form>
   }

@@ -22,7 +22,7 @@
     <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
       <div class="flex flex-col gap-1 md:col-span-2">
         <label for="subscription" class="text-sm font-medium">{{ 'admin.billing.fields.subscription' | translate }} *</label>
-        <p-select
+        <app-select
           inputId="subscription"
           formControlName="subscription"
           [options]="subscriptionOptions()"
@@ -30,9 +30,7 @@
           optionValue="value"
           [filter]="true"
           [placeholder]="'common.select' | translate"
-          styleClass="w-full"
-          appendTo="body"
-        ></p-select>
+        ></app-select>
         <app-field-error [control]="form.controls.subscription"></app-field-error>
       </div>
       <div class="flex flex-col gap-1">
@@ -57,8 +55,8 @@
     </div>
 
     <div class="flex justify-end gap-2 border-t border-gray-100 pt-5 dark:border-gray-800">
-      <p-button type="button" [label]="'common.cancel' | translate" severity="secondary" [outlined]="true" (onClick)="goBack()"></p-button>
-      <p-button type="submit" [label]="'admin.billing.invoices.createDraft' | translate" icon="pi pi-check" [loading]="saving()" [disabled]="saving()"></p-button>
+      <app-button type="button" [label]="'common.cancel' | translate" severity="secondary" (clicked)="goBack()" variant="outlined"></app-button>
+      <app-button type="submit" [label]="'admin.billing.invoices.createDraft' | translate" icon="pi pi-check" [loading]="saving()" [disabled]="saving()"></app-button>
     </div>
   </form>
 </app-form-layout>

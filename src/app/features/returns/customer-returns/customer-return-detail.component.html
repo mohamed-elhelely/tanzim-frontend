@@ -46,7 +46,7 @@
       </div>
     </dl>
 
-    <p-card>
+    <app-card>
       <dl class="grid grid-cols-2 gap-x-6 gap-y-3 text-sm md:grid-cols-4">
         <div>
           <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'returns.fields.reason' | translate }}</dt>
@@ -112,13 +112,13 @@
           </div>
         }
       </dl>
-    </p-card>
+    </app-card>
 
-    <p-card>
+    <app-card>
       <h3 class="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'returns.sections.items' | translate }}</h3>
       <div class="overflow-x-auto">
-        <p-table [value]="rma.lines" dataKey="id" size="small">
-          <ng-template pTemplate="header">
+        <app-table [rows]="rma.lines">
+          <ng-template appTableHeader>
             <tr>
               <th>{{ 'returns.fields.item' | translate }}</th>
               <th class="text-end">{{ 'returns.fields.requested' | translate }}</th>
@@ -129,7 +129,7 @@
               <th class="text-end">{{ 'returns.fields.value' | translate }}</th>
             </tr>
           </ng-template>
-          <ng-template pTemplate="body" let-line>
+          <ng-template appTableRow let-line>
             <tr>
               <td>
                 <div class="font-medium">{{ line.product_name }}</div>
@@ -145,9 +145,9 @@
               <td class="text-end">{{ line.line_value ? (line.line_value | number: '1.2-2') : '—' }}</td>
             </tr>
           </ng-template>
-        </p-table>
+        </app-table>
       </div>
-    </p-card>
+    </app-card>
 
     <app-record-history resource="customerreturn" [objectId]="rma.id"></app-record-history>
   </div>
@@ -160,12 +160,11 @@
     (confirmed)="onRejectConfirmed($event)"
   ></app-reason-dialog>
 
-  <p-dialog
+  <app-dialog
     [header]="'returns.actions.receive' | translate"
     [visible]="dialog() === 'receive'"
     (visibleChange)="!$event && dialog.set(null)"
-    [modal]="true"
-    [style]="{ width: '36rem', maxWidth: 'calc(100vw - 2rem)' }"
+    width="36rem"
   >
     <p class="mb-3 text-sm text-gray-500 dark:text-gray-400">{{ 'returns.hints.receiveStock' | translate }}</p>
     <table class="w-full text-sm">
@@ -198,24 +197,23 @@
     @if (dialogError(); as key) {
       <p role="alert" class="mt-3 text-sm text-red-600">{{ key | translate }}</p>
     }
-    <ng-template pTemplate="footer">
-      <p-button [label]="'common.cancel' | translate" severity="secondary" [outlined]="true" (onClick)="dialog.set(null)"></p-button>
-      <p-button
+    <ng-template appDialogFooter>
+      <app-button [label]="'common.cancel' | translate" severity="secondary" (clicked)="dialog.set(null)" variant="outlined"></app-button>
+      <app-button
         [label]="'returns.actions.receive' | translate"
         icon="pi pi-inbox"
         [loading]="saving()"
         [disabled]="saving()"
-        (onClick)="submitReceive()"
-      ></p-button>
+        (clicked)="submitReceive()"
+      ></app-button>
     </ng-template>
-  </p-dialog>
+  </app-dialog>
 
-  <p-dialog
+  <app-dialog
     [header]="'returns.actions.inspect' | translate"
     [visible]="dialog() === 'inspect'"
     (visibleChange)="!$event && dialog.set(null)"
-    [modal]="true"
-    [style]="{ width: '56rem', maxWidth: 'calc(100vw - 2rem)' }"
+    width="56rem"
   >
     <p class="mb-3 text-sm text-gray-500 dark:text-gray-400">{{ 'returns.hints.inspect' | translate }}</p>
     <div class="overflow-x-auto">
@@ -246,32 +244,24 @@
                 />
               </td>
               <td class="py-2 ps-3">
-                <p-select
+                <app-select
                   [(ngModel)]="row.condition"
                   [options]="conditionOptions"
                   optionLabel="label"
                   optionValue="value"
                   [ariaLabel]="('returns.fields.condition' | translate) + ' ' + row.name"
-                  styleClass="w-full"
-                  appendTo="body"
-                >
-                  <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
-                  <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
-                </p-select>
+                  [translateLabels]="true"
+                ></app-select>
               </td>
               <td class="py-2 ps-3">
-                <p-select
+                <app-select
                   [(ngModel)]="row.disposition"
                   [options]="dispositionOptions"
                   optionLabel="label"
                   optionValue="value"
                   [ariaLabel]="('returns.fields.disposition' | translate) + ' ' + row.name"
-                  styleClass="w-full"
-                  appendTo="body"
-                >
-                  <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
-                  <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
-                </p-select>
+                  [translateLabels]="true"
+                ></app-select>
               </td>
               <td class="py-2 ps-3">
                 <input
@@ -289,25 +279,24 @@
     @if (dialogError(); as key) {
       <p role="alert" class="mt-3 text-sm text-red-600">{{ key | translate }}</p>
     }
-    <ng-template pTemplate="footer">
-      <p-button [label]="'common.cancel' | translate" severity="secondary" [outlined]="true" (onClick)="dialog.set(null)"></p-button>
-      <p-button
+    <ng-template appDialogFooter>
+      <app-button [label]="'common.cancel' | translate" severity="secondary" (clicked)="dialog.set(null)" variant="outlined"></app-button>
+      <app-button
         [label]="'returns.actions.inspect' | translate"
         icon="pi pi-check"
         [loading]="saving()"
         [disabled]="saving()"
-        (onClick)="submitInspect()"
-      ></p-button>
+        (clicked)="submitInspect()"
+      ></app-button>
     </ng-template>
-  </p-dialog>
+  </app-dialog>
 
-  <p-dialog
+  <app-dialog
     [header]="'returns.actions.close' | translate"
     [visible]="dialog() === 'close'"
     (visibleChange)="!$event && dialog.set(null)"
-    [modal]="true"
-    [dismissableMask]="true"
-    [style]="{ width: '28rem', maxWidth: 'calc(100vw - 2rem)' }"
+    [dismissable]="true"
+    width="28rem"
   >
     <div class="flex flex-col gap-1">
       <label for="refund_amount" class="text-sm font-medium">{{ 'returns.fields.refundAmount' | translate }}</label>
@@ -317,17 +306,17 @@
     @if (dialogError(); as key) {
       <p role="alert" class="mt-3 text-sm text-red-600">{{ key | translate }}</p>
     }
-    <ng-template pTemplate="footer">
-      <p-button [label]="'common.cancel' | translate" severity="secondary" [outlined]="true" (onClick)="dialog.set(null)"></p-button>
-      <p-button
+    <ng-template appDialogFooter>
+      <app-button [label]="'common.cancel' | translate" severity="secondary" (clicked)="dialog.set(null)" variant="outlined"></app-button>
+      <app-button
         [label]="'returns.actions.close' | translate"
         icon="pi pi-flag"
         [loading]="saving()"
         [disabled]="saving()"
-        (onClick)="submitClose()"
-      ></p-button>
+        (clicked)="submitClose()"
+      ></app-button>
     </ng-template>
-  </p-dialog>
+  </app-dialog>
 } @else {
   <app-loading-state></app-loading-state>
 }

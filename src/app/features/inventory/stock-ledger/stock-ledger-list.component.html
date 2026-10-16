@@ -18,44 +18,31 @@
         />
       </p-iconfield>
       <app-saved-views [table]="table" screen="stock-ledger"></app-saved-views>
-      <p-button
+      <app-button
         [label]="'common.search' | translate"
         icon="pi pi-search"
         [disabled]="!table.changed()"
-        (onClick)="table.apply()"
-        styleClass="w-full sm:w-auto"
-      ></p-button>
+        (clicked)="table.apply()"
+        width="mobile"
+      ></app-button>
       @if (table.filtered()) {
-        <p-button
+        <app-button
           [label]="'common.clearFilters' | translate"
           icon="pi pi-filter-slash"
           severity="secondary"
-          [text]="true"
-          (onClick)="table.clear()"
-          styleClass="w-full sm:w-auto"
-        ></p-button>
+          (clicked)="table.clear()"
+          variant="text"
+          width="mobile"
+        ></app-button>
       }
     </div>
     <div class="overflow-x-auto">
-      <p-table
-        [value]="table.rows()"
-        [lazy]="true"
-        [lazyLoadOnInit]="false"
-        (onLazyLoad)="table.onLazyLoad($event)"
-        [paginator]="true"
-        [showCurrentPageReport]="true"
-        [currentPageReportTemplate]="'common.pageReport' | translate"
-        [first]="table.first()"
-        [rows]="table.pageSize()"
-        [totalRecords]="table.total()"
-        [rowsPerPageOptions]="[10, 25, 50]"
-        [loading]="table.loading()"
-        dataKey="id"
-        size="small"
+      <app-table
+        [table]="table"
       >
-        <ng-template pTemplate="header">
+        <ng-template appTableHeader>
           <tr>
-            <th pSortableColumn="created_at">{{ 'inventory.ledger.date' | translate }} <p-sortIcon field="created_at"></p-sortIcon></th>
+            <th appSortable="created_at">{{ 'inventory.ledger.date' | translate }}</th>
             <th>{{ 'inventory.ledger.type' | translate }}</th>
             <th>{{ 'inventory.fields.sku' | translate }}</th>
             <th>{{ 'inventory.fields.variant' | translate }}</th>
@@ -67,7 +54,7 @@
             <th>{{ 'inventory.ledger.by' | translate }}</th>
           </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-row>
+        <ng-template appTableRow let-row>
           <tr>
             <td class="whitespace-nowrap" dir="ltr">{{ row.created_at | appDate }}</td>
             <td class="whitespace-nowrap">
@@ -100,12 +87,12 @@
             <td class="whitespace-nowrap text-sm">{{ row.created_by | userName }}</td>
           </tr>
         </ng-template>
-        <ng-template pTemplate="emptymessage">
+        <ng-template appTableEmpty>
           <tr>
             <td colspan="10"><app-empty-state icon="pi-history" title="inventory.ledger.empty"></app-empty-state></td>
           </tr>
         </ng-template>
-      </p-table>
+      </app-table>
     </div>
   </div>
 }

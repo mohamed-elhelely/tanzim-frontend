@@ -32,7 +32,7 @@
 
         <div class="flex flex-col gap-1">
           <label for="region" class="text-sm font-medium">{{ 'locations.fields.region' | translate }} *</label>
-          <p-select
+          <app-select
             inputId="region"
             formControlName="region"
             [options]="regionOptions()"
@@ -41,15 +41,13 @@
             [filter]="true"
             [showClear]="false"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-select>
+          ></app-select>
           <app-field-error [control]="form.controls.region"></app-field-error>
         </div>
 
         <div class="flex flex-col gap-1">
           <label for="timezone" class="text-sm font-medium">{{ 'locations.fields.timezone' | translate }} *</label>
-          <p-select
+          <app-select
             inputId="timezone"
             formControlName="timezone"
             [options]="timezoneOptions"
@@ -58,28 +56,26 @@
             [filter]="true"
             [showClear]="false"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-select>
+          ></app-select>
           <app-field-error [control]="form.controls.timezone"></app-field-error>
         </div>
       </div>
 
       <div class="flex justify-end gap-2 border-t border-gray-100 pt-5 dark:border-gray-800">
-        <p-button
+        <app-button
           type="button"
           [label]="'common.cancel' | translate"
           severity="secondary"
-          [outlined]="true"
-          (onClick)="goBack()"
-        ></p-button>
-        <p-button
+          (clicked)="goBack()"
+          variant="outlined"
+        ></app-button>
+        <app-button
           type="submit"
           [label]="'common.save' | translate"
           icon="pi pi-check"
           [loading]="saving()"
           [disabled]="saving()"
-        ></p-button>
+        ></app-button>
       </div>
     </form>
   }

@@ -6,7 +6,7 @@
   <app-loading-state></app-loading-state>
 } @else {
   <div class="grid grid-cols-1 gap-6 xl:grid-cols-5">
-    <p-card styleClass="xl:col-span-3">
+    <app-card class="xl:col-span-3">
       <form [formGroup]="form" (ngSubmit)="save()" class="flex flex-col gap-6" novalidate>
         <div>
           <h2 class="text-base font-semibold text-gray-900 dark:text-gray-100">{{ 'profile.details' | translate }}</h2>
@@ -68,7 +68,7 @@
           </div>
           <div class="flex flex-col gap-1">
             <label for="timezone" class="text-sm font-medium">{{ 'profile.fields.timezone' | translate }}</label>
-            <p-select
+            <app-select
               inputId="timezone"
               formControlName="timezone"
               [options]="timeZones"
@@ -77,26 +77,24 @@
               [filter]="true"
               [editable]="timeZones.length === 0"
               [placeholder]="'common.select' | translate"
-              styleClass="w-full"
-              appendTo="body"
-            ></p-select>
+            ></app-select>
             <app-field-error [control]="form.controls.timezone"></app-field-error>
           </div>
         </div>
 
         <div class="flex justify-end border-t border-gray-100 pt-5 dark:border-gray-800">
-          <p-button
+          <app-button
             type="submit"
             [label]="'common.save' | translate"
             icon="pi pi-check"
             [loading]="saving()"
             [disabled]="saving() || form.pristine"
-          ></p-button>
+          ></app-button>
         </div>
       </form>
-    </p-card>
+    </app-card>
 
-    <p-card styleClass="xl:col-span-2">
+    <app-card class="xl:col-span-2">
       <form [formGroup]="passwordForm" (ngSubmit)="changePassword()" class="flex flex-col gap-4" novalidate>
         <div>
           <h2 class="text-base font-semibold text-gray-900 dark:text-gray-100">{{ 'profile.changePassword' | translate }}</h2>
@@ -116,41 +114,29 @@
 
         <div class="flex flex-col gap-1">
           <label for="current_password" class="text-sm font-medium">{{ 'profile.fields.currentPassword' | translate }} *</label>
-          <p-password
+          <app-password
             inputId="current_password"
             formControlName="current_password"
-            [feedback]="false"
-            [toggleMask]="true"
-            styleClass="w-full"
-            inputStyleClass="w-full"
             autocomplete="current-password"
-          ></p-password>
+          ></app-password>
           <app-field-error [control]="passwordForm.controls.current_password"></app-field-error>
         </div>
         <div class="flex flex-col gap-1">
           <label for="new_password" class="text-sm font-medium">{{ 'profile.fields.newPassword' | translate }} *</label>
-          <p-password
+          <app-password
             inputId="new_password"
             formControlName="new_password"
-            [feedback]="false"
-            [toggleMask]="true"
-            styleClass="w-full"
-            inputStyleClass="w-full"
             autocomplete="new-password"
-          ></p-password>
+          ></app-password>
           <app-field-error [control]="passwordForm.controls.new_password"></app-field-error>
         </div>
         <div class="flex flex-col gap-1">
           <label for="confirm_password" class="text-sm font-medium">{{ 'profile.fields.confirmPassword' | translate }} *</label>
-          <p-password
+          <app-password
             inputId="confirm_password"
             formControlName="confirm_password"
-            [feedback]="false"
-            [toggleMask]="true"
-            styleClass="w-full"
-            inputStyleClass="w-full"
             autocomplete="new-password"
-          ></p-password>
+          ></app-password>
           <app-field-error [control]="passwordForm.controls.confirm_password"></app-field-error>
           @if (passwordForm.hasError('mismatch') && passwordForm.controls.confirm_password.touched) {
             <small class="text-sm text-red-600 dark:text-red-400">{{ 'profile.passwordMismatch' | translate }}</small>
@@ -158,16 +144,16 @@
         </div>
 
         <div class="flex justify-end border-t border-gray-100 pt-4 dark:border-gray-800">
-          <p-button
+          <app-button
             type="submit"
             [label]="'profile.updatePassword' | translate"
             icon="pi pi-lock"
             [loading]="changingPassword()"
             [disabled]="changingPassword()"
-          ></p-button>
+          ></app-button>
         </div>
       </form>
-    </p-card>
+    </app-card>
 
     <app-signed-in-devices class="xl:col-span-5"></app-signed-in-devices>
   </div>

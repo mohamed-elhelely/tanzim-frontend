@@ -1,18 +1,18 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { PrimeTemplate } from 'primeng/api';
-import { ButtonModule } from 'primeng/button';
 import { DrawerModule } from 'primeng/drawer';
 import { conversationTitle } from '../../core/chat/chat-format';
 import { ChatStore } from '../../core/chat/chat.store';
 import { LanguageService } from '../../core/services/language.service';
 import { ChatThreadComponent } from './chat-thread.component';
 import { ConversationListComponent } from './conversation-list.component';
+import { ButtonComponent } from '../../shared/ui/button/button.component';
 
 /** The floating chat: list ⇄ thread in one ~400px drawer at the end side. Hosted once by the shell, loaded on first open. */
 @Component({
   selector: 'app-chat-drawer',
-  imports: [TranslatePipe, PrimeTemplate, ButtonModule, DrawerModule, ConversationListComponent, ChatThreadComponent],
+  imports: [ButtonComponent, TranslatePipe, PrimeTemplate, DrawerModule, ConversationListComponent, ChatThreadComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <p-drawer
@@ -25,15 +25,15 @@ import { ConversationListComponent } from './conversation-list.component';
       <ng-template pTemplate="header">
         @if (store.thread()) {
           <div class="flex min-w-0 items-center gap-2">
-            <p-button
+            <app-button
               icon="pi pi-arrow-left"
-              styleClass="rtl:[&_.pi]:rotate-180"
               [rounded]="true"
-              [text]="true"
               severity="secondary"
               [ariaLabel]="'chat.back' | translate"
-              (onClick)="store.backToList()"
-            ></p-button>
+              (clicked)="store.backToList()"
+              variant="text"
+              [flipIconInRtl]="true"
+            ></app-button>
             <div class="min-w-0">
               <h2 class="truncate text-base font-semibold text-gray-900 dark:text-gray-100">{{ title() }}</h2>
               @if (store.current(); as c) {

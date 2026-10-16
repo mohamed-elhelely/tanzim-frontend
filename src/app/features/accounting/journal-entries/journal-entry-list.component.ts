@@ -3,10 +3,7 @@ import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/cor
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
-import { TableModule } from 'primeng/table';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
 import { PageHeaderAction, PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
@@ -17,6 +14,10 @@ import { JournalEntry, JournalStatus } from '../accounting.models';
 import { JournalEntryService } from './journal-entry.service';
 import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
+import { SelectComponent } from '../../../shared/ui/select/select.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
+import { TableComponent } from '../../../shared/ui/table/table.component';
+import { TableEmptyDirective, TableHeaderDirective, TableRowDirective } from '../../../shared/ui/table/table-templates';
 
 type Origin = 'manual' | 'automatic';
 
@@ -24,16 +25,19 @@ type Origin = 'manual' | 'automatic';
 @Component({
   selector: 'app-journal-entry-list',
   imports: [
+    TableEmptyDirective,
+    TableRowDirective,
+    TableHeaderDirective,
+    TableComponent,
+    ButtonComponent,
+    SelectComponent,
     RowActionsComponent,
     RowActionComponent,
     SavedViewsComponent,
     DecimalPipe,
     FormsModule,
     TranslatePipe,
-    TableModule,
-    ButtonModule,
     InputTextModule,
-    SelectModule,
     PageHeaderComponent,
     EmptyStateComponent,
     ErrorStateComponent,

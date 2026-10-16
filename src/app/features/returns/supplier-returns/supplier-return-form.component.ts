@@ -3,10 +3,7 @@ import { FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } 
 import { Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { forkJoin } from 'rxjs';
-import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
 import { AppError } from '../../../core/errors/app-error';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
@@ -21,6 +18,9 @@ import { ItemOption, toItemOption, trimZeros } from '../../inventory/variants/va
 import { WarehouseService } from '../../inventory/warehouses/warehouse.service';
 import { SupplierReturnPayload } from '../returns.models';
 import { SupplierReturnService } from './supplier-return.service';
+import { CardComponent } from '../../../shared/ui/card/card.component';
+import { SelectComponent } from '../../../shared/ui/select/select.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 const QUANTITY = /^\d+(\.\d{1,3})?$/;
 const MONEY = /^\d+(\.\d{1,4})?$/;
@@ -38,13 +38,13 @@ interface Row {
 @Component({
   selector: 'app-supplier-return-form',
   imports: [
+    ButtonComponent,
+    SelectComponent,
+    CardComponent,
     FormsModule,
     ReactiveFormsModule,
     TranslatePipe,
-    ButtonModule,
-    CardModule,
     InputTextModule,
-    SelectModule,
     PageHeaderComponent,
     LoadingStateComponent,
     ErrorStateComponent,

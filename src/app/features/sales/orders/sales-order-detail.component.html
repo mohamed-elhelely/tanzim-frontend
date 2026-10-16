@@ -52,7 +52,7 @@
       </div>
     </dl>
 
-    <p-card>
+    <app-card>
       <dl class="grid grid-cols-2 gap-x-6 gap-y-3 text-sm md:grid-cols-4">
         <div>
           <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.orderDate' | translate }}</dt>
@@ -92,13 +92,13 @@
           <dd class="mt-0.5" dir="ltr">{{ order.approved_at | appDate }}</dd>
         </div>
       </dl>
-    </p-card>
+    </app-card>
 
-    <p-card>
+    <app-card>
       <h3 class="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'sales.sections.lines' | translate }}</h3>
       <div class="overflow-x-auto">
-        <p-table [value]="order.lines" dataKey="id" size="small">
-          <ng-template pTemplate="header">
+        <app-table [rows]="order.lines">
+          <ng-template appTableHeader>
             <tr>
               <th>#</th>
               <th>{{ 'sales.fields.sku' | translate }}</th>
@@ -112,7 +112,7 @@
               <th class="text-end">{{ 'sales.fields.lineTotal' | translate }}</th>
             </tr>
           </ng-template>
-          <ng-template pTemplate="body" let-line>
+          <ng-template appTableRow let-line>
             <tr>
               <td class="text-gray-500">{{ line.line_number }}</td>
               <td class="whitespace-nowrap font-mono text-xs" dir="ltr">{{ line.sku }}</td>
@@ -131,7 +131,7 @@
               <td class="text-end font-medium">{{ line.line_total | number: '1.2-2' }}</td>
             </tr>
           </ng-template>
-        </p-table>
+        </app-table>
       </div>
 
       <dl class="ms-auto mt-4 grid max-w-72 grid-cols-2 gap-x-6 gap-y-1 text-sm">
@@ -148,10 +148,10 @@
             <dd>{{ order.total_amount | number: '1.2-2' }} {{ order.currency }}</dd>
           </div>
       </dl>
-    </p-card>
+    </app-card>
 
     @if (deliveries().length || invoices().length) {
-      <p-card>
+      <app-card>
         <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div>
             <h3 class="mb-2 text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'sales.sections.deliveries' | translate }}</h3>
@@ -191,10 +191,10 @@
             }
           </div>
         </div>
-      </p-card>
+      </app-card>
     }
 
-    <p-card>
+    <app-card>
       <dl class="grid grid-cols-1 gap-4 text-sm md:grid-cols-2">
         <div>
           <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.sections.shippingAddress' | translate }}</dt>
@@ -213,7 +213,7 @@
           <dd class="mt-0.5 whitespace-pre-line">{{ order.internal_notes || '—' }}</dd>
         </div>
       </dl>
-    </p-card>
+    </app-card>
 
     <app-record-history resource="salesorder" [objectId]="order.id"></app-record-history>
   </div>
@@ -226,12 +226,11 @@
     (confirmed)="onCancelConfirmed($event)"
   ></app-reason-dialog>
 
-  <p-dialog
+  <app-dialog
     [header]="'sales.actions.ship' | translate"
     [visible]="shipDialogOpen()"
     (visibleChange)="shipDialogOpen.set($event)"
-    [modal]="true"
-    [style]="{ width: '40rem', maxWidth: 'calc(100vw - 2rem)' }"
+    width="40rem"
   >
     <p class="mb-3 text-sm text-gray-500 dark:text-gray-400">{{ 'sales.hints.shipIssuesStock' | translate }}</p>
     <div class="overflow-x-auto">
@@ -279,22 +278,22 @@
     @if (shipError(); as key) {
       <p role="alert" class="mt-3 text-sm text-red-600">{{ key | translate }}</p>
     }
-    <ng-template pTemplate="footer">
-      <p-button
+    <ng-template appDialogFooter>
+      <app-button
         [label]="'common.cancel' | translate"
         severity="secondary"
-        [outlined]="true"
-        (onClick)="shipDialogOpen.set(false)"
-      ></p-button>
-      <p-button
+        (clicked)="shipDialogOpen.set(false)"
+        variant="outlined"
+      ></app-button>
+      <app-button
         [label]="'sales.actions.createDelivery' | translate"
         icon="pi pi-truck"
         [loading]="shipping()"
         [disabled]="shipping()"
-        (onClick)="submitShip()"
-      ></p-button>
+        (clicked)="submitShip()"
+      ></app-button>
     </ng-template>
-  </p-dialog>
+  </app-dialog>
 } @else {
   <app-loading-state></app-loading-state>
 }

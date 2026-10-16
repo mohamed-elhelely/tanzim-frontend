@@ -10,7 +10,7 @@
 } @else if (loading()) {
   <app-loading-state></app-loading-state>
 } @else {
-  <p-card>
+  <app-card>
     <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-6" novalidate>
       @if (formErrors().length) {
         <div
@@ -73,20 +73,18 @@
 
         <div class="flex flex-col gap-1">
           <label for="timezone" class="text-sm font-medium">{{ 'admin.fields.timezone' | translate }} *</label>
-          <p-select
+          <app-select
             inputId="timezone"
             formControlName="timezone"
             [options]="timezoneOptions()"
             [filter]="true"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-select>
+          ></app-select>
           <app-field-error [control]="form.controls.timezone"></app-field-error>
         </div>
 
         <div class="flex items-center gap-3 md:pt-6">
-          <p-toggleswitch inputId="is_active" formControlName="is_active"></p-toggleswitch>
+          <app-toggle inputId="is_active" formControlName="is_active"></app-toggle>
           <label for="is_active" class="text-sm font-medium">{{ 'admin.fields.isActive' | translate }}</label>
         </div>
 
@@ -124,21 +122,21 @@
       </div>
 
       <div class="flex justify-end gap-2 border-t border-gray-100 pt-5 dark:border-gray-800">
-        <p-button
+        <app-button
           type="button"
           [label]="'common.cancel' | translate"
           severity="secondary"
-          [outlined]="true"
-          (onClick)="goBack()"
-        ></p-button>
-        <p-button
+          (clicked)="goBack()"
+          variant="outlined"
+        ></app-button>
+        <app-button
           type="submit"
           [label]="'common.save' | translate"
           icon="pi pi-check"
           [loading]="saving()"
           [disabled]="saving()"
-        ></p-button>
+        ></app-button>
       </div>
     </form>
-  </p-card>
+  </app-card>
 }

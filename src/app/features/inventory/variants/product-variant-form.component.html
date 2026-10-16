@@ -10,7 +10,7 @@
 } @else if (loading()) {
   <app-loading-state></app-loading-state>
 } @else {
-  <p-card>
+  <app-card>
     <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-6" novalidate>
       @if (formErrors().length) {
         <div
@@ -26,7 +26,7 @@
       <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         <div class="flex flex-col gap-1">
           <label for="product" class="text-sm font-medium">{{ 'inventory.fields.product' | translate }} *</label>
-          <p-select
+          <app-select
             inputId="product"
             formControlName="product"
             [options]="productOptions()"
@@ -34,9 +34,7 @@
             optionValue="value"
             [filter]="true"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-select>
+          ></app-select>
           <app-field-error [control]="form.controls.product"></app-field-error>
         </div>
 
@@ -108,54 +106,54 @@
                 [placeholder]="'inventory.fields.attributeValue' | translate"
                 class="w-full"
               />
-              <p-button
+              <app-button
                 icon="pi pi-times"
                 severity="danger"
-                [text]="true"
                 [rounded]="true"
                 [ariaLabel]="'inventory.fields.removeAttribute' | translate"
-                (onClick)="removeAttribute(i)"
-              ></p-button>
+                (clicked)="removeAttribute(i)"
+                variant="text"
+              ></app-button>
             </div>
           }
           @if (attributes.errors?.['duplicateKeys']) {
             <small class="text-sm text-red-600">{{ 'inventory.hints.attributes' | translate }}</small>
           }
           <div>
-            <p-button
+            <app-button
               type="button"
               icon="pi pi-plus"
               [label]="'inventory.fields.addAttribute' | translate"
               severity="secondary"
-              [outlined]="true"
               size="small"
-              (onClick)="addAttribute()"
-            ></p-button>
+              (clicked)="addAttribute()"
+              variant="outlined"
+            ></app-button>
           </div>
         </div>
 
         <div class="flex items-center gap-3">
-          <p-toggleswitch inputId="is_active" formControlName="is_active"></p-toggleswitch>
+          <app-toggle inputId="is_active" formControlName="is_active"></app-toggle>
           <label for="is_active" class="text-sm font-medium">{{ 'inventory.fields.isActive' | translate }}</label>
         </div>
       </div>
 
       <div class="flex justify-end gap-2 border-t border-gray-100 pt-5 dark:border-gray-800">
-        <p-button
+        <app-button
           type="button"
           [label]="'common.cancel' | translate"
           severity="secondary"
-          [outlined]="true"
-          (onClick)="goBack()"
-        ></p-button>
-        <p-button
+          (clicked)="goBack()"
+          variant="outlined"
+        ></app-button>
+        <app-button
           type="submit"
           [label]="'common.save' | translate"
           icon="pi pi-check"
           [loading]="saving()"
           [disabled]="saving()"
-        ></p-button>
+        ></app-button>
       </div>
     </form>
-  </p-card>
+  </app-card>
 }

@@ -10,7 +10,7 @@
 } @else if (loading()) {
   <app-loading-state></app-loading-state>
 } @else {
-  <p-card>
+  <app-card>
     <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-6" novalidate>
       @if (isCore()) {
         <div
@@ -60,23 +60,23 @@
       </div>
 
       <div class="flex justify-end gap-2 border-t border-gray-100 pt-5 dark:border-gray-800">
-        <p-button
+        <app-button
           type="button"
           [label]="'common.cancel' | translate"
           severity="secondary"
-          [outlined]="true"
-          (onClick)="goBack()"
-        ></p-button>
+          (clicked)="goBack()"
+          variant="outlined"
+        ></app-button>
         @if (!isCore()) {
-          <p-button
+          <app-button
             type="submit"
             [label]="'common.save' | translate"
             icon="pi pi-check"
             [loading]="saving()"
             [disabled]="saving()"
-          ></p-button>
+          ></app-button>
         }
       </div>
     </form>
-  </p-card>
+  </app-card>
 }

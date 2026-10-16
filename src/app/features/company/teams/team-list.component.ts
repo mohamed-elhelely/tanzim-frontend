@@ -1,10 +1,8 @@
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
-import { TableModule } from 'primeng/table';
 import { AccessService } from '../../../core/auth/access.service';
 import { ConfirmService } from '../../../core/services/confirm.service';
 import { LanguageService } from '../../../core/services/language.service';
@@ -22,16 +20,28 @@ import { TeamFormComponent } from './team-form.component';
 import { TeamService } from './team.service';
 import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
+import { TableComponent } from '../../../shared/ui/table/table.component';
+import { TableEmptyDirective, TableHeaderDirective, TableRowDirective } from '../../../shared/ui/table/table-templates';
+import { SortableHeaderComponent } from '../../../shared/ui/table/sortable-header.component';
+import { TableSelectAllComponent } from '../../../shared/ui/table/table-select-all.component';
+import { TableRowSelectComponent } from '../../../shared/ui/table/table-row-select.component';
 
 @Component({
   selector: 'app-team-list',
   imports: [
+    TableRowSelectComponent,
+    TableSelectAllComponent,
+    SortableHeaderComponent,
+    TableEmptyDirective,
+    TableRowDirective,
+    TableHeaderDirective,
+    TableComponent,
+    ButtonComponent,
     RowActionsComponent,
     RowActionComponent,
     SavedViewsComponent,
     TranslatePipe,
-    TableModule,
-    ButtonModule,
     InputTextModule,
     IconFieldModule,
     InputIconModule,

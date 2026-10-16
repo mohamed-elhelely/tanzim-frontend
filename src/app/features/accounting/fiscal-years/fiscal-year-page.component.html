@@ -7,7 +7,7 @@
 } @else {
   <div class="flex flex-col gap-4">
     @for (year of years(); track year.id) {
-      <p-card>
+      <app-card>
         <div class="mb-4 flex flex-wrap items-start justify-between gap-3">
           <div>
             <h2 class="flex items-center gap-2 text-lg font-semibold">
@@ -26,31 +26,31 @@
           </div>
           <div class="flex flex-wrap gap-2">
             @if (year.status === 'open') {
-              <p-button
+              <app-button
                 [label]="'accounting.actions.closeYear' | translate"
                 icon="pi pi-lock"
                 severity="danger"
-                [outlined]="true"
                 size="small"
-                (onClick)="closeYear(year)"
-              ></p-button>
-              <p-button
+                (clicked)="closeYear(year)"
+                variant="outlined"
+              ></app-button>
+              <app-button
                 icon="pi pi-trash"
                 severity="secondary"
-                [text]="true"
                 size="small"
                 [ariaLabel]="'common.delete' | translate"
-                (onClick)="deleteYear(year)"
-              ></p-button>
+                (clicked)="deleteYear(year)"
+                variant="text"
+              ></app-button>
             } @else {
-              <p-button
+              <app-button
                 [label]="'accounting.actions.reopen' | translate"
                 icon="pi pi-lock-open"
                 severity="secondary"
-                [outlined]="true"
                 size="small"
-                (onClick)="reopenYear(year)"
-              ></p-button>
+                (clicked)="reopenYear(year)"
+                variant="outlined"
+              ></app-button>
             }
           </div>
         </div>
@@ -64,19 +64,19 @@
                   {{ 'accounting.periodStatuses.' + period.status | translate }}
                 </div>
               </div>
-              <p-button
+              <app-button
                 [icon]="period.status === 'open' ? 'pi pi-lock' : 'pi pi-lock-open'"
                 severity="secondary"
-                [text]="true"
                 [rounded]="true"
                 size="small"
                 [ariaLabel]="((period.status === 'open' ? 'accounting.actions.closePeriod' : 'accounting.actions.reopen') | translate) + ' ' + period.name"
-                (onClick)="togglePeriod(period)"
-              ></p-button>
+                (clicked)="togglePeriod(period)"
+                variant="text"
+              ></app-button>
             </div>
           }
         </div>
-      </p-card>
+      </app-card>
     } @empty {
       <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
         <app-empty-state icon="pi-calendar"></app-empty-state>
@@ -85,13 +85,12 @@
   </div>
 }
 
-<p-dialog
+<app-dialog
   [header]="'accounting.years.new' | translate"
   [visible]="dialogOpen()"
   (visibleChange)="dialogOpen.set($event)"
-  [modal]="true"
-  [dismissableMask]="true"
-  [style]="{ width: '30rem', maxWidth: 'calc(100vw - 2rem)' }"
+  [dismissable]="true"
+  width="30rem"
 >
   <p class="mb-3 text-sm text-gray-500 dark:text-gray-400">{{ 'accounting.hints.newYear' | translate }}</p>
   <div class="flex flex-col gap-4">
@@ -113,14 +112,14 @@
       <p role="alert" class="text-sm text-red-600">{{ key | translate }}</p>
     }
   </div>
-  <ng-template pTemplate="footer">
-    <p-button [label]="'common.cancel' | translate" severity="secondary" [outlined]="true" (onClick)="dialogOpen.set(false)"></p-button>
-    <p-button
+  <ng-template appDialogFooter>
+    <app-button [label]="'common.cancel' | translate" severity="secondary" (clicked)="dialogOpen.set(false)" variant="outlined"></app-button>
+    <app-button
       [label]="'common.save' | translate"
       icon="pi pi-check"
       [loading]="saving()"
       [disabled]="saving()"
-      (onClick)="createYear()"
-    ></p-button>
+      (clicked)="createYear()"
+    ></app-button>
   </ng-template>
-</p-dialog>
+</app-dialog>

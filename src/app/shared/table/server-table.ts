@@ -1,5 +1,4 @@
 import { DestroyRef, inject, signal } from '@angular/core';
-import { TableLazyLoadEvent } from 'primeng/table';
 import { Observable, Subscription } from 'rxjs';
 import { ListQuery } from '../../core/api/crud-api';
 import { AppError } from '../../core/errors/app-error';
@@ -38,6 +37,14 @@ export interface ServerTableOptions {
 }
 
 /** The search and filters a table is showing; what a saved view keeps. */
+/** What the table reports when the page, the page size or the sort changes (sortOrder: 1 ascending, -1 descending). */
+export interface TablePageEvent {
+  first?: number | null;
+  rows?: number | null;
+  sortField?: string | string[] | null;
+  sortOrder?: number | null;
+}
+
 export interface TableQuery {
   search?: string;
   filters: Record<string, string | number>;
@@ -78,8 +85,8 @@ export class ServerTable<T> {
     inject(DestroyRef).onDestroy(() => this.request?.unsubscribe());
   }
 
-  /** PrimeNG's (onLazyLoad): page change, page-size change or sort. */
-  onLazyLoad(event: TableLazyLoadEvent): void {
+  /** A page change, page-size change or sort from the table (app-table). */
+  onLazyLoad(event: TablePageEvent): void {
     this.first.set(event.first ?? 0);
     this.pageSize.set(event.rows ?? this.pageSize());
     const field = typeof event.sortField === 'string' ? event.sortField : undefined;

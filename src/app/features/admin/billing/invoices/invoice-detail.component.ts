@@ -4,12 +4,7 @@ import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
-import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
-import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
-import { TableModule } from 'primeng/table';
 import { TextareaModule } from 'primeng/textarea';
 import { AppError } from '../../../../core/errors/app-error';
 import { ConfirmService } from '../../../../core/services/confirm.service';
@@ -27,6 +22,12 @@ import { AdminInvoice, BillingModule, INVOICE_SEVERITY, MONEY, WHOLE } from '../
 import { RowActionComponent, RowActionsComponent } from '../../../../shared/table/row-actions.component';
 import { AdminInvoiceService, BillingModuleService } from '../platform-billing.service';
 import { AppDatePipe } from '../../../../shared/pipes/app-date.pipe';
+import { CardComponent } from '../../../../shared/ui/card/card.component';
+import { DialogComponent } from '../../../../shared/ui/dialog/dialog.component';
+import { SelectComponent } from '../../../../shared/ui/select/select.component';
+import { ButtonComponent } from '../../../../shared/ui/button/button.component';
+import { TableComponent } from '../../../../shared/ui/table/table.component';
+import { TableEmptyDirective, TableHeaderDirective, TableRowDirective } from '../../../../shared/ui/table/table-templates';
 
 /**
  * /admin/invoices/:id: one platform invoice. While it is a draft, staff edit its items and issue it; once issued,
@@ -35,18 +36,21 @@ import { AppDatePipe } from '../../../../shared/pipes/app-date.pipe';
 @Component({
   selector: 'app-invoice-detail',
   imports: [
+    TableEmptyDirective,
+    TableRowDirective,
+    TableHeaderDirective,
+    TableComponent,
+    ButtonComponent,
+    DialogComponent,
+    SelectComponent,
+    CardComponent,
     RowActionsComponent,
     RowActionComponent,
     AppDatePipe,
     DecimalPipe,
     ReactiveFormsModule,
     TranslatePipe,
-    ButtonModule,
-    CardModule,
-    DialogModule,
     InputTextModule,
-    SelectModule,
-    TableModule,
     TextareaModule,
     PageHeaderComponent,
     LoadingStateComponent,

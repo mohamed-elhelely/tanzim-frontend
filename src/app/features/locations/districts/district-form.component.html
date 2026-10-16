@@ -32,7 +32,7 @@
 
         <div class="flex flex-col gap-1">
           <label for="city" class="text-sm font-medium">{{ 'locations.fields.city' | translate }} *</label>
-          <p-select
+          <app-select
             inputId="city"
             formControlName="city"
             [options]="cityOptions()"
@@ -41,9 +41,7 @@
             [filter]="true"
             [showClear]="false"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-select>
+          ></app-select>
           <app-field-error [control]="form.controls.city"></app-field-error>
         </div>
 
@@ -55,20 +53,20 @@
       </div>
 
       <div class="flex justify-end gap-2 border-t border-gray-100 pt-5 dark:border-gray-800">
-        <p-button
+        <app-button
           type="button"
           [label]="'common.cancel' | translate"
           severity="secondary"
-          [outlined]="true"
-          (onClick)="goBack()"
-        ></p-button>
-        <p-button
+          (clicked)="goBack()"
+          variant="outlined"
+        ></app-button>
+        <app-button
           type="submit"
           [label]="'common.save' | translate"
           icon="pi pi-check"
           [loading]="saving()"
           [disabled]="saving()"
-        ></p-button>
+        ></app-button>
       </div>
     </form>
   }

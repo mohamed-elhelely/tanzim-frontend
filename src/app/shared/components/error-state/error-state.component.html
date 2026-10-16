@@ -11,12 +11,12 @@
     }
   </div>
   @if (showRetry) {
-    <p-button
+    <app-button
       [label]="'common.retry' | translate"
       icon="pi pi-refresh"
       severity="secondary"
-      [outlined]="true"
-      (onClick)="retry.emit()"
-    ></p-button>
+      (clicked)="retry.emit()"
+      variant="outlined"
+    ></app-button>
   }
 </div>

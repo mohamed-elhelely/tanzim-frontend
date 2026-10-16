@@ -1,8 +1,8 @@
 import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
-import { CardModule } from 'primeng/card';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { PageHeaderComponent } from '../page-header/page-header.component';
+import { CardComponent } from '../../ui/card/card.component';
 
 /**
  * Frame of a create/edit form. As a page: the page header with a back link, then the form in a full-width card.
@@ -10,7 +10,7 @@ import { PageHeaderComponent } from '../page-header/page-header.component';
  */
 @Component({
   selector: 'app-form-layout',
-  imports: [NgTemplateOutlet, CardModule, PageHeaderComponent],
+  imports: [CardComponent, NgTemplateOutlet, PageHeaderComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './form-layout.component.html',
 })

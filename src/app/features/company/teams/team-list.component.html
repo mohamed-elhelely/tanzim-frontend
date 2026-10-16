@@ -20,60 +20,46 @@
         />
       </p-iconfield>
       <app-saved-views [table]="table" screen="team"></app-saved-views>
-      <p-button
+      <app-button
         [label]="'common.search' | translate"
         icon="pi pi-search"
         [disabled]="!table.changed()"
-        (onClick)="table.apply()"
-        styleClass="w-full sm:w-auto"
-      ></p-button>
+        (clicked)="table.apply()"
+        width="mobile"
+      ></app-button>
       @if (table.filtered()) {
-        <p-button
+        <app-button
           [label]="'common.clearFilters' | translate"
           icon="pi pi-filter-slash"
           severity="secondary"
-          [text]="true"
-          (onClick)="table.clear()"
-          styleClass="w-full sm:w-auto"
-        ></p-button>
+          (clicked)="table.clear()"
+          variant="text"
+          width="mobile"
+        ></app-button>
       }
       @if (table.selection().length) {
-        <p-button
+        <app-button
           [label]="'common.deleteSelected' | translate: { count: table.selection().length }"
           icon="pi pi-trash"
           severity="danger"
-          [outlined]="true"
-          (onClick)="confirmBulkDelete()"
-          styleClass="w-full sm:ms-auto sm:w-auto"
-        ></p-button>
+          (clicked)="confirmBulkDelete()"
+          variant="outlined"
+          width="mobile"
+          class="sm:ms-auto"
+        ></app-button>
       }
     </div>
     <div class="overflow-x-auto">
-      <p-table
-        [value]="table.rows()"
-        [lazy]="true"
-        [lazyLoadOnInit]="false"
-        (onLazyLoad)="table.onLazyLoad($event)"
-        [paginator]="true"
-        [showCurrentPageReport]="true"
-        [currentPageReportTemplate]="'common.pageReport' | translate"
-        [first]="table.first()"
-        [rows]="table.pageSize()"
-        [totalRecords]="table.total()"
-        [rowsPerPageOptions]="[10, 25, 50]"
-        [loading]="table.loading()"
-        dataKey="id"
-        [selection]="table.selection()"
-        (selectionChange)="table.selection.set($event)"
-        size="small"
+      <app-table
+        [table]="table"
       >
-        <ng-template pTemplate="header">
+        <ng-template appTableHeader>
           <tr>
             @if (canDelete()) {
-              <th class="w-12"><p-tableHeaderCheckbox></p-tableHeaderCheckbox></th>
+              <th class="w-12"><app-table-select-all></app-table-select-all></th>
             }
-            <th pSortableColumn="name_en">
-              {{ 'company.fields.nameEn' | translate }} <p-sortIcon field="name_en"></p-sortIcon>
+            <th appSortable="name_en">
+              {{ 'company.fields.nameEn' | translate }}
             </th>
             <th>{{ 'company.fields.nameAr' | translate }}</th>
             <th>{{ 'company.fields.department' | translate }}</th>
@@ -84,10 +70,10 @@
             }
           </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-row>
+        <ng-template appTableRow let-row>
           <tr>
             @if (canDelete()) {
-              <td (click)="$event.stopPropagation()"><p-tableCheckbox [value]="row"></p-tableCheckbox></td>
+              <td (click)="$event.stopPropagation()"><app-table-row-select [row]="row"></app-table-row-select></td>
             }
             <td>{{ row.name_en }}</td>
             <td>{{ row.name_ar }}</td>
@@ -108,12 +94,12 @@
             }
           </tr>
         </ng-template>
-        <ng-template pTemplate="emptymessage">
+        <ng-template appTableEmpty>
           <tr>
             <td [attr.colspan]="(canEdit() || canDelete() ? 6 : 5) + (canDelete() ? 1 : 0)"><app-empty-state icon="pi-id-card"></app-empty-state></td>
           </tr>
         </ng-template>
-      </p-table>
+      </app-table>
     </div>
   </div>
 }

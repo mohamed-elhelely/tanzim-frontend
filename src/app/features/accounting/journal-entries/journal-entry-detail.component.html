@@ -25,7 +25,7 @@
   }
 
   <div class="flex flex-col gap-4">
-    <p-card>
+    <app-card>
       <dl class="grid grid-cols-2 gap-x-6 gap-y-3 text-sm md:grid-cols-4">
         <div>
           <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'accounting.fields.status' | translate }}</dt>
@@ -58,12 +58,12 @@
           <dd class="mt-1 break-all" dir="ltr">{{ entry.reference || '—' }}</dd>
         </div>
       </dl>
-    </p-card>
+    </app-card>
 
-    <p-card>
+    <app-card>
       <div class="overflow-x-auto">
-        <p-table [value]="entry.lines" dataKey="id" size="small">
-          <ng-template pTemplate="header">
+        <app-table [rows]="entry.lines">
+          <ng-template appTableHeader>
             <tr>
               <th>{{ 'accounting.fields.account' | translate }}</th>
               <th>{{ 'accounting.fields.description' | translate }}</th>
@@ -71,7 +71,7 @@
               <th class="text-end">{{ 'accounting.fields.credit' | translate }}</th>
             </tr>
           </ng-template>
-          <ng-template pTemplate="body" let-line>
+          <ng-template appTableRow let-line>
             <tr>
               <td class="whitespace-nowrap">
                 <span class="font-mono text-xs text-gray-500" dir="ltr">{{ line.account_code }}</span> {{ line.account_name }}
@@ -81,27 +81,26 @@
               <td class="text-end">{{ +line.credit ? (line.credit | number: '1.2-2') : '' }}</td>
             </tr>
           </ng-template>
-          <ng-template pTemplate="footer">
+          <ng-template appTableFooter>
             <tr>
               <td colspan="2" class="font-semibold">{{ 'accounting.fields.total' | translate }}</td>
               <td class="text-end font-semibold">{{ entry.total_debit | number: '1.2-2' }}</td>
               <td class="text-end font-semibold">{{ entry.total_credit | number: '1.2-2' }}</td>
             </tr>
           </ng-template>
-        </p-table>
+        </app-table>
       </div>
-    </p-card>
+    </app-card>
 
     <app-record-history resource="journalentry" [objectId]="entry.id"></app-record-history>
   </div>
 
-  <p-dialog
+  <app-dialog
     [header]="'accounting.actions.reverse' | translate"
     [visible]="reverseDialogOpen()"
     (visibleChange)="reverseDialogOpen.set($event)"
-    [modal]="true"
-    [dismissableMask]="true"
-    [style]="{ width: '30rem', maxWidth: 'calc(100vw - 2rem)' }"
+    [dismissable]="true"
+    width="30rem"
   >
     <p class="mb-3 text-sm text-gray-500 dark:text-gray-400">{{ 'accounting.hints.reverse' | translate }}</p>
     <div class="flex flex-col gap-4">
@@ -115,22 +114,22 @@
         <input pInputText id="reverse_description" [(ngModel)]="reverseDescription" maxlength="255" class="w-full" />
       </div>
     </div>
-    <ng-template pTemplate="footer">
-      <p-button
+    <ng-template appDialogFooter>
+      <app-button
         [label]="'common.cancel' | translate"
         severity="secondary"
-        [outlined]="true"
-        (onClick)="reverseDialogOpen.set(false)"
-      ></p-button>
-      <p-button
+        (clicked)="reverseDialogOpen.set(false)"
+        variant="outlined"
+      ></app-button>
+      <app-button
         [label]="'accounting.actions.reverse' | translate"
         icon="pi pi-undo"
         [loading]="saving()"
         [disabled]="saving()"
-        (onClick)="submitReverse()"
-      ></p-button>
+        (clicked)="submitReverse()"
+      ></app-button>
     </ng-template>
-  </p-dialog>
+  </app-dialog>
 } @else {
   <app-loading-state></app-loading-state>
 }

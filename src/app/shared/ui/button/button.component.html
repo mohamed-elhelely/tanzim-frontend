@@ -1,0 +1,16 @@
+<p-button
+  [label]="label()"
+  [icon]="icon()"
+  [severity]="severity() ?? 'primary'"
+  [outlined]="variant() === 'outlined'"
+  [text]="variant() === 'text'"
+  [size]="size()"
+  [type]="type()"
+  [loading]="loading()"
+  [disabled]="disabled()"
+  [rounded]="rounded()"
+  [ariaLabel]="ariaLabel()"
+  [styleClass]="styleClass()"
+  class="flex-1"
+  (onClick)="clicked.emit($event)"
+></p-button>

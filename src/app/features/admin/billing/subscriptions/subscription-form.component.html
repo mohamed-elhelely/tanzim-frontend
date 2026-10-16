@@ -19,7 +19,7 @@
       <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div class="flex flex-col gap-1">
           <label for="company" class="text-sm font-medium">{{ 'admin.billing.fields.company' | translate }} *</label>
-          <p-select
+          <app-select
             inputId="company"
             formControlName="company"
             [options]="companyOptions()"
@@ -27,39 +27,31 @@
             optionValue="value"
             [filter]="true"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-select>
+          ></app-select>
           <app-field-error [control]="form.controls.company"></app-field-error>
         </div>
         <div class="flex flex-col gap-1">
           <label for="plan" class="text-sm font-medium">{{ 'admin.billing.fields.plan' | translate }} *</label>
-          <p-select
+          <app-select
             inputId="plan"
             formControlName="plan"
             [options]="planOptions()"
             optionLabel="label"
             optionValue="value"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-select>
+          ></app-select>
           <app-field-error [control]="form.controls.plan"></app-field-error>
         </div>
         <div class="flex flex-col gap-1">
           <label for="status" class="text-sm font-medium">{{ 'admin.billing.fields.status' | translate }}</label>
-          <p-select
+          <app-select
             inputId="status"
             formControlName="status"
             [options]="statusOptions"
             optionLabel="label"
             optionValue="value"
-            styleClass="w-full"
-            appendTo="body"
-          >
-            <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
-            <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
-          </p-select>
+            [translateLabels]="true"
+          ></app-select>
         </div>
         <div class="flex flex-col gap-1">
           <label for="billing_email" class="text-sm font-medium">{{ 'billing.billingEmail' | translate }} *</label>
@@ -91,7 +83,7 @@
           <app-field-error [control]="form.controls.licensed_users" patternKey="admin.billing.hints.wholeNumber"></app-field-error>
         </div>
         <div class="flex items-center gap-3 md:pt-6">
-          <p-toggleswitch inputId="auto_renew" formControlName="auto_renew"></p-toggleswitch>
+          <app-toggle inputId="auto_renew" formControlName="auto_renew"></app-toggle>
           <label for="auto_renew" class="text-sm font-medium">{{ 'billing.autoRenew' | translate }}</label>
         </div>
       </div>
@@ -99,7 +91,7 @@
       @if (!isEdit && isStaff()) {
         <div class="flex flex-col gap-1">
           <label for="module_ids" class="text-sm font-medium">{{ 'billing.modules' | translate }}</label>
-          <p-multiselect
+          <app-multi-select
             inputId="module_ids"
             formControlName="module_ids"
             [options]="moduleOptions()"
@@ -107,16 +99,14 @@
             optionValue="id"
             display="chip"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
           >
-            <ng-template pTemplate="item" let-module>
+            <ng-template appSelectItem let-module>
               <span class="flex items-center gap-2">
                 <i [class]="'pi ' + (module.icon || 'pi-th-large')" aria-hidden="true"></i>
                 <span>{{ module.name }}</span>
               </span>
             </ng-template>
-          </p-multiselect>
+          </app-multi-select>
           <p class="text-xs text-gray-500 dark:text-gray-400">
             {{ (modulesAllowed() ? 'admin.billing.subscriptions.newModulesHint' : 'admin.billing.subscriptions.newModulesLocked') | translate }}
           </p>
@@ -124,8 +114,8 @@
       }
 
       <div class="flex justify-end gap-2 border-t border-gray-100 pt-5 dark:border-gray-800">
-        <p-button type="button" [label]="'common.cancel' | translate" severity="secondary" [outlined]="true" (onClick)="goBack()"></p-button>
-        <p-button type="submit" [label]="'common.save' | translate" icon="pi pi-check" [loading]="saving()" [disabled]="saving()"></p-button>
+        <app-button type="button" [label]="'common.cancel' | translate" severity="secondary" (clicked)="goBack()" variant="outlined"></app-button>
+        <app-button type="submit" [label]="'common.save' | translate" icon="pi pi-check" [loading]="saving()" [disabled]="saving()"></app-button>
       </div>
     </form>
 

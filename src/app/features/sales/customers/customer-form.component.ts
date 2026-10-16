@@ -3,12 +3,8 @@ import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@ang
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
-import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { AppError } from '../../../core/errors/app-error';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
@@ -19,19 +15,23 @@ import { handleSaveError } from '../../../shared/utils/server-errors';
 import { AddressFieldsComponent, addressGroup, patchAddress, toAddress } from '../address-fields/address-fields.component';
 import { CUSTOMER_TYPES, Customer, CustomerPayload, CustomerType } from '../sales.models';
 import { CustomerService } from './customer.service';
+import { CardComponent } from '../../../shared/ui/card/card.component';
+import { SelectComponent } from '../../../shared/ui/select/select.component';
+import { ToggleComponent } from '../../../shared/ui/toggle/toggle.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 @Component({
   selector: 'app-customer-form',
   imports: [
+    ButtonComponent,
+    SelectComponent,
+    ToggleComponent,
+    CardComponent,
     DecimalPipe,
     ReactiveFormsModule,
     TranslatePipe,
-    ButtonModule,
-    CardModule,
     InputTextModule,
-    SelectModule,
     TextareaModule,
-    ToggleSwitchModule,
     PageHeaderComponent,
     LoadingStateComponent,
     ErrorStateComponent,

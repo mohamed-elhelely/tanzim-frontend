@@ -4,11 +4,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
-import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
-import { TableModule } from 'primeng/table';
 import { AppError } from '../../../core/errors/app-error';
 import { ConfirmService } from '../../../core/services/confirm.service';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
@@ -33,6 +29,11 @@ import {
 import { SalesOrderService } from './sales-order.service';
 import { RecordHistoryComponent } from '../../company/system-logs/record-history.component';
 import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
+import { CardComponent } from '../../../shared/ui/card/card.component';
+import { DialogComponent, DialogFooterDirective } from '../../../shared/ui/dialog/dialog.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
+import { TableComponent } from '../../../shared/ui/table/table.component';
+import { TableHeaderDirective, TableRowDirective } from '../../../shared/ui/table/table-templates';
 
 /** Which workflow actions the backend allows from each status (sales/services.py). */
 const CAN_CANCEL: SalesOrderStatus[] = ['draft', 'confirmed', 'on_hold'];
@@ -54,17 +55,20 @@ interface ShipRow {
 @Component({
   selector: 'app-sales-order-detail',
   imports: [
+    TableRowDirective,
+    TableHeaderDirective,
+    TableComponent,
+    ButtonComponent,
+    DialogFooterDirective,
+    DialogComponent,
+    CardComponent,
     RecordHistoryComponent,
     AppDatePipe,
     DecimalPipe,
     FormsModule,
     RouterLink,
     TranslatePipe,
-    ButtonModule,
-    CardModule,
-    DialogModule,
     InputTextModule,
-    TableModule,
     PageHeaderComponent,
     LoadingStateComponent,
     ErrorStateComponent,

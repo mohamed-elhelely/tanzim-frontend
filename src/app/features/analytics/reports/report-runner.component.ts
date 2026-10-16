@@ -2,10 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } 
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
 import { AppError } from '../../../core/errors/app-error';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
@@ -28,6 +25,10 @@ import {
   ReportResult,
   ReportType,
 } from '../analytics.models';
+import { CardComponent } from '../../../shared/ui/card/card.component';
+import { SelectComponent } from '../../../shared/ui/select/select.component';
+import { SelectGroupDirective, SelectItemDirective, SelectSelectedDirective } from '../../../shared/ui/select/select-templates';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 interface ReportGroup {
   key: string;
@@ -42,12 +43,15 @@ interface ReportGroup {
 @Component({
   selector: 'app-report-runner',
   imports: [
+    ButtonComponent,
+    SelectGroupDirective,
+    SelectSelectedDirective,
+    SelectItemDirective,
+    SelectComponent,
+    CardComponent,
     FormsModule,
     TranslatePipe,
-    ButtonModule,
-    CardModule,
     InputTextModule,
-    SelectModule,
     PageHeaderComponent,
     ErrorStateComponent,
     AnalyticsTableComponent,

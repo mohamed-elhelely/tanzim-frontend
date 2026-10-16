@@ -1,15 +1,15 @@
 <header
   class="flex h-16 shrink-0 items-center gap-3 border-b border-gray-200 bg-white/90 px-4 backdrop-blur dark:border-gray-800 dark:bg-gray-900/90 md:px-6"
 >
-  <p-button
+  <app-button
     icon="pi pi-bars"
     [rounded]="true"
-    [text]="true"
     severity="secondary"
-    styleClass="lg:!hidden"
     [ariaLabel]="'header.menu' | translate"
-    (onClick)="menuToggle.emit()"
-  ></p-button>
+    (clicked)="menuToggle.emit()"
+    variant="text"
+    class="lg:!hidden"
+  ></app-button>
 
   <nav class="flex min-w-0 flex-1 items-center gap-2 text-sm" [attr.aria-label]="'header.breadcrumb' | translate">
     @if (sectionKey(); as section) {

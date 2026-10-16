@@ -37,23 +37,19 @@
         </div>
         <div class="flex flex-col gap-1">
           <label for="account_type" class="text-sm font-medium">{{ 'accounting.fields.accountType' | translate }} *</label>
-          <p-select
+          <app-select
             inputId="account_type"
             formControlName="account_type"
             [options]="typeOptions"
             optionLabel="label"
             optionValue="value"
-            styleClass="w-full"
-            appendTo="body"
-          >
-            <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
-            <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
-          </p-select>
+            [translateLabels]="true"
+          ></app-select>
           <app-field-error [control]="form.controls.account_type"></app-field-error>
         </div>
         <div class="flex flex-col gap-1">
           <label for="parent" class="text-sm font-medium">{{ 'accounting.fields.parent' | translate }}</label>
-          <p-select
+          <app-select
             inputId="parent"
             formControlName="parent"
             [options]="parentOptions()"
@@ -63,18 +59,16 @@
             [filter]="true"
             filterBy="label"
             [placeholder]="'accounting.hints.topLevel' | translate"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-select>
+          ></app-select>
           <small class="text-xs text-gray-500 dark:text-gray-400">{{ 'accounting.hints.parent' | translate }}</small>
           <app-field-error [control]="form.controls.parent"></app-field-error>
         </div>
         <div class="flex items-center gap-3">
-          <p-toggleswitch inputId="is_group" formControlName="is_group"></p-toggleswitch>
+          <app-toggle inputId="is_group" formControlName="is_group"></app-toggle>
           <label for="is_group" class="text-sm font-medium">{{ 'accounting.fields.isGroup' | translate }}</label>
         </div>
         <div class="flex items-center gap-3">
-          <p-toggleswitch inputId="is_active" formControlName="is_active"></p-toggleswitch>
+          <app-toggle inputId="is_active" formControlName="is_active"></app-toggle>
           <label for="is_active" class="text-sm font-medium">{{ 'accounting.fields.isActive' | translate }}</label>
         </div>
         <small class="-mt-2 text-xs text-gray-500 md:col-span-2 dark:text-gray-400">{{ 'accounting.hints.isGroup' | translate }}</small>
@@ -85,20 +79,20 @@
       </div>
 
       <div class="flex justify-end gap-2 border-t border-gray-100 pt-5 dark:border-gray-800">
-        <p-button
+        <app-button
           type="button"
           [label]="'common.cancel' | translate"
           severity="secondary"
-          [outlined]="true"
-          (onClick)="goBack()"
-        ></p-button>
-        <p-button
+          (clicked)="goBack()"
+          variant="outlined"
+        ></app-button>
+        <app-button
           type="submit"
           [label]="'common.save' | translate"
           icon="pi pi-check"
           [loading]="saving()"
           [disabled]="saving()"
-        ></p-button>
+        ></app-button>
       </div>
     </form>
   }

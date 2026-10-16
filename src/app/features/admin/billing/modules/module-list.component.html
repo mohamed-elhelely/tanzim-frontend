@@ -5,8 +5,8 @@
 } @else {
   <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
     <div class="overflow-x-auto">
-      <p-table [value]="modules()" [loading]="loading()" dataKey="id" size="small">
-        <ng-template pTemplate="header">
+      <app-table [rows]="modules()" [loading]="loading()">
+        <ng-template appTableHeader>
           <tr>
             <th>{{ 'admin.billing.fields.name' | translate }}</th>
             <th>{{ 'admin.billing.fields.code' | translate }}</th>
@@ -16,7 +16,7 @@
             <th class="text-end">{{ 'common.actions' | translate }}</th>
           </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-module>
+        <ng-template appTableRow let-module>
           <tr>
             <td>
               <span class="inline-flex items-center gap-2 font-medium">
@@ -43,12 +43,12 @@
             </td>
           </tr>
         </ng-template>
-        <ng-template pTemplate="emptymessage">
+        <ng-template appTableEmpty>
           <tr>
             <td colspan="6"><app-empty-state icon="pi-th-large"></app-empty-state></td>
           </tr>
         </ng-template>
-      </p-table>
+      </app-table>
     </div>
   </div>
 }

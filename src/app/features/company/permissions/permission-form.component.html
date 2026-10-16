@@ -32,7 +32,7 @@
 
         <div class="flex flex-col gap-1">
           <label for="permission_type" class="text-sm font-medium">{{ 'company.fields.type' | translate }}</label>
-          <p-select
+          <app-select
             inputId="permission_type"
             formControlName="permission_type"
             [options]="typeOptions"
@@ -40,15 +40,13 @@
             optionValue="value"
             [showClear]="true"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-select>
+          ></app-select>
           <app-field-error [control]="form.controls.permission_type"></app-field-error>
         </div>
 
         <div class="flex flex-col gap-1">
           <label for="groups" class="text-sm font-medium">{{ 'company.fields.groups' | translate }}</label>
-          <p-multiSelect
+          <app-multi-select
             inputId="groups"
             formControlName="groups"
             [options]="groupOptions()"
@@ -57,9 +55,7 @@
             [filter]="true"
             display="chip"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-multiSelect>
+          ></app-multi-select>
           <app-field-error [control]="form.controls.groups"></app-field-error>
         </div>
 
@@ -71,20 +67,20 @@
       </div>
 
       <div class="flex justify-end gap-2 border-t border-gray-100 pt-5 dark:border-gray-800">
-        <p-button
+        <app-button
           type="button"
           [label]="'common.cancel' | translate"
           severity="secondary"
-          [outlined]="true"
-          (onClick)="goBack()"
-        ></p-button>
-        <p-button
+          (clicked)="goBack()"
+          variant="outlined"
+        ></app-button>
+        <app-button
           type="submit"
           [label]="'common.save' | translate"
           icon="pi pi-check"
           [loading]="saving()"
           [disabled]="saving()"
-        ></p-button>
+        ></app-button>
       </div>
     </form>
   }

@@ -3,11 +3,7 @@ import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@ang
 import { FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
-import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
-import { TableModule } from 'primeng/table';
 import { TextareaModule } from 'primeng/textarea';
 import { AppError } from '../../../../core/errors/app-error';
 import { NotificationService } from '../../../../core/services/notification.service';
@@ -24,11 +20,23 @@ import { PlatformPaymentService } from '../platform-billing.service';
 import { RowActionComponent, RowActionsComponent } from '../../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../../shared/table/saved-views.component';
 import { AppDatePipe } from '../../../../shared/pipes/app-date.pipe';
+import { DialogComponent } from '../../../../shared/ui/dialog/dialog.component';
+import { SelectComponent } from '../../../../shared/ui/select/select.component';
+import { ButtonComponent } from '../../../../shared/ui/button/button.component';
+import { TableComponent } from '../../../../shared/ui/table/table.component';
+import { TableEmptyDirective, TableHeaderDirective, TableRowDirective } from '../../../../shared/ui/table/table-templates';
 
 /** /admin/payments: payments of every company on platform invoices; completed ones can be refunded. */
 @Component({
   selector: 'app-payment-list',
   imports: [
+    TableEmptyDirective,
+    TableRowDirective,
+    TableHeaderDirective,
+    TableComponent,
+    ButtonComponent,
+    DialogComponent,
+    SelectComponent,
     RowActionsComponent,
     RowActionComponent,
     SavedViewsComponent,
@@ -38,11 +46,7 @@ import { AppDatePipe } from '../../../../shared/pipes/app-date.pipe';
     ReactiveFormsModule,
     RouterLink,
     TranslatePipe,
-    ButtonModule,
-    DialogModule,
     InputTextModule,
-    SelectModule,
-    TableModule,
     TextareaModule,
     PageHeaderComponent,
     EmptyStateComponent,

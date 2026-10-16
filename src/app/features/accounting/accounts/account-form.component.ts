@@ -2,11 +2,8 @@ import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } 
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
-import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { AppError } from '../../../core/errors/app-error';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
@@ -17,6 +14,9 @@ import { injectFormContext } from '../../../shared/forms/form-context';
 import { handleSaveError } from '../../../shared/utils/server-errors';
 import { ACCOUNT_TYPES, Account, AccountPayload, AccountType } from '../accounting.models';
 import { AccountService } from './account.service';
+import { SelectComponent } from '../../../shared/ui/select/select.component';
+import { ToggleComponent } from '../../../shared/ui/toggle/toggle.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 /**
  * Create or edit an account. The parent must be a group account of the same type (the backend's rule), and can't
@@ -25,13 +25,13 @@ import { AccountService } from './account.service';
 @Component({
   selector: 'app-account-form',
   imports: [
+    ButtonComponent,
+    SelectComponent,
+    ToggleComponent,
     ReactiveFormsModule,
     TranslatePipe,
-    ButtonModule,
     InputTextModule,
-    SelectModule,
     TextareaModule,
-    ToggleSwitchModule,
     FormLayoutComponent,
     LoadingStateComponent,
     ErrorStateComponent,

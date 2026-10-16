@@ -1,10 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
-import { SelectModule } from 'primeng/select';
 import { InputTextModule } from 'primeng/inputtext';
-import { MultiSelectModule } from 'primeng/multiselect';
 import { AppError } from '../../../core/errors/app-error';
 import { LanguageService } from '../../../core/services/language.service';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -20,18 +17,21 @@ import { NamedRef, SelectOption, TeamPayload } from '../company.models';
 import { DepartmentService } from '../departments/department.service';
 import { CompanyUserService } from '../users/company-user.service';
 import { TeamService } from './team.service';
+import { MultiSelectComponent } from '../../../shared/ui/multi-select/multi-select.component';
+import { SelectComponent } from '../../../shared/ui/select/select.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 export type LocationState = 'loading' | 'ready' | 'forbidden' | 'empty' | 'error';
 
 @Component({
   selector: 'app-team-form',
   imports: [
+    ButtonComponent,
+    SelectComponent,
+    MultiSelectComponent,
     ReactiveFormsModule,
     TranslatePipe,
-    ButtonModule,
-    SelectModule,
     InputTextModule,
-    MultiSelectModule,
     FormLayoutComponent,
     LoadingStateComponent,
     ErrorStateComponent,

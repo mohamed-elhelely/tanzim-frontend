@@ -58,7 +58,7 @@
       </div>
     </dl>
 
-    <p-card>
+    <app-card>
       <dl class="grid grid-cols-2 gap-x-6 gap-y-3 text-sm md:grid-cols-4">
         <div>
           <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.invoiceDate' | translate }}</dt>
@@ -98,13 +98,13 @@
           <dd class="mt-0.5 whitespace-pre-line">{{ invoice.notes || '—' }}</dd>
         </div>
       </dl>
-    </p-card>
+    </app-card>
 
-    <p-card>
+    <app-card>
       <h3 class="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'sales.sections.lines' | translate }}</h3>
       <div class="overflow-x-auto">
-        <p-table [value]="invoice.lines" dataKey="id" size="small">
-          <ng-template pTemplate="header">
+        <app-table [rows]="invoice.lines">
+          <ng-template appTableHeader>
             <tr>
               <th>#</th>
               <th>{{ 'sales.fields.sku' | translate }}</th>
@@ -116,7 +116,7 @@
               <th class="text-end">{{ 'sales.fields.lineTotal' | translate }}</th>
             </tr>
           </ng-template>
-          <ng-template pTemplate="body" let-line>
+          <ng-template appTableRow let-line>
             <tr>
               <td class="text-gray-500">{{ line.line_number }}</td>
               <td class="whitespace-nowrap font-mono text-xs" dir="ltr">{{ line.sku }}</td>
@@ -128,7 +128,7 @@
               <td class="text-end font-medium">{{ line.line_total | number: '1.2-2' }}</td>
             </tr>
           </ng-template>
-        </p-table>
+        </app-table>
       </div>
 
       <dl class="ms-auto mt-4 grid max-w-72 grid-cols-2 gap-x-6 gap-y-1 text-sm">
@@ -149,14 +149,14 @@
         <dt class="font-semibold">{{ 'sales.fields.amountDue' | translate }}</dt>
         <dd class="text-end font-semibold">{{ invoice.amount_due | number: '1.2-2' }}</dd>
       </dl>
-    </p-card>
+    </app-card>
 
-    <p-card>
+    <app-card>
       <h3 class="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'sales.sections.payments' | translate }}</h3>
       @if (payments().length) {
         <div class="overflow-x-auto">
-          <p-table [value]="payments()" dataKey="id" size="small">
-            <ng-template pTemplate="header">
+          <app-table [rows]="payments()">
+            <ng-template appTableHeader>
               <tr>
                 <th>{{ 'sales.fields.paymentDate' | translate }}</th>
                 <th>{{ 'sales.fields.paymentMethod' | translate }}</th>
@@ -166,7 +166,7 @@
                 <th class="text-end">{{ 'common.actions' | translate }}</th>
               </tr>
             </ng-template>
-            <ng-template pTemplate="body" let-payment>
+            <ng-template appTableRow let-payment>
               <tr>
                 <td class="whitespace-nowrap" dir="ltr">{{ payment.payment_date }}</td>
                 <td>{{ 'sales.paymentMethods.' + payment.payment_method | translate }}</td>
@@ -180,35 +180,34 @@
                 <td class="text-end font-medium">{{ payment.amount | number: '1.2-2' }}</td>
                 <td class="text-end">
                   @if (canRefund(payment)) {
-                    <p-button
+                    <app-button
                       icon="pi pi-replay"
                       [label]="'sales.actions.refund' | translate"
                       severity="secondary"
-                      [text]="true"
                       size="small"
-                      (onClick)="refund(payment)"
-                    ></p-button>
+                      (clicked)="refund(payment)"
+                      variant="text"
+                    ></app-button>
                   }
                 </td>
               </tr>
             </ng-template>
-          </p-table>
+          </app-table>
         </div>
       } @else {
         <p class="text-sm text-gray-500 dark:text-gray-400">{{ 'sales.hints.noPayments' | translate }}</p>
       }
-    </p-card>
+    </app-card>
 
     <app-record-history resource="salesinvoice" [objectId]="invoice.id"></app-record-history>
   </div>
 
-  <p-dialog
+  <app-dialog
     [header]="'sales.actions.editDetails' | translate"
     [visible]="detailsDialogOpen()"
     (visibleChange)="detailsDialogOpen.set($event)"
-    [modal]="true"
-    [dismissableMask]="true"
-    [style]="{ width: '32rem', maxWidth: 'calc(100vw - 2rem)' }"
+    [dismissable]="true"
+    width="32rem"
   >
     <div class="flex flex-col gap-4">
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -230,24 +229,23 @@
         <textarea pTextarea id="inv_notes" [(ngModel)]="details.notes" rows="3" class="w-full"></textarea>
       </div>
     </div>
-    <ng-template pTemplate="footer">
-      <p-button
+    <ng-template appDialogFooter>
+      <app-button
         [label]="'common.cancel' | translate"
         severity="secondary"
-        [outlined]="true"
-        (onClick)="detailsDialogOpen.set(false)"
-      ></p-button>
-      <p-button [label]="'common.save' | translate" [loading]="saving()" [disabled]="saving()" (onClick)="saveDetails()"></p-button>
+        (clicked)="detailsDialogOpen.set(false)"
+        variant="outlined"
+      ></app-button>
+      <app-button [label]="'common.save' | translate" [loading]="saving()" [disabled]="saving()" (clicked)="saveDetails()"></app-button>
     </ng-template>
-  </p-dialog>
+  </app-dialog>
 
-  <p-dialog
+  <app-dialog
     [header]="'sales.actions.recordPayment' | translate"
     [visible]="paymentDialogOpen()"
     (visibleChange)="paymentDialogOpen.set($event)"
-    [modal]="true"
-    [dismissableMask]="true"
-    [style]="{ width: '32rem', maxWidth: 'calc(100vw - 2rem)' }"
+    [dismissable]="true"
+    width="32rem"
   >
     <div class="flex flex-col gap-4">
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -265,18 +263,14 @@
       </div>
       <div class="flex flex-col gap-1">
         <label for="pay_method" class="text-sm font-medium">{{ 'sales.fields.paymentMethod' | translate }}</label>
-        <p-select
+        <app-select
           inputId="pay_method"
           [(ngModel)]="payment.payment_method"
           [options]="methodOptions"
           optionLabel="label"
           optionValue="value"
-          styleClass="w-full"
-          appendTo="body"
-        >
-          <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
-          <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
-        </p-select>
+          [translateLabels]="true"
+        ></app-select>
       </div>
       <div class="flex flex-col gap-1">
         <label for="pay_reference" class="text-sm font-medium">{{ 'sales.fields.paymentReference' | translate }}</label>
@@ -290,22 +284,22 @@
         <p role="alert" class="text-sm text-red-600">{{ key | translate }}</p>
       }
     </div>
-    <ng-template pTemplate="footer">
-      <p-button
+    <ng-template appDialogFooter>
+      <app-button
         [label]="'common.cancel' | translate"
         severity="secondary"
-        [outlined]="true"
-        (onClick)="paymentDialogOpen.set(false)"
-      ></p-button>
-      <p-button
+        (clicked)="paymentDialogOpen.set(false)"
+        variant="outlined"
+      ></app-button>
+      <app-button
         [label]="'sales.actions.recordPayment' | translate"
         icon="pi pi-check"
         [loading]="saving()"
         [disabled]="saving()"
-        (onClick)="savePayment()"
-      ></p-button>
+        (clicked)="savePayment()"
+      ></app-button>
     </ng-template>
-  </p-dialog>
+  </app-dialog>
 
   <app-reason-dialog
     header="sales.actions.cancelInvoice"

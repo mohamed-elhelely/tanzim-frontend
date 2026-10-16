@@ -1,11 +1,9 @@
 import { ChangeDetectionStrategy, Component, OnInit, inject, computed } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
-import { TableModule } from 'primeng/table';
 import { AccessService } from '../../../core/auth/access.service';
 import { ConfirmService } from '../../../core/services/confirm.service';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
@@ -19,16 +17,28 @@ import { Supplier } from '../inventory.models';
 import { SupplierService } from './supplier.service';
 import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
+import { TableComponent } from '../../../shared/ui/table/table.component';
+import { TableEmptyDirective, TableHeaderDirective, TableRowDirective } from '../../../shared/ui/table/table-templates';
+import { SortableHeaderComponent } from '../../../shared/ui/table/sortable-header.component';
+import { TableSelectAllComponent } from '../../../shared/ui/table/table-select-all.component';
+import { TableRowSelectComponent } from '../../../shared/ui/table/table-row-select.component';
 
 @Component({
   selector: 'app-supplier-list',
   imports: [
+    TableRowSelectComponent,
+    TableSelectAllComponent,
+    SortableHeaderComponent,
+    TableEmptyDirective,
+    TableRowDirective,
+    TableHeaderDirective,
+    TableComponent,
+    ButtonComponent,
     RowActionsComponent,
     RowActionComponent,
     SavedViewsComponent,
     TranslatePipe,
-    TableModule,
-    ButtonModule,
     InputTextModule,
     IconFieldModule,
     InputIconModule,

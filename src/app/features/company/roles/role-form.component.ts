@@ -2,11 +2,7 @@ import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } 
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
-import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { InputTextModule } from 'primeng/inputtext';
-import { MultiSelectModule } from 'primeng/multiselect';
 import { AppError } from '../../../core/errors/app-error';
 import { LanguageService } from '../../../core/services/language.service';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -20,17 +16,21 @@ import { NamedRef, RolePayload, SelectOption } from '../company.models';
 import { PermissionGroupService } from '../permission-groups/permission-group.service';
 import { PermissionPickerComponent } from '../permissions/permission-picker.component';
 import { RoleService } from './role.service';
+import { CardComponent } from '../../../shared/ui/card/card.component';
+import { MultiSelectComponent } from '../../../shared/ui/multi-select/multi-select.component';
+import { ToggleComponent } from '../../../shared/ui/toggle/toggle.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 @Component({
   selector: 'app-role-form',
   imports: [
+    ButtonComponent,
+    MultiSelectComponent,
+    ToggleComponent,
+    CardComponent,
     ReactiveFormsModule,
     TranslatePipe,
-    ButtonModule,
-    CardModule,
-    ToggleSwitchModule,
     InputTextModule,
-    MultiSelectModule,
     PageHeaderComponent,
     LoadingStateComponent,
     ErrorStateComponent,

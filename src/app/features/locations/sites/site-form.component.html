@@ -10,7 +10,7 @@
 } @else if (loading()) {
   <app-loading-state></app-loading-state>
 } @else {
-  <p-card>
+  <app-card>
     <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-6" novalidate>
       @if (formErrors().length) {
         <div
@@ -44,7 +44,7 @@
 
         <div class="flex flex-col gap-1">
           <label for="location_type" class="text-sm font-medium">{{ 'locations.fields.locationType' | translate }} *</label>
-          <p-select
+          <app-select
             inputId="location_type"
             formControlName="location_type"
             [options]="typeOptions"
@@ -52,18 +52,14 @@
             optionValue="value"
             [showClear]="false"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
-          >
-            <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
-            <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
-          </p-select>
+            [translateLabels]="true"
+          ></app-select>
           <app-field-error [control]="form.controls.location_type"></app-field-error>
         </div>
 
         <div class="flex flex-col gap-1">
           <label for="country" class="text-sm font-medium">{{ 'locations.fields.country' | translate }} *</label>
-          <p-select
+          <app-select
             inputId="country"
             formControlName="country"
             [options]="countryOptions()"
@@ -72,16 +68,14 @@
             [filter]="true"
             [showClear]="false"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
-            (onChange)="onCountryChange()"
-          ></p-select>
+            (changed)="onCountryChange()"
+          ></app-select>
           <app-field-error [control]="form.controls.country"></app-field-error>
         </div>
 
         <div class="flex flex-col gap-1">
           <label for="region" class="text-sm font-medium">{{ 'locations.fields.region' | translate }} *</label>
-          <p-select
+          <app-select
             inputId="region"
             formControlName="region"
             [options]="regionOptions()"
@@ -90,10 +84,8 @@
             [filter]="true"
             [showClear]="false"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
-            (onChange)="onRegionChange()"
-          ></p-select>
+            (changed)="onRegionChange()"
+          ></app-select>
           @if (!form.controls.country.value) {
             <small class="text-sm text-gray-500 dark:text-gray-400">{{ 'locations.hints.pickCountryFirst' | translate }}</small>
           }
@@ -102,7 +94,7 @@
 
         <div class="flex flex-col gap-1">
           <label for="city" class="text-sm font-medium">{{ 'locations.fields.city' | translate }} *</label>
-          <p-select
+          <app-select
             inputId="city"
             formControlName="city"
             [options]="cityOptions()"
@@ -111,10 +103,8 @@
             [filter]="true"
             [showClear]="false"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
-            (onChange)="onCityChange()"
-          ></p-select>
+            (changed)="onCityChange()"
+          ></app-select>
           @if (!form.controls.region.value) {
             <small class="text-sm text-gray-500 dark:text-gray-400">{{ 'locations.hints.pickRegionFirst' | translate }}</small>
           }
@@ -123,7 +113,7 @@
 
         <div class="flex flex-col gap-1">
           <label for="district" class="text-sm font-medium">{{ 'locations.fields.district' | translate }}</label>
-          <p-select
+          <app-select
             inputId="district"
             formControlName="district"
             [options]="districtOptions()"
@@ -132,9 +122,7 @@
             [filter]="true"
             [showClear]="true"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-select>
+          ></app-select>
           @if (!form.controls.city.value) {
             <small class="text-sm text-gray-500 dark:text-gray-400">{{ 'locations.hints.pickCityFirst' | translate }}</small>
           }
@@ -160,27 +148,27 @@
         </div>
 
         <div class="flex items-center gap-3">
-          <p-toggleswitch inputId="is_active" formControlName="is_active"></p-toggleswitch>
+          <app-toggle inputId="is_active" formControlName="is_active"></app-toggle>
           <label for="is_active" class="text-sm font-medium">{{ 'locations.fields.isActive' | translate }}</label>
         </div>
       </div>
 
       <div class="flex justify-end gap-2 border-t border-gray-100 pt-5 dark:border-gray-800">
-        <p-button
+        <app-button
           type="button"
           [label]="'common.cancel' | translate"
           severity="secondary"
-          [outlined]="true"
-          (onClick)="goBack()"
-        ></p-button>
-        <p-button
+          (clicked)="goBack()"
+          variant="outlined"
+        ></app-button>
+        <app-button
           type="submit"
           [label]="'common.save' | translate"
           icon="pi pi-check"
           [loading]="saving()"
           [disabled]="saving()"
-        ></p-button>
+        ></app-button>
       </div>
     </form>
-  </p-card>
+  </app-card>
 }

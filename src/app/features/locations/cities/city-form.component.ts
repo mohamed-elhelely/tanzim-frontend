@@ -1,8 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { ButtonModule } from 'primeng/button';
-import { SelectModule } from 'primeng/select';
 import { InputTextModule } from 'primeng/inputtext';
 import { AppError } from '../../../core/errors/app-error';
 import { LanguageService } from '../../../core/services/language.service';
@@ -18,6 +16,8 @@ import { SelectOption } from '../../company/company.models';
 import { CityPayload, Region } from '../locations.models';
 import { RegionService } from '../regions/region.service';
 import { CityService } from './city.service';
+import { SelectComponent } from '../../../shared/ui/select/select.component';
+import { ButtonComponent } from '../../../shared/ui/button/button.component';
 
 /** UTC, then the IANA zones known to the browser (some browsers leave UTC out of the list). */
 const TIMEZONE_OPTIONS: { value: string; label: string }[] = [
@@ -28,10 +28,10 @@ const TIMEZONE_OPTIONS: { value: string; label: string }[] = [
 @Component({
   selector: 'app-city-form',
   imports: [
+    ButtonComponent,
+    SelectComponent,
     ReactiveFormsModule,
     TranslatePipe,
-    ButtonModule,
-    SelectModule,
     InputTextModule,
     FormLayoutComponent,
     LoadingStateComponent,

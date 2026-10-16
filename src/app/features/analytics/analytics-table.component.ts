@@ -1,8 +1,10 @@
 import { ChangeDetectionStrategy, Component, Input, computed, signal } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
-import { TableModule } from 'primeng/table';
 import { AnalyticsLabelPipe, formatValue } from './analytics-format';
 import { AnalyticsRow, AnalyticsValue, isIdKey } from './analytics.models';
+import { TableComponent } from '../../shared/ui/table/table.component';
+import { TableEmptyDirective, TableHeaderDirective, TableRowDirective } from '../../shared/ui/table/table-templates';
+import { SortableHeaderComponent } from '../../shared/ui/table/sortable-header.component';
 
 /**
  * Any report or dashboard rows as a table. Columns come from `columns` (the report's own order) or, when not given,
@@ -11,7 +13,7 @@ import { AnalyticsRow, AnalyticsValue, isIdKey } from './analytics.models';
  */
 @Component({
   selector: 'app-analytics-table',
-  imports: [TranslatePipe, TableModule, AnalyticsLabelPipe],
+  imports: [SortableHeaderComponent, TableEmptyDirective, TableRowDirective, TableHeaderDirective, TableComponent, TranslatePipe, AnalyticsLabelPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './analytics-table.component.html',
 })

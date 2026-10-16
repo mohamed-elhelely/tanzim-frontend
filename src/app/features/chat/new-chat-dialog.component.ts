@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject, model, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
-import { DialogModule } from 'primeng/dialog';
 import { ListboxModule } from 'primeng/listbox';
 import { ChatStore } from '../../core/chat/chat.store';
 import { SelectOption } from '../company/company.models';
 import { CompanyUserService } from '../company/users/company-user.service';
+import { DialogComponent } from '../../shared/ui/dialog/dialog.component';
 
 /**
  * Picks a colleague for a direct chat. Uses the company-user dropdown, which also lists people without chat
@@ -14,17 +14,15 @@ import { CompanyUserService } from '../company/users/company-user.service';
  */
 @Component({
   selector: 'app-new-chat-dialog',
-  imports: [FormsModule, TranslatePipe, DialogModule, ListboxModule],
+  imports: [DialogComponent, FormsModule, TranslatePipe, ListboxModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <p-dialog
+    <app-dialog
       [visible]="visible()"
       (visibleChange)="visible.set($event)"
-      (onShow)="load()"
-      [modal]="true"
+      (shown)="load()"
       [header]="'chat.newChat' | translate"
-      appendTo="body"
-      styleClass="w-[22rem] max-w-[calc(100vw-2rem)]"
+      width="22rem"
     >
       <p-listbox
         [options]="options()"
@@ -37,7 +35,7 @@ import { CompanyUserService } from '../company/users/company-user.service';
         [ngModel]="null"
         (onChange)="pick($event.value)"
       ></p-listbox>
-    </p-dialog>
+    </app-dialog>
   `,
 })
 export class NewChatDialogComponent {
