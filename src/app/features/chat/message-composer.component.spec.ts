@@ -7,8 +7,14 @@ import { MessageComposerComponent } from './message-composer.component';
 
 describe('MessageComposerComponent', () => {
   let toast: jasmine.SpyObj<NotificationService>;
+  /** Whether the test machine looks like a touch device; the real answer differs between Windows and Linux CI. */
+  let coarsePointer: boolean;
 
   beforeEach(() => {
+    coarsePointer = false;
+    spyOn(window, 'matchMedia').and.callFake(
+      (query: string) => ({ matches: query === '(pointer: coarse)' && coarsePointer }) as MediaQueryList,
+    );
     toast = jasmine.createSpyObj<NotificationService>('NotificationService', ['warn', 'success', 'error', 'info', 'failure']);
     TestBed.configureTestingModule({
       imports: [MessageComposerComponent],
@@ -50,6 +56,18 @@ describe('MessageComposerComponent', () => {
     box.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
     expect(sent).toEqual([{ body: 'hello', files: [] }]);
     expect(box.value).toBe('');
+  });
+
+  it('on a touch device Enter adds a line and the button sends', () => {
+    coarsePointer = true;
+    const fixture = render();
+    const sent: unknown[] = [];
+    fixture.componentInstance.send.subscribe((v) => sent.push(v));
+    const box = type(fixture, 'hello');
+    box.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
+    expect(sent).toEqual([]);
+    (fixture.nativeElement.querySelector('[aria-label="chat.send"]') as HTMLButtonElement).click();
+    expect(sent).toEqual([{ body: 'hello', files: [] }]);
   });
 
   it('emits typed on input', () => {
