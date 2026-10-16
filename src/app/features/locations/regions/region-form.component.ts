@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } 
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
-import { SelectModule } from 'primeng/select';
 import { InputTextModule } from 'primeng/inputtext';
 import { AppError } from '../../../core/errors/app-error';
 import { LanguageService } from '../../../core/services/language.service';
@@ -18,14 +17,15 @@ import { NamedRef, SelectOption } from '../../company/company.models';
 import { CountryService } from '../countries/country.service';
 import { RegionPayload } from '../locations.models';
 import { RegionService } from './region.service';
+import { SelectComponent } from '../../../shared/ui';
 
 @Component({
   selector: 'app-region-form',
   imports: [
+    SelectComponent,
     ReactiveFormsModule,
     TranslatePipe,
     ButtonModule,
-    SelectModule,
     InputTextModule,
     FormLayoutComponent,
     LoadingStateComponent,

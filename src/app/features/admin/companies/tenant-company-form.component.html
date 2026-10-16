@@ -73,15 +73,13 @@
 
         <div class="flex flex-col gap-1">
           <label for="timezone" class="text-sm font-medium">{{ 'admin.fields.timezone' | translate }} *</label>
-          <p-select
+          <app-select
             inputId="timezone"
             formControlName="timezone"
             [options]="timezoneOptions()"
             [filter]="true"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-select>
+          ></app-select>
           <app-field-error [control]="form.controls.timezone"></app-field-error>
         </div>
 

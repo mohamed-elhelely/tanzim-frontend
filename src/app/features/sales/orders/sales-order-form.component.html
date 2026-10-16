@@ -39,7 +39,7 @@
               </button>
             }
           </div>
-          <p-select
+          <app-select
             inputId="customer"
             formControlName="customer"
             [options]="customerOptions()"
@@ -48,10 +48,8 @@
             [filter]="true"
             filterBy="label"
             [placeholder]="'common.select' | translate"
-            (onChange)="onCustomerChange($event.value)"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-select>
+            (changed)="onCustomerChange($event)"
+          ></app-select>
           <app-field-error [control]="form.controls.customer"></app-field-error>
           @if (availableCredit() !== null) {
             <p class="text-xs text-gray-500 dark:text-gray-400">
@@ -63,16 +61,14 @@
 
         <div class="flex flex-col gap-1">
           <label for="warehouse" class="text-sm font-medium">{{ 'sales.fields.warehouse' | translate }} *</label>
-          <p-select
+          <app-select
             inputId="warehouse"
             formControlName="warehouse"
             [options]="warehouses()"
             optionLabel="name"
             optionValue="id"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-select>
+          ></app-select>
           <app-field-error [control]="form.controls.warehouse"></app-field-error>
         </div>
 
@@ -84,18 +80,14 @@
 
         <div class="flex flex-col gap-1">
           <label for="priority" class="text-sm font-medium">{{ 'sales.fields.priority' | translate }}</label>
-          <p-select
+          <app-select
             inputId="priority"
             formControlName="priority"
             [options]="priorityOptions"
             optionLabel="label"
             optionValue="value"
-            styleClass="w-full"
-            appendTo="body"
-          >
-            <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
-            <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
-          </p-select>
+            [translateLabels]="true"
+          ></app-select>
         </div>
 
         <div class="flex flex-col gap-1">
@@ -156,7 +148,7 @@
               <tr [formGroupName]="i" class="border-b border-gray-100 align-top dark:border-gray-800">
                 <td class="py-2 pt-4 text-gray-500">{{ i + 1 }}</td>
                 <td class="py-2 pe-2">
-                  <p-select
+                  <app-select
                     formControlName="variant"
                     [options]="items()"
                     optionLabel="label"
@@ -165,10 +157,8 @@
                     filterBy="label"
                     [placeholder]="'common.select' | translate"
                     [ariaLabel]="'sales.fields.item' | translate"
-                    (onChange)="onItemChange(i, $event.value)"
-                    styleClass="w-full"
-                    appendTo="body"
-                  ></p-select>
+                    (changed)="onItemChange(i, $event)"
+                  ></app-select>
                   <app-field-error [control]="line.controls.variant"></app-field-error>
                   <input
                     pInputText

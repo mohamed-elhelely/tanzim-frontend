@@ -6,7 +6,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { AppError } from '../../../core/errors/app-error';
 import { ConfirmService } from '../../../core/services/confirm.service';
@@ -28,7 +27,7 @@ import {
 import { CustomerReturnService } from './customer-return.service';
 import { RecordHistoryComponent } from '../../company/system-logs/record-history.component';
 import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
-import { CardComponent } from '../../../shared/ui';
+import { CardComponent, SelectComponent } from '../../../shared/ui';
 
 const QUANTITY = /^\d+(\.\d{1,3})?$/;
 const MONEY = /^\d+(\.\d{1,4})?$/;
@@ -58,6 +57,7 @@ interface InspectRow {
 @Component({
   selector: 'app-customer-return-detail',
   imports: [
+    SelectComponent,
     CardComponent,
     RecordHistoryComponent,
     AppDatePipe,
@@ -68,7 +68,6 @@ interface InspectRow {
     ButtonModule,
     DialogModule,
     InputTextModule,
-    SelectModule,
     TableModule,
     PageHeaderComponent,
     ReasonDialogComponent,

@@ -3,7 +3,6 @@ import { AbstractControl, NonNullableFormBuilder, ReactiveFormsModule, Validatio
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
 import { AccessService } from '../../core/auth/access.service';
 import { AppError } from '../../core/errors/app-error';
 import { NotificationService } from '../../core/services/notification.service';
@@ -15,7 +14,7 @@ import { PageHeaderComponent } from '../../shared/components/page-header/page-he
 import { handleSaveError } from '../../shared/utils/server-errors';
 import { MeProfile, ProfileService } from './profile.service';
 import { SignedInDevicesComponent } from './signed-in-devices.component';
-import { CardComponent, PasswordComponent } from '../../shared/ui';
+import { CardComponent, PasswordComponent, SelectComponent } from '../../shared/ui';
 
 /** The browser's IANA time zones, for the timezone picker. */
 const TIME_ZONES: string[] = (Intl as { supportedValuesOf?: (key: string) => string[] }).supportedValuesOf?.('timeZone') ?? [];
@@ -29,6 +28,7 @@ function passwordsMatch(group: AbstractControl): ValidationErrors | null {
 @Component({
   selector: 'app-profile-page',
   imports: [
+    SelectComponent,
     PasswordComponent,
     CardComponent,
     SignedInDevicesComponent,
@@ -36,7 +36,6 @@ function passwordsMatch(group: AbstractControl): ValidationErrors | null {
     TranslatePipe,
     ButtonModule,
     InputTextModule,
-    SelectModule,
     PageHeaderComponent,
     LoadingStateComponent,
     ErrorStateComponent,

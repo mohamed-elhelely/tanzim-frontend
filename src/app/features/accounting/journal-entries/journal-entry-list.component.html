@@ -5,7 +5,7 @@
 } @else {
   <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
     <div class="flex flex-col flex-wrap gap-3 border-b border-gray-100 p-4 sm:flex-row sm:items-center dark:border-gray-800">
-      <p-select
+      <app-select
         [(ngModel)]="status"
         [options]="statusOptions"
         optionLabel="label"
@@ -13,13 +13,10 @@
         [showClear]="true"
         [placeholder]="'accounting.fields.status' | translate"
         [ariaLabel]="'accounting.fields.status' | translate"
-        styleClass="w-full sm:w-44"
-        appendTo="body"
-      >
-        <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
-        <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
-      </p-select>
-      <p-select
+        class="sm:w-44"
+        [translateLabels]="true"
+      ></app-select>
+      <app-select
         [(ngModel)]="origin"
         [options]="originOptions"
         optionLabel="label"
@@ -27,12 +24,9 @@
         [showClear]="true"
         [placeholder]="'accounting.fields.origin' | translate"
         [ariaLabel]="'accounting.fields.origin' | translate"
-        styleClass="w-full sm:w-44"
-        appendTo="body"
-      >
-        <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
-        <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
-      </p-select>
+        class="sm:w-44"
+        [translateLabels]="true"
+      ></app-select>
       <label class="flex items-center gap-2 text-sm">
         <span class="text-gray-500 dark:text-gray-400">{{ 'accounting.fields.from' | translate }}</span>
         <input pInputText type="date" [(ngModel)]="startDate" class="w-full sm:w-40" />

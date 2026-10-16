@@ -5,7 +5,6 @@ import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { AppError } from '../../../core/errors/app-error';
 import { ConfirmService } from '../../../core/services/confirm.service';
@@ -19,6 +18,7 @@ import { ACCOUNT_TYPES, ACCOUNT_TYPE_SEVERITY, Account, AccountType } from '../a
 import { AccountFormComponent } from './account-form.component';
 import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { AccountService } from './account.service';
+import { SelectComponent } from '../../../shared/ui';
 
 export interface AccountRow extends Account {
   /** Nesting level under its parents, for the indentation. */
@@ -49,6 +49,7 @@ export function toTree(accounts: Account[]): AccountRow[] {
 @Component({
   selector: 'app-account-list',
   imports: [
+    SelectComponent,
     RowActionsComponent,
     RowActionComponent,
     FormsModule,
@@ -58,7 +59,6 @@ export function toTree(accounts: Account[]): AccountRow[] {
     InputTextModule,
     IconFieldModule,
     InputIconModule,
-    SelectModule,
     PageHeaderComponent,
     EmptyStateComponent,
     ErrorStateComponent,

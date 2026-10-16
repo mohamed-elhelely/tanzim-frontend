@@ -3,7 +3,6 @@ import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angula
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
 import { AppError } from '../../../core/errors/app-error';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -18,17 +17,17 @@ import { BinPayload, Zone } from '../inventory.models';
 import { trimZeros } from '../variants/variant-options';
 import { ZoneService } from '../zones/zone.service';
 import { BinService } from './bin.service';
-import { ToggleComponent } from '../../../shared/ui';
+import { SelectComponent, ToggleComponent } from '../../../shared/ui';
 
 @Component({
   selector: 'app-bin-form',
   imports: [
+    SelectComponent,
     ToggleComponent,
     ReactiveFormsModule,
     TranslatePipe,
     ButtonModule,
     InputTextModule,
-    SelectModule,
     TextareaModule,
     FormLayoutComponent,
     LoadingStateComponent,

@@ -33,7 +33,9 @@ export class MultiSelectComponent extends FormControlBase<unknown[]> {
   readonly display = input<'comma' | 'chip'>('comma');
   readonly translateLabels = input(false);
 
-  readonly changed = output<unknown[]>();
+  /** The picks changed. Typed like the library's event (see app-select's `changed`). */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  readonly changed = output<any[]>();
 
   readonly itemTemplate = contentChild(SelectItemDirective);
 

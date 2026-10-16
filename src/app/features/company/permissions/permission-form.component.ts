@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } 
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
-import { SelectModule } from 'primeng/select';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { AppError } from '../../../core/errors/app-error';
@@ -18,16 +17,16 @@ import { handleSaveError } from '../../../shared/utils/server-errors';
 import { NamedRef, PermissionGroupOption, PermissionPayload, PermissionType, SelectOption } from '../company.models';
 import { PermissionGroupService } from '../permission-groups/permission-group.service';
 import { PermissionService } from './permission.service';
-import { MultiSelectComponent } from '../../../shared/ui';
+import { MultiSelectComponent, SelectComponent } from '../../../shared/ui';
 
 @Component({
   selector: 'app-permission-form',
   imports: [
+    SelectComponent,
     MultiSelectComponent,
     ReactiveFormsModule,
     TranslatePipe,
     ButtonModule,
-    SelectModule,
     InputTextModule,
     TextareaModule,
     FormLayoutComponent,

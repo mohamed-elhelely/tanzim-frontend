@@ -5,7 +5,7 @@
     <div class="flex flex-col flex-wrap gap-4 lg:flex-row lg:items-end">
       <div class="flex flex-col gap-1">
         <label for="warehouse" class="text-sm font-medium">{{ 'inventory.fields.warehouse' | translate }}</label>
-        <p-select
+        <app-select
           inputId="warehouse"
           [(ngModel)]="warehouse"
           [options]="warehouseOptions()"
@@ -13,9 +13,8 @@
           optionValue="value"
           [showClear]="true"
           [placeholder]="'inventory.stock.allWarehouses' | translate"
-          styleClass="w-full lg:w-64"
-          appendTo="body"
-        ></p-select>
+          class="lg:w-64"
+        ></app-select>
       </div>
       <div class="flex flex-col gap-1">
         <label for="as_of_date" class="text-sm font-medium">{{ 'inventory.stock.asOf' | translate }}</label>
@@ -23,18 +22,15 @@
       </div>
       <div class="flex flex-col gap-1">
         <label for="method" class="text-sm font-medium">{{ 'inventory.stock.valuedBy' | translate }}</label>
-        <p-select
+        <app-select
           inputId="method"
           [(ngModel)]="method"
           [options]="methodOptions"
           optionLabel="label"
           optionValue="value"
-          styleClass="w-full lg:w-44"
-          appendTo="body"
-        >
-          <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
-          <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
-        </p-select>
+          class="lg:w-44"
+          [translateLabels]="true"
+        ></app-select>
       </div>
       <div class="flex flex-wrap gap-2">
         <p-button [label]="'inventory.stock.show' | translate" icon="pi pi-refresh" [loading]="loading()" (onClick)="run()"></p-button>

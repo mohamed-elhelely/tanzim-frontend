@@ -16,7 +16,7 @@
     <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
       <div class="flex flex-col gap-1">
         <label for="supplier" class="text-sm font-medium">{{ 'accounting.fields.supplier' | translate }} *</label>
-        <p-select
+        <app-select
           inputId="supplier"
           formControlName="supplier"
           [options]="suppliers()"
@@ -25,9 +25,7 @@
           [filter]="true"
           filterBy="name"
           [placeholder]="'common.select' | translate"
-          styleClass="w-full"
-          appendTo="body"
-        ></p-select>
+        ></app-select>
         <app-field-error [control]="form.controls.supplier"></app-field-error>
       </div>
       <div class="flex flex-col gap-1">
@@ -42,18 +40,14 @@
       </div>
       <div class="flex flex-col gap-1">
         <label for="payment_method" class="text-sm font-medium">{{ 'accounting.fields.paymentMethod' | translate }}</label>
-        <p-select
+        <app-select
           inputId="payment_method"
           formControlName="payment_method"
           [options]="methodOptions"
           optionLabel="label"
           optionValue="value"
-          styleClass="w-full"
-          appendTo="body"
-        >
-          <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
-          <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
-        </p-select>
+          [translateLabels]="true"
+        ></app-select>
       </div>
       <div class="flex flex-col gap-1">
         <label for="reference" class="text-sm font-medium">{{ 'accounting.fields.reference' | translate }}</label>
@@ -86,7 +80,7 @@
         @for (row of allocations.controls; track row; let i = $index) {
           <div [formGroupName]="i" class="grid grid-cols-[1fr_8rem_auto] items-start gap-2">
             <div>
-              <p-select
+              <app-select
                 formControlName="invoice"
                 [options]="invoiceOptions()"
                 optionLabel="label"
@@ -96,9 +90,7 @@
                 [placeholder]="'accounting.fields.supplierInvoice' | translate"
                 [ariaLabel]="'accounting.fields.supplierInvoice' | translate"
                 [emptyMessage]="'accounting.hints.noSupplierInvoices' | translate"
-                styleClass="w-full"
-                appendTo="body"
-              ></p-select>
+              ></app-select>
               <app-field-error [control]="row.controls.invoice"></app-field-error>
             </div>
             <div>

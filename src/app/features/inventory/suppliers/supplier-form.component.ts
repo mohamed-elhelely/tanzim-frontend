@@ -4,7 +4,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
 import { AppError } from '../../../core/errors/app-error';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -15,18 +14,18 @@ import { PageHeaderComponent } from '../../../shared/components/page-header/page
 import { handleSaveError } from '../../../shared/utils/server-errors';
 import { SUPPLIER_TYPES, SupplierPayload, SupplierType } from '../inventory.models';
 import { SupplierService } from './supplier.service';
-import { CardComponent, ToggleComponent } from '../../../shared/ui';
+import { CardComponent, SelectComponent, ToggleComponent } from '../../../shared/ui';
 
 @Component({
   selector: 'app-supplier-form',
   imports: [
+    SelectComponent,
     ToggleComponent,
     CardComponent,
     ReactiveFormsModule,
     TranslatePipe,
     ButtonModule,
     InputTextModule,
-    SelectModule,
     TextareaModule,
     PageHeaderComponent,
     LoadingStateComponent,

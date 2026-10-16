@@ -20,7 +20,7 @@
       <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div class="flex flex-col gap-1">
           <label for="warehouse" class="text-sm font-medium">{{ 'inventory.fields.warehouse' | translate }} *</label>
-          <p-select
+          <app-select
             inputId="warehouse"
             formControlName="warehouse"
             [options]="warehouseOptions()"
@@ -29,9 +29,7 @@
             [filter]="true"
             [showClear]="true"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-select>
+          ></app-select>
           <app-field-error [control]="form.controls.warehouse"></app-field-error>
         </div>
 

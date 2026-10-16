@@ -83,7 +83,7 @@
             @for (line of lines.controls; track line; let i = $index) {
               <tr [formGroupName]="i" class="border-b border-gray-100 align-top dark:border-gray-800">
                 <td class="py-2">
-                  <p-select
+                  <app-select
                     formControlName="account"
                     [options]="accountOptions()"
                     optionLabel="label"
@@ -92,9 +92,7 @@
                     filterBy="label"
                     [placeholder]="'common.select' | translate"
                     [ariaLabel]="'accounting.fields.account' | translate"
-                    styleClass="w-full"
-                    appendTo="body"
-                  ></p-select>
+                  ></app-select>
                   <app-field-error [control]="line.controls.account"></app-field-error>
                   @if (line.touched && line.hasError('oneSide')) {
                     <small class="text-sm text-red-600">{{ 'accounting.hints.oneSide' | translate }}</small>

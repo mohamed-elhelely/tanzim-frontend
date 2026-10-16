@@ -265,18 +265,14 @@
       </div>
       <div class="flex flex-col gap-1">
         <label for="pay_method" class="text-sm font-medium">{{ 'sales.fields.paymentMethod' | translate }}</label>
-        <p-select
+        <app-select
           inputId="pay_method"
           [(ngModel)]="payment.payment_method"
           [options]="methodOptions"
           optionLabel="label"
           optionValue="value"
-          styleClass="w-full"
-          appendTo="body"
-        >
-          <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
-          <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
-        </p-select>
+          [translateLabels]="true"
+        ></app-select>
       </div>
       <div class="flex flex-col gap-1">
         <label for="pay_reference" class="text-sm font-medium">{{ 'sales.fields.paymentReference' | translate }}</label>

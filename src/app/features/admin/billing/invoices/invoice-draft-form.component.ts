@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
 import { AppError } from '../../../../core/errors/app-error';
 import { NotificationService } from '../../../../core/services/notification.service';
@@ -14,11 +13,12 @@ import { injectFormContext } from '../../../../shared/forms/form-context';
 import { handleSaveError } from '../../../../shared/utils/server-errors';
 import { InvoiceDraftPayload, MONEY } from '../platform-billing.models';
 import { AdminInvoiceService, SubscriptionService } from '../platform-billing.service';
+import { SelectComponent } from '../../../../shared/ui';
 
 /** A new draft platform invoice for one subscription; opens the invoice to add its items. */
 @Component({
   selector: 'app-invoice-draft-form',
-  imports: [ReactiveFormsModule, TranslatePipe, ButtonModule, InputTextModule, SelectModule, TextareaModule, FormLayoutComponent, FieldErrorComponent],
+  imports: [SelectComponent, ReactiveFormsModule, TranslatePipe, ButtonModule, InputTextModule, TextareaModule, FormLayoutComponent, FieldErrorComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './invoice-draft-form.component.html',
 })

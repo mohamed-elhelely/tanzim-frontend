@@ -20,7 +20,7 @@
         />
       </p-iconfield>
       @if (staff()) {
-        <p-select
+        <app-select
           [(ngModel)]="company"
           [options]="companyOptions()"
           optionLabel="label"
@@ -29,11 +29,10 @@
           [showClear]="true"
           [placeholder]="'systemLogs.fields.company' | translate"
           [ariaLabel]="'systemLogs.fields.company' | translate"
-          styleClass="w-full sm:w-56"
-          appendTo="body"
-        ></p-select>
+          class="sm:w-56"
+        ></app-select>
       } @else {
-        <p-select
+        <app-select
           [(ngModel)]="user"
           [options]="userOptions()"
           optionLabel="label"
@@ -42,9 +41,8 @@
           [showClear]="true"
           [placeholder]="'systemLogs.fields.user' | translate"
           [ariaLabel]="'systemLogs.fields.user' | translate"
-          styleClass="w-full sm:w-56"
-          appendTo="body"
-        ></p-select>
+          class="sm:w-56"
+        ></app-select>
       }
       <app-multi-select
         [(ngModel)]="actions"

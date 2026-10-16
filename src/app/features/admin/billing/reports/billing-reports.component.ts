@@ -3,7 +3,6 @@ import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } 
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
-import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { AppError } from '../../../../core/errors/app-error';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
@@ -16,7 +15,7 @@ import { AnalyticsChartComponent } from '../../../analytics/analytics-chart.comp
 import { AnalyticsRow, ChartSpec } from '../../../analytics/analytics.models';
 import { CustomerBalanceRow, INVOICE_SEVERITY, OutstandingInvoiceRow, RevenueRow, Severity } from '../platform-billing.models';
 import { BillingReportService } from '../platform-billing.service';
-import { CardComponent } from '../../../../shared/ui';
+import { CardComponent, SelectComponent } from '../../../../shared/ui';
 
 const REVENUE_CHART: ChartSpec = { type: 'bar', category: 'period', series: ['total_paid', 'total_outstanding'], stacked: true };
 
@@ -27,12 +26,12 @@ const REVENUE_CHART: ChartSpec = { type: 'bar', category: 'period', series: ['to
 @Component({
   selector: 'app-billing-reports',
   imports: [
+    SelectComponent,
     CardComponent,
     DecimalPipe,
     FormsModule,
     RouterLink,
     TranslatePipe,
-    SelectModule,
     TableModule,
     PageHeaderComponent,
     LoadingStateComponent,

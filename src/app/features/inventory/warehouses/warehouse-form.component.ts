@@ -4,7 +4,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
 import { AppError } from '../../../core/errors/app-error';
 import { LanguageService } from '../../../core/services/language.service';
@@ -20,18 +19,18 @@ import { CompanyUserService } from '../../company/users/company-user.service';
 import { LocationService } from '../../locations/sites/location.service';
 import { WAREHOUSE_TYPES, WarehousePayload, WarehouseType } from '../inventory.models';
 import { WarehouseService } from './warehouse.service';
-import { CardComponent, ToggleComponent } from '../../../shared/ui';
+import { CardComponent, SelectComponent, ToggleComponent } from '../../../shared/ui';
 
 @Component({
   selector: 'app-warehouse-form',
   imports: [
+    SelectComponent,
     ToggleComponent,
     CardComponent,
     ReactiveFormsModule,
     TranslatePipe,
     ButtonModule,
     InputTextModule,
-    SelectModule,
     TextareaModule,
     PageHeaderComponent,
     LoadingStateComponent,

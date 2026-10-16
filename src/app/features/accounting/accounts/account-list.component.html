@@ -16,7 +16,7 @@
           class="w-full"
         />
       </p-iconfield>
-      <p-select
+      <app-select
         [(ngModel)]="typeDraft"
         [options]="typeOptions"
         optionLabel="label"
@@ -24,12 +24,9 @@
         [showClear]="true"
         [placeholder]="'accounting.fields.accountType' | translate"
         [ariaLabel]="'accounting.fields.accountType' | translate"
-        styleClass="w-full sm:w-56"
-        appendTo="body"
-      >
-        <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
-        <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
-      </p-select>
+        class="sm:w-56"
+        [translateLabels]="true"
+      ></app-select>
       <p-button
         [label]="'common.apply' | translate"
         icon="pi pi-filter"

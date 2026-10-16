@@ -32,7 +32,7 @@
 
         <div class="flex flex-col gap-1">
           <label for="parent" class="text-sm font-medium">{{ 'company.fields.parent' | translate }}</label>
-          <p-select
+          <app-select
             inputId="parent"
             formControlName="parent"
             [options]="parentOptions()"
@@ -41,15 +41,13 @@
             [filter]="true"
             [showClear]="true"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-select>
+          ></app-select>
           <app-field-error [control]="form.controls.parent"></app-field-error>
         </div>
 
         <div class="flex flex-col gap-1">
           <label for="manager" class="text-sm font-medium">{{ 'company.fields.manager' | translate }}</label>
-          <p-select
+          <app-select
             inputId="manager"
             formControlName="manager"
             [options]="userOptions()"
@@ -58,9 +56,7 @@
             [filter]="true"
             [showClear]="true"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-select>
+          ></app-select>
           <app-field-error [control]="form.controls.manager"></app-field-error>
         </div>
       </div>

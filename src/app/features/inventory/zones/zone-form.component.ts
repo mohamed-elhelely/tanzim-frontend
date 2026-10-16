@@ -3,7 +3,6 @@ import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angula
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
 import { AppError } from '../../../core/errors/app-error';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -17,17 +16,17 @@ import { SelectOption } from '../../company/company.models';
 import { CodedRef, ZonePayload } from '../inventory.models';
 import { WarehouseService } from '../warehouses/warehouse.service';
 import { ZoneService } from './zone.service';
-import { ToggleComponent } from '../../../shared/ui';
+import { SelectComponent, ToggleComponent } from '../../../shared/ui';
 
 @Component({
   selector: 'app-zone-form',
   imports: [
+    SelectComponent,
     ToggleComponent,
     ReactiveFormsModule,
     TranslatePipe,
     ButtonModule,
     InputTextModule,
-    SelectModule,
     TextareaModule,
     FormLayoutComponent,
     LoadingStateComponent,

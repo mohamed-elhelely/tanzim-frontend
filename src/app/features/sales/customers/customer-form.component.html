@@ -60,19 +60,15 @@
 
         <div class="flex flex-col gap-1">
           <label for="customer_type" class="text-sm font-medium">{{ 'sales.fields.customerType' | translate }} *</label>
-          <p-select
+          <app-select
             inputId="customer_type"
             formControlName="customer_type"
             [options]="typeOptions"
             optionLabel="label"
             optionValue="value"
             [showClear]="false"
-            styleClass="w-full"
-            appendTo="body"
-          >
-            <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
-            <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
-          </p-select>
+            [translateLabels]="true"
+          ></app-select>
           <app-field-error [control]="form.controls.customer_type"></app-field-error>
         </div>
 

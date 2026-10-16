@@ -6,7 +6,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { TextareaModule } from 'primeng/textarea';
 import { AppError } from '../../../core/errors/app-error';
@@ -20,7 +19,7 @@ import { StatusBadgeComponent } from '../../../shared/components/status-badge/st
 import { DELIVERY_STATUS_SEVERITY, DeliveryNote, SHIPPING_METHODS, ShippingMethod } from '../sales.models';
 import { DeliveryNoteService } from './delivery-note.service';
 import { RecordHistoryComponent } from '../../company/system-logs/record-history.component';
-import { CardComponent } from '../../../shared/ui';
+import { CardComponent, SelectComponent } from '../../../shared/ui';
 
 /**
  * One delivery note and its workflow: draft → confirmed → in transit → delivered or failed
@@ -29,6 +28,7 @@ import { CardComponent } from '../../../shared/ui';
 @Component({
   selector: 'app-delivery-note-detail',
   imports: [
+    SelectComponent,
     CardComponent,
     RecordHistoryComponent,
     DecimalPipe,
@@ -38,7 +38,6 @@ import { CardComponent } from '../../../shared/ui';
     ButtonModule,
     DialogModule,
     InputTextModule,
-    SelectModule,
     TableModule,
     TextareaModule,
     PageHeaderComponent,

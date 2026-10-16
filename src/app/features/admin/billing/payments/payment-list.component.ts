@@ -6,7 +6,6 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { TextareaModule } from 'primeng/textarea';
 import { AppError } from '../../../../core/errors/app-error';
@@ -24,11 +23,13 @@ import { PlatformPaymentService } from '../platform-billing.service';
 import { RowActionComponent, RowActionsComponent } from '../../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../../shared/table/saved-views.component';
 import { AppDatePipe } from '../../../../shared/pipes/app-date.pipe';
+import { SelectComponent } from '../../../../shared/ui';
 
 /** /admin/payments: payments of every company on platform invoices; completed ones can be refunded. */
 @Component({
   selector: 'app-payment-list',
   imports: [
+    SelectComponent,
     RowActionsComponent,
     RowActionComponent,
     SavedViewsComponent,
@@ -41,7 +42,6 @@ import { AppDatePipe } from '../../../../shared/pipes/app-date.pipe';
     ButtonModule,
     DialogModule,
     InputTextModule,
-    SelectModule,
     TableModule,
     TextareaModule,
     PageHeaderComponent,

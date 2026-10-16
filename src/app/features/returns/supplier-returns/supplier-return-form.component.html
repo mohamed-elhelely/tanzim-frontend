@@ -21,7 +21,7 @@
       <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
         <div class="flex flex-col gap-1">
           <label for="supplier" class="text-sm font-medium">{{ 'returns.fields.supplier' | translate }} *</label>
-          <p-select
+          <app-select
             inputId="supplier"
             formControlName="supplier"
             [options]="suppliers()"
@@ -30,23 +30,19 @@
             [filter]="true"
             filterBy="name"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-select>
+          ></app-select>
           <app-field-error [control]="form.controls.supplier"></app-field-error>
         </div>
         <div class="flex flex-col gap-1">
           <label for="warehouse" class="text-sm font-medium">{{ 'returns.fields.warehouse' | translate }} *</label>
-          <p-select
+          <app-select
             inputId="warehouse"
             formControlName="warehouse"
             [options]="warehouses()"
             optionLabel="name"
             optionValue="id"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-select>
+          ></app-select>
           <app-field-error [control]="form.controls.warehouse"></app-field-error>
         </div>
         <div class="flex flex-col gap-1">
@@ -83,7 +79,7 @@
             @for (row of rows; track $index; let i = $index) {
               <tr class="border-b border-gray-100 dark:border-gray-800">
                 <td class="py-2">
-                  <p-select
+                  <app-select
                     [(ngModel)]="row.variant"
                     [ngModelOptions]="{ standalone: true }"
                     [options]="items()"
@@ -93,10 +89,8 @@
                     filterBy="label"
                     [placeholder]="'common.select' | translate"
                     [ariaLabel]="'returns.fields.item' | translate"
-                    (onChange)="onItemChange(row)"
-                    styleClass="w-full"
-                    appendTo="body"
-                  ></p-select>
+                    (changed)="onItemChange(row)"
+                  ></app-select>
                 </td>
                 <td class="py-2 ps-3">
                   <input

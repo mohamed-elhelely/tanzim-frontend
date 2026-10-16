@@ -27,7 +27,7 @@
       <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         <div class="flex flex-col gap-1">
           <label for="supplier" class="text-sm font-medium">{{ 'accounting.fields.supplier' | translate }} *</label>
-          <p-select
+          <app-select
             inputId="supplier"
             formControlName="supplier"
             [options]="suppliers()"
@@ -36,10 +36,8 @@
             [filter]="true"
             filterBy="name"
             [placeholder]="'common.select' | translate"
-            (onChange)="onSupplierChange($event.value)"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-select>
+            (changed)="onSupplierChange($event)"
+          ></app-select>
           <app-field-error [control]="form.controls.supplier"></app-field-error>
         </div>
         <div class="flex flex-col gap-1">
@@ -49,7 +47,7 @@
         </div>
         <div class="flex flex-col gap-1">
           <label for="supplier_return" class="text-sm font-medium">{{ 'accounting.fields.supplierReturn' | translate }}</label>
-          <p-select
+          <app-select
             inputId="supplier_return"
             formControlName="supplier_return"
             [options]="returns()"
@@ -57,14 +55,12 @@
             optionValue="id"
             [showClear]="true"
             [placeholder]="'accounting.hints.optional' | translate"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-select>
+          ></app-select>
           <app-field-error [control]="form.controls.supplier_return"></app-field-error>
         </div>
         <div class="flex flex-col gap-1">
           <label for="supplier_invoice" class="text-sm font-medium">{{ 'accounting.fields.supplierInvoice' | translate }}</label>
-          <p-select
+          <app-select
             inputId="supplier_invoice"
             formControlName="supplier_invoice"
             [options]="invoices()"
@@ -75,9 +71,7 @@
             filterBy="invoice_number"
             [placeholder]="'accounting.hints.optional' | translate"
             [emptyMessage]="'accounting.hints.noSupplierInvoices' | translate"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-select>
+          ></app-select>
           <app-field-error [control]="form.controls.supplier_invoice"></app-field-error>
         </div>
         <div class="flex flex-col gap-1">

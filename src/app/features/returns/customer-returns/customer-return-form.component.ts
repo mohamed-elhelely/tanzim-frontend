@@ -6,7 +6,6 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { forkJoin } from 'rxjs';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
 import { AppError } from '../../../core/errors/app-error';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -31,7 +30,7 @@ import {
   ReturnReason,
 } from '../returns.models';
 import { CustomerReturnService } from './customer-return.service';
-import { CardComponent } from '../../../shared/ui';
+import { CardComponent, SelectComponent } from '../../../shared/ui';
 
 const QUANTITY = /^\d+(\.\d{1,3})?$/;
 
@@ -61,6 +60,7 @@ interface FreeRow {
 @Component({
   selector: 'app-customer-return-form',
   imports: [
+    SelectComponent,
     CardComponent,
     DecimalPipe,
     FormsModule,
@@ -68,7 +68,6 @@ interface FreeRow {
     TranslatePipe,
     ButtonModule,
     InputTextModule,
-    SelectModule,
     TextareaModule,
     PageHeaderComponent,
     LoadingStateComponent,

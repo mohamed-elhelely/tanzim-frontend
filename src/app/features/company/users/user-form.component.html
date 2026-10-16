@@ -68,7 +68,7 @@
 
         <div class="flex flex-col gap-1">
           <label for="role" class="text-sm font-medium">{{ 'company.fields.role' | translate }}</label>
-          <p-select
+          <app-select
             inputId="role"
             formControlName="role"
             [options]="roleOptions()"
@@ -77,15 +77,13 @@
             [filter]="true"
             [showClear]="true"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-select>
+          ></app-select>
           <app-field-error [control]="form.controls.role"></app-field-error>
         </div>
 
         <div class="flex flex-col gap-1">
           <label for="department" class="text-sm font-medium">{{ 'company.fields.department' | translate }}</label>
-          <p-select
+          <app-select
             inputId="department"
             formControlName="department"
             [options]="departmentOptions()"
@@ -94,15 +92,13 @@
             [filter]="true"
             [showClear]="true"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-select>
+          ></app-select>
           <app-field-error [control]="form.controls.department"></app-field-error>
         </div>
 
         <div class="flex flex-col gap-1">
           <label for="team" class="text-sm font-medium">{{ 'company.fields.team' | translate }}</label>
-          <p-select
+          <app-select
             inputId="team"
             formControlName="team"
             [options]="teamOptions()"
@@ -111,9 +107,7 @@
             [filter]="true"
             [showClear]="true"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-select>
+          ></app-select>
           <app-field-error [control]="form.controls.team"></app-field-error>
         </div>
       </div>

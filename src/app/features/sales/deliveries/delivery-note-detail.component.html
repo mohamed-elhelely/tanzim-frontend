@@ -108,18 +108,14 @@
       @if (carrierDialog() === 'details') {
         <div class="flex flex-col gap-1">
           <label for="dn_method" class="text-sm font-medium">{{ 'sales.fields.shippingMethod' | translate }}</label>
-          <p-select
+          <app-select
             inputId="dn_method"
             [(ngModel)]="form.shipping_method"
             [options]="methodOptions"
             optionLabel="label"
             optionValue="value"
-            styleClass="w-full"
-            appendTo="body"
-          >
-            <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
-            <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
-          </p-select>
+            [translateLabels]="true"
+          ></app-select>
         </div>
       }
       <div class="flex flex-col gap-1">

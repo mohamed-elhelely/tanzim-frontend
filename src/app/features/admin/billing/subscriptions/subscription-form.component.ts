@@ -4,7 +4,6 @@ import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angula
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
 import { Observable, catchError, forkJoin, map, of, startWith } from 'rxjs';
 import { AccessService } from '../../../../core/auth/access.service';
 import { AppError } from '../../../../core/errors/app-error';
@@ -20,7 +19,7 @@ import { TenantCompanyService } from '../../companies/tenant-company.service';
 import { BillingModule, MODULE_EDITABLE_STATUSES, SUBSCRIPTION_STATUSES, Subscription, SubscriptionPayload, WHOLE } from '../platform-billing.models';
 import { BillingModuleService, PlanService, SubscriptionService } from '../platform-billing.service';
 import { SubscriptionModulesComponent } from './subscription-modules.component';
-import { MultiSelectComponent, SelectItemDirective, ToggleComponent } from '../../../../shared/ui';
+import { MultiSelectComponent, SelectComponent, SelectItemDirective, ToggleComponent } from '../../../../shared/ui';
 
 /** `YYYY-MM-DD`, `months` from today. */
 function isoDate(months = 0): string {
@@ -36,6 +35,7 @@ function isoDate(months = 0): string {
 @Component({
   selector: 'app-subscription-form',
   imports: [
+    SelectComponent,
     SelectItemDirective,
     MultiSelectComponent,
     ToggleComponent,
@@ -43,7 +43,6 @@ function isoDate(months = 0): string {
     TranslatePipe,
     ButtonModule,
     InputTextModule,
-    SelectModule,
     FormLayoutComponent,
     LoadingStateComponent,
     ErrorStateComponent,

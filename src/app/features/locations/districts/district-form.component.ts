@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } 
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
-import { SelectModule } from 'primeng/select';
 import { InputTextModule } from 'primeng/inputtext';
 import { AppError } from '../../../core/errors/app-error';
 import { LanguageService } from '../../../core/services/language.service';
@@ -18,14 +17,15 @@ import { SelectOption } from '../../company/company.models';
 import { CityService } from '../cities/city.service';
 import { City, DistrictPayload } from '../locations.models';
 import { DistrictService } from './district.service';
+import { SelectComponent } from '../../../shared/ui';
 
 @Component({
   selector: 'app-district-form',
   imports: [
+    SelectComponent,
     ReactiveFormsModule,
     TranslatePipe,
     ButtonModule,
-    SelectModule,
     InputTextModule,
     FormLayoutComponent,
     LoadingStateComponent,

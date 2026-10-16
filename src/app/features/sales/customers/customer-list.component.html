@@ -17,7 +17,7 @@
           class="w-full"
         />
       </p-iconfield>
-      <p-select
+      <app-select
         [(ngModel)]="customerType"
         [options]="typeOptions"
         optionLabel="label"
@@ -25,12 +25,9 @@
         [showClear]="true"
         [placeholder]="'sales.fields.customerType' | translate"
         [ariaLabel]="'sales.fields.customerType' | translate"
-        styleClass="w-full sm:w-56"
-        appendTo="body"
-      >
-        <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
-        <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
-      </p-select>
+        class="sm:w-56"
+        [translateLabels]="true"
+      ></app-select>
       <app-saved-views [table]="table" screen="customer"></app-saved-views>
       <p-button
         [label]="'common.apply' | translate"

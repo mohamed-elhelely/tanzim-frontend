@@ -4,7 +4,6 @@ import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
-import { SelectModule } from 'primeng/select';
 import { InputTextModule } from 'primeng/inputtext';
 import { map } from 'rxjs';
 import { AppError } from '../../../core/errors/app-error';
@@ -23,18 +22,18 @@ import { DistrictService } from '../districts/district.service';
 import { City, District, LOCATION_TYPES, LocationPayload, LocationType, Region } from '../locations.models';
 import { RegionService } from '../regions/region.service';
 import { LocationService } from './location.service';
-import { CardComponent, ToggleComponent } from '../../../shared/ui';
+import { CardComponent, SelectComponent, ToggleComponent } from '../../../shared/ui';
 
 /** A company location ("site"): an address under Country → Region → City → District. */
 @Component({
   selector: 'app-site-form',
   imports: [
+    SelectComponent,
     ToggleComponent,
     CardComponent,
     ReactiveFormsModule,
     TranslatePipe,
     ButtonModule,
-    SelectModule,
     InputTextModule,
     PageHeaderComponent,
     LoadingStateComponent,

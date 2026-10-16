@@ -13,7 +13,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
 import { AppError } from '../../../core/errors/app-error';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
@@ -25,7 +24,7 @@ import { SelectOption } from '../../company/company.models';
 import { InventoryRef, ProductVariantPayload } from '../inventory.models';
 import { ProductService } from '../products/product.service';
 import { ProductVariantService } from './product-variant.service';
-import { CardComponent, ToggleComponent } from '../../../shared/ui';
+import { CardComponent, SelectComponent, ToggleComponent } from '../../../shared/ui';
 
 const DECIMAL_4 = /^\d+(\.\d{1,4})?$/;
 const DECIMAL_3 = /^\d+(\.\d{1,3})?$/;
@@ -42,13 +41,13 @@ function uniqueKeys(array: AbstractControl): ValidationErrors | null {
 @Component({
   selector: 'app-product-variant-form',
   imports: [
+    SelectComponent,
     ToggleComponent,
     CardComponent,
     ReactiveFormsModule,
     TranslatePipe,
     ButtonModule,
     InputTextModule,
-    SelectModule,
     PageHeaderComponent,
     LoadingStateComponent,
     ErrorStateComponent,

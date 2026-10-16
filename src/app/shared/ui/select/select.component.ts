@@ -42,8 +42,12 @@ export class SelectComponent extends FormControlBase<unknown> {
   /** The user may also type a value that is not in the list. */
   readonly editable = input(false);
 
-  /** The user picked (or cleared) a value. */
-  readonly changed = output<unknown>();
+  /**
+   * The user picked (or cleared) a value. Typed like the library's own event: the value comes from `optionValue`,
+   * which templates cannot type, and handlers declare what they expect (`onCustomerChange(id: number | null)`).
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  readonly changed = output<any>();
 
   readonly itemTemplate = contentChild(SelectItemDirective);
   readonly selectedTemplate = contentChild(SelectSelectedDirective);

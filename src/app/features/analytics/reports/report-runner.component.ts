@@ -4,7 +4,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
 import { AppError } from '../../../core/errors/app-error';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
@@ -27,7 +26,7 @@ import {
   ReportResult,
   ReportType,
 } from '../analytics.models';
-import { CardComponent } from '../../../shared/ui';
+import { CardComponent, SelectComponent, SelectGroupDirective, SelectItemDirective, SelectSelectedDirective } from '../../../shared/ui';
 
 interface ReportGroup {
   key: string;
@@ -42,12 +41,15 @@ interface ReportGroup {
 @Component({
   selector: 'app-report-runner',
   imports: [
+    SelectGroupDirective,
+    SelectSelectedDirective,
+    SelectItemDirective,
+    SelectComponent,
     CardComponent,
     FormsModule,
     TranslatePipe,
     ButtonModule,
     InputTextModule,
-    SelectModule,
     PageHeaderComponent,
     ErrorStateComponent,
     AnalyticsTableComponent,

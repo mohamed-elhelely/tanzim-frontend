@@ -246,32 +246,24 @@
                 />
               </td>
               <td class="py-2 ps-3">
-                <p-select
+                <app-select
                   [(ngModel)]="row.condition"
                   [options]="conditionOptions"
                   optionLabel="label"
                   optionValue="value"
                   [ariaLabel]="('returns.fields.condition' | translate) + ' ' + row.name"
-                  styleClass="w-full"
-                  appendTo="body"
-                >
-                  <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
-                  <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
-                </p-select>
+                  [translateLabels]="true"
+                ></app-select>
               </td>
               <td class="py-2 ps-3">
-                <p-select
+                <app-select
                   [(ngModel)]="row.disposition"
                   [options]="dispositionOptions"
                   optionLabel="label"
                   optionValue="value"
                   [ariaLabel]="('returns.fields.disposition' | translate) + ' ' + row.name"
-                  styleClass="w-full"
-                  appendTo="body"
-                >
-                  <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
-                  <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
-                </p-select>
+                  [translateLabels]="true"
+                ></app-select>
               </td>
               <td class="py-2 ps-3">
                 <input

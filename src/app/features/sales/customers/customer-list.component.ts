@@ -7,7 +7,6 @@ import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { AccessService } from '../../../core/auth/access.service';
 import { ConfirmService } from '../../../core/services/confirm.service';
@@ -21,10 +20,12 @@ import { CUSTOMER_TYPES, CustomerListItem, CustomerType } from '../sales.models'
 import { CustomerService } from './customer.service';
 import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
+import { SelectComponent } from '../../../shared/ui';
 
 @Component({
   selector: 'app-customer-list',
   imports: [
+    SelectComponent,
     RowActionsComponent,
     RowActionComponent,
     SavedViewsComponent,
@@ -36,7 +37,6 @@ import { SavedViewsComponent } from '../../../shared/table/saved-views.component
     InputTextModule,
     IconFieldModule,
     InputIconModule,
-    SelectModule,
     PageHeaderComponent,
     EmptyStateComponent,
     ErrorStateComponent,

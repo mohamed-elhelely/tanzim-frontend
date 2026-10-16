@@ -4,7 +4,6 @@ import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angula
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
 import { AppError } from '../../../core/errors/app-error';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -16,7 +15,7 @@ import { injectFormContext } from '../../../shared/forms/form-context';
 import { handleSaveError } from '../../../shared/utils/server-errors';
 import { ACCOUNT_TYPES, Account, AccountPayload, AccountType } from '../accounting.models';
 import { AccountService } from './account.service';
-import { ToggleComponent } from '../../../shared/ui';
+import { SelectComponent, ToggleComponent } from '../../../shared/ui';
 
 /**
  * Create or edit an account. The parent must be a group account of the same type (the backend's rule), and can't
@@ -25,12 +24,12 @@ import { ToggleComponent } from '../../../shared/ui';
 @Component({
   selector: 'app-account-form',
   imports: [
+    SelectComponent,
     ToggleComponent,
     ReactiveFormsModule,
     TranslatePipe,
     ButtonModule,
     InputTextModule,
-    SelectModule,
     TextareaModule,
     FormLayoutComponent,
     LoadingStateComponent,

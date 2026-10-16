@@ -20,7 +20,7 @@
       <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
         <div class="flex flex-col gap-1">
           <label for="zone" class="text-sm font-medium">{{ 'inventory.fields.zone' | translate }} *</label>
-          <p-select
+          <app-select
             inputId="zone"
             formControlName="zone"
             [options]="zoneOptions()"
@@ -29,9 +29,7 @@
             [filter]="true"
             [showClear]="true"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-select>
+          ></app-select>
           <small class="text-xs text-gray-500 dark:text-gray-400">{{ 'inventory.hints.noBinTracking' | translate }}</small>
           <app-field-error [control]="form.controls.zone"></app-field-error>
         </div>

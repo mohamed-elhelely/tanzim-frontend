@@ -7,7 +7,6 @@ import { Observable } from 'rxjs';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { TextareaModule } from 'primeng/textarea';
 import { AppError } from '../../../../core/errors/app-error';
@@ -26,7 +25,7 @@ import { AdminInvoice, BillingModule, INVOICE_SEVERITY, MONEY, WHOLE } from '../
 import { RowActionComponent, RowActionsComponent } from '../../../../shared/table/row-actions.component';
 import { AdminInvoiceService, BillingModuleService } from '../platform-billing.service';
 import { AppDatePipe } from '../../../../shared/pipes/app-date.pipe';
-import { CardComponent } from '../../../../shared/ui';
+import { CardComponent, SelectComponent } from '../../../../shared/ui';
 
 /**
  * /admin/invoices/:id: one platform invoice. While it is a draft, staff edit its items and issue it; once issued,
@@ -35,6 +34,7 @@ import { CardComponent } from '../../../../shared/ui';
 @Component({
   selector: 'app-invoice-detail',
   imports: [
+    SelectComponent,
     CardComponent,
     RowActionsComponent,
     RowActionComponent,
@@ -45,7 +45,6 @@ import { CardComponent } from '../../../../shared/ui';
     ButtonModule,
     DialogModule,
     InputTextModule,
-    SelectModule,
     TableModule,
     TextareaModule,
     PageHeaderComponent,

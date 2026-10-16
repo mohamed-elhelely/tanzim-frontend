@@ -5,19 +5,16 @@
     <div class="flex flex-col flex-wrap gap-4 lg:flex-row lg:items-end">
       <div class="flex flex-col gap-1">
         <label for="report_type" class="text-sm font-medium">{{ 'accounting.reports.report' | translate }}</label>
-        <p-select
+        <app-select
           inputId="report_type"
           [ngModel]="type()"
           (ngModelChange)="onTypeChange($event)"
           [options]="typeOptions"
           optionLabel="label"
           optionValue="value"
-          styleClass="w-full lg:w-64"
-          appendTo="body"
-        >
-          <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
-          <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
-        </p-select>
+          class="lg:w-64"
+          [translateLabels]="true"
+        ></app-select>
       </div>
 
       @for (field of fields(); track field) {
@@ -30,7 +27,7 @@
           </label>
           @switch (field) {
             @case ('account') {
-              <p-select
+              <app-select
                 [inputId]="'param_' + field"
                 [(ngModel)]="params.account"
                 [options]="accounts()"
@@ -39,12 +36,11 @@
                 [filter]="true"
                 filterBy="label"
                 [placeholder]="'common.select' | translate"
-                styleClass="w-full lg:w-64"
-                appendTo="body"
-              ></p-select>
+                class="lg:w-64"
+              ></app-select>
             }
             @case ('customer') {
-              <p-select
+              <app-select
                 [inputId]="'param_' + field"
                 [(ngModel)]="params.customer"
                 [options]="customers()"
@@ -53,12 +49,11 @@
                 [filter]="true"
                 filterBy="label"
                 [placeholder]="'common.select' | translate"
-                styleClass="w-full lg:w-64"
-                appendTo="body"
-              ></p-select>
+                class="lg:w-64"
+              ></app-select>
             }
             @case ('supplier') {
-              <p-select
+              <app-select
                 [inputId]="'param_' + field"
                 [(ngModel)]="params.supplier"
                 [options]="suppliers()"
@@ -67,9 +62,8 @@
                 [filter]="true"
                 filterBy="label"
                 [placeholder]="'common.select' | translate"
-                styleClass="w-full lg:w-64"
-                appendTo="body"
-              ></p-select>
+                class="lg:w-64"
+              ></app-select>
             }
             @default {
               <input pInputText [id]="'param_' + field" type="date" [(ngModel)]="params[field]" class="w-full lg:w-44" />

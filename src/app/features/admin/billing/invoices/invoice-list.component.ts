@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
-import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { ErrorStateComponent } from '../../../../shared/components/error-state/error-state.component';
@@ -19,11 +18,13 @@ import { AdminInvoiceService } from '../platform-billing.service';
 import { InvoiceDraftFormComponent } from './invoice-draft-form.component';
 import { RowActionComponent, RowActionsComponent } from '../../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../../shared/table/saved-views.component';
+import { SelectComponent } from '../../../../shared/ui';
 
 /** /admin/invoices: platform invoices of every company, filtered by company and status. */
 @Component({
   selector: 'app-invoice-list',
   imports: [
+    SelectComponent,
     RowActionsComponent,
     RowActionComponent,
     SavedViewsComponent,
@@ -32,7 +33,6 @@ import { SavedViewsComponent } from '../../../../shared/table/saved-views.compon
     RouterLink,
     TranslatePipe,
     ButtonModule,
-    SelectModule,
     TableModule,
     PageHeaderComponent,
     EmptyStateComponent,

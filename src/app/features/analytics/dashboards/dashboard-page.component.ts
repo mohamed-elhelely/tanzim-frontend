@@ -6,7 +6,6 @@ import { ActivatedRoute, Router, RouterLink, RouterLinkActive } from '@angular/r
 import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
 import { AppError } from '../../../core/errors/app-error';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
@@ -19,7 +18,7 @@ import { AnalyticsLabelPipe, formatKpi } from '../analytics-format';
 import { AnalyticsTableComponent } from '../analytics-table.component';
 import { AnalyticsService } from '../analytics.service';
 import { CHART_SPECS, ChartSpec, DASHBOARD_NAMES, Dashboard, DashboardName, DashboardRef, Kpi, fitsSpec } from '../analytics.models';
-import { CardComponent } from '../../../shared/ui';
+import { CardComponent, SelectComponent } from '../../../shared/ui';
 
 /** Dashboards that can be narrowed to one warehouse. */
 const WAREHOUSE_DASHBOARDS: DashboardName[] = ['overview', 'inventory'];
@@ -39,6 +38,7 @@ interface ChartBlock {
 @Component({
   selector: 'app-dashboard-page',
   imports: [
+    SelectComponent,
     CardComponent,
     DecimalPipe,
     FormsModule,
@@ -47,7 +47,6 @@ interface ChartBlock {
     TranslatePipe,
     ButtonModule,
     InputTextModule,
-    SelectModule,
     PageHeaderComponent,
     ErrorStateComponent,
     LoadingStateComponent,

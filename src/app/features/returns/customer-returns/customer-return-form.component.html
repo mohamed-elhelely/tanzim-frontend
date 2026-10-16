@@ -21,7 +21,7 @@
       <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
         <div class="flex flex-col gap-1">
           <label for="customer" class="text-sm font-medium">{{ 'returns.fields.customer' | translate }} *</label>
-          <p-select
+          <app-select
             inputId="customer"
             formControlName="customer"
             [options]="customerOptions()"
@@ -30,16 +30,14 @@
             [filter]="true"
             filterBy="label"
             [placeholder]="'common.select' | translate"
-            (onChange)="onCustomerChange($event.value)"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-select>
+            (changed)="onCustomerChange($event)"
+          ></app-select>
           <app-field-error [control]="form.controls.customer"></app-field-error>
         </div>
 
         <div class="flex flex-col gap-1">
           <label for="sales_order" class="text-sm font-medium">{{ 'returns.fields.salesOrder' | translate }}</label>
-          <p-select
+          <app-select
             inputId="sales_order"
             formControlName="sales_order"
             [options]="orderOptions()"
@@ -47,42 +45,34 @@
             optionValue="value"
             [showClear]="true"
             [placeholder]="'returns.hints.noOrder' | translate"
-            (onChange)="onOrderChange($event.value)"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-select>
+            (changed)="onOrderChange($event)"
+          ></app-select>
           <small class="text-xs text-gray-500 dark:text-gray-400">{{ 'returns.hints.orderOptional' | translate }}</small>
         </div>
 
         <div class="flex flex-col gap-1">
           <label for="warehouse" class="text-sm font-medium">{{ 'returns.fields.warehouse' | translate }} *</label>
-          <p-select
+          <app-select
             inputId="warehouse"
             formControlName="warehouse"
             [options]="warehouses()"
             optionLabel="name"
             optionValue="id"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-select>
+          ></app-select>
           <app-field-error [control]="form.controls.warehouse"></app-field-error>
         </div>
 
         <div class="flex flex-col gap-1">
           <label for="return_reason" class="text-sm font-medium">{{ 'returns.fields.reason' | translate }} *</label>
-          <p-select
+          <app-select
             inputId="return_reason"
             formControlName="return_reason"
             [options]="reasonOptions"
             optionLabel="label"
             optionValue="value"
-            styleClass="w-full"
-            appendTo="body"
-          >
-            <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
-            <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
-          </p-select>
+            [translateLabels]="true"
+          ></app-select>
         </div>
 
         <div class="flex flex-col gap-1 md:col-span-2">
@@ -92,7 +82,7 @@
 
         <div class="flex flex-col gap-1">
           <label for="refund_method" class="text-sm font-medium">{{ 'returns.fields.refundMethod' | translate }}</label>
-          <p-select
+          <app-select
             inputId="refund_method"
             formControlName="refund_method"
             [options]="refundOptions"
@@ -100,12 +90,8 @@
             optionValue="value"
             [showClear]="true"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
-          >
-            <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
-            <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
-          </p-select>
+            [translateLabels]="true"
+          ></app-select>
         </div>
 
         <div class="flex flex-col gap-1 md:col-span-2">
@@ -191,7 +177,7 @@
               @for (row of freeRows; track $index; let i = $index) {
                 <tr class="border-b border-gray-100 dark:border-gray-800">
                   <td class="py-2">
-                    <p-select
+                    <app-select
                       [(ngModel)]="row.variant"
                       [ngModelOptions]="{ standalone: true }"
                       [options]="items()"
@@ -201,9 +187,7 @@
                       filterBy="label"
                       [placeholder]="'common.select' | translate"
                       [ariaLabel]="'returns.fields.item' | translate"
-                      styleClass="w-full"
-                      appendTo="body"
-                    ></p-select>
+                    ></app-select>
                   </td>
                   <td class="py-2 ps-3">
                     <input

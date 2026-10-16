@@ -26,7 +26,7 @@
       @if (showWarehouse()) {
         <div class="flex flex-col gap-1">
           <label for="warehouse" class="text-sm font-medium">{{ 'analytics.labels.warehouse' | translate }}</label>
-          <p-select
+          <app-select
             inputId="warehouse"
             [(ngModel)]="warehouse"
             [options]="warehouseOptions()"
@@ -34,9 +34,8 @@
             optionValue="value"
             [showClear]="true"
             [placeholder]="'inventory.stock.allWarehouses' | translate"
-            styleClass="w-full sm:w-60"
-            appendTo="body"
-          ></p-select>
+            class="sm:w-60"
+          ></app-select>
         </div>
       }
       <p-button [label]="'analytics.show' | translate" icon="pi pi-refresh" [loading]="loading()" (onClick)="load()"></p-button>

@@ -5,7 +5,7 @@
 } @else {
   <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
     <div class="flex flex-col gap-3 border-b border-gray-100 p-4 sm:flex-row sm:items-center dark:border-gray-800">
-      <p-select
+      <app-select
         [(ngModel)]="company"
         [options]="companyOptions()"
         optionLabel="label"
@@ -14,10 +14,9 @@
         [showClear]="true"
         [placeholder]="'admin.billing.fields.company' | translate"
         [ariaLabel]="'admin.billing.fields.company' | translate"
-        styleClass="w-full sm:w-64"
-        appendTo="body"
-      ></p-select>
-      <p-select
+        class="sm:w-64"
+      ></app-select>
+      <app-select
         [(ngModel)]="status"
         [options]="statusOptions"
         optionLabel="label"
@@ -25,12 +24,9 @@
         [showClear]="true"
         [placeholder]="'admin.billing.fields.status' | translate"
         [ariaLabel]="'admin.billing.fields.status' | translate"
-        styleClass="w-full sm:w-48"
-        appendTo="body"
-      >
-        <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
-        <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
-      </p-select>
+        class="sm:w-48"
+        [translateLabels]="true"
+      ></app-select>
       <app-saved-views [table]="table" screen="platform-invoice"></app-saved-views>
       <p-button
         [label]="'common.apply' | translate"

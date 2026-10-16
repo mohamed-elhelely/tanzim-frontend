@@ -3,7 +3,6 @@ import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
-import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { ConfirmService } from '../../../../core/services/confirm.service';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
@@ -20,6 +19,7 @@ import { SubscriptionFormComponent } from './subscription-form.component';
 import { SubscriptionModulesComponent } from './subscription-modules.component';
 import { RowActionComponent, RowActionsComponent } from '../../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../../shared/table/saved-views.component';
+import { SelectComponent } from '../../../../shared/ui';
 
 /**
  * /admin/subscriptions: every company's subscription, filtered by company and status; plan, dates and users are
@@ -28,6 +28,7 @@ import { SavedViewsComponent } from '../../../../shared/table/saved-views.compon
 @Component({
   selector: 'app-subscription-list',
   imports: [
+    SelectComponent,
     RowActionsComponent,
     RowActionComponent,
     SavedViewsComponent,
@@ -35,7 +36,6 @@ import { SavedViewsComponent } from '../../../../shared/table/saved-views.compon
     TranslatePipe,
     ButtonModule,
     DialogModule,
-    SelectModule,
     TableModule,
     PageHeaderComponent,
     EmptyStateComponent,

@@ -187,7 +187,7 @@
       @if (editingItem() === 'new') {
         <div class="flex flex-col gap-1">
           <label for="item_module" class="text-sm font-medium">{{ 'admin.billing.fields.module' | translate }}</label>
-          <p-select
+          <app-select
             inputId="item_module"
             formControlName="module"
             [options]="moduleOptions()"
@@ -195,9 +195,7 @@
             optionValue="value"
             [showClear]="true"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-select>
+          ></app-select>
         </div>
       }
       <div class="flex justify-end gap-2 border-t border-gray-100 pt-4 dark:border-gray-800">

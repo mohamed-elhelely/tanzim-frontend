@@ -6,7 +6,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { TextareaModule } from 'primeng/textarea';
 import { AppError } from '../../../core/errors/app-error';
@@ -32,7 +31,7 @@ import {
 import { SalesInvoiceService } from './sales-invoice.service';
 import { RecordHistoryComponent } from '../../company/system-logs/record-history.component';
 import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
-import { CardComponent } from '../../../shared/ui';
+import { CardComponent, SelectComponent } from '../../../shared/ui';
 
 const PAYABLE: SalesInvoiceStatus[] = ['issued', 'overdue'];
 const CANCELLABLE: SalesInvoiceStatus[] = ['draft', 'issued', 'overdue'];
@@ -51,6 +50,7 @@ function today(): string {
 @Component({
   selector: 'app-sales-invoice-detail',
   imports: [
+    SelectComponent,
     CardComponent,
     RecordHistoryComponent,
     AppDatePipe,
@@ -61,7 +61,6 @@ function today(): string {
     ButtonModule,
     DialogModule,
     InputTextModule,
-    SelectModule,
     TableModule,
     TextareaModule,
     PageHeaderComponent,

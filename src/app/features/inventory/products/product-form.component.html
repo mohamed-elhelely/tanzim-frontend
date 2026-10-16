@@ -32,25 +32,21 @@
 
         <div class="flex flex-col gap-1">
           <label for="product_type" class="text-sm font-medium">{{ 'inventory.fields.productType' | translate }} *</label>
-          <p-select
+          <app-select
             inputId="product_type"
             formControlName="product_type"
             [options]="productTypeOptions"
             optionLabel="label"
             optionValue="value"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
-          >
-            <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
-            <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
-          </p-select>
+            [translateLabels]="true"
+          ></app-select>
           <app-field-error [control]="form.controls.product_type"></app-field-error>
         </div>
 
         <div class="flex flex-col gap-1">
           <label for="category" class="text-sm font-medium">{{ 'inventory.fields.category' | translate }}</label>
-          <p-select
+          <app-select
             inputId="category"
             formControlName="category"
             [options]="categoryOptions()"
@@ -59,15 +55,13 @@
             [filter]="true"
             [showClear]="true"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-select>
+          ></app-select>
           <app-field-error [control]="form.controls.category"></app-field-error>
         </div>
 
         <div class="flex flex-col gap-1">
           <label for="brand" class="text-sm font-medium">{{ 'inventory.fields.brand' | translate }}</label>
-          <p-select
+          <app-select
             inputId="brand"
             formControlName="brand"
             [options]="brandOptions()"
@@ -76,9 +70,7 @@
             [filter]="true"
             [showClear]="true"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-select>
+          ></app-select>
           <app-field-error [control]="form.controls.brand"></app-field-error>
         </div>
 
@@ -90,19 +82,15 @@
 
         <div class="flex flex-col gap-1">
           <label for="valuation_method" class="text-sm font-medium">{{ 'inventory.fields.valuationMethod' | translate }} *</label>
-          <p-select
+          <app-select
             inputId="valuation_method"
             formControlName="valuation_method"
             [options]="valuationOptions"
             optionLabel="label"
             optionValue="value"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
-          >
-            <ng-template pTemplate="selectedItem" let-option>{{ option.label | translate }}</ng-template>
-            <ng-template pTemplate="item" let-option>{{ option.label | translate }}</ng-template>
-          </p-select>
+            [translateLabels]="true"
+          ></app-select>
           <app-field-error [control]="form.controls.valuation_method"></app-field-error>
         </div>
 

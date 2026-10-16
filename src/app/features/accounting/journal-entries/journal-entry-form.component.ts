@@ -6,7 +6,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
 import { forkJoin, of } from 'rxjs';
 import { AppError } from '../../../core/errors/app-error';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -18,7 +17,7 @@ import { handleSaveError } from '../../../shared/utils/server-errors';
 import { AccountService } from '../accounts/account.service';
 import { Account, JournalEntry, JournalEntryPayload } from '../accounting.models';
 import { JournalEntryService } from './journal-entry.service';
-import { CardComponent } from '../../../shared/ui';
+import { CardComponent, SelectComponent } from '../../../shared/ui';
 
 const MONEY = /^\d+(\.\d{1,2})?$/;
 
@@ -54,13 +53,13 @@ function cents(value: string | undefined): number {
 @Component({
   selector: 'app-journal-entry-form',
   imports: [
+    SelectComponent,
     CardComponent,
     DecimalPipe,
     ReactiveFormsModule,
     TranslatePipe,
     ButtonModule,
     InputTextModule,
-    SelectModule,
     PageHeaderComponent,
     LoadingStateComponent,
     ErrorStateComponent,

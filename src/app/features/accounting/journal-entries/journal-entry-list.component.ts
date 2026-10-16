@@ -5,7 +5,6 @@ import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
-import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
@@ -17,6 +16,7 @@ import { JournalEntry, JournalStatus } from '../accounting.models';
 import { JournalEntryService } from './journal-entry.service';
 import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
+import { SelectComponent } from '../../../shared/ui';
 
 type Origin = 'manual' | 'automatic';
 
@@ -24,6 +24,7 @@ type Origin = 'manual' | 'automatic';
 @Component({
   selector: 'app-journal-entry-list',
   imports: [
+    SelectComponent,
     RowActionsComponent,
     RowActionComponent,
     SavedViewsComponent,
@@ -33,7 +34,6 @@ type Origin = 'manual' | 'automatic';
     TableModule,
     ButtonModule,
     InputTextModule,
-    SelectModule,
     PageHeaderComponent,
     EmptyStateComponent,
     ErrorStateComponent,
