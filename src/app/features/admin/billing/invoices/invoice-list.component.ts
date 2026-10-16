@@ -69,7 +69,7 @@ export class InvoiceListComponent implements OnInit {
   /** Keyed by string: table rows are untyped in the template. */
   readonly severity: Record<string, Severity> = INVOICE_SEVERITY;
   readonly statusOptions = INVOICE_STATUSES.map((status) => ({ value: status, label: `billing.invoiceStatus.${status}` }));
-  readonly companyOptions = signal<Array<{ value: number; label: string }>>([]);
+  readonly companyOptions = signal<{ value: number; label: string }[]>([]);
   readonly headerActions: PageHeaderAction[] = [
     { label: 'admin.billing.invoices.new', icon: 'pi pi-plus', onClick: () => this.formDialog.open(InvoiceDraftFormComponent, { header: 'admin.billing.invoices.new' }).subscribe() },
   ];

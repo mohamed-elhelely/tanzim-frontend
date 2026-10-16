@@ -15,7 +15,7 @@ describe('Platform billing services', () => {
 
   it('drives the invoice workflow through its action endpoints', () => {
     const api = TestBed.inject(AdminInvoiceService);
-    const calls: Array<[() => void, string, string, unknown]> = [
+    const calls: [() => void, string, string, unknown][] = [
       [() => api.createDraft({ subscription: 2 }).subscribe(), 'POST', '/api/subscriptions/v1/invoices/create_draft/', { subscription: 2 }],
       [() => api.addItem(5, { description: 'Seats', quantity: 3, unit_price: '10.00' }).subscribe(), 'POST', '/api/subscriptions/v1/invoices/5/add_item/', { description: 'Seats', quantity: 3, unit_price: '10.00' }],
       [() => api.updateItem(5, 9, { quantity: 4 }).subscribe(), 'PATCH', '/api/subscriptions/v1/invoices/5/items/9/', { quantity: 4 }],

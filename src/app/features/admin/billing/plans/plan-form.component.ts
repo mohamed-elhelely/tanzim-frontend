@@ -68,7 +68,7 @@ export class PlanFormComponent implements OnInit {
   });
 
   /** Active catalog modules; a module picked in one list is left out of the other. */
-  private readonly modules = signal<Array<{ value: number; label: string }>>([]);
+  private readonly modules = signal<{ value: number; label: string }[]>([]);
   private readonly picked = toSignal(this.form.valueChanges, { initialValue: this.form.getRawValue() });
   readonly includedOptions = computed(() => {
     const addons = new Set(this.picked().addon_module_ids ?? []);

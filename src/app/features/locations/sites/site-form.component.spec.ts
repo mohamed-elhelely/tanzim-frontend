@@ -43,7 +43,7 @@ describe('SiteFormComponent', () => {
 
   afterEach(() => httpMock.verify());
 
-  function values(options: Array<{ value: number }>): number[] {
+  function values(options: { value: number }[]): number[] {
     return options.map((o) => o.value);
   }
 

@@ -71,12 +71,6 @@ function atMost100(control: AbstractControl<string>): ValidationErrors | null {
   return control.value && Number(control.value) > 100 ? { max: { max: 100 } } : null;
 }
 
-/** Today as YYYY-MM-DD in the user's time zone (what <input type="date"> uses). */
-function today(): string {
-  const now = new Date();
-  return new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
-}
-
 /**
  * Create or edit a draft sales order with its lines.
  * 🧠 Saving sends every line: the backend deletes the order's lines and recreates them (line ids change).

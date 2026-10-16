@@ -15,7 +15,7 @@ export interface CatalogModule {
   code: string;
   /** i18n key of the module name. */
   labelKey: string;
-  resources: Array<{ resource: string; actions: PermissionAction[] }>;
+  resources: { resource: string; actions: PermissionAction[] }[];
 }
 
 export const PERMISSION_MODULES: CatalogModule[] = [

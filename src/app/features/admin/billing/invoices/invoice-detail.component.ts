@@ -72,7 +72,7 @@ export class InvoiceDetailComponent implements OnInit {
   readonly loadError = signal<AppError | null>(null);
   readonly errorTitleKey = errorTitleKey;
   readonly severity = INVOICE_SEVERITY;
-  readonly moduleOptions = signal<Array<{ value: number; label: string }>>([]);
+  readonly moduleOptions = signal<{ value: number; label: string }[]>([]);
 
   /** Item dialog: null = closed, 'new' = add, an item = edit. */
   readonly editingItem = signal<InvoiceItem | 'new' | null>(null);

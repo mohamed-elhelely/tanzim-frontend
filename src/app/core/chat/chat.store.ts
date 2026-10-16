@@ -65,10 +65,16 @@ export class ChatStore {
   constructor() {
     this.center.chatEvents$.pipe(takeUntilDestroyed(inject(DestroyRef))).subscribe((event) => this.enabled() && this.handle(event));
     this.center.reconnected$.pipe(takeUntilDestroyed(inject(DestroyRef))).subscribe(() => this.enabled() && this.resync());
-    // A new user, or chat access granted/taken away: start from nothing.
+    // A new user, or chat access granted/taken away: start from nothing. Keyed on the user id, so the same
+    // user re-signed in as a new object doesn't wipe the chat.
+    let previous: string | undefined;
     effect(() => {
       const on = this.enabled();
-      this.auth.user()?.id;
+      const key = `${on}:${this.auth.user()?.id ?? ''}`;
+      if (key === previous) {
+        return;
+      }
+      previous = key;
       untracked(() => {
         this.reset();
         if (on) {

@@ -75,7 +75,7 @@ export class PaymentListComponent implements OnInit {
   readonly errorTitleKey = errorTitleKey;
   /** Keyed by string: table rows are untyped in the template. */
   readonly severity: Record<string, Severity> = PAYMENT_SEVERITY;
-  readonly companyOptions = signal<Array<{ value: number; label: string }>>([]);
+  readonly companyOptions = signal<{ value: number; label: string }[]>([]);
 
   /** The payment being refunded (dialog open while set). */
   readonly refunding = signal<PlatformPayment | null>(null);

@@ -20,7 +20,7 @@ import { RegionService } from '../regions/region.service';
 import { CityService } from './city.service';
 
 /** UTC, then the IANA zones known to the browser (some browsers leave UTC out of the list). */
-const TIMEZONE_OPTIONS: Array<{ value: string; label: string }> = [
+const TIMEZONE_OPTIONS: { value: string; label: string }[] = [
   'UTC',
   ...Intl.supportedValuesOf('timeZone').filter((zone) => zone !== 'UTC'),
 ].map((zone) => ({ value: zone, label: zone }));

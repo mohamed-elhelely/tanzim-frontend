@@ -17,7 +17,7 @@ describe('location resource services', () => {
 
   afterEach(() => httpMock.verify());
 
-  const cases: Array<[string, () => { all(): import('rxjs').Observable<unknown> }]> = [
+  const cases: [string, () => { all(): import('rxjs').Observable<unknown> }][] = [
     ['/api/company/v1/country/', () => TestBed.inject(CountryService)],
     ['/api/company/v1/region/', () => TestBed.inject(RegionService)],
     ['/api/company/v1/city/', () => TestBed.inject(CityService)],

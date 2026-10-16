@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpTestingController } from '@angular/common/http/testing';
 import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
-import { envelope, errorEnvelope, provideApiTesting } from '../../../testing/api-testing';
+import { envelope, provideApiTesting } from '../../../testing/api-testing';
 import { makeCategory } from '../../../testing/inventory-fixtures';
 import { CategoryFormComponent } from './category-form.component';
 

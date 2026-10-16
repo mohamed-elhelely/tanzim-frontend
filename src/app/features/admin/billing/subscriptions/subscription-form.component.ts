@@ -70,8 +70,8 @@ export class SubscriptionFormComponent implements OnInit {
   readonly loadError = signal<AppError | null>(null);
   readonly formErrors = signal<string[]>([]);
   readonly errorTitleKey = errorTitleKey;
-  readonly companyOptions = signal<Array<{ value: number; label: string }>>([]);
-  readonly planOptions = signal<Array<{ value: number; label: string }>>([]);
+  readonly companyOptions = signal<{ value: number; label: string }[]>([]);
+  readonly planOptions = signal<{ value: number; label: string }[]>([]);
   readonly statusOptions = SUBSCRIPTION_STATUSES.map((status) => ({ value: status, label: `billing.subscriptionStatus.${status}` }));
 
   readonly form = inject(NonNullableFormBuilder).group({

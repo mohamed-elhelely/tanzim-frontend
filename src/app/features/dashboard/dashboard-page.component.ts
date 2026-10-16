@@ -103,7 +103,7 @@ const QUICK_ACTIONS: QuickAction[] = [
  * Setup steps in the order a new company usually does them; each is done once its count is > 0 (branding: once
  * the company has a logo). The chart of accounts is left out: the backend creates it on the first read.
  */
-const SETUP_STEPS: Array<Gate & { key: StepKey; labelKey: string; link: string }> = [
+const SETUP_STEPS: (Gate & { key: StepKey; labelKey: string; link: string })[] = [
   { key: 'branding', labelKey: 'dashboard.steps.branding', link: '/company/profile', permission: 'change_company' },
   { key: 'locations', labelKey: 'dashboard.steps.locations', link: '/locations/sites/new', module: 'location', permission: 'add_location' },
   { key: 'departments', labelKey: 'dashboard.steps.departments', link: '/company/departments/new', permission: 'add_department' },

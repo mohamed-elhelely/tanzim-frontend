@@ -5,7 +5,7 @@ import { API_BASE_URL } from './api.config';
 import { ApiResponse } from '../models/api-response.model';
 
 export interface RequestOptions {
-  params?: HttpParams | Record<string, string | number | boolean | ReadonlyArray<string | number | boolean>>;
+  params?: HttpParams | Record<string, string | number | boolean | readonly (string | number | boolean)[]>;
   headers?: Record<string, string>;
 }
 
