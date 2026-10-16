@@ -1,0 +1,6 @@
+<p-checkbox
+  [binary]="true"
+  [ngModel]="table.allSelected()"
+  (ngModelChange)="table.toggleAll($event)"
+  [ariaLabel]="'common.selectAll' | translate"
+></p-checkbox>

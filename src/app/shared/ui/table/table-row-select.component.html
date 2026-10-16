@@ -1,0 +1,8 @@
+<!-- The click stays here: rows often open the record on click. -->
+<p-checkbox
+  [binary]="true"
+  [ngModel]="selected()"
+  (ngModelChange)="table.toggleRow(row(), $event)"
+  (click)="$event.stopPropagation()"
+  [ariaLabel]="'common.selectRow' | translate"
+></p-checkbox>

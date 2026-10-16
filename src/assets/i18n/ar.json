@@ -41,6 +41,8 @@
     "viewAll": "عرض الكل",
     "reasonOptional": "السبب (اختياري)",
     "selectedCount": "{0} محددة",
+    "selectAll": "تحديد كل صفوف الصفحة",
+    "selectRow": "تحديد الصف",
     "dateFrom": "من",
     "dateTo": "إلى"
   },

@@ -21,6 +21,7 @@ export const UI_SHOWCASE_ROUTES: Routes = [
         loadComponent: () => import('./pages/form-controls-page.component').then((m) => m.FormControlsPageComponent),
       },
       { path: 'dialogs', loadComponent: () => import('./pages/dialogs-page.component').then((m) => m.DialogsPageComponent) },
+      { path: 'tables', loadComponent: () => import('./pages/tables-page.component').then((m) => m.TablesPageComponent) },
     ],
   },
 ];
@@ -31,4 +32,5 @@ export const UI_SHOWCASE_PAGES = [
   { path: 'selects', label: 'Selects' },
   { path: 'form-controls', label: 'Toggles & passwords' },
   { path: 'dialogs', label: 'Dialogs' },
+  { path: 'tables', label: 'Tables' },
 ];

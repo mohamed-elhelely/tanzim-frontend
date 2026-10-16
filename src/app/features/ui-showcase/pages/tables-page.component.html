@@ -1,0 +1,95 @@
+<h1 class="mb-6 text-2xl font-bold">Tables <span class="text-base font-normal text-gray-500">app-table</span></h1>
+
+<app-showcase-section
+  heading="Server paging, sorting, selection"
+  note="[table]=a ServerTable. Click a header to sort (asc, desc); checkboxes fill the ServerTable's selection."
+  [code]="code.server"
+>
+  <div class="w-full">
+    <app-table [table]="server">
+      <ng-template appTableHeader>
+        <tr>
+          <th class="w-12"><app-table-select-all></app-table-select-all></th>
+          <th appSortable="sku">SKU</th>
+          <th appSortable="name">Name</th>
+          <th appSortable="stock" class="text-end">Stock</th>
+        </tr>
+      </ng-template>
+      <ng-template appTableRow let-row>
+        <tr>
+          <td><app-table-row-select [row]="row"></app-table-row-select></td>
+          <td class="font-mono text-xs" dir="ltr">{{ row.sku }}</td>
+          <td>{{ row.name }}</td>
+          <td class="text-end">{{ row.stock }}</td>
+        </tr>
+      </ng-template>
+    </app-table>
+    <p class="mt-2 text-xs text-gray-500">selected: {{ server.selection().length }}</p>
+  </div>
+</app-showcase-section>
+
+<app-showcase-section
+  heading="Local rows: sort, page, search"
+  note="[rows]=records in memory; sortField starts the sort, [paginate] pages here, filterText searches filterFields."
+  [code]="code.local"
+>
+  <div class="flex w-full flex-col gap-2">
+    <input
+      type="search"
+      class="w-64 rounded-lg border border-gray-200 px-3 py-1.5 text-sm dark:border-gray-700 dark:bg-gray-900"
+      placeholder="Search names"
+      aria-label="Search names"
+      [ngModel]="search()"
+      (ngModelChange)="search.set($event)"
+    />
+    <app-table [rows]="server.rows().length ? lines.concat(server.rows()) : lines" [paginate]="true" sortField="name" [filterText]="search()" [filterFields]="['name', 'sku']">
+      <ng-template appTableHeader>
+        <tr>
+          <th appSortable="name">Name</th>
+          <th appSortable="stock" class="text-end">Stock</th>
+        </tr>
+      </ng-template>
+      <ng-template appTableRow let-row>
+        <tr>
+          <td>{{ row.name }}</td>
+          <td class="text-end">{{ row.stock }}</td>
+        </tr>
+      </ng-template>
+      <ng-template appTableEmpty>
+        <tr><td colspan="2" class="py-6 text-center text-sm text-gray-500">No match</td></tr>
+      </ng-template>
+    </app-table>
+  </div>
+</app-showcase-section>
+
+<app-showcase-section heading="Document lines with totals" note="No paging; appTableFooter for totals." [code]="code.lines">
+  <div class="w-full">
+    <app-table [rows]="lines">
+      <ng-template appTableHeader>
+        <tr><th>Item</th><th class="text-end">Qty</th></tr>
+      </ng-template>
+      <ng-template appTableRow let-row>
+        <tr><td>{{ row.name }}</td><td class="text-end">{{ row.stock }}</td></tr>
+      </ng-template>
+      <ng-template appTableFooter>
+        <tr class="font-semibold"><td>Total</td><td class="text-end">{{ lines[0].stock + lines[1].stock + lines[2].stock + lines[3].stock }}</td></tr>
+      </ng-template>
+    </app-table>
+  </div>
+</app-showcase-section>
+
+<app-showcase-section heading="Empty" note="appTableEmpty: shown when there are no rows.">
+  <div class="w-full">
+    <app-table [rows]="none">
+      <ng-template appTableHeader>
+        <tr><th>Name</th></tr>
+      </ng-template>
+      <ng-template appTableRow let-row>
+        <tr><td>{{ row.name }}</td></tr>
+      </ng-template>
+      <ng-template appTableEmpty>
+        <tr><td class="py-6 text-center text-sm text-gray-500">Nothing yet</td></tr>
+      </ng-template>
+    </app-table>
+  </div>
+</app-showcase-section>

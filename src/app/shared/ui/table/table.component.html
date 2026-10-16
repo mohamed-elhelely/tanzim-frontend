@@ -1,0 +1,34 @@
+<p-table
+  [value]="value()"
+  [lazy]="!!server()"
+  [lazyLoadOnInit]="false"
+  [paginator]="paged()"
+  [showCurrentPageReport]="paged()"
+  [currentPageReportTemplate]="'common.pageReport' | translate"
+  [first]="first()"
+  [rows]="pageSize()"
+  [totalRecords]="total()"
+  [rowsPerPageOptions]="pageSizes()"
+  [loading]="busy()"
+  [dataKey]="dataKey()"
+  (onPage)="page($event)"
+  size="small"
+>
+  <ng-template #header>
+    <ng-container *ngTemplateOutlet="headerTemplate()?.template ?? null"></ng-container>
+  </ng-template>
+  <ng-template #body let-row let-index="rowIndex">
+    <ng-container *ngTemplateOutlet="rowTemplate()?.template ?? null; context: { $implicit: row, index: index }"></ng-container>
+  </ng-template>
+  <!-- Only when given: the library draws an empty row / footer as soon as it gets a template. -->
+  @if (emptyTemplate(); as empty) {
+    <ng-template #emptymessage>
+      <ng-container *ngTemplateOutlet="empty.template"></ng-container>
+    </ng-template>
+  }
+  @if (footerTemplate(); as footer) {
+    <ng-template #footer>
+      <ng-container *ngTemplateOutlet="footer.template"></ng-container>
+    </ng-template>
+  }
+</p-table>

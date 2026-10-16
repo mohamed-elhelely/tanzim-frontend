@@ -7,6 +7,7 @@ const pages = [
   { path: 'selects', heading: 'Selects' },
   { path: 'form-controls', heading: 'Toggles & passwords' },
   { path: 'dialogs', heading: 'Dialogs' },
+  { path: 'tables', heading: 'Tables' },
 ];
 
 for (const { path, heading } of pages) {
