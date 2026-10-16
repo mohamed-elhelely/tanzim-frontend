@@ -5,7 +5,6 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { InputTextModule } from 'primeng/inputtext';
-import { TableModule } from 'primeng/table';
 import { AppError } from '../../../core/errors/app-error';
 import { ConfirmService } from '../../../core/services/confirm.service';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
@@ -20,6 +19,8 @@ import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
 import { CardComponent } from '../../../shared/ui/card/card.component';
 import { DialogComponent, DialogFooterDirective } from '../../../shared/ui/dialog/dialog.component';
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
+import { TableComponent } from '../../../shared/ui/table/table.component';
+import { TableFooterDirective, TableHeaderDirective, TableRowDirective } from '../../../shared/ui/table/table-templates';
 
 /**
  * One journal entry. Drafts can be edited, posted or deleted; posted entries are final and can only be reversed
@@ -28,6 +29,10 @@ import { ButtonComponent } from '../../../shared/ui/button/button.component';
 @Component({
   selector: 'app-journal-entry-detail',
   imports: [
+    TableFooterDirective,
+    TableRowDirective,
+    TableHeaderDirective,
+    TableComponent,
     ButtonComponent,
     DialogFooterDirective,
     DialogComponent,
@@ -39,7 +44,6 @@ import { ButtonComponent } from '../../../shared/ui/button/button.component';
     RouterLink,
     TranslatePipe,
     InputTextModule,
-    TableModule,
     PageHeaderComponent,
     LoadingStateComponent,
     ErrorStateComponent,

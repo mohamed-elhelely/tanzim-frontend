@@ -3,7 +3,6 @@ import { FormsModule } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { MenuItem } from 'primeng/api';
 import { MenuModule } from 'primeng/menu';
-import { TableModule } from 'primeng/table';
 import { AccessService } from '../../core/auth/access.service';
 import { AppError } from '../../core/errors/app-error';
 import { NotificationService } from '../../core/services/notification.service';
@@ -16,6 +15,8 @@ import { ImportExportService, fileToDataUri } from './import-export.service';
 import { DialogComponent, DialogFooterDirective } from '../../shared/ui/dialog/dialog.component';
 import { ToggleComponent } from '../../shared/ui/toggle/toggle.component';
 import { ButtonComponent } from '../../shared/ui/button/button.component';
+import { TableComponent } from '../../shared/ui/table/table.component';
+import { TableEmptyDirective, TableHeaderDirective, TableRowDirective } from '../../shared/ui/table/table-templates';
 
 type Severity = 'success' | 'secondary' | 'info' | 'warn' | 'danger';
 
@@ -37,7 +38,7 @@ const MAX_FILE_BYTES = 5 * 1024 * 1024;
  */
 @Component({
   selector: 'app-import-export-actions',
-  imports: [ButtonComponent, DialogFooterDirective, DialogComponent, ToggleComponent, FormsModule, TranslatePipe, MenuModule, TableModule, EmptyStateComponent, StatusBadgeComponent],
+  imports: [TableEmptyDirective, TableRowDirective, TableHeaderDirective, TableComponent, ButtonComponent, DialogFooterDirective, DialogComponent, ToggleComponent, FormsModule, TranslatePipe, MenuModule, EmptyStateComponent, StatusBadgeComponent],
   // The buttons sit directly in the page header's action row.
   host: { class: 'contents' },
   changeDetection: ChangeDetectionStrategy.OnPush,

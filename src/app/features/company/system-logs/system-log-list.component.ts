@@ -6,7 +6,6 @@ import { DrawerModule } from 'primeng/drawer';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
-import { TableModule } from 'primeng/table';
 import { AccessService } from '../../../core/auth/access.service';
 import { AppError } from '../../../core/errors/app-error';
 import { LanguageService } from '../../../core/services/language.service';
@@ -42,6 +41,9 @@ import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
 import { MultiSelectComponent } from '../../../shared/ui/multi-select/multi-select.component';
 import { SelectComponent } from '../../../shared/ui/select/select.component';
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
+import { TableComponent } from '../../../shared/ui/table/table.component';
+import { TableEmptyDirective, TableHeaderDirective, TableRowDirective } from '../../../shared/ui/table/table-templates';
+import { SortableHeaderComponent } from '../../../shared/ui/table/sortable-header.component';
 
 /**
  * Resources the log records that have no screen of their own (document lines, sign-ins on the user, stock
@@ -83,6 +85,11 @@ function resourceLabels(items: NavItem[]): Map<string, string> {
 @Component({
   selector: 'app-system-log-list',
   imports: [
+    SortableHeaderComponent,
+    TableEmptyDirective,
+    TableRowDirective,
+    TableHeaderDirective,
+    TableComponent,
     ButtonComponent,
     SelectComponent,
     MultiSelectComponent,
@@ -92,7 +99,6 @@ function resourceLabels(items: NavItem[]): Map<string, string> {
     AppDatePipe,
     FormsModule,
     TranslatePipe,
-    TableModule,
     DrawerModule,
     IconFieldModule,
     InputIconModule,

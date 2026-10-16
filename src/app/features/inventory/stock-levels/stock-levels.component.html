@@ -93,34 +93,30 @@
         }
       </div>
       <div class="overflow-x-auto">
-        <p-table
-          [value]="rows()"
-          [paginator]="true"
-          [showCurrentPageReport]="true"
-          [currentPageReportTemplate]="'common.pageReport' | translate"
-          [rows]="10"
-          [rowsPerPageOptions]="[10, 25, 50, 100]"
+        <app-table
+          [rows]="rows()"
           [loading]="loading()"
           dataKey="variant_id"
           sortField="sku"
           [sortOrder]="1"
-          size="small"
+          [paginate]="true"
+          [pageSizes]="[10, 25, 50, 100]"
         >
-          <ng-template pTemplate="header">
+          <ng-template appTableHeader>
             <tr>
-              <th pSortableColumn="sku">{{ 'inventory.fields.sku' | translate }} <p-sortIcon field="sku"></p-sortIcon></th>
-              <th pSortableColumn="variantName">{{ 'inventory.fields.variant' | translate }} <p-sortIcon field="variantName"></p-sortIcon></th>
-              <th pSortableColumn="product">{{ 'inventory.fields.product' | translate }} <p-sortIcon field="product"></p-sortIcon></th>
-              <th pSortableColumn="quantity" class="text-end">{{ 'inventory.stock.onHand' | translate }} <p-sortIcon field="quantity"></p-sortIcon></th>
+              <th appSortable="sku">{{ 'inventory.fields.sku' | translate }}</th>
+              <th appSortable="variantName">{{ 'inventory.fields.variant' | translate }}</th>
+              <th appSortable="product">{{ 'inventory.fields.product' | translate }}</th>
+              <th appSortable="quantity" class="text-end">{{ 'inventory.stock.onHand' | translate }}</th>
               @if (isCurrent()) {
                 <th class="text-end">{{ 'inventory.stock.reserved' | translate }}</th>
-                <th pSortableColumn="available" class="text-end">{{ 'inventory.stock.available' | translate }} <p-sortIcon field="available"></p-sortIcon></th>
+                <th appSortable="available" class="text-end">{{ 'inventory.stock.available' | translate }}</th>
               }
               <th class="text-end">{{ 'inventory.fields.unitCost' | translate }}</th>
-              <th pSortableColumn="total_value" class="text-end">{{ 'inventory.stock.value' | translate }} <p-sortIcon field="total_value"></p-sortIcon></th>
+              <th appSortable="total_value" class="text-end">{{ 'inventory.stock.value' | translate }}</th>
             </tr>
           </ng-template>
-          <ng-template pTemplate="body" let-row>
+          <ng-template appTableRow let-row>
             <tr>
               <td class="whitespace-nowrap font-mono text-sm" dir="ltr">{{ row.sku }}</td>
               <td>{{ row.variantName }}</td>
@@ -139,14 +135,14 @@
               <td class="text-end font-medium" dir="ltr">{{ row.total_value | number: '1.2-2' }}</td>
             </tr>
           </ng-template>
-          <ng-template pTemplate="emptymessage">
+          <ng-template appTableEmpty>
             <tr>
               <td [attr.colspan]="isCurrent() ? 8 : 6">
                 <app-empty-state icon="pi-box" title="inventory.stock.empty" message="inventory.stock.emptyHint"></app-empty-state>
               </td>
             </tr>
           </ng-template>
-        </p-table>
+        </app-table>
       </div>
     </div>
   }

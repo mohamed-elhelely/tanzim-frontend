@@ -3,7 +3,6 @@ import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/cor
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
-import { TableModule } from 'primeng/table';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
@@ -18,11 +17,19 @@ import { InvoicePaymentService } from './invoice-payment.service';
 import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
+import { TableComponent } from '../../../shared/ui/table/table.component';
+import { TableEmptyDirective, TableHeaderDirective, TableRowDirective } from '../../../shared/ui/table/table-templates';
+import { SortableHeaderComponent } from '../../../shared/ui/table/sortable-header.component';
 
 /** Every payment received, newest first. Payments are recorded and refunded from their invoice. */
 @Component({
   selector: 'app-payment-list',
   imports: [
+    SortableHeaderComponent,
+    TableEmptyDirective,
+    TableRowDirective,
+    TableHeaderDirective,
+    TableComponent,
     ButtonComponent,
     RowActionsComponent,
     RowActionComponent,
@@ -30,7 +37,6 @@ import { ButtonComponent } from '../../../shared/ui/button/button.component';
     DecimalPipe,
     FormsModule,
     TranslatePipe,
-    TableModule,
     ChoiceFilterComponent,
     DateRangeFilterComponent,
     FilterErrorsComponent,

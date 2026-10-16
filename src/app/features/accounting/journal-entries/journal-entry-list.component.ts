@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { InputTextModule } from 'primeng/inputtext';
-import { TableModule } from 'primeng/table';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
 import { PageHeaderAction, PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
@@ -17,6 +16,8 @@ import { RowActionComponent, RowActionsComponent } from '../../../shared/table/r
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 import { SelectComponent } from '../../../shared/ui/select/select.component';
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
+import { TableComponent } from '../../../shared/ui/table/table.component';
+import { TableEmptyDirective, TableHeaderDirective, TableRowDirective } from '../../../shared/ui/table/table-templates';
 
 type Origin = 'manual' | 'automatic';
 
@@ -24,6 +25,10 @@ type Origin = 'manual' | 'automatic';
 @Component({
   selector: 'app-journal-entry-list',
   imports: [
+    TableEmptyDirective,
+    TableRowDirective,
+    TableHeaderDirective,
+    TableComponent,
     ButtonComponent,
     SelectComponent,
     RowActionsComponent,
@@ -32,7 +37,6 @@ type Origin = 'manual' | 'automatic';
     DecimalPipe,
     FormsModule,
     TranslatePipe,
-    TableModule,
     InputTextModule,
     PageHeaderComponent,
     EmptyStateComponent,

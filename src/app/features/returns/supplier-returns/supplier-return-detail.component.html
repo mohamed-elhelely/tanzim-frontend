@@ -66,8 +66,8 @@
     <app-card>
       <h3 class="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'returns.sections.items' | translate }}</h3>
       <div class="overflow-x-auto">
-        <p-table [value]="srn.lines" dataKey="id" size="small">
-          <ng-template pTemplate="header">
+        <app-table [rows]="srn.lines">
+          <ng-template appTableHeader>
             <tr>
               <th>{{ 'returns.fields.item' | translate }}</th>
               <th class="text-end">{{ 'returns.fields.quantity' | translate }}</th>
@@ -75,7 +75,7 @@
               <th class="text-end">{{ 'returns.fields.value' | translate }}</th>
             </tr>
           </ng-template>
-          <ng-template pTemplate="body" let-line>
+          <ng-template appTableRow let-line>
             <tr>
               <td class="font-medium">{{ line.product_name }}</td>
               <td class="text-end">{{ line.quantity | number: '1.0-3' }}</td>
@@ -83,7 +83,7 @@
               <td class="text-end font-medium">{{ line.line_total | number: '1.2-2' }}</td>
             </tr>
           </ng-template>
-        </p-table>
+        </app-table>
       </div>
     </app-card>
 

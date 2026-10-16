@@ -4,7 +4,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
-import { TableModule } from 'primeng/table';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
@@ -17,6 +16,9 @@ import { StockLedgerService } from './stock-ledger.service';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
+import { TableComponent } from '../../../shared/ui/table/table.component';
+import { TableEmptyDirective, TableHeaderDirective, TableRowDirective } from '../../../shared/ui/table/table-templates';
+import { SortableHeaderComponent } from '../../../shared/ui/table/sortable-header.component';
 
 /**
  * Every stock movement, newest first, read-only (the inventory services write it). Search matches the document
@@ -25,6 +27,11 @@ import { ButtonComponent } from '../../../shared/ui/button/button.component';
 @Component({
   selector: 'app-stock-ledger-list',
   imports: [
+    SortableHeaderComponent,
+    TableEmptyDirective,
+    TableRowDirective,
+    TableHeaderDirective,
+    TableComponent,
     ButtonComponent,
     SavedViewsComponent,
     AppDatePipe,
@@ -33,7 +40,6 @@ import { ButtonComponent } from '../../../shared/ui/button/button.component';
     IconFieldModule,
     InputIconModule,
     InputTextModule,
-    TableModule,
     PageHeaderComponent,
     EmptyStateComponent,
     ErrorStateComponent,

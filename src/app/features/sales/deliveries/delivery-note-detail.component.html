@@ -74,22 +74,22 @@
     <app-card>
       <h3 class="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'sales.sections.lines' | translate }}</h3>
       <div class="overflow-x-auto">
-        <p-table [value]="note.lines" dataKey="id" size="small">
-          <ng-template pTemplate="header">
+        <app-table [rows]="note.lines">
+          <ng-template appTableHeader>
             <tr>
               <th>{{ 'sales.fields.sku' | translate }}</th>
               <th>{{ 'sales.fields.item' | translate }}</th>
               <th class="text-end">{{ 'sales.fields.quantityDelivered' | translate }}</th>
             </tr>
           </ng-template>
-          <ng-template pTemplate="body" let-line>
+          <ng-template appTableRow let-line>
             <tr>
               <td class="whitespace-nowrap font-mono text-xs" dir="ltr">{{ line.sku }}</td>
               <td class="font-medium">{{ line.product_name }}</td>
               <td class="text-end">{{ line.quantity_delivered | number: '1.0-3' }}</td>
             </tr>
           </ng-template>
-        </p-table>
+        </app-table>
       </div>
     </app-card>
 

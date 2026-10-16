@@ -5,7 +5,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
-import { TableModule } from 'primeng/table';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
@@ -20,18 +19,25 @@ import { DeliveryNoteService } from './delivery-note.service';
 import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
+import { TableComponent } from '../../../shared/ui/table/table.component';
+import { TableEmptyDirective, TableHeaderDirective, TableRowDirective } from '../../../shared/ui/table/table-templates';
+import { SortableHeaderComponent } from '../../../shared/ui/table/sortable-header.component';
 
 /** Delivery notes are created from an order ("Ship"), so this list has no New button. */
 @Component({
   selector: 'app-delivery-note-list',
   imports: [
+    SortableHeaderComponent,
+    TableEmptyDirective,
+    TableRowDirective,
+    TableHeaderDirective,
+    TableComponent,
     ButtonComponent,
     RowActionsComponent,
     RowActionComponent,
     SavedViewsComponent,
     FormsModule,
     TranslatePipe,
-    TableModule,
     InputTextModule,
     IconFieldModule,
     InputIconModule,

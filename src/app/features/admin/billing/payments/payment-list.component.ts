@@ -4,7 +4,6 @@ import { FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } 
 import { RouterLink } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { InputTextModule } from 'primeng/inputtext';
-import { TableModule } from 'primeng/table';
 import { TextareaModule } from 'primeng/textarea';
 import { AppError } from '../../../../core/errors/app-error';
 import { NotificationService } from '../../../../core/services/notification.service';
@@ -24,11 +23,17 @@ import { AppDatePipe } from '../../../../shared/pipes/app-date.pipe';
 import { DialogComponent } from '../../../../shared/ui/dialog/dialog.component';
 import { SelectComponent } from '../../../../shared/ui/select/select.component';
 import { ButtonComponent } from '../../../../shared/ui/button/button.component';
+import { TableComponent } from '../../../../shared/ui/table/table.component';
+import { TableEmptyDirective, TableHeaderDirective, TableRowDirective } from '../../../../shared/ui/table/table-templates';
 
 /** /admin/payments: payments of every company on platform invoices; completed ones can be refunded. */
 @Component({
   selector: 'app-payment-list',
   imports: [
+    TableEmptyDirective,
+    TableRowDirective,
+    TableHeaderDirective,
+    TableComponent,
     ButtonComponent,
     DialogComponent,
     SelectComponent,
@@ -42,7 +47,6 @@ import { ButtonComponent } from '../../../../shared/ui/button/button.component';
     RouterLink,
     TranslatePipe,
     InputTextModule,
-    TableModule,
     TextareaModule,
     PageHeaderComponent,
     EmptyStateComponent,

@@ -59,30 +59,15 @@
       }
     </div>
     <div class="overflow-x-auto">
-      <p-table
-        [value]="table.rows()"
-        [lazy]="true"
-        [lazyLoadOnInit]="false"
-        (onLazyLoad)="table.onLazyLoad($event)"
-        [paginator]="true"
-        [showCurrentPageReport]="true"
-        [currentPageReportTemplate]="'common.pageReport' | translate"
-        [first]="table.first()"
-        [rows]="table.pageSize()"
-        [totalRecords]="table.total()"
-        [rowsPerPageOptions]="[10, 25, 50]"
-        [loading]="table.loading()"
-        dataKey="id"
-        [selection]="table.selection()"
-        (selectionChange)="table.selection.set($event)"
-        size="small"
+      <app-table
+        [table]="table"
       >
-        <ng-template pTemplate="header">
+        <ng-template appTableHeader>
           <tr>
-            <th class="w-12"><p-tableHeaderCheckbox></p-tableHeaderCheckbox></th>
+            <th class="w-12"><app-table-select-all></app-table-select-all></th>
             <th>{{ 'sales.fields.customerNumber' | translate }}</th>
-            <th pSortableColumn="name">
-              {{ 'sales.fields.name' | translate }} <p-sortIcon field="name"></p-sortIcon>
+            <th appSortable="name">
+              {{ 'sales.fields.name' | translate }}
             </th>
             <th>{{ 'sales.fields.customerType' | translate }}</th>
             <th>{{ 'sales.fields.email' | translate }}</th>
@@ -92,9 +77,9 @@
             <th class="text-end">{{ 'common.actions' | translate }}</th>
           </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-row>
+        <ng-template appTableRow let-row>
           <tr>
-            <td (click)="$event.stopPropagation()"><p-tableCheckbox [value]="row"></p-tableCheckbox></td>
+            <td (click)="$event.stopPropagation()"><app-table-row-select [row]="row"></app-table-row-select></td>
             <td class="whitespace-nowrap font-mono text-xs" dir="ltr">{{ row.customer_number }}</td>
             <td class="font-medium">{{ row.name }}</td>
             <td>{{ 'sales.customerTypes.' + row.customer_type | translate }}</td>
@@ -125,12 +110,12 @@
             </td>
           </tr>
         </ng-template>
-        <ng-template pTemplate="emptymessage">
+        <ng-template appTableEmpty>
           <tr>
             <td colspan="9"><app-empty-state icon="pi-users"></app-empty-state></td>
           </tr>
         </ng-template>
-      </p-table>
+      </app-table>
     </div>
   </div>
 }

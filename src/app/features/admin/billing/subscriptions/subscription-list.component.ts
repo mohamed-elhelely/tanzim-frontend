@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
-import { TableModule } from 'primeng/table';
 import { ConfirmService } from '../../../../core/services/confirm.service';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { ErrorStateComponent } from '../../../../shared/components/error-state/error-state.component';
@@ -20,6 +19,8 @@ import { SavedViewsComponent } from '../../../../shared/table/saved-views.compon
 import { DialogComponent } from '../../../../shared/ui/dialog/dialog.component';
 import { SelectComponent } from '../../../../shared/ui/select/select.component';
 import { ButtonComponent } from '../../../../shared/ui/button/button.component';
+import { TableComponent } from '../../../../shared/ui/table/table.component';
+import { TableEmptyDirective, TableHeaderDirective, TableRowDirective } from '../../../../shared/ui/table/table-templates';
 
 /**
  * /admin/subscriptions: every company's subscription, filtered by company and status; plan, dates and users are
@@ -28,6 +29,10 @@ import { ButtonComponent } from '../../../../shared/ui/button/button.component';
 @Component({
   selector: 'app-subscription-list',
   imports: [
+    TableEmptyDirective,
+    TableRowDirective,
+    TableHeaderDirective,
+    TableComponent,
     ButtonComponent,
     DialogComponent,
     SelectComponent,
@@ -36,7 +41,6 @@ import { ButtonComponent } from '../../../../shared/ui/button/button.component';
     SavedViewsComponent,
     FormsModule,
     TranslatePipe,
-    TableModule,
     PageHeaderComponent,
     EmptyStateComponent,
     ErrorStateComponent,

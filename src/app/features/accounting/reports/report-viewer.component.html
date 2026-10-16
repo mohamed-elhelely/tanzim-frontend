@@ -118,15 +118,15 @@
 
     <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
       <div class="overflow-x-auto">
-        <p-table [value]="report.rows" size="small" [paginator]="report.rows.length > 50" [rows]="50">
-          <ng-template pTemplate="header">
+        <app-table [rows]="report.rows" [paginate]="report.rows.length > 50" [pageSize]="50" [pageSizes]="[]">
+          <ng-template appTableHeader>
             <tr>
               @for (column of report.columns; track column) {
                 <th [class.text-end]="!isText(column)">{{ 'accounting.reportColumns.' + column | translate }}</th>
               }
             </tr>
           </ng-template>
-          <ng-template pTemplate="body" let-row>
+          <ng-template appTableRow let-row>
             <tr>
               @for (column of report.columns; track column) {
                 <td [class.text-end]="!isText(column)" class="whitespace-nowrap">
@@ -141,12 +141,12 @@
               }
             </tr>
           </ng-template>
-          <ng-template pTemplate="emptymessage">
+          <ng-template appTableEmpty>
             <tr>
               <td [attr.colspan]="report.columns.length"><app-empty-state icon="pi-chart-bar"></app-empty-state></td>
             </tr>
           </ng-template>
-        </p-table>
+        </app-table>
       </div>
     </div>
   }

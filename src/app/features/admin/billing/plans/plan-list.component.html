@@ -5,8 +5,8 @@
 } @else {
   <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
     <div class="overflow-x-auto">
-      <p-table [value]="plans()" [loading]="loading()" dataKey="id" size="small">
-        <ng-template pTemplate="header">
+      <app-table [rows]="plans()" [loading]="loading()">
+        <ng-template appTableHeader>
           <tr>
             <th>{{ 'admin.billing.fields.name' | translate }}</th>
             <th>{{ 'admin.billing.fields.billingPeriod' | translate }}</th>
@@ -17,7 +17,7 @@
             <th class="text-end">{{ 'common.actions' | translate }}</th>
           </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-plan>
+        <ng-template appTableRow let-plan>
           <tr>
             <td>
               <span class="font-medium">{{ plan.name }}</span>
@@ -45,12 +45,12 @@
             </td>
           </tr>
         </ng-template>
-        <ng-template pTemplate="emptymessage">
+        <ng-template appTableEmpty>
           <tr>
             <td colspan="7"><app-empty-state icon="pi-tags"></app-empty-state></td>
           </tr>
         </ng-template>
-      </p-table>
+      </app-table>
     </div>
   </div>
 }

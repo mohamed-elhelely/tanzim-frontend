@@ -1,7 +1,6 @@
 import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
-import { TableModule } from 'primeng/table';
 import { AppError } from '../../../../core/errors/app-error';
 import { ConfirmService } from '../../../../core/services/confirm.service';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
@@ -14,11 +13,13 @@ import { BillingModule } from '../platform-billing.models';
 import { BillingModuleService } from '../platform-billing.service';
 import { RowActionComponent, RowActionsComponent } from '../../../../shared/table/row-actions.component';
 import { ModuleFormComponent } from './module-form.component';
+import { TableComponent } from '../../../../shared/ui/table/table.component';
+import { TableEmptyDirective, TableHeaderDirective, TableRowDirective } from '../../../../shared/ui/table/table-templates';
 
 /** /admin/modules: the feature modules companies can subscribe to (staff). */
 @Component({
   selector: 'app-module-list',
-  imports: [RowActionsComponent, RowActionComponent, DecimalPipe, TranslatePipe, TableModule, PageHeaderComponent, EmptyStateComponent, ErrorStateComponent, StatusBadgeComponent],
+  imports: [TableEmptyDirective, TableRowDirective, TableHeaderDirective, TableComponent, RowActionsComponent, RowActionComponent, DecimalPipe, TranslatePipe, PageHeaderComponent, EmptyStateComponent, ErrorStateComponent, StatusBadgeComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './module-list.component.html',
 })

@@ -50,50 +50,35 @@
       <app-filter-errors [table]="table"></app-filter-errors>
     </div>
     <div class="overflow-x-auto">
-      <p-table
-        [value]="table.rows()"
-        [lazy]="true"
-        [lazyLoadOnInit]="false"
-        (onLazyLoad)="table.onLazyLoad($event)"
-        [paginator]="true"
-        [showCurrentPageReport]="true"
-        [currentPageReportTemplate]="'common.pageReport' | translate"
-        [first]="table.first()"
-        [rows]="table.pageSize()"
-        [totalRecords]="table.total()"
-        [rowsPerPageOptions]="[10, 25, 50]"
-        [loading]="table.loading()"
-        dataKey="id"
-        [selection]="table.selection()"
-        (selectionChange)="table.selection.set($event)"
-        size="small"
+      <app-table
+        [table]="table"
       >
-        <ng-template pTemplate="header">
+        <ng-template appTableHeader>
           <tr>
             @if (canBulk()) {
-              <th class="w-12"><p-tableHeaderCheckbox></p-tableHeaderCheckbox></th>
+              <th class="w-12"><app-table-select-all></app-table-select-all></th>
             }
-            <th pSortableColumn="invoice_number">
-              {{ 'sales.fields.invoiceNumber' | translate }} <p-sortIcon field="invoice_number"></p-sortIcon>
+            <th appSortable="invoice_number">
+              {{ 'sales.fields.invoiceNumber' | translate }}
             </th>
             <th>{{ 'sales.fields.customer' | translate }}</th>
-            <th pSortableColumn="invoice_date">
-              {{ 'sales.fields.invoiceDate' | translate }} <p-sortIcon field="invoice_date"></p-sortIcon>
+            <th appSortable="invoice_date">
+              {{ 'sales.fields.invoiceDate' | translate }}
             </th>
             <th>{{ 'sales.fields.dueDate' | translate }}</th>
             <th>{{ 'sales.fields.status' | translate }}</th>
             <th>{{ 'sales.fields.paymentStatus' | translate }}</th>
-            <th pSortableColumn="total_amount" class="text-end">
-              {{ 'sales.fields.total' | translate }} <p-sortIcon field="total_amount"></p-sortIcon>
+            <th appSortable="total_amount" class="text-end">
+              {{ 'sales.fields.total' | translate }}
             </th>
             <th class="text-end">{{ 'sales.fields.amountDue' | translate }}</th>
             <th class="text-end">{{ 'common.actions' | translate }}</th>
           </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-row>
+        <ng-template appTableRow let-row>
           <tr class="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50" (click)="open(row)">
             @if (canBulk()) {
-              <td (click)="$event.stopPropagation()" (keydown.enter)="$event.stopPropagation()"><p-tableCheckbox [value]="row"></p-tableCheckbox></td>
+              <td (click)="$event.stopPropagation()" (keydown.enter)="$event.stopPropagation()"><app-table-row-select [row]="row"></app-table-row-select></td>
             }
             <td class="whitespace-nowrap font-mono text-xs font-semibold" dir="ltr">{{ row.invoice_number }}</td>
             <td>
@@ -132,12 +117,12 @@
             </td>
           </tr>
         </ng-template>
-        <ng-template pTemplate="emptymessage">
+        <ng-template appTableEmpty>
           <tr>
             <td [attr.colspan]="9 + (canBulk() ? 1 : 0)"><app-empty-state icon="pi-file"></app-empty-state></td>
           </tr>
         </ng-template>
-      </p-table>
+      </app-table>
     </div>
   </div>
 }

@@ -62,8 +62,8 @@
 
     <app-card>
       <div class="overflow-x-auto">
-        <p-table [value]="entry.lines" dataKey="id" size="small">
-          <ng-template pTemplate="header">
+        <app-table [rows]="entry.lines">
+          <ng-template appTableHeader>
             <tr>
               <th>{{ 'accounting.fields.account' | translate }}</th>
               <th>{{ 'accounting.fields.description' | translate }}</th>
@@ -71,7 +71,7 @@
               <th class="text-end">{{ 'accounting.fields.credit' | translate }}</th>
             </tr>
           </ng-template>
-          <ng-template pTemplate="body" let-line>
+          <ng-template appTableRow let-line>
             <tr>
               <td class="whitespace-nowrap">
                 <span class="font-mono text-xs text-gray-500" dir="ltr">{{ line.account_code }}</span> {{ line.account_name }}
@@ -81,14 +81,14 @@
               <td class="text-end">{{ +line.credit ? (line.credit | number: '1.2-2') : '' }}</td>
             </tr>
           </ng-template>
-          <ng-template pTemplate="footer">
+          <ng-template appTableFooter>
             <tr>
               <td colspan="2" class="font-semibold">{{ 'accounting.fields.total' | translate }}</td>
               <td class="text-end font-semibold">{{ entry.total_debit | number: '1.2-2' }}</td>
               <td class="text-end font-semibold">{{ entry.total_credit | number: '1.2-2' }}</td>
             </tr>
           </ng-template>
-        </p-table>
+        </app-table>
       </div>
     </app-card>
 

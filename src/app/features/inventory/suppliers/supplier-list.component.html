@@ -50,29 +50,14 @@
       }
     </div>
     <div class="overflow-x-auto">
-      <p-table
-        [value]="table.rows()"
-        [lazy]="true"
-        [lazyLoadOnInit]="false"
-        (onLazyLoad)="table.onLazyLoad($event)"
-        [paginator]="true"
-        [showCurrentPageReport]="true"
-        [currentPageReportTemplate]="'common.pageReport' | translate"
-        [first]="table.first()"
-        [rows]="table.pageSize()"
-        [totalRecords]="table.total()"
-        [rowsPerPageOptions]="[10, 25, 50]"
-        [loading]="table.loading()"
-        dataKey="id"
-        [selection]="table.selection()"
-        (selectionChange)="table.selection.set($event)"
-        size="small"
+      <app-table
+        [table]="table"
       >
-        <ng-template pTemplate="header">
+        <ng-template appTableHeader>
           <tr>
-            <th class="w-12"><p-tableHeaderCheckbox></p-tableHeaderCheckbox></th>
-            <th pSortableColumn="name">
-              {{ 'inventory.fields.name' | translate }} <p-sortIcon field="name"></p-sortIcon>
+            <th class="w-12"><app-table-select-all></app-table-select-all></th>
+            <th appSortable="name">
+              {{ 'inventory.fields.name' | translate }}
             </th>
             <th>{{ 'inventory.fields.supplierType' | translate }}</th>
             <th>{{ 'inventory.fields.leadTimeDays' | translate }}</th>
@@ -82,9 +67,9 @@
             <th class="text-end">{{ 'common.actions' | translate }}</th>
           </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-row>
+        <ng-template appTableRow let-row>
           <tr>
-            <td (click)="$event.stopPropagation()"><p-tableCheckbox [value]="row"></p-tableCheckbox></td>
+            <td (click)="$event.stopPropagation()"><app-table-row-select [row]="row"></app-table-row-select></td>
             <td class="font-medium">{{ row.name }}</td>
             <td>{{ 'inventory.supplierTypes.' + row.supplier_type | translate }}</td>
             <td>{{ row.lead_time_days }}</td>
@@ -114,12 +99,12 @@
             </td>
           </tr>
         </ng-template>
-        <ng-template pTemplate="emptymessage">
+        <ng-template appTableEmpty>
           <tr>
             <td colspan="8"><app-empty-state icon="pi-truck"></app-empty-state></td>
           </tr>
         </ng-template>
-      </p-table>
+      </app-table>
     </div>
   </div>
 }

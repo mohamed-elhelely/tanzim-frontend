@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { InputTextModule } from 'primeng/inputtext';
-import { TableModule } from 'primeng/table';
 import { TextareaModule } from 'primeng/textarea';
 import { AppError } from '../../../core/errors/app-error';
 import { ConfirmService } from '../../../core/services/confirm.service';
@@ -33,6 +32,8 @@ import { CardComponent } from '../../../shared/ui/card/card.component';
 import { DialogComponent, DialogFooterDirective } from '../../../shared/ui/dialog/dialog.component';
 import { SelectComponent } from '../../../shared/ui/select/select.component';
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
+import { TableComponent } from '../../../shared/ui/table/table.component';
+import { TableHeaderDirective, TableRowDirective } from '../../../shared/ui/table/table-templates';
 
 const PAYABLE: SalesInvoiceStatus[] = ['issued', 'overdue'];
 const CANCELLABLE: SalesInvoiceStatus[] = ['draft', 'issued', 'overdue'];
@@ -51,6 +52,9 @@ function today(): string {
 @Component({
   selector: 'app-sales-invoice-detail',
   imports: [
+    TableRowDirective,
+    TableHeaderDirective,
+    TableComponent,
     ButtonComponent,
     DialogFooterDirective,
     DialogComponent,
@@ -63,7 +67,6 @@ function today(): string {
     RouterLink,
     TranslatePipe,
     InputTextModule,
-    TableModule,
     TextareaModule,
     PageHeaderComponent,
     LoadingStateComponent,

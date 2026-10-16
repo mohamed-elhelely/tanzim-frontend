@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
-import { TableModule } from 'primeng/table';
 import { AccessService } from '../../core/auth/access.service';
 import { AppError } from '../../core/errors/app-error';
 import { NotificationService } from '../../core/services/notification.service';
@@ -21,6 +20,8 @@ import { CardComponent } from '../../shared/ui/card/card.component';
 import { SelectComponent } from '../../shared/ui/select/select.component';
 import { SelectGroupDirective, SelectItemDirective, SelectSelectedDirective } from '../../shared/ui/select/select-templates';
 import { ButtonComponent } from '../../shared/ui/button/button.component';
+import { TableComponent } from '../../shared/ui/table/table.component';
+import { TableEmptyDirective, TableHeaderDirective, TableRowDirective } from '../../shared/ui/table/table-templates';
 
 type Severity = 'success' | 'secondary' | 'info' | 'warn' | 'danger';
 
@@ -39,6 +40,10 @@ const TASK_SEVERITY: Record<TaskStatus, Severity> = {
 @Component({
   selector: 'app-import-export-page',
   imports: [
+    TableEmptyDirective,
+    TableRowDirective,
+    TableHeaderDirective,
+    TableComponent,
     ButtonComponent,
     SelectGroupDirective,
     SelectSelectedDirective,
@@ -50,7 +55,6 @@ const TASK_SEVERITY: Record<TaskStatus, Severity> = {
     AppDatePipe,
     FormsModule,
     TranslatePipe,
-    TableModule,
     PageHeaderComponent,
     EmptyStateComponent,
     ErrorStateComponent,

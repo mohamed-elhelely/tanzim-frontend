@@ -40,7 +40,7 @@ module.exports = defineConfig([
   },
   {
     // Screens use the shared/ui wrappers, so a UI library update or swap only touches that folder. Add a module
-    // here when its wrapper lands (the table is next).
+    // here when its wrapper lands.
     files: ["src/**/*.ts"],
     ignores: ["src/app/shared/ui/**"],
     rules: {
@@ -54,6 +54,7 @@ module.exports = defineConfig([
             ["primeng/multiselect", "app-multi-select"],
             ["primeng/password", "app-password"],
             ["primeng/select", "app-select"],
+            ["primeng/table", "app-table"],
             ["primeng/toggleswitch", "app-toggle"],
           ].map(([name, wrapper]) => ({
             name,

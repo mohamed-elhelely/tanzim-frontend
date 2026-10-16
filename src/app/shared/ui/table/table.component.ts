@@ -36,7 +36,10 @@ export class TableComponent<T = unknown> {
   readonly rows = input<readonly T[] | null | undefined>([]);
   /** Local mode: page the rows here. */
   readonly paginate = input(false);
+  /** Page sizes the user can pick; empty: no picker. */
   readonly pageSizes = input<number[]>([10, 25, 50]);
+  /** Local mode: rows per page (default: the first page size, else 10). */
+  readonly pageSize = input<number>();
   readonly loading = input(false);
   /** The field that tells records apart (selection, re-rendering). */
   readonly dataKey = input('id');
@@ -107,11 +110,12 @@ export class TableComponent<T = unknown> {
 
   /** Local paging state (the server mode keeps it in the ServerTable). */
   private readonly localFirst = signal(0);
-  private readonly localPageSize = linkedSignal(() => this.pageSizes()[0] ?? 10);
+  private readonly localPageSize = linkedSignal(() => this.pageSize() ?? this.pageSizes()[0] ?? 10);
+  readonly pageSizeOptions = computed(() => (this.pageSizes().length ? this.pageSizes() : undefined));
 
   readonly paged = computed(() => !!this.server() || this.paginate());
   readonly first = computed(() => this.server()?.first() ?? this.localFirst());
-  readonly pageSize = computed(() => this.server()?.pageSize() ?? this.localPageSize());
+  readonly rowsPerPage = computed(() => this.server()?.pageSize() ?? this.localPageSize());
   readonly total = computed(() => this.server()?.total() ?? this.value().length);
   readonly busy = computed(() => this.server()?.loading() ?? this.loading());
 

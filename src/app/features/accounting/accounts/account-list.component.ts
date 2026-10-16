@@ -4,7 +4,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
-import { TableModule } from 'primeng/table';
 import { AppError } from '../../../core/errors/app-error';
 import { ConfirmService } from '../../../core/services/confirm.service';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
@@ -19,6 +18,8 @@ import { RowActionComponent, RowActionsComponent } from '../../../shared/table/r
 import { AccountService } from './account.service';
 import { SelectComponent } from '../../../shared/ui/select/select.component';
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
+import { TableComponent } from '../../../shared/ui/table/table.component';
+import { TableEmptyDirective, TableHeaderDirective, TableRowDirective } from '../../../shared/ui/table/table-templates';
 
 export interface AccountRow extends Account {
   /** Nesting level under its parents, for the indentation. */
@@ -49,13 +50,16 @@ export function toTree(accounts: Account[]): AccountRow[] {
 @Component({
   selector: 'app-account-list',
   imports: [
+    TableEmptyDirective,
+    TableRowDirective,
+    TableHeaderDirective,
+    TableComponent,
     ButtonComponent,
     SelectComponent,
     RowActionsComponent,
     RowActionComponent,
     FormsModule,
     TranslatePipe,
-    TableModule,
     InputTextModule,
     IconFieldModule,
     InputIconModule,

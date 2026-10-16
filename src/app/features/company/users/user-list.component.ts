@@ -4,7 +4,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
-import { TableModule } from 'primeng/table';
 import { AccessService } from '../../../core/auth/access.service';
 import { AppError } from '../../../core/errors/app-error';
 import { ConfirmService } from '../../../core/services/confirm.service';
@@ -19,16 +18,23 @@ import { CompanyUser } from '../company.models';
 import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { CompanyUserService } from './company-user.service';
 import { ButtonComponent } from '../../../shared/ui/button/button.component';
+import { TableComponent } from '../../../shared/ui/table/table.component';
+import { TableEmptyDirective, TableHeaderDirective, TableRowDirective } from '../../../shared/ui/table/table-templates';
+import { SortableHeaderComponent } from '../../../shared/ui/table/sortable-header.component';
 
 /** The company-user endpoint returns the full list, so paging, sorting and search happen in the table. */
 @Component({
   selector: 'app-user-list',
   imports: [
+    SortableHeaderComponent,
+    TableEmptyDirective,
+    TableRowDirective,
+    TableHeaderDirective,
+    TableComponent,
     ButtonComponent,
     RowActionsComponent,
     RowActionComponent,
     TranslatePipe,
-    TableModule,
     InputTextModule,
     IconFieldModule,
     InputIconModule,
