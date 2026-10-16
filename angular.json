@@ -128,7 +128,8 @@
               "src/layer-order.css",
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "karmaConfig": "karma.conf.js"
           }
         },
         "lint": {
