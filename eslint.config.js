@@ -45,11 +45,15 @@ module.exports = defineConfig([
       angular.configs.templateAccessibility,
     ],
     rules: {
-      // PrimeNG inputs count as form controls when wrapped in a <label>.
+      // The shared/ui form controls (and PrimeNG inputs not wrapped yet) count as form controls inside a <label>.
       "@angular-eslint/template/label-has-associated-control": [
         "error",
         {
           controlComponents: [
+            "app-multi-select",
+            "app-password",
+            "app-select",
+            "app-toggle",
             "p-checkbox",
             "p-datepicker",
             "p-inputnumber",
