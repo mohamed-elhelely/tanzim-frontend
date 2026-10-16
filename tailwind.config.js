@@ -12,7 +12,23 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter', '"IBM Plex Sans Arabic"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        // --app-font puts the Arabic face first when <html lang="ar"> (styles.scss).
+        sans: ['var(--app-font)'],
+      },
+      // Design tokens from styles.scss: same values as Tailwind's defaults, changeable in one place.
+      borderRadius: {
+        sm: 'var(--app-radius-sm)',
+        DEFAULT: 'var(--app-radius)',
+        md: 'var(--app-radius-md)',
+        lg: 'var(--app-radius-lg)',
+        xl: 'var(--app-radius-xl)',
+        '2xl': 'var(--app-radius-2xl)',
+      },
+      boxShadow: {
+        sm: 'var(--app-shadow-sm)',
+        DEFAULT: 'var(--app-shadow)',
+        md: 'var(--app-shadow-md)',
+        lg: 'var(--app-shadow-lg)',
       },
       colors: {
         // The company's brand colors from /me (BrandThemeService writes the CSS variables; styles.scss holds

@@ -21,6 +21,17 @@ const GRAY_SURFACE = {
  * so PrimeNG components match the `primary-*` / `gray-*` classes used in the templates.
  */
 export const TanzimPreset = definePreset(Aura, {
+  // The design tokens in styles.scss, so PrimeNG's corners follow the same values as Tailwind's rounded-*.
+  primitive: {
+    borderRadius: {
+      none: '0',
+      xs: 'var(--app-radius-sm)',
+      sm: 'var(--app-radius)',
+      md: 'var(--app-radius-md)',
+      lg: 'var(--app-radius-lg)',
+      xl: 'var(--app-radius-xl)',
+    },
+  },
   semantic: {
     primary: {
       50: '{indigo.50}',
