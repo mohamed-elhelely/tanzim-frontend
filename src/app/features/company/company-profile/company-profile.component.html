@@ -6,7 +6,7 @@
   <app-loading-state></app-loading-state>
 } @else {
   <div class="grid grid-cols-1 gap-6 lg:grid-cols-5">
-    <p-card styleClass="lg:col-span-3">
+    <app-card class="lg:col-span-3">
       <form [formGroup]="form" (ngSubmit)="save()" class="flex flex-col gap-6" novalidate>
         <div>
           <h2 class="text-base font-semibold text-gray-900 dark:text-gray-100">{{ company()?.name }}</h2>
@@ -65,9 +65,9 @@
           </div>
         }
       </form>
-    </p-card>
+    </app-card>
 
-    <p-card styleClass="lg:col-span-2">
+    <app-card class="lg:col-span-2">
       <h2 class="mb-1 text-base font-semibold text-gray-900 dark:text-gray-100">{{ 'company.profile.preview' | translate }}</h2>
       <p class="mb-4 text-sm text-gray-500 dark:text-gray-400">{{ 'company.profile.previewHint' | translate }}</p>
       <div class="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700">
@@ -93,6 +93,6 @@
           </span>
         </div>
       </div>
-    </p-card>
+    </app-card>
   </div>
 }

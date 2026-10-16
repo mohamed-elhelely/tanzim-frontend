@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } 
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
 import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { AccessService } from '../../core/auth/access.service';
@@ -20,6 +19,7 @@ import { DATA_RESOURCES, DataResource, DataTask, TaskStatus, taskModelName } fro
 import { RowActionComponent, RowActionsComponent } from '../../shared/table/row-actions.component';
 import { ImportExportService } from './import-export.service';
 import { AppDatePipe } from '../../shared/pipes/app-date.pipe';
+import { CardComponent } from '../../shared/ui';
 
 type Severity = 'success' | 'secondary' | 'info' | 'warn' | 'danger';
 
@@ -38,13 +38,13 @@ const TASK_SEVERITY: Record<TaskStatus, Severity> = {
 @Component({
   selector: 'app-import-export-page',
   imports: [
+    CardComponent,
     RowActionsComponent,
     RowActionComponent,
     AppDatePipe,
     FormsModule,
     TranslatePipe,
     ButtonModule,
-    CardModule,
     SelectModule,
     TableModule,
     PageHeaderComponent,

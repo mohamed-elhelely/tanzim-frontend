@@ -10,7 +10,7 @@
 } @else if (loading()) {
   <app-loading-state></app-loading-state>
 } @else {
-  <p-card>
+  <app-card>
     <form [formGroup]="form" (ngSubmit)="submit()" class="flex flex-col gap-6" novalidate>
       @if (formErrors().length) {
         <div
@@ -157,5 +157,5 @@
         ></p-button>
       </div>
     </form>
-  </p-card>
+  </app-card>
 }

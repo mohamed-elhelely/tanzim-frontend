@@ -6,7 +6,7 @@
   <app-loading-state></app-loading-state>
 } @else {
   <div class="grid grid-cols-1 gap-6 xl:grid-cols-5">
-    <p-card styleClass="xl:col-span-3">
+    <app-card class="xl:col-span-3">
       <form [formGroup]="form" (ngSubmit)="save()" class="flex flex-col gap-6" novalidate>
         <div>
           <h2 class="text-base font-semibold text-gray-900 dark:text-gray-100">{{ 'profile.details' | translate }}</h2>
@@ -94,9 +94,9 @@
           ></p-button>
         </div>
       </form>
-    </p-card>
+    </app-card>
 
-    <p-card styleClass="xl:col-span-2">
+    <app-card class="xl:col-span-2">
       <form [formGroup]="passwordForm" (ngSubmit)="changePassword()" class="flex flex-col gap-4" novalidate>
         <div>
           <h2 class="text-base font-semibold text-gray-900 dark:text-gray-100">{{ 'profile.changePassword' | translate }}</h2>
@@ -167,7 +167,7 @@
           ></p-button>
         </div>
       </form>
-    </p-card>
+    </app-card>
 
     <app-signed-in-devices class="xl:col-span-5"></app-signed-in-devices>
   </div>

@@ -42,7 +42,7 @@
       </div>
     </dl>
 
-    <p-card>
+    <app-card>
       <dl class="grid grid-cols-2 gap-x-6 gap-y-3 text-sm md:grid-cols-4">
         <div>
           <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.carrier' | translate }}</dt>
@@ -69,9 +69,9 @@
           <dd class="mt-0.5">{{ note.created_by_name || '—' }}</dd>
         </div>
       </dl>
-    </p-card>
+    </app-card>
 
-    <p-card>
+    <app-card>
       <h3 class="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'sales.sections.lines' | translate }}</h3>
       <div class="overflow-x-auto">
         <p-table [value]="note.lines" dataKey="id" size="small">
@@ -91,7 +91,7 @@
           </ng-template>
         </p-table>
       </div>
-    </p-card>
+    </app-card>
 
     <app-record-history resource="deliverynote" [objectId]="note.id"></app-record-history>
   </div>

@@ -3,7 +3,6 @@ import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
@@ -17,14 +16,15 @@ import { PageHeaderComponent } from '../../../shared/components/page-header/page
 import { handleSaveError } from '../../../shared/utils/server-errors';
 import { SUPPLIER_TYPES, SupplierPayload, SupplierType } from '../inventory.models';
 import { SupplierService } from './supplier.service';
+import { CardComponent } from '../../../shared/ui';
 
 @Component({
   selector: 'app-supplier-form',
   imports: [
+    CardComponent,
     ReactiveFormsModule,
     TranslatePipe,
     ButtonModule,
-    CardModule,
     InputTextModule,
     SelectModule,
     TextareaModule,

@@ -3,7 +3,6 @@ import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { AppError } from '../../../core/errors/app-error';
@@ -16,14 +15,15 @@ import { handleSaveError } from '../../../shared/utils/server-errors';
 import { PermissionGroupPayload } from '../company.models';
 import { PermissionPickerComponent } from '../permissions/permission-picker.component';
 import { PermissionGroupService } from './permission-group.service';
+import { CardComponent } from '../../../shared/ui';
 
 @Component({
   selector: 'app-permission-group-form',
   imports: [
+    CardComponent,
     ReactiveFormsModule,
     TranslatePipe,
     ButtonModule,
-    CardModule,
     InputTextModule,
     TextareaModule,
     PageHeaderComponent,

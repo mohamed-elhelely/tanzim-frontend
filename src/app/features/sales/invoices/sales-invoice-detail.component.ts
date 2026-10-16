@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
@@ -33,6 +32,7 @@ import {
 import { SalesInvoiceService } from './sales-invoice.service';
 import { RecordHistoryComponent } from '../../company/system-logs/record-history.component';
 import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
+import { CardComponent } from '../../../shared/ui';
 
 const PAYABLE: SalesInvoiceStatus[] = ['issued', 'overdue'];
 const CANCELLABLE: SalesInvoiceStatus[] = ['draft', 'issued', 'overdue'];
@@ -51,6 +51,7 @@ function today(): string {
 @Component({
   selector: 'app-sales-invoice-detail',
   imports: [
+    CardComponent,
     RecordHistoryComponent,
     AppDatePipe,
     DecimalPipe,
@@ -58,7 +59,6 @@ function today(): string {
     RouterLink,
     TranslatePipe,
     ButtonModule,
-    CardModule,
     DialogModule,
     InputTextModule,
     SelectModule,

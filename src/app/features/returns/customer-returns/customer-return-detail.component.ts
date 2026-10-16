@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
@@ -29,6 +28,7 @@ import {
 import { CustomerReturnService } from './customer-return.service';
 import { RecordHistoryComponent } from '../../company/system-logs/record-history.component';
 import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
+import { CardComponent } from '../../../shared/ui';
 
 const QUANTITY = /^\d+(\.\d{1,3})?$/;
 const MONEY = /^\d+(\.\d{1,4})?$/;
@@ -58,6 +58,7 @@ interface InspectRow {
 @Component({
   selector: 'app-customer-return-detail',
   imports: [
+    CardComponent,
     RecordHistoryComponent,
     AppDatePipe,
     DecimalPipe,
@@ -65,7 +66,6 @@ interface InspectRow {
     RouterLink,
     TranslatePipe,
     ButtonModule,
-    CardModule,
     DialogModule,
     InputTextModule,
     SelectModule,

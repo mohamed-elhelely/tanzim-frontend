@@ -5,7 +5,6 @@ import { FormArray, FormControl, FormGroup, NonNullableFormBuilder, ReactiveForm
 import { Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
@@ -19,6 +18,7 @@ import { SupplierInvoiceRef, SupplierInvoiceService } from '../../inventory/supp
 import { SupplierService } from '../../inventory/suppliers/supplier.service';
 import { SUPPLIER_PAYMENT_METHODS, SupplierPaymentMethod, SupplierPaymentPayload } from '../accounting.models';
 import { SupplierPaymentService } from './supplier-payment.service';
+import { CardComponent } from '../../../shared/ui';
 
 const MONEY = /^\d+(\.\d{1,2})?$/;
 
@@ -37,11 +37,11 @@ function today(): string {
 @Component({
   selector: 'app-supplier-payment-form',
   imports: [
+    CardComponent,
     DecimalPipe,
     ReactiveFormsModule,
     TranslatePipe,
     ButtonModule,
-    CardModule,
     InputTextModule,
     SelectModule,
     TextareaModule,

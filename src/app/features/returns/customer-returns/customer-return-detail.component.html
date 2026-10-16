@@ -46,7 +46,7 @@
       </div>
     </dl>
 
-    <p-card>
+    <app-card>
       <dl class="grid grid-cols-2 gap-x-6 gap-y-3 text-sm md:grid-cols-4">
         <div>
           <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'returns.fields.reason' | translate }}</dt>
@@ -112,9 +112,9 @@
           </div>
         }
       </dl>
-    </p-card>
+    </app-card>
 
-    <p-card>
+    <app-card>
       <h3 class="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'returns.sections.items' | translate }}</h3>
       <div class="overflow-x-auto">
         <p-table [value]="rma.lines" dataKey="id" size="small">
@@ -147,7 +147,7 @@
           </ng-template>
         </p-table>
       </div>
-    </p-card>
+    </app-card>
 
     <app-record-history resource="customerreturn" [objectId]="rma.id"></app-record-history>
   </div>

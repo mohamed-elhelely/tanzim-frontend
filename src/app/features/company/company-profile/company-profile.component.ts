@@ -3,7 +3,6 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { startWith } from 'rxjs';
 import { AccessService } from '../../../core/auth/access.service';
@@ -17,6 +16,7 @@ import { PageHeaderComponent } from '../../../shared/components/page-header/page
 import { handleSaveError } from '../../../shared/utils/server-errors';
 import { CompanyProfile } from '../company.models';
 import { CompanyProfileService } from './company-profile.service';
+import { CardComponent } from '../../../shared/ui';
 
 const HEX_COLOR = /^#[0-9A-Fa-f]{6}$/;
 
@@ -24,10 +24,10 @@ const HEX_COLOR = /^#[0-9A-Fa-f]{6}$/;
 @Component({
   selector: 'app-company-profile',
   imports: [
+    CardComponent,
     ReactiveFormsModule,
     TranslatePipe,
     ButtonModule,
-    CardModule,
     InputTextModule,
     PageHeaderComponent,
     LoadingStateComponent,

@@ -1,7 +1,7 @@
 <app-page-header title="admin.billing.reports.title" subtitle="admin.billing.reports.subtitle"></app-page-header>
 
 <div class="flex flex-col gap-4">
-  <p-card>
+  <app-card>
     <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
       <h2 class="text-base font-semibold text-gray-900 dark:text-gray-100">{{ 'admin.billing.reports.revenue' | translate }}</h2>
       <p-select
@@ -47,7 +47,7 @@
         <app-empty-state icon="pi-chart-bar" message="admin.billing.reports.noRevenue"></app-empty-state>
       }
     }
-  </p-card>
+  </app-card>
 
   <div class="grid grid-cols-1 gap-4 xl:grid-cols-2">
     <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">

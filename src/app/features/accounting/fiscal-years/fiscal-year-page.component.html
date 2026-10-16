@@ -7,7 +7,7 @@
 } @else {
   <div class="flex flex-col gap-4">
     @for (year of years(); track year.id) {
-      <p-card>
+      <app-card>
         <div class="mb-4 flex flex-wrap items-start justify-between gap-3">
           <div>
             <h2 class="flex items-center gap-2 text-lg font-semibold">
@@ -76,7 +76,7 @@
             </div>
           }
         </div>
-      </p-card>
+      </app-card>
     } @empty {
       <div class="rounded-2xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
         <app-empty-state icon="pi-calendar"></app-empty-state>

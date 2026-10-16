@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
@@ -21,6 +20,7 @@ import { StatusBadgeComponent } from '../../../shared/components/status-badge/st
 import { DELIVERY_STATUS_SEVERITY, DeliveryNote, SHIPPING_METHODS, ShippingMethod } from '../sales.models';
 import { DeliveryNoteService } from './delivery-note.service';
 import { RecordHistoryComponent } from '../../company/system-logs/record-history.component';
+import { CardComponent } from '../../../shared/ui';
 
 /**
  * One delivery note and its workflow: draft → confirmed → in transit → delivered or failed
@@ -29,13 +29,13 @@ import { RecordHistoryComponent } from '../../company/system-logs/record-history
 @Component({
   selector: 'app-delivery-note-detail',
   imports: [
+    CardComponent,
     RecordHistoryComponent,
     DecimalPipe,
     FormsModule,
     RouterLink,
     TranslatePipe,
     ButtonModule,
-    CardModule,
     DialogModule,
     InputTextModule,
     SelectModule,

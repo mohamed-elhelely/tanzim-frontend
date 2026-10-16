@@ -3,7 +3,6 @@ import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
@@ -17,6 +16,7 @@ import { PageHeaderComponent } from '../../../shared/components/page-header/page
 import { handleSaveError } from '../../../shared/utils/server-errors';
 import { TenantCompanyPayload } from '../admin.models';
 import { TenantCompanyService } from './tenant-company.service';
+import { CardComponent } from '../../../shared/ui';
 
 const DEFAULT_TIMEZONE = 'Asia/Riyadh';
 
@@ -29,10 +29,10 @@ function timezoneNames(): string[] {
 @Component({
   selector: 'app-tenant-company-form',
   imports: [
+    CardComponent,
     ReactiveFormsModule,
     TranslatePipe,
     ButtonModule,
-    CardModule,
     InputTextModule,
     SelectModule,
     TextareaModule,

@@ -12,7 +12,6 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { ToggleSwitchModule } from 'primeng/toggleswitch';
@@ -27,6 +26,7 @@ import { SelectOption } from '../../company/company.models';
 import { InventoryRef, ProductVariantPayload } from '../inventory.models';
 import { ProductService } from '../products/product.service';
 import { ProductVariantService } from './product-variant.service';
+import { CardComponent } from '../../../shared/ui';
 
 const DECIMAL_4 = /^\d+(\.\d{1,4})?$/;
 const DECIMAL_3 = /^\d+(\.\d{1,3})?$/;
@@ -43,10 +43,10 @@ function uniqueKeys(array: AbstractControl): ValidationErrors | null {
 @Component({
   selector: 'app-product-variant-form',
   imports: [
+    CardComponent,
     ReactiveFormsModule,
     TranslatePipe,
     ButtonModule,
-    CardModule,
     InputTextModule,
     SelectModule,
     ToggleSwitchModule,

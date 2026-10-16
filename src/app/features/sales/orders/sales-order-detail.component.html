@@ -52,7 +52,7 @@
       </div>
     </dl>
 
-    <p-card>
+    <app-card>
       <dl class="grid grid-cols-2 gap-x-6 gap-y-3 text-sm md:grid-cols-4">
         <div>
           <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.orderDate' | translate }}</dt>
@@ -92,9 +92,9 @@
           <dd class="mt-0.5" dir="ltr">{{ order.approved_at | appDate }}</dd>
         </div>
       </dl>
-    </p-card>
+    </app-card>
 
-    <p-card>
+    <app-card>
       <h3 class="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'sales.sections.lines' | translate }}</h3>
       <div class="overflow-x-auto">
         <p-table [value]="order.lines" dataKey="id" size="small">
@@ -148,10 +148,10 @@
             <dd>{{ order.total_amount | number: '1.2-2' }} {{ order.currency }}</dd>
           </div>
       </dl>
-    </p-card>
+    </app-card>
 
     @if (deliveries().length || invoices().length) {
-      <p-card>
+      <app-card>
         <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div>
             <h3 class="mb-2 text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'sales.sections.deliveries' | translate }}</h3>
@@ -191,10 +191,10 @@
             }
           </div>
         </div>
-      </p-card>
+      </app-card>
     }
 
-    <p-card>
+    <app-card>
       <dl class="grid grid-cols-1 gap-4 text-sm md:grid-cols-2">
         <div>
           <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.sections.shippingAddress' | translate }}</dt>
@@ -213,7 +213,7 @@
           <dd class="mt-0.5 whitespace-pre-line">{{ order.internal_notes || '—' }}</dd>
         </div>
       </dl>
-    </p-card>
+    </app-card>
 
     <app-record-history resource="salesorder" [objectId]="order.id"></app-record-history>
   </div>

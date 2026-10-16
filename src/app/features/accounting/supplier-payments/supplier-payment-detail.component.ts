@@ -2,7 +2,6 @@ import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
-import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
 import { AppError } from '../../../core/errors/app-error';
 import { ConfirmService } from '../../../core/services/confirm.service';
@@ -16,16 +15,17 @@ import { SupplierPayment } from '../accounting.models';
 import { SupplierPaymentService } from './supplier-payment.service';
 import { RecordHistoryComponent } from '../../company/system-logs/record-history.component';
 import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
+import { CardComponent } from '../../../shared/ui';
 
 /** One supplier payment with its allocations. Completed payments can be voided (with a reason). */
 @Component({
   selector: 'app-supplier-payment-detail',
   imports: [
+    CardComponent,
     RecordHistoryComponent,
     AppDatePipe,
     DecimalPipe,
     TranslatePipe,
-    CardModule,
     TableModule,
     PageHeaderComponent,
     LoadingStateComponent,

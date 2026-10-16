@@ -126,14 +126,14 @@
     }
 
     @for (table of summaryTables(); track table.key) {
-      <p-card>
+      <app-card>
         <h3 class="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-200">{{ table.key | analyticsLabel }}</h3>
         <app-analytics-table [rows]="table.rows"></app-analytics-table>
-      </p-card>
+      </app-card>
     }
 
-    <p-card>
+    <app-card>
       <app-analytics-table [rows]="report.rows" [columns]="report.columns" [paginate]="true"></app-analytics-table>
-    </p-card>
+    </app-card>
   }
 </div>

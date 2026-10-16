@@ -3,7 +3,6 @@ import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
@@ -21,6 +20,7 @@ import { SupplierReturnService } from '../../returns/supplier-returns/supplier-r
 import { SupplierReturnListItem } from '../../returns/returns.models';
 import { DebitNote, DebitNotePayload } from '../accounting.models';
 import { DebitNoteService } from './debit-note.service';
+import { CardComponent } from '../../../shared/ui';
 
 const MONEY = /^\d+(\.\d{1,2})?$/;
 
@@ -37,10 +37,10 @@ function today(): string {
 @Component({
   selector: 'app-debit-note-form',
   imports: [
+    CardComponent,
     ReactiveFormsModule,
     TranslatePipe,
     ButtonModule,
-    CardModule,
     InputTextModule,
     SelectModule,
     TextareaModule,

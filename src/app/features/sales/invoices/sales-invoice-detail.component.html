@@ -58,7 +58,7 @@
       </div>
     </dl>
 
-    <p-card>
+    <app-card>
       <dl class="grid grid-cols-2 gap-x-6 gap-y-3 text-sm md:grid-cols-4">
         <div>
           <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.invoiceDate' | translate }}</dt>
@@ -98,9 +98,9 @@
           <dd class="mt-0.5 whitespace-pre-line">{{ invoice.notes || '—' }}</dd>
         </div>
       </dl>
-    </p-card>
+    </app-card>
 
-    <p-card>
+    <app-card>
       <h3 class="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'sales.sections.lines' | translate }}</h3>
       <div class="overflow-x-auto">
         <p-table [value]="invoice.lines" dataKey="id" size="small">
@@ -149,9 +149,9 @@
         <dt class="font-semibold">{{ 'sales.fields.amountDue' | translate }}</dt>
         <dd class="text-end font-semibold">{{ invoice.amount_due | number: '1.2-2' }}</dd>
       </dl>
-    </p-card>
+    </app-card>
 
-    <p-card>
+    <app-card>
       <h3 class="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'sales.sections.payments' | translate }}</h3>
       @if (payments().length) {
         <div class="overflow-x-auto">
@@ -197,7 +197,7 @@
       } @else {
         <p class="text-sm text-gray-500 dark:text-gray-400">{{ 'sales.hints.noPayments' | translate }}</p>
       }
-    </p-card>
+    </app-card>
 
     <app-record-history resource="salesinvoice" [objectId]="invoice.id"></app-record-history>
   </div>

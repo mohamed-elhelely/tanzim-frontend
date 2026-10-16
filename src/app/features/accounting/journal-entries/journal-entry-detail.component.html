@@ -25,7 +25,7 @@
   }
 
   <div class="flex flex-col gap-4">
-    <p-card>
+    <app-card>
       <dl class="grid grid-cols-2 gap-x-6 gap-y-3 text-sm md:grid-cols-4">
         <div>
           <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'accounting.fields.status' | translate }}</dt>
@@ -58,9 +58,9 @@
           <dd class="mt-1 break-all" dir="ltr">{{ entry.reference || '—' }}</dd>
         </div>
       </dl>
-    </p-card>
+    </app-card>
 
-    <p-card>
+    <app-card>
       <div class="overflow-x-auto">
         <p-table [value]="entry.lines" dataKey="id" size="small">
           <ng-template pTemplate="header">
@@ -90,7 +90,7 @@
           </ng-template>
         </p-table>
       </div>
-    </p-card>
+    </app-card>
 
     <app-record-history resource="journalentry" [objectId]="entry.id"></app-record-history>
   </div>

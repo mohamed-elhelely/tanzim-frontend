@@ -5,7 +5,6 @@ import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { AppError } from '../../../core/errors/app-error';
@@ -20,6 +19,7 @@ import { AnalyticsLabelPipe, formatKpi } from '../analytics-format';
 import { AnalyticsTableComponent } from '../analytics-table.component';
 import { AnalyticsService } from '../analytics.service';
 import { CHART_SPECS, ChartSpec, DASHBOARD_NAMES, Dashboard, DashboardName, DashboardRef, Kpi, fitsSpec } from '../analytics.models';
+import { CardComponent } from '../../../shared/ui';
 
 /** Dashboards that can be narrowed to one warehouse. */
 const WAREHOUSE_DASHBOARDS: DashboardName[] = ['overview', 'inventory'];
@@ -39,13 +39,13 @@ interface ChartBlock {
 @Component({
   selector: 'app-dashboard-page',
   imports: [
+    CardComponent,
     DecimalPipe,
     FormsModule,
     RouterLink,
     RouterLinkActive,
     TranslatePipe,
     ButtonModule,
-    CardModule,
     InputTextModule,
     SelectModule,
     PageHeaderComponent,

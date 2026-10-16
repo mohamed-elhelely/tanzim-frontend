@@ -93,7 +93,7 @@
     @if (charts().length) {
       <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
         @for (chart of charts(); track chart.name) {
-          <p-card>
+          <app-card>
             <h3 class="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-200">{{ chart.name | analyticsLabel: 'analytics.charts' }}</h3>
             @if (chart.spec; as spec) {
               <app-analytics-chart [spec]="spec" [rows]="chart.rows" [ariaLabel]="chart.name | analyticsLabel: 'analytics.charts'"></app-analytics-chart>
@@ -102,16 +102,16 @@
             } @else {
               <p class="py-10 text-center text-sm text-gray-500 dark:text-gray-400">{{ 'analytics.noData' | translate }}</p>
             }
-          </p-card>
+          </app-card>
         }
       </div>
     }
 
     @for (table of tables(); track table.name) {
-      <p-card>
+      <app-card>
         <h3 class="mb-3 text-sm font-semibold text-gray-700 dark:text-gray-200">{{ table.name | analyticsLabel: 'analytics.tables' }}</h3>
         <app-analytics-table [rows]="table.rows"></app-analytics-table>
-      </p-card>
+      </app-card>
     }
   } @else if (loading()) {
     <app-loading-state></app-loading-state>

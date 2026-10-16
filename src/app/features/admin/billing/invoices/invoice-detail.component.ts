@@ -5,7 +5,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
@@ -27,6 +26,7 @@ import { AdminInvoice, BillingModule, INVOICE_SEVERITY, MONEY, WHOLE } from '../
 import { RowActionComponent, RowActionsComponent } from '../../../../shared/table/row-actions.component';
 import { AdminInvoiceService, BillingModuleService } from '../platform-billing.service';
 import { AppDatePipe } from '../../../../shared/pipes/app-date.pipe';
+import { CardComponent } from '../../../../shared/ui';
 
 /**
  * /admin/invoices/:id: one platform invoice. While it is a draft, staff edit its items and issue it; once issued,
@@ -35,6 +35,7 @@ import { AppDatePipe } from '../../../../shared/pipes/app-date.pipe';
 @Component({
   selector: 'app-invoice-detail',
   imports: [
+    CardComponent,
     RowActionsComponent,
     RowActionComponent,
     AppDatePipe,
@@ -42,7 +43,6 @@ import { AppDatePipe } from '../../../../shared/pipes/app-date.pipe';
     ReactiveFormsModule,
     TranslatePipe,
     ButtonModule,
-    CardModule,
     DialogModule,
     InputTextModule,
     SelectModule,
