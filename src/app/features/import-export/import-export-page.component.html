@@ -84,6 +84,8 @@
           [lazyLoadOnInit]="false"
           (onLazyLoad)="tasks.onLazyLoad($event)"
           [paginator]="true"
+          [showCurrentPageReport]="true"
+          [currentPageReportTemplate]="'common.pageReport' | translate"
           [first]="tasks.first()"
           [rows]="tasks.pageSize()"
           [totalRecords]="tasks.total()"
@@ -122,9 +124,11 @@
               <td class="max-w-sm truncate text-xs text-red-600" [title]="taskErrors(task)">{{ taskErrors(task) }}</td>
               <td class="whitespace-nowrap">{{ task.created_by_name || '—' }}</td>
               <td class="text-end">
-                @if (task.download_url) {
-                  <p-button icon="pi pi-download" [text]="true" [rounded]="true" [ariaLabel]="'importExport.actions.download' | translate" (onClick)="downloadTask(task)"></p-button>
-                }
+                <app-row-actions>
+                  @if (task.download_url) {
+                    <app-row-action icon="pi pi-download" label="importExport.actions.download" (run)="downloadTask(task)"></app-row-action>
+                  }
+                </app-row-actions>
               </td>
             </tr>
           </ng-template>

@@ -1,5 +1,5 @@
 import { signal } from '@angular/core';
-import { TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { TestBed, fakeAsync } from '@angular/core/testing';
 import { HttpTestingController } from '@angular/common/http/testing';
 import { Router } from '@angular/router';
 import { Confirmation, ConfirmationService } from 'primeng/api';
@@ -10,6 +10,7 @@ import { DepartmentListComponent } from './department-list.component';
 import { EMPTY } from 'rxjs';
 import { FormDialogService } from '../../../shared/forms/form-dialog.service';
 import { DepartmentFormComponent } from './department-form.component';
+import { rowActionIcons } from '../../../testing/row-actions';
 
 const URL = '/api/company/v1/departments/';
 
@@ -141,15 +142,13 @@ describe('DepartmentListComponent', () => {
     expectList({}, [makeDepartment()]);
     fixture.detectChanges();
     expect(fixture.componentInstance.headerActions().length).toBe(1);
-    expect(fixture.nativeElement.querySelector('.pi-pencil')).not.toBeNull();
-    expect(fixture.nativeElement.querySelector('.pi-trash')).not.toBeNull();
+    expect(rowActionIcons(fixture)).toEqual(['pi pi-pencil', 'pi pi-trash']);
 
     permissions.set(['view_department', 'change_department']);
     fixture.componentInstance.table.load();
     expectList({}, [makeDepartment()]);
     fixture.detectChanges();
     expect(fixture.componentInstance.headerActions()).toEqual([]);
-    expect(fixture.nativeElement.querySelector('.pi-pencil')).not.toBeNull();
-    expect(fixture.nativeElement.querySelector('.pi-trash')).toBeNull();
+    expect(rowActionIcons(fixture)).toEqual(['pi pi-pencil']);
   });
 });

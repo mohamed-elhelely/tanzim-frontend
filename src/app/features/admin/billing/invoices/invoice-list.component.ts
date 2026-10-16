@@ -17,12 +17,15 @@ import { TenantCompanyService } from '../../companies/tenant-company.service';
 import { AdminInvoice, INVOICE_SEVERITY, INVOICE_STATUSES, Severity } from '../platform-billing.models';
 import { AdminInvoiceService } from '../platform-billing.service';
 import { InvoiceDraftFormComponent } from './invoice-draft-form.component';
+import { RowActionComponent, RowActionsComponent } from '../../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../../shared/table/saved-views.component';
 
 /** /admin/invoices: platform invoices of every company, filtered by company and status. */
 @Component({
   selector: 'app-invoice-list',
   imports: [
+    RowActionsComponent,
+    RowActionComponent,
     SavedViewsComponent,
     DecimalPipe,
     FormsModule,
@@ -66,7 +69,7 @@ export class InvoiceListComponent implements OnInit {
   /** Keyed by string: table rows are untyped in the template. */
   readonly severity: Record<string, Severity> = INVOICE_SEVERITY;
   readonly statusOptions = INVOICE_STATUSES.map((status) => ({ value: status, label: `billing.invoiceStatus.${status}` }));
-  readonly companyOptions = signal<Array<{ value: number; label: string }>>([]);
+  readonly companyOptions = signal<{ value: number; label: string }[]>([]);
   readonly headerActions: PageHeaderAction[] = [
     { label: 'admin.billing.invoices.new', icon: 'pi pi-plus', onClick: () => this.formDialog.open(InvoiceDraftFormComponent, { header: 'admin.billing.invoices.new' }).subscribe() },
   ];

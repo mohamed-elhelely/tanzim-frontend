@@ -1,4 +1,4 @@
-<app-page-header title="sales.orders.title" [actions]="headerActions"></app-page-header>
+<app-page-header [count]="table.loaded() ? table.total() : null" title="sales.orders.title" [actions]="headerActions"></app-page-header>
 
 @if (table.error(); as err) {
   <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403" (retry)="table.load()"></app-error-state>
@@ -55,6 +55,8 @@
         [lazyLoadOnInit]="false"
         (onLazyLoad)="table.onLazyLoad($event)"
         [paginator]="true"
+        [showCurrentPageReport]="true"
+        [currentPageReportTemplate]="'common.pageReport' | translate"
         [first]="table.first()"
         [rows]="table.pageSize()"
         [totalRecords]="table.total()"
@@ -114,23 +116,12 @@
               </div>
             </td>
             <td class="whitespace-nowrap text-end">
-              <p-button
-                icon="pi pi-eye"
-                [text]="true"
-                [rounded]="true"
-                [ariaLabel]="'common.view' | translate"
-                (onClick)="$event.stopPropagation(); open(row)"
-              ></p-button>
-              @if (row.status === 'draft') {
-                <p-button
-                  icon="pi pi-trash"
-                  severity="danger"
-                  [text]="true"
-                  [rounded]="true"
-                  [ariaLabel]="'common.delete' | translate"
-                  (onClick)="$event.stopPropagation(); confirmDelete(row)"
-                ></p-button>
-              }
+              <app-row-actions [recordId]="row.id" [record]="row" [recordName]="row.order_number">
+                <app-row-action icon="pi pi-eye" label="common.view" (run)="open(row)"></app-row-action>
+                @if (row.status === 'draft') {
+                  <app-row-action icon="pi pi-trash" label="common.delete" severity="danger" (run)="confirmDelete(row)"></app-row-action>
+                }
+              </app-row-actions>
             </td>
           </tr>
         </ng-template>

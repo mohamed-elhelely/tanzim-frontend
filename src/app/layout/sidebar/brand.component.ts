@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AccessService } from '../../core/auth/access.service';
@@ -13,4 +13,6 @@ import { AccessService } from '../../core/auth/access.service';
 export class BrandComponent {
   private readonly access = inject(AccessService);
   readonly company = computed(() => this.access.current()?.company ?? null);
+  /** Logo only (collapsed sidebar). */
+  readonly compact = input(false);
 }

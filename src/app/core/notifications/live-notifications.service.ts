@@ -4,6 +4,8 @@ import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { AccessService } from '../auth/access.service';
 import { AuthService } from '../auth/auth.service';
+import { chatConversationId } from '../chat/chat.models';
+import { ChatStore } from '../chat/chat.store';
 import { LanguageService } from '../services/language.service';
 import { NotificationService, NotificationSeverity } from '../services/notification.service';
 import { AppNotification, NotificationType, accountChange, notificationText } from './notification.model';
@@ -17,7 +19,8 @@ export const ACCESS_RELOAD_DEBOUNCE_MS = 800;
 export const SIGN_OUT_DELAY_MS = 5000;
 
 /**
- * Reacts to notifications as the socket pushes them: a sound and a toast for each, and for account changes made by someone
+ * Reacts to notifications as the socket pushes them: a sound and a toast for each (none for a chat bell of the chat
+ * the user is reading), and for account changes made by someone
  * else (`data.event === 'account_change'`):
  * - membership, role or permission-group changes: /me again (debounced), so menus, guards and buttons follow
  *   without a re-login; if the open page is no longer allowed, back to the dashboard;
@@ -36,6 +39,7 @@ export class LiveNotificationsService {
   private readonly destroyRef = inject(DestroyRef);
   private readonly language = inject(LanguageService);
   private readonly sound = inject(NotificationSoundService);
+  private readonly chat = inject(ChatStore);
   private reloadTimer?: ReturnType<typeof setTimeout>;
   private signOutTimer?: ReturnType<typeof setTimeout>;
   private started = false;
@@ -53,6 +57,10 @@ export class LiveNotificationsService {
   }
 
   private handle(notification: AppNotification): void {
+    const conversationId = chatConversationId(notification);
+    if (conversationId !== null && this.chat.isOpen(conversationId)) {
+      return; // The user is reading that chat right now.
+    }
     const change = accountChange(notification);
     const { title, message } = notificationText(notification, this.language.currentLang());
     const important = !!change || notification.notif_type === 'warning' || notification.notif_type === 'error';

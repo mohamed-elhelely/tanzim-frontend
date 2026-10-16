@@ -1,4 +1,4 @@
-<app-page-header title="locations.cities.title" [actions]="headerActions">
+<app-page-header [count]="table.loaded() ? table.total() : null" title="locations.cities.title" [actions]="headerActions">
   <app-import-export-actions resource="city" [table]="table" (imported)="table.load()"></app-import-export-actions>
 </app-page-header>
 
@@ -55,6 +55,8 @@
         [lazyLoadOnInit]="false"
         (onLazyLoad)="table.onLazyLoad($event)"
         [paginator]="true"
+        [showCurrentPageReport]="true"
+        [currentPageReportTemplate]="'common.pageReport' | translate"
         [first]="table.first()"
         [rows]="table.pageSize()"
         [totalRecords]="table.total()"
@@ -87,21 +89,10 @@
             <td>{{ row.region?.country | localizedName: lang() }}</td>
             <td><span dir="ltr">{{ row.timezone }}</span></td>
             <td class="whitespace-nowrap text-end">
-              <p-button
-                icon="pi pi-pencil"
-                [text]="true"
-                [rounded]="true"
-                [ariaLabel]="'common.edit' | translate"
-                (onClick)="edit(row)"
-              ></p-button>
-              <p-button
-                icon="pi pi-trash"
-                severity="danger"
-                [text]="true"
-                [rounded]="true"
-                [ariaLabel]="'common.delete' | translate"
-                (onClick)="confirmDelete(row)"
-              ></p-button>
+              <app-row-actions [recordId]="row.id" [record]="row" [recordName]="row">
+                <app-row-action icon="pi pi-pencil" label="common.edit" (run)="edit(row)"></app-row-action>
+                <app-row-action icon="pi pi-trash" label="common.delete" severity="danger" (run)="confirmDelete(row)"></app-row-action>
+              </app-row-actions>
             </td>
           </tr>
         </ng-template>

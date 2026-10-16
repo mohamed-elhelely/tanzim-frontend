@@ -38,15 +38,10 @@
               }
             </td>
             <td class="whitespace-nowrap text-end">
-              <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" [ariaLabel]="'common.edit' | translate" (onClick)="openForm(plan.id)"></p-button>
-              <p-button
-                icon="pi pi-trash"
-                severity="danger"
-                [text]="true"
-                [rounded]="true"
-                [ariaLabel]="'common.delete' | translate"
-                (onClick)="confirmDelete(plan)"
-              ></p-button>
+              <app-row-actions>
+                <app-row-action icon="pi pi-pencil" label="common.edit" (run)="openForm(plan.id)"></app-row-action>
+                <app-row-action icon="pi pi-trash" label="common.delete" severity="danger" (run)="confirmDelete(plan)"></app-row-action>
+              </app-row-actions>
             </td>
           </tr>
         </ng-template>

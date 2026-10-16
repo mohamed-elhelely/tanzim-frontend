@@ -1,6 +1,6 @@
 import { signal } from '@angular/core';
 import { Subject, of, throwError } from 'rxjs';
-import { TestBed } from '@angular/core/testing';
+import { TestBed, discardPeriodicTasks, fakeAsync, tick } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { HttpTestingController } from '@angular/common/http/testing';
 import { envelope, provideApiTesting } from '../../testing/api-testing';
@@ -16,12 +16,20 @@ class FakeSocket {
   onmessage: ((event: { data: string }) => void) | null = null;
   onclose: ((event: { code: number }) => void) | null = null;
   closed = false;
+  readyState = 0;
+  sent: string[] = [];
   constructor(readonly url: string) {
     FakeSocket.last = this;
   }
-  send(): void {}
+  send(frame: string): void {
+    this.sent.push(frame);
+  }
   close(): void {
     this.closed = true;
+  }
+  open(): void {
+    this.readyState = 1;
+    this.onopen?.();
   }
   receive(message: unknown): void {
     this.onmessage?.({ data: JSON.stringify(message) });
@@ -92,6 +100,24 @@ describe('NotificationCenterService', () => {
     expect(center.unread()).toBe(2);
     FakeSocket.last?.receive({ type: 'connection_established', unread_notification: 5 });
     expect(center.unread()).toBe(5);
+  });
+
+  it('a re-pushed unread notification with the same id replaces it without counting it again', () => {
+    const center = start();
+    FakeSocket.last?.receive({ type: 'new_notification', notification: note(3, { message: 'first' }) });
+    expect(center.unread()).toBe(2);
+    FakeSocket.last?.receive({ type: 'new_notification', notification: note(3, { message: 'two messages' }) });
+    expect(center.unread()).toBe(2);
+    expect(center.items().filter((n) => n.id === 3).map((n) => n.message)).toEqual(['two messages']);
+    // A read item coming back unread counts again.
+    FakeSocket.last?.receive({ type: 'new_notification', notification: note(1) });
+    expect(center.unread()).toBe(3);
+  });
+
+  it('ignores a frame without a type', () => {
+    const center = start();
+    expect(() => FakeSocket.last?.receive({ unexpected: true })).not.toThrow();
+    expect(center.unread()).toBe(1);
   });
 
   it('marks one or all as read', () => {
@@ -179,4 +205,38 @@ describe('NotificationCenterService', () => {
       jasmine.clock().uninstall();
     }
   });
+
+  it('routes chat frames to chatEvents$, not to incoming$', () => {
+    const center = start();
+    const chat: unknown[] = [];
+    const incoming: unknown[] = [];
+    center.chatEvents$.subscribe((e) => chat.push(e));
+    center.incoming$.subscribe((n) => incoming.push(n));
+    FakeSocket.last!.receive({ type: 'chat.typing', conversation_id: 12, user_id: 45 });
+    expect(chat).toEqual([{ type: 'chat.typing', conversation_id: 12, user_id: 45 }]);
+    expect(incoming).toEqual([]);
+  });
+
+  it('emits reconnected$ on every open after the first', fakeAsync(() => {
+    const center = start();
+    let count = 0;
+    center.reconnected$.subscribe(() => count++);
+    FakeSocket.last!.open();
+    expect(count).toBe(0);
+    FakeSocket.last!.onclose!({ code: 1006 });
+    tick(2_000);
+    FakeSocket.last!.open();
+    expect(count).toBe(1);
+    discardPeriodicTasks();
+  }));
+
+  it('send() writes JSON to the open socket only', fakeAsync(() => {
+    const center = start();
+    center.send({ action: 'typing', conversation_id: 12 });
+    expect(FakeSocket.last!.sent).toEqual([]);
+    FakeSocket.last!.open();
+    center.send({ action: 'typing', conversation_id: 12 });
+    expect(FakeSocket.last!.sent).toEqual([JSON.stringify({ action: 'typing', conversation_id: 12 })]);
+    discardPeriodicTasks();
+  }));
 });

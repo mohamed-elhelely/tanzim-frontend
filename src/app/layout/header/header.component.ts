@@ -5,9 +5,11 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { MenuModule } from 'primeng/menu';
-import { PopoverModule } from 'primeng/popover';
+import { Popover, PopoverModule } from 'primeng/popover';
 import { filter, map, startWith } from 'rxjs';
 import { AccessService } from '../../core/auth/access.service';
+import { chatConversationId } from '../../core/chat/chat.models';
+import { ChatStore } from '../../core/chat/chat.store';
 import { AuthService } from '../../core/auth/auth.service';
 import { AppNotification } from '../../core/notifications/notification.model';
 import { NotificationCenterService } from '../../core/notifications/notification-center.service';
@@ -41,6 +43,7 @@ export class AppHeaderComponent {
   /** The user's picture from /me (absolute URL), or null for initials. */
   readonly picture = computed(() => this.access.current()?.user.profile_picture ?? null);
   readonly notifications = inject(NotificationCenterService);
+  readonly chat = inject(ChatStore);
   readonly sound = inject(NotificationSoundService);
   /** The bell shows the latest few; the notifications page shows them all. */
   readonly latest = computed(() => this.notifications.items().slice(0, 6));
@@ -85,8 +88,14 @@ export class AppHeaderComponent {
     return ((parts[0]?.[0] ?? '') + (parts[1]?.[0] ?? '')).toUpperCase() || '?';
   });
 
-  openNotification(notification: AppNotification): void {
+  /** A chat bell opens that chat in the drawer; every click marks the notification read. */
+  openNotification(notification: AppNotification, popover?: Popover): void {
     this.notifications.open(notification);
+    const conversationId = chatConversationId(notification);
+    if (conversationId) {
+      popover?.hide();
+      this.chat.openDrawer(conversationId);
+    }
   }
 
   get userMenuItems(): MenuItem[] {

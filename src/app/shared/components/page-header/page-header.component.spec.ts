@@ -28,6 +28,22 @@ describe('PageHeaderComponent', () => {
     expect(clicked).toBeTrue();
   });
 
+  it("shows the list's total beside the title only once it is known", () => {
+    TestBed.configureTestingModule({ imports: [PageHeaderComponent], providers: [provideTranslateService(), provideAnimations()] });
+    const fixture = TestBed.createComponent(PageHeaderComponent);
+    fixture.componentInstance.title = 'sales.customers.title';
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('[data-testid="page-count"]')).toBeNull();
+
+    fixture.componentRef.setInput('count', 1250);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('[data-testid="page-count"]').textContent.trim()).toBe('(1,250)');
+
+    fixture.componentRef.setInput('count', 0);
+    fixture.detectChanges();
+    expect(fixture.nativeElement.querySelector('[data-testid="page-count"]').textContent.trim()).toBe('(0)');
+  });
+
   describe('activity log button', () => {
     function render(route: unknown, canReadLog: boolean) {
       const drawer = jasmine.createSpyObj<ModuleActivityService>('ModuleActivityService', ['open']);

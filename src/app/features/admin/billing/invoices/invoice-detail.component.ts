@@ -24,6 +24,7 @@ import { StatusBadgeComponent } from '../../../../shared/components/status-badge
 import { errorTitleKey, handleSaveError } from '../../../../shared/utils/server-errors';
 import { InvoiceItem } from '../../../billing/billing.models';
 import { AdminInvoice, BillingModule, INVOICE_SEVERITY, MONEY, WHOLE } from '../platform-billing.models';
+import { RowActionComponent, RowActionsComponent } from '../../../../shared/table/row-actions.component';
 import { AdminInvoiceService, BillingModuleService } from '../platform-billing.service';
 
 /**
@@ -33,6 +34,8 @@ import { AdminInvoiceService, BillingModuleService } from '../platform-billing.s
 @Component({
   selector: 'app-invoice-detail',
   imports: [
+    RowActionsComponent,
+    RowActionComponent,
     DatePipe,
     DecimalPipe,
     ReactiveFormsModule,
@@ -69,7 +72,7 @@ export class InvoiceDetailComponent implements OnInit {
   readonly loadError = signal<AppError | null>(null);
   readonly errorTitleKey = errorTitleKey;
   readonly severity = INVOICE_SEVERITY;
-  readonly moduleOptions = signal<Array<{ value: number; label: string }>>([]);
+  readonly moduleOptions = signal<{ value: number; label: string }[]>([]);
 
   /** Item dialog: null = closed, 'new' = add, an item = edit. */
   readonly editingItem = signal<InvoiceItem | 'new' | null>(null);

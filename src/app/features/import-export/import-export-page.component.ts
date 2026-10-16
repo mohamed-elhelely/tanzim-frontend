@@ -18,6 +18,7 @@ import { errorTitleKey } from '../../shared/utils/server-errors';
 import { saveFile } from '../../shared/utils/save-file';
 import { ImportExportActionsComponent } from './import-export-actions.component';
 import { DATA_RESOURCES, DataResource, DataTask, TaskStatus, taskModelName } from './import-export.models';
+import { RowActionComponent, RowActionsComponent } from '../../shared/table/row-actions.component';
 import { ImportExportService } from './import-export.service';
 
 type Severity = 'success' | 'secondary' | 'info' | 'warn' | 'danger';
@@ -37,6 +38,8 @@ const TASK_SEVERITY: Record<TaskStatus, Severity> = {
 @Component({
   selector: 'app-import-export-page',
   imports: [
+    RowActionsComponent,
+    RowActionComponent,
     DatePipe,
     FormsModule,
     TranslatePipe,

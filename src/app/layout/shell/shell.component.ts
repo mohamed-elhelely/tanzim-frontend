@@ -3,11 +3,16 @@ import { RouterOutlet } from '@angular/router';
 import { PrimeTemplate } from 'primeng/api';
 import { DrawerModule } from 'primeng/drawer';
 import { ToastModule } from 'primeng/toast';
+import { ChatStore } from '../../core/chat/chat.store';
+import { ChatDrawerComponent } from '../../features/chat/chat-drawer.component';
 import { LanguageService } from '../../core/services/language.service';
 import { AccessService } from '../../core/auth/access.service';
 import { LiveNotificationsService } from '../../core/notifications/live-notifications.service';
 import { NotificationCenterService } from '../../core/notifications/notification-center.service';
+import { ModuleActivityService } from '../../shared/activity/module-activity';
+import { RecordDetailsService } from '../../shared/activity/record-details';
 import { ModuleActivityDrawerComponent } from '../../features/company/system-logs/module-activity-drawer.component';
+import { RecordDetailsDrawerComponent } from '../../features/company/system-logs/record-details-drawer.component';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { LoadingBarComponent } from '../../shared/components/loading-bar/loading-bar.component';
 import { AppHeaderComponent } from '../header/header.component';
@@ -17,7 +22,7 @@ import { AppSidebarComponent } from '../sidebar/sidebar.component';
 
 /**
  * Layout for every signed-in page: sidebar (desktop) or drawer (mobile), header, toasts, the confirm dialog and the
- * module activity log drawer.
+ * module activity log and record details drawers, and the chat drawer.
  */
 @Component({
   selector: 'app-shell',
@@ -33,6 +38,8 @@ import { AppSidebarComponent } from '../sidebar/sidebar.component';
     BrandComponent,
     ConfirmDialogComponent,
     ModuleActivityDrawerComponent,
+    RecordDetailsDrawerComponent,
+    ChatDrawerComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './shell.component.html',
@@ -40,6 +47,11 @@ import { AppSidebarComponent } from '../sidebar/sidebar.component';
 export class ShellComponent {
   readonly language = inject(LanguageService);
   readonly mobileNavOpen = signal(false);
+  /** The drawers' state, to load each drawer the first time it opens. */
+  readonly activity = inject(ModuleActivityService);
+  readonly recordDetails = inject(RecordDetailsService);
+  /** Chat state (header badge); the drawer UI loads the first time it opens. */
+  readonly chat = inject(ChatStore);
 
   constructor() {
     // What this user may see (GET /me). Guards may already have started it; load() shares the request.

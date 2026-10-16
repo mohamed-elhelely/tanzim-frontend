@@ -14,6 +14,7 @@ import { ServerTable } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { TenantCompany } from '../admin.models';
 import { TenantCompanyService } from './tenant-company.service';
+import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 /**
@@ -23,6 +24,8 @@ import { SavedViewsComponent } from '../../../shared/table/saved-views.component
 @Component({
   selector: 'app-tenant-company-list',
   imports: [
+    RowActionsComponent,
+    RowActionComponent,
     SavedViewsComponent,
     TranslatePipe,
     TableModule,

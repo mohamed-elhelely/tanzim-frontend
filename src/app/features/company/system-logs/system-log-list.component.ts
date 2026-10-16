@@ -40,6 +40,7 @@ import {
   auditMetaRows,
 } from './system-log.models';
 import { SystemLogService } from './system-log.service';
+import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 /**
@@ -82,6 +83,8 @@ function resourceLabels(items: NavItem[]): Map<string, string> {
 @Component({
   selector: 'app-system-log-list',
   imports: [
+    RowActionsComponent,
+    RowActionComponent,
     SavedViewsComponent,
     DatePipe,
     FormsModule,
@@ -112,6 +115,8 @@ export class SystemLogListComponent implements OnInit {
   readonly staff = inject(AccessService).isStaff;
   /** A module's audit resources: every request is limited to them (not a filter the user can clear). */
   readonly scope = input<readonly string[] | null>(null);
+  /** With `scope`: only this record's log (a row's "View logs"). */
+  readonly objectId = input<string | number | null | undefined>(null);
 
   actions: AuditAction[] = [];
   resources: string[] = [];
@@ -208,7 +213,15 @@ export class SystemLogListComponent implements OnInit {
 
   private scoped(filters: Record<string, string | number> | undefined): Record<string, string | number> {
     const scope = this.scope();
-    return scope ? { ...filters, resource: scope.join(',') } : { ...filters };
+    if (!scope) {
+      return { ...filters };
+    }
+    const objectId = this.objectId();
+    return {
+      ...filters,
+      resource: scope.join(','),
+      ...(objectId === null || objectId === undefined ? {} : { object_id: String(objectId) }),
+    };
   }
 
   private options(entries: readonly (readonly [string, string])[]): { value: string; label: string }[] {

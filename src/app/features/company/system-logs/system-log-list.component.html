@@ -1,5 +1,5 @@
 @if (!scope()) {
-  <app-page-header title="systemLogs.title" subtitle="systemLogs.subtitle" [actions]="headerActions()"></app-page-header>
+  <app-page-header [count]="table.loaded() ? table.total() : null" title="systemLogs.title" subtitle="systemLogs.subtitle" [actions]="headerActions()"></app-page-header>
 }
 
 @if (table.error(); as err) {
@@ -124,6 +124,8 @@
         [lazyLoadOnInit]="false"
         (onLazyLoad)="table.onLazyLoad($event)"
         [paginator]="true"
+        [showCurrentPageReport]="true"
+        [currentPageReportTemplate]="'common.pageReport' | translate"
         [first]="table.first()"
         [rows]="table.pageSize()"
         [totalRecords]="table.total()"
@@ -145,6 +147,7 @@
             <th>{{ 'systemLogs.fields.resource' | translate }}</th>
             <th>{{ 'systemLogs.fields.record' | translate }}</th>
             <th>{{ 'systemLogs.fields.changes' | translate }}</th>
+            <th class="text-end">{{ 'common.actions' | translate }}</th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-row>
@@ -173,11 +176,16 @@
                 }
               }
             </td>
+            <td class="whitespace-nowrap text-end">
+              <app-row-actions>
+                <app-row-action icon="pi pi-eye" label="common.view" (run)="open(row)"></app-row-action>
+              </app-row-actions>
+            </td>
           </tr>
         </ng-template>
         <ng-template pTemplate="emptymessage">
           <tr>
-            <td [attr.colspan]="staff() ? 7 : 6"><app-empty-state icon="pi-history"></app-empty-state></td>
+            <td [attr.colspan]="staff() ? 8 : 7"><app-empty-state icon="pi-history"></app-empty-state></td>
           </tr>
         </ng-template>
       </p-table>

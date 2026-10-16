@@ -1,4 +1,4 @@
-<app-page-header title="returns.customer.title" [actions]="headerActions"></app-page-header>
+<app-page-header [count]="table.loaded() ? table.total() : null" title="returns.customer.title" [actions]="headerActions"></app-page-header>
 
 @if (table.error(); as err) {
   <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403" (retry)="table.load()"></app-error-state>
@@ -47,6 +47,8 @@
         [lazyLoadOnInit]="false"
         (onLazyLoad)="table.onLazyLoad($event)"
         [paginator]="true"
+        [showCurrentPageReport]="true"
+        [currentPageReportTemplate]="'common.pageReport' | translate"
         [first]="table.first()"
         [rows]="table.pageSize()"
         [totalRecords]="table.total()"
@@ -88,13 +90,9 @@
             <td class="text-end">{{ row.total_lines }}</td>
             <td class="whitespace-nowrap text-end">{{ row.refund_amount | number: '1.2-2' }}</td>
             <td class="text-end">
-              <p-button
-                icon="pi pi-eye"
-                [text]="true"
-                [rounded]="true"
-                [ariaLabel]="'common.view' | translate"
-                (onClick)="$event.stopPropagation(); open(row)"
-              ></p-button>
+              <app-row-actions [recordId]="row.id" [record]="row" [recordName]="row.return_number">
+                <app-row-action icon="pi pi-eye" label="common.view" (run)="open(row)"></app-row-action>
+              </app-row-actions>
             </td>
           </tr>
         </ng-template>

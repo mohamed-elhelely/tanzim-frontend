@@ -19,11 +19,14 @@ import { ServerTable } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { CUSTOMER_TYPES, CustomerListItem, CustomerType } from '../sales.models';
 import { CustomerService } from './customer.service';
+import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 @Component({
   selector: 'app-customer-list',
   imports: [
+    RowActionsComponent,
+    RowActionComponent,
     SavedViewsComponent,
     FormsModule,
     DecimalPipe,

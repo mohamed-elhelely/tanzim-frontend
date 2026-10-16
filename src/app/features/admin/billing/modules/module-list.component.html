@@ -36,15 +36,10 @@
             </td>
             <td class="max-w-xs truncate">{{ module.description || '—' }}</td>
             <td class="whitespace-nowrap text-end">
-              <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" [ariaLabel]="'common.edit' | translate" (onClick)="openForm(module.id)"></p-button>
-              <p-button
-                icon="pi pi-trash"
-                severity="danger"
-                [text]="true"
-                [rounded]="true"
-                [ariaLabel]="'common.delete' | translate"
-                (onClick)="confirmDelete(module)"
-              ></p-button>
+              <app-row-actions>
+                <app-row-action icon="pi pi-pencil" label="common.edit" (run)="openForm(module.id)"></app-row-action>
+                <app-row-action icon="pi pi-trash" label="common.delete" severity="danger" (run)="confirmDelete(module)"></app-row-action>
+              </app-row-actions>
             </td>
           </tr>
         </ng-template>

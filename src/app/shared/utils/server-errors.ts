@@ -60,7 +60,7 @@ export function errorTitleKey(error: AppError | null): string {
   return 'common.error';
 }
 
-function flattenErrors(errors: unknown, prefix: string): Array<[string, string[]]> {
+function flattenErrors(errors: unknown, prefix: string): [string, string[]][] {
   if (Array.isArray(errors)) {
     const messages = errors.filter((item): item is string => typeof item === 'string');
     const nested = errors.flatMap((item, index) =>

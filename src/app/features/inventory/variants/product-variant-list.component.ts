@@ -19,11 +19,14 @@ import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { ProductVariant } from '../inventory.models';
 import { ProductService } from '../products/product.service';
 import { ProductVariantService } from './product-variant.service';
+import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 @Component({
   selector: 'app-product-variant-list',
   imports: [
+    RowActionsComponent,
+    RowActionComponent,
     SavedViewsComponent,
     TranslatePipe,
     RouterLink,

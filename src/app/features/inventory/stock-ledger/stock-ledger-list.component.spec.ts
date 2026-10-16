@@ -1,4 +1,4 @@
-import { TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { TestBed, fakeAsync } from '@angular/core/testing';
 import { HttpTestingController } from '@angular/common/http/testing';
 import { envelope, provideApiTesting } from '../../../testing/api-testing';
 import { makeLedgerEntry } from '../../../testing/inventory-fixtures';

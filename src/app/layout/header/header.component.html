@@ -43,6 +43,28 @@
       <i class="pi" [class.pi-sun]="theme.theme() === 'dark'" [class.pi-moon]="theme.theme() !== 'dark'"></i>
     </button>
 
+    @if (chat.enabled()) {
+      <button
+        type="button"
+        data-test="chat-button"
+        class="relative flex h-9 w-9 items-center justify-center rounded-lg text-gray-600 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+        [class.bg-gray-100]="chat.drawerOpen()"
+        [attr.aria-label]="'chat.open' | translate"
+        [attr.aria-pressed]="chat.drawerOpen()"
+        [title]="'chat.title' | translate"
+        (click)="chat.toggleDrawer()"
+      >
+        <i class="pi pi-comments"></i>
+        @if (chat.unreadTotal() > 0) {
+          <span
+            class="absolute -end-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold leading-none text-white"
+          >
+            {{ chat.unreadTotal() > 99 ? '99+' : chat.unreadTotal() }}
+          </span>
+        }
+      </button>
+    }
+
     <button
       type="button"
       class="relative flex h-9 w-9 items-center justify-center rounded-lg text-gray-600 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
@@ -83,7 +105,7 @@
         </div>
         <div class="flex max-h-96 flex-col gap-0.5 overflow-y-auto">
           @for (item of latest(); track item.id) {
-            <app-notification-item [notification]="item" (open)="openNotification($event)"></app-notification-item>
+            <app-notification-item [notification]="item" (open)="openNotification($event, bell)"></app-notification-item>
           } @empty {
             <p class="px-3 py-6 text-center text-sm text-gray-500 dark:text-gray-400">{{ 'notifications.empty' | translate }}</p>
           }

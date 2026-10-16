@@ -1,4 +1,4 @@
-<app-page-header title="admin.billing.subscriptions.title" subtitle="admin.billing.subscriptions.subtitle" [actions]="headerActions"></app-page-header>
+<app-page-header [count]="table.loaded() ? table.total() : null" title="admin.billing.subscriptions.title" subtitle="admin.billing.subscriptions.subtitle" [actions]="headerActions"></app-page-header>
 
 @if (table.error(); as err) {
   <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403" (retry)="table.load()"></app-error-state>
@@ -57,6 +57,8 @@
         [lazyLoadOnInit]="false"
         (onLazyLoad)="table.onLazyLoad($event)"
         [paginator]="true"
+        [showCurrentPageReport]="true"
+        [currentPageReportTemplate]="'common.pageReport' | translate"
         [first]="table.first()"
         [rows]="table.pageSize()"
         [totalRecords]="table.total()"
@@ -99,22 +101,11 @@
               </div>
             </td>
             <td class="whitespace-nowrap text-end">
-              <p-button
-                icon="pi pi-th-large"
-                [text]="true"
-                [rounded]="true"
-                [ariaLabel]="'admin.billing.subscriptions.manageModules' | translate"
-                (onClick)="openModules(row)"
-              ></p-button>
-              <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" [ariaLabel]="'common.edit' | translate" (onClick)="openForm(row.id)"></p-button>
-              <p-button
-                icon="pi pi-trash"
-                severity="danger"
-                [text]="true"
-                [rounded]="true"
-                [ariaLabel]="'common.delete' | translate"
-                (onClick)="confirmDelete(row)"
-              ></p-button>
+              <app-row-actions [recordId]="row.id" [record]="row">
+                <app-row-action icon="pi pi-th-large" label="admin.billing.subscriptions.manageModules" (run)="openModules(row)"></app-row-action>
+                <app-row-action icon="pi pi-pencil" label="common.edit" (run)="openForm(row.id)"></app-row-action>
+                <app-row-action icon="pi pi-trash" label="common.delete" severity="danger" (run)="confirmDelete(row)"></app-row-action>
+              </app-row-actions>
             </td>
           </tr>
         </ng-template>

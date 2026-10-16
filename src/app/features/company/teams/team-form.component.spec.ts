@@ -10,7 +10,7 @@ const DEPARTMENTS_URL = '/api/company/v1/departments/';
 const LOCATIONS_URL = '/api/company/v1/location/';
 const USERS_URL = '/api/company/v1/company-user/';
 
-type LocationReply = { body: object; status?: number };
+interface LocationReply { body: object; status?: number }
 
 describe('TeamFormComponent', () => {
   let httpMock: HttpTestingController;

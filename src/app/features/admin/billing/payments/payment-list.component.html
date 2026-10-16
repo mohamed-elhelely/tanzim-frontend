@@ -1,4 +1,4 @@
-<app-page-header title="admin.billing.payments.title" subtitle="admin.billing.payments.subtitle"></app-page-header>
+<app-page-header [count]="table.loaded() ? table.total() : null" title="admin.billing.payments.title" subtitle="admin.billing.payments.subtitle"></app-page-header>
 
 @if (table.error(); as err) {
   <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403" (retry)="table.load()"></app-error-state>
@@ -43,6 +43,8 @@
         [lazyLoadOnInit]="false"
         (onLazyLoad)="table.onLazyLoad($event)"
         [paginator]="true"
+        [showCurrentPageReport]="true"
+        [currentPageReportTemplate]="'common.pageReport' | translate"
         [first]="table.first()"
         [rows]="table.pageSize()"
         [totalRecords]="table.total()"
@@ -81,16 +83,11 @@
             <td class="text-end" dir="ltr">{{ row.refunded_amount | number: '1.2-2' }}</td>
             <td class="text-end font-medium" dir="ltr">{{ row.net_amount | number: '1.2-2' }}</td>
             <td class="whitespace-nowrap text-end">
-              @if (canRefund(row)) {
-                <p-button
-                  [label]="'admin.billing.payments.refund' | translate"
-                  icon="pi pi-replay"
-                  severity="secondary"
-                  [text]="true"
-                  size="small"
-                  (onClick)="openRefund(row)"
-                ></p-button>
-              }
+              <app-row-actions [recordId]="row.id" [record]="row">
+                @if (canRefund(row)) {
+                  <app-row-action icon="pi pi-replay" label="admin.billing.payments.refund" (run)="openRefund(row)"></app-row-action>
+                }
+              </app-row-actions>
             </td>
           </tr>
         </ng-template>

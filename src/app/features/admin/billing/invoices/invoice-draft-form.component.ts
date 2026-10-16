@@ -32,7 +32,7 @@ export class InvoiceDraftFormComponent implements OnInit {
 
   readonly saving = signal(false);
   readonly formErrors = signal<string[]>([]);
-  readonly subscriptionOptions = signal<Array<{ value: number; label: string }>>([]);
+  readonly subscriptionOptions = signal<{ value: number; label: string }[]>([]);
   /** False when there is no subscription to invoice yet. */
   readonly hasSubscriptions = signal(true);
 

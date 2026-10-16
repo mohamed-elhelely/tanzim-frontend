@@ -1,6 +1,32 @@
-<aside class="flex h-full w-64 flex-col bg-secondary-950 text-secondary-100">
-  <app-brand class="shrink-0"></app-brand>
-  <div class="flex-1 overflow-y-auto">
-    <app-nav-list></app-nav-list>
+<aside
+  class="flex h-full flex-col bg-secondary-950 text-secondary-100 transition-[width] duration-200"
+  [class.w-72]="!state.collapsed()"
+  [class.w-20]="state.collapsed()"
+>
+  <app-brand class="shrink-0" [compact]="state.collapsed()"></app-brand>
+  <div class="app-scrollbar flex-1 overflow-y-auto overflow-x-hidden">
+    <app-nav-list [collapsed]="state.collapsed()" (groupOpened)="state.set(false)"></app-nav-list>
+  </div>
+  <div class="shrink-0 border-t border-white/10 p-3" [class.flex]="state.collapsed()" [class.justify-center]="state.collapsed()">
+    <button
+      type="button"
+      class="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-secondary-300 transition-colors hover:bg-white/5 hover:text-white"
+      [class.w-full]="!state.collapsed()"
+      [attr.aria-label]="(state.collapsed() ? 'nav.expand' : 'nav.collapse') | translate"
+      [attr.aria-expanded]="!state.collapsed()"
+      [pTooltip]="state.collapsed() ? ('nav.expand' | translate) : undefined"
+      [tooltipPosition]="direction() === 'rtl' ? 'left' : 'right'"
+      (click)="state.toggle()"
+    >
+      <!-- Points toward where the sidebar goes: inward to collapse, outward to expand (mirrored in RTL). -->
+      <i
+        class="pi text-base"
+        [class.pi-angle-double-left]="state.collapsed() === (direction() === 'rtl')"
+        [class.pi-angle-double-right]="state.collapsed() !== (direction() === 'rtl')"
+      ></i>
+      @if (!state.collapsed()) {
+        <span class="whitespace-nowrap">{{ 'nav.collapse' | translate }}</span>
+      }
+    </button>
   </div>
 </aside>

@@ -174,7 +174,7 @@ export class SiteFormComponent implements OnInit {
     void this.router.navigate(['/locations/sites']);
   }
 
-  private toOptions(items: Array<Named & { id: number }>): SelectOption[] {
+  private toOptions(items: (Named & { id: number })[]): SelectOption[] {
     return items.map((item) => ({ value: item.id, label: localizedName(item, this.lang()) }));
   }
 

@@ -50,6 +50,8 @@ export class ServerTable<T> {
   readonly first = signal(0);
   readonly pageSize = signal(10);
   readonly loading = signal(false);
+  /** True once the API has answered (and stays true): the total is real from then on, not the initial 0. */
+  readonly loaded = signal(false);
   readonly error = signal<AppError | null>(null);
   /**
    * A filter the backend refused (400 keyed by the parameter, e.g. `{ date_from: ["Enter a valid date."] }`).
@@ -123,6 +125,7 @@ export class ServerTable<T> {
       next: (page) => {
         this.rows.set(page.items);
         this.total.set(page.total);
+        this.loaded.set(true);
         this.filterErrors.set({});
         this.loading.set(false);
       },

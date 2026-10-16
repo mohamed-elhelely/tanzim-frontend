@@ -1,4 +1,4 @@
-<app-page-header title="company.roles.title" [actions]="headerActions()"></app-page-header>
+<app-page-header [count]="table.loaded() ? table.total() : null" title="company.roles.title" [actions]="headerActions()"></app-page-header>
 
 @if (table.error(); as err) {
   <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403" (retry)="table.load()"></app-error-state>
@@ -53,6 +53,8 @@
         [lazyLoadOnInit]="false"
         (onLazyLoad)="table.onLazyLoad($event)"
         [paginator]="true"
+        [showCurrentPageReport]="true"
+        [currentPageReportTemplate]="'common.pageReport' | translate"
         [first]="table.first()"
         [rows]="table.pageSize()"
         [totalRecords]="table.total()"
@@ -101,25 +103,14 @@
             </td>
             @if (canEdit() || canDelete()) {
               <td class="whitespace-nowrap text-end">
-                @if (canEdit()) {
-                  <p-button
-                    icon="pi pi-pencil"
-                    [text]="true"
-                    [rounded]="true"
-                    [ariaLabel]="'common.edit' | translate"
-                    (onClick)="edit(row)"
-                  ></p-button>
-                }
-                @if (canDelete()) {
-                  <p-button
-                    icon="pi pi-trash"
-                    severity="danger"
-                    [text]="true"
-                    [rounded]="true"
-                    [ariaLabel]="'common.delete' | translate"
-                    (onClick)="confirmDelete(row)"
-                  ></p-button>
-                }
+                <app-row-actions [recordId]="row.id" [record]="row" [recordName]="row">
+                  @if (canEdit()) {
+                    <app-row-action icon="pi pi-pencil" label="common.edit" (run)="edit(row)"></app-row-action>
+                  }
+                  @if (canDelete()) {
+                    <app-row-action icon="pi pi-trash" label="common.delete" severity="danger" (run)="confirmDelete(row)"></app-row-action>
+                  }
+                </app-row-actions>
               </td>
             }
           </tr>

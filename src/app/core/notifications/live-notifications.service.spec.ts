@@ -5,6 +5,7 @@ import { Subject } from 'rxjs';
 import { provideApiTesting } from '../../testing/api-testing';
 import { AccessService } from '../auth/access.service';
 import { AuthService } from '../auth/auth.service';
+import { ChatStore } from '../chat/chat.store';
 import { LanguageService } from '../services/language.service';
 import { NotificationService } from '../services/notification.service';
 import { ACCESS_RELOAD_DEBOUNCE_MS, LiveNotificationsService, SIGN_OUT_DELAY_MS } from './live-notifications.service';
@@ -30,11 +31,13 @@ describe('LiveNotificationsService', () => {
   let toast: jasmine.SpyObj<NotificationService>;
   const lang = signal<'en' | 'ar'>('en');
   let play: jasmine.Spy;
+  let isOpen: jasmine.Spy;
 
   beforeEach(() => {
     incoming = new Subject<AppNotification>();
     lang.set('en');
     play = jasmine.createSpy('play');
+    isOpen = jasmine.createSpy('isOpen').and.callFake((id: number) => id === 12);
     reload = jasmine.createSpy('reload').and.callFake((then?: () => void) => then?.());
     can = jasmine.createSpy('can').and.returnValue(true);
     endSession = jasmine.createSpy('endSession');
@@ -48,6 +51,7 @@ describe('LiveNotificationsService', () => {
         { provide: NotificationService, useValue: toast },
         { provide: LanguageService, useValue: { currentLang: lang } },
         { provide: NotificationSoundService, useValue: { play } },
+        { provide: ChatStore, useValue: { isOpen } },
       ],
     });
     const router = TestBed.inject(Router);
@@ -66,6 +70,15 @@ describe('LiveNotificationsService', () => {
     incoming.next(note(2));
     expect(play).toHaveBeenCalledWith('normal');
     expect(reload).not.toHaveBeenCalled();
+  });
+
+  it('stays quiet for a chat bell of the chat being read, not for other chats', () => {
+    incoming.next(note(1, { data: { kind: 'chat', conversation_id: 12 } }));
+    expect(play).not.toHaveBeenCalled();
+    expect(toast.notify).not.toHaveBeenCalled();
+    incoming.next(note(2, { title: 'Sara Ali', message: 'hi', data: { kind: 'chat', conversation_id: 13 } }));
+    expect(play).toHaveBeenCalledWith('normal');
+    expect(toast.notify).toHaveBeenCalledWith('info', 'Sara Ali', 'hi');
   });
 
   it('fetches /me once after a burst of access changes, and stays when the page is still allowed', fakeAsync(() => {

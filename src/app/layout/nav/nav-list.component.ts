@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
+import { TooltipModule } from 'primeng/tooltip';
 import { filter } from 'rxjs';
 import { LanguageService } from '../../core/services/language.service';
 import { NAV_ITEMS, NavItem } from './nav-items';
@@ -14,7 +15,7 @@ const ACTIVE_CLASSES = '!bg-primary-600 !text-white shadow-md shadow-secondary-9
 
 @Component({
   selector: 'app-nav-list',
-  imports: [RouterLink, RouterLinkActive, TranslatePipe],
+  imports: [RouterLink, RouterLinkActive, TranslatePipe, TooltipModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './nav-list.component.html',
 })
@@ -25,6 +26,10 @@ export class NavListComponent {
   /** The menu this user may see (see VisibleNavService). */
   readonly items = inject(VisibleNavService).items;
   readonly itemSelected = output<void>();
+  /** Icons only (collapsed desktop sidebar): labels become tooltips, groups open by expanding the sidebar. */
+  readonly collapsed = input(false);
+  /** A group was clicked while collapsed: the sidebar should expand to show it. */
+  readonly groupOpened = output<void>();
   readonly direction = inject(LanguageService).direction;
   readonly linkClasses = LINK_CLASSES;
   readonly activeClasses = ACTIVE_CLASSES;
@@ -50,6 +55,12 @@ export class NavListComponent {
   }
 
   toggle(item: NavItem): void {
+    if (this.collapsed()) {
+      // Nothing to show beside an icon: expand the sidebar with this group open.
+      this.expanded.update((current) => new Set(current).add(item.routerLink));
+      this.groupOpened.emit();
+      return;
+    }
     this.expanded.update((current) => {
       const next = new Set(current);
       if (next.has(item.routerLink)) {

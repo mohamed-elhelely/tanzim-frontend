@@ -16,11 +16,14 @@ import { ServerTable, splitFilter } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { DEBIT_NOTE_SEVERITY, DebitNote, DebitNoteStatus } from '../accounting.models';
 import { DebitNoteService } from './debit-note.service';
+import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 @Component({
   selector: 'app-debit-note-list',
   imports: [
+    RowActionsComponent,
+    RowActionComponent,
     SavedViewsComponent,
     DecimalPipe,
     FormsModule,

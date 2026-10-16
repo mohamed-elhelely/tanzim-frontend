@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-const UNITS: Array<[Intl.RelativeTimeFormatUnit, number]> = [
+const UNITS: [Intl.RelativeTimeFormatUnit, number][] = [
   ['year', 365 * 24 * 3600],
   ['month', 30 * 24 * 3600],
   ['week', 7 * 24 * 3600],

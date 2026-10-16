@@ -17,11 +17,14 @@ import { FormDialogService } from '../../../shared/forms/form-dialog.service';
 import { Zone } from '../inventory.models';
 import { ZoneFormComponent } from './zone-form.component';
 import { ZoneService } from './zone.service';
+import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 @Component({
   selector: 'app-zone-list',
   imports: [
+    RowActionsComponent,
+    RowActionComponent,
     SavedViewsComponent,
     TranslatePipe,
     TableModule,

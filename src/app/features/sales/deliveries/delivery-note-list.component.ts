@@ -18,12 +18,15 @@ import { ServerTable, splitFilter } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { DELIVERY_STATUSES, DELIVERY_STATUS_SEVERITY, DeliveryNoteListItem, DeliveryStatus } from '../sales.models';
 import { DeliveryNoteService } from './delivery-note.service';
+import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 /** Delivery notes are created from an order ("Ship"), so this list has no New button. */
 @Component({
   selector: 'app-delivery-note-list',
   imports: [
+    RowActionsComponent,
+    RowActionComponent,
     SavedViewsComponent,
     FormsModule,
     TranslatePipe,

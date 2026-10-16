@@ -4,6 +4,7 @@
     "tagline": "منصة التشغيل"
   },
   "common": {
+    "pageReport": "{first}–{last} من {totalRecords}",
     "loading": "جارٍ التحميل...",
     "empty": "لا توجد بيانات",
     "error": "حدث خطأ ما",
@@ -44,6 +45,8 @@
     "dateTo": "إلى"
   },
   "nav": {
+    "collapse": "طي القائمة الجانبية",
+    "expand": "توسيع القائمة الجانبية",
     "dashboard": "لوحة التحكم",
     "company": "الشركة",
     "locations": "المواقع",
@@ -711,10 +714,16 @@
       "repair": "إصلاح"
     }
   },
+  "recordDetails": {
+    "details": "التفاصيل"
+  },
   "activityLog": {
     "button": "سجل النشاط",
     "title": "سجل النشاط — {{module}}",
-    "subtitle": "كل التغييرات على سجلات هذه الوحدة، الأحدث أولًا. افتح أي صف لعرض التفاصيل كاملة."
+    "subtitle": "كل التغييرات على سجلات هذه الوحدة، الأحدث أولًا. افتح أي صف لعرض التفاصيل كاملة.",
+    "viewLogs": "عرض السجل",
+    "recordTitle": "سجل النشاط — {{module}}: {{name}}",
+    "recordSubtitle": "كل التغييرات على هذا السجل، الأحدث أولًا. افتح أي صف لعرض التفاصيل كاملة."
   },
   "notifications": {
     "all": "الكل",
@@ -724,6 +733,73 @@
     "accessLost": "لم تعد لديك صلاحية لفتح هذه الصفحة.",
     "muteSound": "كتم صوت الإشعارات",
     "unmuteSound": "تشغيل صوت الإشعارات"
+  },
+  "chat": {
+    "title": "الدردشة",
+    "open": "فتح الدردشة",
+    "search": "ابحث في المحادثات",
+    "newChat": "محادثة جديدة",
+    "pickPerson": "اختر زميلًا",
+    "searchPeople": "ابحث عن شخص",
+    "empty": "لا توجد محادثات بعد.",
+    "noMatches": "لا توجد محادثات مطابقة.",
+    "back": "العودة للمحادثات",
+    "you": "أنت: {{text}}",
+    "someone": "مستخدم",
+    "attachment": "مرفق",
+    "deleted": "تم حذف هذه الرسالة",
+    "deletedPreview": "رسالة محذوفة",
+    "edited": "معدّلة",
+    "leftCompany": "غادر الشركة",
+    "membersCount": "{{count}} عضو",
+    "today": "اليوم",
+    "yesterday": "أمس",
+    "newMessages": "رسائل جديدة",
+    "loadingOlder": "جارٍ تحميل الرسائل الأقدم…",
+    "noMessages": "لا توجد رسائل بعد. ابدأ المحادثة!",
+    "typingOne": "{{name}} يكتب…",
+    "typingMany": "{{count}} أشخاص يكتبون…",
+    "placeholder": "اكتب رسالة",
+    "send": "إرسال",
+    "attach": "إرفاق ملفات",
+    "removeFile": "إزالة الملف",
+    "replyingTo": "رد على {{name}}",
+    "editing": "تعديل الرسالة",
+    "cancel": "إلغاء",
+    "reply": "رد",
+    "copy": "نسخ",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "actions": "إجراءات الرسالة",
+    "copied": "تم النسخ",
+    "sending": "جارٍ الإرسال…",
+    "failed": "لم تُرسل",
+    "retry": "إعادة المحاولة",
+    "remove": "إزالة",
+    "confirmDelete": "حذف هذه الرسالة للجميع؟",
+    "deletedToast": "تم حذف الرسالة",
+    "removed": "لم تعد عضوًا في هذه المحادثة.",
+    "gone": "هذه المحادثة لم تعد متاحة.",
+    "notSent": "لم تُرسل رسالة إلى {{name}}.",
+    "mentionAll": "كل أعضاء المحادثة",
+    "filesRejected": "لم يتم إرفاق: {{names}}",
+    "fileRules": "حتى 5 ملفات، 10 ميجابايت لكل ملف",
+    "note": {
+      "peerLeft": "هذا الشخص لم يعد في الشركة.",
+      "adminsOnly": "المشرفون فقط يمكنهم الكتابة في هذه المحادثة.",
+      "readOnly": "يمكنك القراءة فقط في هذه المحادثة."
+    },
+    "system": {
+      "roleChanged": "{{name}} أصبح {{role}}",
+      "adminsOnly": "المشرفون فقط يمكنهم الكتابة الآن",
+      "everyone": "يمكن للجميع الكتابة الآن"
+    },
+    "roles": {
+      "owner": "مالك",
+      "admin": "مشرف",
+      "member": "عضو",
+      "readonly": "قراءة فقط"
+    }
   },
   "billing": {
     "subscription": "الاشتراك",
@@ -770,6 +846,11 @@
     }
   },
   "sales": {
+    "quickCustomer": {
+      "button": "إضافة سريعة",
+      "title": "إضافة عميل سريعة",
+      "created": "تمت إضافة العميل {{name}} واختياره."
+    },
     "customers": {
       "title": "العملاء",
       "new": "عميل جديد",
@@ -970,7 +1051,8 @@
     },
     "payments": {
       "title": "المدفوعات",
-      "subtitle": "تُسجَّل وتُسترد من الفاتورة."
+      "subtitle": "تُسجَّل وتُسترد من الفاتورة.",
+      "viewInvoice": "عرض الفاتورة"
     },
     "deliveryStatuses": {
       "draft": "مسودة",

@@ -18,7 +18,7 @@ describe('company resource services', () => {
 
   afterEach(() => httpMock.verify());
 
-  const cases: Array<[string, () => { all(): import('rxjs').Observable<unknown> }]> = [
+  const cases: [string, () => { all(): import('rxjs').Observable<unknown> }][] = [
     ['/api/company/v1/departments/', () => TestBed.inject(DepartmentService)],
     ['/api/company/v1/teams/', () => TestBed.inject(TeamService)],
     ['/api/company/v1/roles/', () => TestBed.inject(RoleService)],

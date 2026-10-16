@@ -17,7 +17,7 @@ interface PickerRow {
   resource: string;
   labelKey: string;
   /** One per PERMISSION_ACTIONS entry; null when the resource has no such action (or the company lacks the row). */
-  cells: Array<number | null>;
+  cells: (number | null)[];
 }
 
 interface PickerModule {

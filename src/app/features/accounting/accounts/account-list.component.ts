@@ -17,6 +17,7 @@ import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { FormDialogService } from '../../../shared/forms/form-dialog.service';
 import { ACCOUNT_TYPES, ACCOUNT_TYPE_SEVERITY, Account, AccountType } from '../accounting.models';
 import { AccountFormComponent } from './account-form.component';
+import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { AccountService } from './account.service';
 
 export interface AccountRow extends Account {
@@ -48,6 +49,8 @@ export function toTree(accounts: Account[]): AccountRow[] {
 @Component({
   selector: 'app-account-list',
   imports: [
+    RowActionsComponent,
+    RowActionComponent,
     FormsModule,
     TranslatePipe,
     TableModule,

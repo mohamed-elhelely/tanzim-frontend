@@ -16,12 +16,15 @@ import { ServerTable, splitFilter } from '../../../shared/table/server-table';
 import { errorTitleKey } from '../../../shared/utils/server-errors';
 import { InvoicePayment, PAYMENT_METHODS, PAYMENT_RECORD_SEVERITY, PaymentMethod, PaymentRecordStatus } from '../sales.models';
 import { InvoicePaymentService } from './invoice-payment.service';
+import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 
 /** Every payment received, newest first. Payments are recorded and refunded from their invoice. */
 @Component({
   selector: 'app-payment-list',
   imports: [
+    RowActionsComponent,
+    RowActionComponent,
     SavedViewsComponent,
     DecimalPipe,
     FormsModule,

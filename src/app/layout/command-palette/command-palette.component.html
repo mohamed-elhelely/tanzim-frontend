@@ -43,6 +43,8 @@
 
   <ul id="palette-results" role="listbox" class="max-h-96 overflow-y-auto p-2">
     @for (entry of results(); track entry.routerLink; let i = $index) {
+      <!-- Options are picked with the arrow keys and Enter in the search box (aria-activedescendant), so they are not focusable themselves. -->
+      <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
       <li
         [id]="'palette-item-' + i"
         role="option"
@@ -65,6 +67,7 @@
       </li>
       @for (hit of group.hits; track hit.id) {
         @let i = recordIndex(hit);
+        <!-- eslint-disable-next-line @angular-eslint/template/click-events-have-key-events, @angular-eslint/template/interactive-supports-focus -->
         <li
           [id]="'palette-item-' + i"
           role="option"
