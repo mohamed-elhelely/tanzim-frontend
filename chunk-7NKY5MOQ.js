@@ -1,0 +1,1 @@
+import{Zb as a,pa as n}from"./chunk-7OSJJIKA.js";var m={datetime:"yyyy-MM-dd HH:mm",date:"yyyy-MM-dd",seconds:"yyyy-MM-dd HH:mm:ss"},i=class r{transform(t,e="datetime"){return t==null||t===""?"\u2014":a(t,m[e],"en-US")}static \u0275fac=function(e){return new(e||r)};static \u0275pipe=n({name:"appDate",type:r,pure:!0})};export{i as a};

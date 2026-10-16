@@ -1,0 +1,1 @@
+import{X as o}from"./chunk-7OSJJIKA.js";var i=class{value=o(null);isDisabled=o(!1);onChange=()=>{};onTouched=()=>{};writeValue(e){this.value.set(e)}registerOnChange(e){this.onChange=e}registerOnTouched(e){this.onTouched=e}setDisabledState(e){this.isDisabled.set(e)}update(e){this.value.set(e),this.onChange(e)}touch(){this.onTouched()}};export{i as a};
