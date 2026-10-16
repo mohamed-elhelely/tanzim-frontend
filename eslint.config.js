@@ -39,6 +39,31 @@ module.exports = defineConfig([
     },
   },
   {
+    // Screens use the shared/ui wrappers, so a UI library update or swap only touches that folder. Add a module
+    // here when its wrapper lands (the table is next).
+    files: ["src/**/*.ts"],
+    ignores: ["src/app/shared/ui/**"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          paths: [
+            ["primeng/button", "app-button"],
+            ["primeng/card", "app-card"],
+            ["primeng/dialog", "app-dialog"],
+            ["primeng/multiselect", "app-multi-select"],
+            ["primeng/password", "app-password"],
+            ["primeng/select", "app-select"],
+            ["primeng/toggleswitch", "app-toggle"],
+          ].map(([name, wrapper]) => ({
+            name,
+            message: `Use ${wrapper} from src/app/shared/ui instead (wrapped so the UI library can change in one place).`,
+          })),
+        },
+      ],
+    },
+  },
+  {
     files: ["**/*.html"],
     extends: [
       angular.configs.templateRecommended,
