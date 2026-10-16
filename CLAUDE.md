@@ -67,6 +67,12 @@ the dev build uses relative `/api/` through the proxy and `ws://localhost:8000/w
 
 ## Conventions
 
+- **UI library only through `src/app/shared/ui`**: `app-button`, `app-card`, `app-select` / `app-multi-select`
+  (ControlValueAccessors, `(changed)` gives the value, `[translateLabels]`, `appSelectItem` templates), `app-toggle`,
+  `app-password`, `app-dialog` (`[(visible)]`, `width`, `appDialogFooter`). Import each from its own file (no barrel:
+  it pulls every wrapper into the bundle). ESLint forbids those PrimeNG modules elsewhere; tables (`p-table`) are not
+  wrapped yet. Every variant is on the dev-only gallery at `/ui` (`ng serve`). Shape tokens (radius, shadow, font)
+  are CSS variables in `styles.scss`. Guide: [docs/guides/ui-components.md](docs/guides/ui-components.md).
 - Components: `.ts` + `.html` (`templateUrl`), `ChangeDetectionStrategy.OnPush`, selectors `app-<name>`,
   `inject()` for dependencies. Models per area in `<area>.models.ts`.
 - Error panels: `<app-error-state [error]="err">` (title follows the status). Dates: `{{ x | appDate }}`
