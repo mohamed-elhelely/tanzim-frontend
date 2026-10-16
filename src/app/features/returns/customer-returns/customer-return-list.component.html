@@ -79,7 +79,7 @@
           <tr class="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50" (click)="open(row)">
             <td class="whitespace-nowrap font-mono text-xs font-semibold" dir="ltr">{{ row.return_number }}</td>
             <td class="font-medium">{{ row.customer_name }}</td>
-            <td class="whitespace-nowrap" dir="ltr">{{ row.requested_date | date: 'yyyy-MM-dd' }}</td>
+            <td class="whitespace-nowrap" dir="ltr">{{ row.requested_date | appDate: 'date' }}</td>
             <td>{{ 'returns.reasons.' + row.return_reason | translate }}</td>
             <td>
               <app-status-badge

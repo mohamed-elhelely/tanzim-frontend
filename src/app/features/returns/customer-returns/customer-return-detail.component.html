@@ -74,19 +74,19 @@
         </div>
         <div>
           <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'returns.fields.requestedDate' | translate }}</dt>
-          <dd class="mt-0.5" dir="ltr">{{ rma.requested_date | date: 'yyyy-MM-dd' }}</dd>
+          <dd class="mt-0.5" dir="ltr">{{ rma.requested_date | appDate: 'date' }}</dd>
         </div>
         <div>
           <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'returns.fields.receivedDate' | translate }}</dt>
-          <dd class="mt-0.5" dir="ltr">{{ rma.received_date ? (rma.received_date | date: 'yyyy-MM-dd') : '—' }}</dd>
+          <dd class="mt-0.5" dir="ltr">{{ rma.received_date | appDate: 'date' }}</dd>
         </div>
         <div>
           <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'returns.fields.inspectedDate' | translate }}</dt>
-          <dd class="mt-0.5" dir="ltr">{{ rma.inspected_date ? (rma.inspected_date | date: 'yyyy-MM-dd') : '—' }}</dd>
+          <dd class="mt-0.5" dir="ltr">{{ rma.inspected_date | appDate: 'date' }}</dd>
         </div>
         <div>
           <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'returns.fields.closedDate' | translate }}</dt>
-          <dd class="mt-0.5" dir="ltr">{{ rma.closed_date ? (rma.closed_date | date: 'yyyy-MM-dd') : '—' }}</dd>
+          <dd class="mt-0.5" dir="ltr">{{ rma.closed_date | appDate: 'date' }}</dd>
         </div>
         @if (rma.return_reason_note) {
           <div class="col-span-2 md:col-span-4">
@@ -104,7 +104,7 @@
           <div class="col-span-2 md:col-span-4">
             <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'returns.fields.rejectionReason' | translate }}</dt>
             <dd class="mt-0.5">
-              <span dir="ltr">{{ rma.rejected_date | date: 'yyyy-MM-dd' }}</span>
+              <span dir="ltr">{{ rma.rejected_date | appDate: 'date' }}</span>
               @if (rma.rejection_reason) {
                 — {{ rma.rejection_reason }}
               }

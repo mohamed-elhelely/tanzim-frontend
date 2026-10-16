@@ -1,4 +1,4 @@
-import { DatePipe, DecimalPipe } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -28,6 +28,7 @@ import {
 import { CustomerReturnService } from './customer-return.service';
 import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
+import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
 
 @Component({
   selector: 'app-customer-return-list',
@@ -35,7 +36,7 @@ import { SavedViewsComponent } from '../../../shared/table/saved-views.component
     RowActionsComponent,
     RowActionComponent,
     SavedViewsComponent,
-    DatePipe,
+    AppDatePipe,
     DecimalPipe,
     FormsModule,
     TranslatePipe,

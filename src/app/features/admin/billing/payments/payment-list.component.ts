@@ -1,4 +1,4 @@
-import { DatePipe, DecimalPipe } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -23,6 +23,7 @@ import { MONEY, PAYMENT_SEVERITY, PlatformPayment, Severity } from '../platform-
 import { PlatformPaymentService } from '../platform-billing.service';
 import { RowActionComponent, RowActionsComponent } from '../../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../../shared/table/saved-views.component';
+import { AppDatePipe } from '../../../../shared/pipes/app-date.pipe';
 
 /** /admin/payments: payments of every company on platform invoices; completed ones can be refunded. */
 @Component({
@@ -31,7 +32,7 @@ import { SavedViewsComponent } from '../../../../shared/table/saved-views.compon
     RowActionsComponent,
     RowActionComponent,
     SavedViewsComponent,
-    DatePipe,
+    AppDatePipe,
     DecimalPipe,
     FormsModule,
     ReactiveFormsModule,

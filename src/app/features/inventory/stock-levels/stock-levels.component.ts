@@ -14,7 +14,7 @@ import { EmptyStateComponent } from '../../../shared/components/empty-state/empt
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
-import { saveFile } from '../../../shared/utils/save-file';
+import { datedFileName, saveFile } from '../../../shared/utils/save-file';
 
 import {
   CodedRef,
@@ -151,7 +151,7 @@ export class StockLevelsComponent implements OnInit {
     this.api.valuationXlsx(this.query()).subscribe({
       next: (blob) => {
         this.exporting.set(false);
-        saveFile(blob, `stock_${this.asOfDate || new Date().toISOString().slice(0, 10)}.xlsx`);
+        saveFile(blob, datedFileName('stock', 'xlsx', this.asOfDate || new Date()));
       },
       error: (error: AppError) => {
         this.exporting.set(false);

@@ -108,7 +108,7 @@
           </ng-template>
           <ng-template pTemplate="body" let-task>
             <tr>
-              <td class="whitespace-nowrap" dir="ltr">{{ task.created_at | date: 'yyyy-MM-dd HH:mm' }}</td>
+              <td class="whitespace-nowrap" dir="ltr">{{ task.created_at | appDate }}</td>
               <td>{{ 'importExport.taskTypes.' + task.task_type | translate }}</td>
               <td class="font-mono text-xs" dir="ltr">{{ modelName(task.resource) }}</td>
               <td>

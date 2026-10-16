@@ -10,7 +10,7 @@ import { AppError } from '../../../core/errors/app-error';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
-import { saveFile } from '../../../shared/utils/save-file';
+import { datedFileName, saveFile } from '../../../shared/utils/save-file';
 
 import { CodedRef, VALUATION_REPORT_METHODS } from '../../inventory/inventory.models';
 import { WarehouseService } from '../../inventory/warehouses/warehouse.service';
@@ -157,7 +157,7 @@ export class ReportRunnerComponent implements OnInit {
     this.api.exportXlsx(type, this.query()).subscribe({
       next: (blob) => {
         this.exporting.set(false);
-        saveFile(blob, `${type}_${new Date().toISOString().slice(0, 10)}.xlsx`);
+        saveFile(blob, datedFileName(type, 'xlsx'));
       },
       error: (error: AppError) => {
         this.exporting.set(false);

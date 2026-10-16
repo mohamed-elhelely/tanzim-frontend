@@ -13,7 +13,7 @@ import { NotificationService } from '../../core/services/notification.service';
 import { EmptyStateComponent } from '../../shared/components/empty-state/empty-state.component';
 import { StatusBadgeComponent } from '../../shared/components/status-badge/status-badge.component';
 import { ServerTable } from '../../shared/table/server-table';
-import { saveFile } from '../../shared/utils/save-file';
+import { datedFileName, saveFile } from '../../shared/utils/save-file';
 import { ExportFormat, ImportFailure, ImportRowStatus, dataResource, importFailure } from './import-export.models';
 import { ImportExportService, fileToDataUri } from './import-export.service';
 
@@ -86,7 +86,7 @@ export class ImportExportActionsComponent {
     this.api.exportFile(resource.path, format, this.table?.exportParams() ?? {}).subscribe({
       next: (blob) => {
         this.exporting.set(false);
-        saveFile(blob, `${resource.key}_${new Date().toISOString().slice(0, 10)}.${format}`);
+        saveFile(blob, datedFileName(resource.key, format));
       },
       error: (error: AppError) => this.failed(error, () => this.exporting.set(false)),
     });

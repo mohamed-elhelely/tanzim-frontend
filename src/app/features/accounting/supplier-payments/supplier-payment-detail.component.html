@@ -61,7 +61,7 @@
         </div>
         <div>
           <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'accounting.fields.voidedAt' | translate }}</dt>
-          <dd class="mt-0.5" dir="ltr">{{ payment.voided_at ? (payment.voided_at | date: 'yyyy-MM-dd HH:mm') : '—' }}</dd>
+          <dd class="mt-0.5" dir="ltr">{{ payment.voided_at | appDate }}</dd>
         </div>
         <div class="col-span-2 md:col-span-4">
           <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'accounting.fields.notes' | translate }}</dt>

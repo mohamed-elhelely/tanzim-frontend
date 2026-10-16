@@ -73,7 +73,7 @@
                 row.invoice_number
               }}</a>
             </td>
-            <td class="whitespace-nowrap" dir="ltr">{{ (row.paid_at || row.created_at) | date: 'yyyy-MM-dd HH:mm' }}</td>
+            <td class="whitespace-nowrap" dir="ltr">{{ (row.paid_at || row.created_at) | appDate }}</td>
             <td>
               <app-status-badge [value]="'admin.billing.paymentStatus.' + row.status | translate" [severity]="severity[row.status]"></app-status-badge>
             </td>

@@ -1,4 +1,4 @@
-import { DatePipe, DecimalPipe } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -26,6 +26,7 @@ import { InvoiceItem } from '../../../billing/billing.models';
 import { AdminInvoice, BillingModule, INVOICE_SEVERITY, MONEY, WHOLE } from '../platform-billing.models';
 import { RowActionComponent, RowActionsComponent } from '../../../../shared/table/row-actions.component';
 import { AdminInvoiceService, BillingModuleService } from '../platform-billing.service';
+import { AppDatePipe } from '../../../../shared/pipes/app-date.pipe';
 
 /**
  * /admin/invoices/:id: one platform invoice. While it is a draft, staff edit its items and issue it; once issued,
@@ -36,7 +37,7 @@ import { AdminInvoiceService, BillingModuleService } from '../platform-billing.s
   imports: [
     RowActionsComponent,
     RowActionComponent,
-    DatePipe,
+    AppDatePipe,
     DecimalPipe,
     ReactiveFormsModule,
     TranslatePipe,

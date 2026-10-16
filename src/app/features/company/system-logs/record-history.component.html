@@ -30,7 +30,7 @@
                   [severity]="severity[entry.action]"
                 ></app-status-badge>
                 <span class="font-medium">{{ (entry.user | userName) || ('systemLogs.systemUser' | translate) }}</span>
-                <span class="text-xs text-gray-500 dark:text-gray-400" dir="ltr">{{ entry.timestamp | date: 'yyyy-MM-dd HH:mm' }}</span>
+                <span class="text-xs text-gray-500 dark:text-gray-400" dir="ltr">{{ entry.timestamp | appDate }}</span>
               </div>
               @if (changeRows(entry.changes); as rows) {
                 @if (rows.length) {

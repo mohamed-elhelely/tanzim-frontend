@@ -1,4 +1,3 @@
-import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -16,6 +15,7 @@ import { StatusBadgeComponent } from '../../../shared/components/status-badge/st
 
 import { FiscalPeriod, FiscalYear } from '../accounting.models';
 import { FiscalYearService } from './fiscal-year.service';
+import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
 
 /**
  * Fiscal years and their monthly periods on one page. Closing a period stops posting into it; closing the year
@@ -25,7 +25,7 @@ import { FiscalYearService } from './fiscal-year.service';
 @Component({
   selector: 'app-fiscal-year-page',
   imports: [
-    DatePipe,
+    AppDatePipe,
     FormsModule,
     TranslatePipe,
     ButtonModule,

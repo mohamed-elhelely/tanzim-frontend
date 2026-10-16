@@ -152,7 +152,7 @@
         </ng-template>
         <ng-template pTemplate="body" let-row>
           <tr class="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50" (click)="open(row)" (keydown.enter)="open(row)" tabindex="0">
-            <td class="whitespace-nowrap text-xs" dir="ltr">{{ row.timestamp | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
+            <td class="whitespace-nowrap text-xs" dir="ltr">{{ row.timestamp | appDate: 'seconds' }}</td>
             @if (staff()) {
               <td class="whitespace-nowrap">{{ companyLabel(row.company) }}</td>
             }
@@ -211,7 +211,7 @@
     }
     <dl class="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
       <dt class="text-gray-500 dark:text-gray-400">{{ 'systemLogs.fields.time' | translate }}</dt>
-      <dd dir="ltr" class="text-start">{{ entry.timestamp | date: 'yyyy-MM-dd HH:mm:ss' }}</dd>
+      <dd dir="ltr" class="text-start">{{ entry.timestamp | appDate: 'seconds' }}</dd>
       @if (staff()) {
         <dt class="text-gray-500 dark:text-gray-400">{{ 'systemLogs.fields.company' | translate }}</dt>
         <dd>{{ companyLabel(entry.company) }}</dd>

@@ -1,4 +1,4 @@
-import { DatePipe, DecimalPipe } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, inject } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
@@ -16,6 +16,7 @@ import { ServerTable } from '../../../shared/table/server-table';
 import { LEDGER_TYPE_SEVERITY, LedgerTransactionType, Severity, StockLedgerEntry } from '../inventory.models';
 import { StockLedgerService } from './stock-ledger.service';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
+import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
 
 /**
  * Every stock movement, newest first, read-only (the inventory services write it). Search matches the document
@@ -25,7 +26,7 @@ import { SavedViewsComponent } from '../../../shared/table/saved-views.component
   selector: 'app-stock-ledger-list',
   imports: [
     SavedViewsComponent,
-    DatePipe,
+    AppDatePipe,
     DecimalPipe,
     TranslatePipe,
     IconFieldModule,

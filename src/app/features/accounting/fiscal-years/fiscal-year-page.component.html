@@ -20,7 +20,7 @@
             <p class="text-sm text-gray-500 dark:text-gray-400" dir="ltr">{{ year.start_date }} → {{ year.end_date }}</p>
             @if (year.closed_at) {
               <p class="text-xs text-gray-500 dark:text-gray-400">
-                {{ 'accounting.fields.closedAt' | translate }} <span dir="ltr">{{ year.closed_at | date: 'yyyy-MM-dd HH:mm' }}</span>
+                {{ 'accounting.fields.closedAt' | translate }} <span dir="ltr">{{ year.closed_at | appDate }}</span>
               </p>
             }
           </div>

@@ -136,7 +136,7 @@
                 <i class="pi pi-arrow-right text-xs text-gray-400 rtl:rotate-180"></i>
               }
               <app-status-badge [value]="'billing.invoiceStatus.' + change.to_status | translate" [severity]="severity[change.to_status]"></app-status-badge>
-              <span class="text-gray-500 dark:text-gray-400" dir="ltr">{{ change.created_at | date: 'yyyy-MM-dd HH:mm' }}</span>
+              <span class="text-gray-500 dark:text-gray-400" dir="ltr">{{ change.created_at | appDate }}</span>
               @if (change.changed_by_email) {
                 <span class="text-gray-500 dark:text-gray-400">· {{ change.changed_by_email }}</span>
               }
