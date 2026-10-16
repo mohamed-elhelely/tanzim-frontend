@@ -20,7 +20,7 @@
 | 1. Design tokens | دوران الأركان والظلال والخط بقوا CSS variables في `src/styles.scss` |
 | 2. الـ wrappers | 7 components في `src/app/shared/ui/` بتستخدم PrimeNG جوّاها |
 | 3. موديول `/ui` | صفحة لكل component بكل أشكاله، في نسخة التطوير بس |
-| 4. تحويل الشاشات | 250 زرار، 91 select، 59 كارت، 34 toggle، 19 dialog، 7 multi-select، 5 password |
+| 4. تحويل الشاشات | 250 زرار، 91 select، 59 كارت، 56 جدول، 34 toggle، 19 dialog، 7 multi-select، 5 password |
 | 5. قاعدة lint | بتمنع import من PrimeNG للحاجات اللي اتعملها wrapper، برّه `shared/ui` |
 
 ---
@@ -176,13 +176,72 @@
 
 ---
 
-## اللي لسه (المرحلة 3 – الجزء الثاني)
+## 6. الجدول: `app-table`
 
-**الجدول (`p-table`):** 56 جدول، وكل واحد ليه templates للأعمدة والصفوف والـ sorting والـ checkboxes. ده محتاج
-تصميم wrapper لوحده (غالبًا تعريف أعمدة + templates للخلايا المخصصة + `ServerTable`)، فهيبقى PR لوحده.
+**الفولدر:** `src/app/shared/ui/table/`
 
-وفيه حاجات PrimeNG تانية لسه مستخدمة مباشرة ومش في الخطة دي: `pInputText`/`pTextarea` على الـ inputs، `p-drawer`،
-`p-menu`، `p-popover`، `p-selectbutton`، `p-tabs`، `p-toast`، `p-confirmdialog`، `p-iconfield`.
+الجدول كان مختلف عن الباقي: كل شاشة كانت حاطة جوّه الـ template حاجات من PrimeNG
+(`pSortableColumn`، `<p-sortIcon>`، `<p-tableCheckbox>`، `pTemplate`)، وكلها بتقرا حالتها من جدول PrimeNG نفسه.
+فعملت جدول ليه **الترتيب والتحديد بتوعه هو**، والشاشات بقت بتكتب الـ `<th>` والـ `<td>` بتوعها بس.
+
+### نوعين
+
+```html
+<!-- 1. ServerTable: الصفحات والترتيب والتحديد من السيرفر (35 قايمة) -->
+<app-table [table]="table">
+  <ng-template appTableHeader>
+    <tr>
+      <th class="w-12"><app-table-select-all></app-table-select-all></th>
+      <th appSortable="name">{{ 'fields.name' | translate }}</th>
+    </tr>
+  </ng-template>
+  <ng-template appTableRow let-row>
+    <tr>
+      <td><app-table-row-select [row]="row"></app-table-row-select></td>
+      <td>{{ row.name }}</td>
+    </tr>
+  </ng-template>
+  <ng-template appTableEmpty><tr><td colspan="2">…</td></tr></ng-template>
+</app-table>
+
+<!-- 2. صفوف في الذاكرة (بنود المستندات، المستخدمين، المخزون) -->
+<app-table [rows]="users()" [paginate]="true" sortField="name" [filterText]="search()" [filterFields]="['name', 'email']">
+  …
+  <ng-template appTableFooter><tr>…الإجمالي…</tr></ng-template>
+</app-table>
+```
+
+| الحاجة | بتعمل إيه |
+|---|---|
+| `th[appSortable]="field"` | ضغطة (أو Enter/Space) ترتّب تصاعدي ثم تنازلي، والأيقونة و `aria-sort` بيوضحوا الاتجاه. مع ServerTable الترتيب بيروح للسيرفر (`ordering`) ويرجع لأول صفحة |
+| `app-table-select-all` / `app-table-row-select` | التحديد بيتحفظ في `table.selection()` بتاع الـ ServerTable (ونفس الـ `dataKey`) |
+| `[paginate]`, `[pageSize]`, `[pageSizes]` | للصفوف اللي في الذاكرة. `[pageSizes]="[]"` يخفي اختيار عدد الصفوف |
+| `sortField` / `[sortOrder]` | الترتيب اللي يبدأ بيه |
+| `[filterText]` + `[filterFields]` | بحث في الصفوف اللي في الذاكرة (بيدعم `user.email`) |
+
+**الترتيب في الذاكرة:** الأرقام كأرقام (حتى لو جاية نص زي `"12.50"`)، والنص بترتيب حروف المستخدم، والفاضي في الآخر.
+
+**`ServerTable` اتغيّر حاجة صغيرة:** بقى بياخد نوع حدث بتاعه (`TablePageEvent`) بدل نوع PrimeNG، فـ
+`shared/table` مابقاش معتمد على المكتبة.
+
+### التحويل
+
+| قبل | بعد |
+|---|---|
+| `<p-table [value]="table.rows()" [lazy]="true" … 15 attribute>` | `<app-table [table]="table">` |
+| `<p-table [value]="lines" …>` | `<app-table [rows]="lines">` |
+| `pTemplate="header"` / `"body"` / `"emptymessage"` / `"footer"` | `appTableHeader` / `appTableRow` / `appTableEmpty` / `appTableFooter` |
+| `pSortableColumn="x"` + `<p-sortIcon field="x">` | `appSortable="x"` |
+| `<p-tableHeaderCheckbox>` / `<p-tableCheckbox [value]="row">` | `<app-table-select-all>` / `<app-table-row-select [row]="row">` |
+| شاشة المستخدمين: `table.filterGlobal(…)` | `[filterText]="appliedSearch()"` |
+
+56 جدول في 54 ملف اتحوّلوا، والتستات كلها عدّت من غير تعديل.
+
+## اللي لسه برّه الـ wrappers
+
+حاجات PrimeNG تانية لسه مستخدمة مباشرة ومش في الخطة دي: `pInputText`/`pTextarea` على الـ inputs، `p-drawer`،
+`p-menu`، `p-popover`، `p-selectbutton`، `p-tabs`، `p-toast`، `p-confirmdialog`، `p-iconfield`، `p-checkbox`
+(جوّه الجدول بس). لما يتعمل لأي واحد فيهم wrapper، بنزوّد سطره في قاعدة الـ lint.
 
 ## الكوميتات
 
@@ -197,3 +256,5 @@
 | `refactor(ui): screens use app-dialog; import wrappers per file` | الـ dialogs وشيل الـ barrel |
 | `refactor(ui): screens use app-button …` | الأزرار |
 | `chore(lint): forbid the wrapped PrimeNG modules outside shared/ui` | قاعدة الـ lint |
+| `feat(ui): app-table wrapper with its own sorting and selection` | الجدول |
+| `refactor(ui): screens use app-table …` | تحويل الجداول + الـ lint |

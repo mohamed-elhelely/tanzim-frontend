@@ -61,7 +61,8 @@ the dev build uses relative `/api/` through the proxy and `ws://localhost:8000/w
   path), plus `ALSO_CHANGES` for related lists; other tabs hear it over a BroadcastChannel. Never cache dropdowns by hand.
   Guide: [docs/guides/global-services.md](docs/guides/global-services.md).
 - **Lists**: `readonly table = new ServerTable((q) => this.api.list(q))` handles paging, sorting, debounced search
-  and stale requests. Non-paginated endpoints (`company-user/`, `admin/company/`) use `api.all()` + client paging.
+  and stale requests; the template is `<app-table [table]="table">`. Non-paginated endpoints (`company-user/`,
+  `admin/company/`) use `api.all()` and `<app-table [rows]="…" [paginate]="true">`.
 - **Forms**: reactive (`NonNullableFormBuilder`), create = POST, edit = PATCH with the full body, cleared pickers
   send `null`. Short forms open in a dialog (`FormDialogService` + `injectFormContext`), long ones are pages.
 
@@ -70,8 +71,10 @@ the dev build uses relative `/api/` through the proxy and `ws://localhost:8000/w
 - **UI library only through `src/app/shared/ui`**: `app-button`, `app-card`, `app-select` / `app-multi-select`
   (ControlValueAccessors, `(changed)` gives the value, `[translateLabels]`, `appSelectItem` templates), `app-toggle`,
   `app-password`, `app-dialog` (`[(visible)]`, `width`, `appDialogFooter`). Import each from its own file (no barrel:
-  it pulls every wrapper into the bundle). ESLint forbids those PrimeNG modules elsewhere; tables (`p-table`) are not
-  wrapped yet. Every variant is on the dev-only gallery at `/ui` (`ng serve`). Shape tokens (radius, shadow, font)
+  it pulls every wrapper into the bundle). `app-table`: `[table]` (a ServerTable) or `[rows]`, templates
+  `appTableHeader` / `appTableRow` / `appTableEmpty` / `appTableFooter`, `th[appSortable]="field"`,
+  `app-table-select-all` / `app-table-row-select`. ESLint forbids the wrapped PrimeNG modules elsewhere. Every
+  variant is on the dev-only gallery at `/ui` (`ng serve`). Shape tokens (radius, shadow, font)
   are CSS variables in `styles.scss`. Guide: [docs/guides/ui-components.md](docs/guides/ui-components.md).
 - Components: `.ts` + `.html` (`templateUrl`), `ChangeDetectionStrategy.OnPush`, selectors `app-<name>`,
   `inject()` for dependencies. Models per area in `<area>.models.ts`.
