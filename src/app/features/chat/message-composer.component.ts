@@ -254,7 +254,11 @@ export class MessageComposerComponent {
     }
   }
 
+  /**
+   * A finger is the main pointer (phones, tablets): Enter adds a line and the send button sends. `(hover: none)`
+   * alone also matches machines with no mouse at all (headless browsers, some kiosks), which do have a keyboard.
+   */
   private isTouch(): boolean {
-    return typeof matchMedia === 'function' && matchMedia('(hover: none)').matches;
+    return typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches;
   }
 }
