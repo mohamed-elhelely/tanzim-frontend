@@ -1,7 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
-import { Observable, catchError, throwError } from 'rxjs';
+import { Observable, catchError, tap, throwError } from 'rxjs';
 import { API_BASE_URL } from './api.config';
+import { OptionsCache } from './options-cache';
 import { ApiResponse } from '../models/api-response.model';
 
 export interface RequestOptions {
@@ -12,11 +13,13 @@ export interface RequestOptions {
 /**
  * Thin HttpClient wrapper: prefixes API_BASE_URL and types the backend envelope ({ success, data, metadata }).
  * Errors are already converted to AppError by the error interceptor. Resource services extend CrudApi instead.
+ * A successful POST/PUT/PATCH/DELETE drops the cached dropdown lists of the resource it wrote to (OptionsCache).
  */
 @Injectable({ providedIn: 'root' })
 export class BaseApiService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = inject(API_BASE_URL);
+  protected readonly optionsCache = inject(OptionsCache);
 
   protected get<T>(path: string, options?: RequestOptions): Observable<ApiResponse<T>> {
     return this.http
@@ -27,25 +30,37 @@ export class BaseApiService {
   protected post<T>(path: string, body?: unknown, options?: RequestOptions): Observable<ApiResponse<T>> {
     return this.http
       .post<ApiResponse<T>>(this.buildUrl(path), body ?? {}, options)
-      .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
+      .pipe(
+        tap(() => this.wrote(path)),
+        catchError((error: HttpErrorResponse) => this.handleError(error)),
+      );
   }
 
   protected put<T>(path: string, body?: unknown, options?: RequestOptions): Observable<ApiResponse<T>> {
     return this.http
       .put<ApiResponse<T>>(this.buildUrl(path), body ?? {}, options)
-      .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
+      .pipe(
+        tap(() => this.wrote(path)),
+        catchError((error: HttpErrorResponse) => this.handleError(error)),
+      );
   }
 
   protected patch<T>(path: string, body?: unknown, options?: RequestOptions): Observable<ApiResponse<T>> {
     return this.http
       .patch<ApiResponse<T>>(this.buildUrl(path), body ?? {}, options)
-      .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
+      .pipe(
+        tap(() => this.wrote(path)),
+        catchError((error: HttpErrorResponse) => this.handleError(error)),
+      );
   }
 
   protected delete<T>(path: string, options?: RequestOptions): Observable<ApiResponse<T>> {
     return this.http
       .delete<ApiResponse<T>>(this.buildUrl(path), options)
-      .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
+      .pipe(
+        tap(() => this.wrote(path)),
+        catchError((error: HttpErrorResponse) => this.handleError(error)),
+      );
   }
 
   /** A file response (e.g. `?export=xlsx`), not wrapped in the envelope. */
@@ -60,6 +75,10 @@ export class BaseApiService {
     return this.http
       .post(this.buildUrl(path), body ?? {}, { ...options, responseType: 'blob' })
       .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
+  }
+
+  private wrote(path: string): void {
+    this.optionsCache.invalidate(path.replace(/^\/+/, ''));
   }
 
   private buildUrl(path: string): string {

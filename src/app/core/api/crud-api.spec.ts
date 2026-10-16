@@ -108,6 +108,46 @@ describe('CrudApi', () => {
     req.flush(envelope([]));
   });
 
+  it('reuses the dropdown list instead of asking again', () => {
+    const seen: unknown[] = [];
+    api.dropdown<{ id: number }>().subscribe((r) => seen.push(r));
+    httpMock.expectOne((r) => r.url === URL).flush(envelope([{ id: 1 }]));
+    api.dropdown<{ id: number }>().subscribe((r) => seen.push(r));
+    httpMock.expectNone((r) => r.url === URL);
+    expect(seen).toEqual([[{ id: 1 }], [{ id: 1 }]]);
+  });
+
+  it('asks again after a create, update or delete of the resource', () => {
+    const reload = () => {
+      api.dropdown<{ id: number }>().subscribe();
+      httpMock.expectOne((r) => r.url === URL && r.params.get('dropdown') === 'true').flush(envelope([]));
+    };
+    reload();
+
+    api.create({ name_en: 'New' }).subscribe();
+    httpMock.expectOne((r) => r.url === URL && r.method === 'POST').flush(envelope({ id: 2, name_en: 'New' }));
+    reload();
+
+    api.update(2, { name_en: 'Renamed' }).subscribe();
+    httpMock.expectOne(`${URL}2/`).flush(envelope({ id: 2, name_en: 'Renamed' }));
+    reload();
+
+    api.remove(2).subscribe();
+    httpMock.expectOne(`${URL}2/`).flush(null, { status: 204, statusText: 'No Content' });
+    reload();
+  });
+
+  it('keeps the list when a write fails', () => {
+    api.dropdown<{ id: number }>().subscribe();
+    httpMock.expectOne((r) => r.url === URL).flush(envelope([]));
+
+    api.create({ name_en: '' }).subscribe({ error: () => undefined });
+    httpMock.expectOne((r) => r.url === URL && r.method === 'POST').flush(null, { status: 400, statusText: 'Bad Request' });
+
+    api.dropdown<{ id: number }>().subscribe();
+    httpMock.expectNone((r) => r.url === URL);
+  });
+
   it('retrieves one record by id with a trailing slash', () => {
     let item: Thing | undefined;
     api.retrieve(5).subscribe((r) => (item = r));
