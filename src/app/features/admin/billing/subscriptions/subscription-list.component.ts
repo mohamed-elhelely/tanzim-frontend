@@ -12,7 +12,7 @@ import { PageHeaderAction, PageHeaderComponent } from '../../../../shared/compon
 import { StatusBadgeComponent } from '../../../../shared/components/status-badge/status-badge.component';
 import { FormDialogService } from '../../../../shared/forms/form-dialog.service';
 import { ServerTable } from '../../../../shared/table/server-table';
-import { errorTitleKey } from '../../../../shared/utils/server-errors';
+
 import { TenantCompanyService } from '../../companies/tenant-company.service';
 import { SUBSCRIPTION_SEVERITY, SUBSCRIPTION_STATUSES, Severity, Subscription } from '../platform-billing.models';
 import { SubscriptionService } from '../platform-billing.service';
@@ -70,7 +70,6 @@ export class SubscriptionListComponent implements OnInit {
       },
     },
   );
-  readonly errorTitleKey = errorTitleKey;
   /** Keyed by string: table rows are untyped in the template. */
   readonly severity: Record<string, Severity> = SUBSCRIPTION_SEVERITY;
   readonly statusOptions = SUBSCRIPTION_STATUSES.map((status) => ({ value: status, label: `billing.subscriptionStatus.${status}` }));

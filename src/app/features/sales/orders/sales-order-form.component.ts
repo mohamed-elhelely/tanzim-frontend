@@ -27,7 +27,7 @@ import { ErrorStateComponent } from '../../../shared/components/error-state/erro
 import { FieldErrorComponent } from '../../../shared/components/field-error/field-error.component';
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
-import { errorTitleKey, handleSaveError } from '../../../shared/utils/server-errors';
+import { handleSaveError } from '../../../shared/utils/server-errors';
 import { CodedRef, ProductVariant } from '../../inventory/inventory.models';
 import { ProductVariantService } from '../../inventory/variants/product-variant.service';
 import { ItemOption, toItemOption, trimZeros } from '../../inventory/variants/variant-options';
@@ -122,7 +122,6 @@ export class SalesOrderFormComponent implements OnInit {
   readonly customers = signal<CustomerListItem[]>([]);
   readonly warehouses = signal<CodedRef[]>([]);
   readonly items = signal<ItemOption[]>([]);
-  readonly errorTitleKey = errorTitleKey;
   readonly priorityOptions = ORDER_PRIORITIES.map((priority) => ({ value: priority, label: `sales.priorities.${priority}` }));
 
   readonly customerOptions = computed(() =>

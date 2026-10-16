@@ -15,7 +15,7 @@ import { ChoiceFilterComponent } from '../../../shared/table/choice-filter.compo
 import { DateRangeFilterComponent } from '../../../shared/table/date-range-filter.component';
 import { FilterErrorsComponent } from '../../../shared/table/filter-errors.component';
 import { ServerTable, splitFilter } from '../../../shared/table/server-table';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+
 import { SUPPLIER_RETURN_SEVERITY, SUPPLIER_RETURN_STATUSES, SupplierReturnListItem, SupplierReturnStatus } from '../returns.models';
 import { SupplierReturnService } from './supplier-return.service';
 import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
@@ -68,7 +68,6 @@ export class SupplierReturnListComponent implements OnInit {
       },
     },
   );
-  readonly errorTitleKey = errorTitleKey;
   readonly statusOptions = SUPPLIER_RETURN_STATUSES.map((status) => ({ value: status, label: `returns.supplierStatuses.${status}` }));
 
   readonly headerActions: PageHeaderAction[] = [

@@ -13,7 +13,7 @@ import { LoadingStateComponent } from '../../../shared/components/loading-state/
 import { FormLayoutComponent } from '../../../shared/components/form-layout/form-layout.component';
 import { injectFormContext } from '../../../shared/forms/form-context';
 import { localizedName } from '../../../shared/pipes/localized-name.pipe';
-import { errorTitleKey, handleSaveError } from '../../../shared/utils/server-errors';
+import { handleSaveError } from '../../../shared/utils/server-errors';
 import { SelectOption } from '../../company/company.models';
 import { CityService } from '../cities/city.service';
 import { City, DistrictPayload } from '../locations.models';
@@ -51,7 +51,6 @@ export class DistrictFormComponent implements OnInit {
   readonly saving = signal(false);
   readonly loadError = signal<AppError | null>(null);
   readonly formErrors = signal<string[]>([]);
-  readonly errorTitleKey = errorTitleKey;
 
   /** "City — Region", because city names repeat across regions. */
   readonly cityOptions = computed<SelectOption[]>(() =>

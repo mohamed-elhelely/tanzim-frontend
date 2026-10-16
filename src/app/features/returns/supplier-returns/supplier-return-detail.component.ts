@@ -15,7 +15,7 @@ import { ErrorStateComponent } from '../../../shared/components/error-state/erro
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
 import { PageHeaderAction, PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+
 import { DebitNoteService } from '../../accounting/debit-notes/debit-note.service';
 import { SUPPLIER_RETURN_SEVERITY, SupplierReturn } from '../returns.models';
 import { SupplierReturnService } from './supplier-return.service';
@@ -55,7 +55,6 @@ export class SupplierReturnDetailComponent implements OnInit {
   readonly id = Number(inject(ActivatedRoute).snapshot.paramMap.get('id'));
   readonly srn = signal<SupplierReturn | null>(null);
   readonly loadError = signal<AppError | null>(null);
-  readonly errorTitleKey = errorTitleKey;
   readonly statusSeverity = SUPPLIER_RETURN_SEVERITY;
   readonly closeDialogOpen = signal(false);
   readonly saving = signal(false);

@@ -12,7 +12,7 @@ import { PageHeaderAction, PageHeaderComponent } from '../../../shared/component
 import { ImportExportActionsComponent } from '../../import-export/import-export-actions.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
 import { ServerTable } from '../../../shared/table/server-table';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+
 import { FormDialogService } from '../../../shared/forms/form-dialog.service';
 import { Brand } from '../inventory.models';
 import { BrandFormComponent } from './brand-form.component';
@@ -47,7 +47,6 @@ export class BrandListComponent implements OnInit {
   private readonly confirm = inject(ConfirmService);
 
   readonly table = new ServerTable<Brand>((query) => this.api.list(query));
-  readonly errorTitleKey = errorTitleKey;
 
   readonly headerActions: PageHeaderAction[] = [
     {

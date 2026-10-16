@@ -11,7 +11,7 @@ import { NotificationService } from '../../../core/services/notification.service
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { saveFile } from '../../../shared/utils/save-file';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+
 import { CodedRef, VALUATION_REPORT_METHODS } from '../../inventory/inventory.models';
 import { WarehouseService } from '../../inventory/warehouses/warehouse.service';
 import { AnalyticsLabelPipe, formatValue } from '../analytics-format';
@@ -72,7 +72,6 @@ export class ReportRunnerComponent implements OnInit {
   readonly error = signal<AppError | null>(null);
   readonly missing = signal<ReportParam | null>(null);
   readonly warehouseOptions = signal<{ value: number; label: string }[]>([]);
-  readonly errorTitleKey = errorTitleKey;
   readonly periodOptions = ['day', 'week', 'month'].map((period) => ({ value: period, label: `analytics.periods.${period}` }));
   readonly methodOptions = VALUATION_REPORT_METHODS.map((method) => ({ value: method, label: `inventory.valuationMethods.${method}` }));
 

@@ -22,7 +22,7 @@ import { ErrorStateComponent } from '../../../shared/components/error-state/erro
 import { FieldErrorComponent } from '../../../shared/components/field-error/field-error.component';
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
-import { errorTitleKey, handleSaveError } from '../../../shared/utils/server-errors';
+import { handleSaveError } from '../../../shared/utils/server-errors';
 import { SelectOption } from '../../company/company.models';
 import { InventoryRef, ProductVariantPayload } from '../inventory.models';
 import { ProductService } from '../products/product.service';
@@ -74,7 +74,6 @@ export class ProductVariantFormComponent implements OnInit {
   readonly loadError = signal<AppError | null>(null);
   readonly formErrors = signal<string[]>([]);
   readonly productOptions = signal<SelectOption[]>([]);
-  readonly errorTitleKey = errorTitleKey;
 
   readonly form = this.fb.group({
     product: [null as number | null, [Validators.required]],

@@ -15,7 +15,7 @@ import { PageHeaderAction, PageHeaderComponent } from '../../../shared/component
 import { ImportExportActionsComponent } from '../../import-export/import-export-actions.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
 import { ServerTable } from '../../../shared/table/server-table';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+
 import { ProductVariant } from '../inventory.models';
 import { ProductService } from '../products/product.service';
 import { ProductVariantService } from './product-variant.service';
@@ -60,7 +60,6 @@ export class ProductVariantListComponent {
     const product = this.productId();
     return this.api.list(product ? { ...query, filters: { product } } : query);
   });
-  readonly errorTitleKey = errorTitleKey;
 
   readonly headerActions: PageHeaderAction[] = [
     {

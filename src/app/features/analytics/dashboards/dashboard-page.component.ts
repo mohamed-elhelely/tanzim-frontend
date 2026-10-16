@@ -12,7 +12,7 @@ import { AppError } from '../../../core/errors/app-error';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+
 import { CodedRef } from '../../inventory/inventory.models';
 import { WarehouseService } from '../../inventory/warehouses/warehouse.service';
 import { AnalyticsChartComponent } from '../analytics-chart.component';
@@ -71,7 +71,6 @@ export class DashboardPageComponent implements OnInit {
   readonly loading = signal(false);
   readonly error = signal<AppError | null>(null);
   readonly warehouseOptions = signal<{ value: number; label: string }[]>([]);
-  readonly errorTitleKey = errorTitleKey;
   startDate = '';
   endDate = '';
   warehouse: number | null = null;

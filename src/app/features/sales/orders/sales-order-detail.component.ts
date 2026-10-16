@@ -16,7 +16,7 @@ import { LoadingStateComponent } from '../../../shared/components/loading-state/
 import { PageHeaderAction, PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { ReasonDialogComponent } from '../../../shared/components/reason-dialog/reason-dialog.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+
 import { DeliveryNoteService } from '../deliveries/delivery-note.service';
 import { SalesInvoiceService } from '../invoices/sales-invoice.service';
 import {
@@ -95,7 +95,6 @@ export class SalesOrderDetailComponent implements OnInit {
   shipRows: ShipRow[] = [];
   carrier = '';
   trackingNumber = '';
-  readonly errorTitleKey = errorTitleKey;
   readonly statusSeverity = ORDER_STATUS_SEVERITY;
   readonly prioritySeverity = PRIORITY_SEVERITY;
   readonly deliverySeverity = DELIVERY_STATUS_SEVERITY;

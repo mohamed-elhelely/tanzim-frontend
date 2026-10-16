@@ -12,7 +12,7 @@ import { ErrorStateComponent } from '../../../../shared/components/error-state/e
 import { LoadingStateComponent } from '../../../../shared/components/loading-state/loading-state.component';
 import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
 import { StatusBadgeComponent } from '../../../../shared/components/status-badge/status-badge.component';
-import { errorTitleKey } from '../../../../shared/utils/server-errors';
+
 import { AnalyticsChartComponent } from '../../../analytics/analytics-chart.component';
 import { AnalyticsRow, ChartSpec } from '../../../analytics/analytics.models';
 import { CustomerBalanceRow, INVOICE_SEVERITY, OutstandingInvoiceRow, RevenueRow, Severity } from '../platform-billing.models';
@@ -47,7 +47,6 @@ const REVENUE_CHART: ChartSpec = { type: 'bar', category: 'period', series: ['to
 export class BillingReportsComponent implements OnInit {
   private readonly api = inject(BillingReportService);
 
-  readonly errorTitleKey = errorTitleKey;
   /** Keyed by string: table rows are untyped in the template. */
   readonly severity: Record<string, Severity> = INVOICE_SEVERITY;
   readonly chartSpec = REVENUE_CHART;

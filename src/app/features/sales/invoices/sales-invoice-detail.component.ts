@@ -17,7 +17,7 @@ import { LoadingStateComponent } from '../../../shared/components/loading-state/
 import { PageHeaderAction, PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { ReasonDialogComponent } from '../../../shared/components/reason-dialog/reason-dialog.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+
 import { InvoicePaymentService } from '../payments/invoice-payment.service';
 import {
   INVOICE_STATUS_SEVERITY,
@@ -89,7 +89,6 @@ export class SalesInvoiceDetailComponent implements OnInit {
   readonly dialogError = signal<string | null>(null);
   details = { due_date: '', reference: '', payment_terms: '', notes: '' };
   payment = { amount: '', payment_method: 'bank_transfer' as PaymentMethod, payment_date: today(), reference: '', notes: '' };
-  readonly errorTitleKey = errorTitleKey;
   readonly daysOverdue = daysOverdue;
   readonly statusSeverity = INVOICE_STATUS_SEVERITY;
   readonly paymentStatusSeverity = PAYMENT_STATUS_SEVERITY;

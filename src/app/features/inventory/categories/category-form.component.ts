@@ -13,7 +13,7 @@ import { FieldErrorComponent } from '../../../shared/components/field-error/fiel
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
 import { FormLayoutComponent } from '../../../shared/components/form-layout/form-layout.component';
 import { injectFormContext } from '../../../shared/forms/form-context';
-import { errorTitleKey, handleSaveError } from '../../../shared/utils/server-errors';
+import { handleSaveError } from '../../../shared/utils/server-errors';
 import { SelectOption } from '../../company/company.models';
 import { Category, CategoryPayload } from '../inventory.models';
 import { CategoryService } from './category.service';
@@ -49,7 +49,6 @@ export class CategoryFormComponent implements OnInit {
   readonly saving = signal(false);
   readonly loadError = signal<AppError | null>(null);
   readonly formErrors = signal<string[]>([]);
-  readonly errorTitleKey = errorTitleKey;
   private readonly categories = signal<Category[]>([]);
   /** Every category except this one and its descendants, so the tree can't loop. */
   readonly parentOptions = computed<SelectOption[]>(() => {

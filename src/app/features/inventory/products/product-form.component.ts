@@ -14,7 +14,7 @@ import { ErrorStateComponent } from '../../../shared/components/error-state/erro
 import { FieldErrorComponent } from '../../../shared/components/field-error/field-error.component';
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
-import { errorTitleKey, handleSaveError } from '../../../shared/utils/server-errors';
+import { handleSaveError } from '../../../shared/utils/server-errors';
 import { SelectOption } from '../../company/company.models';
 import { BrandService } from '../brands/brand.service';
 import { CategoryService } from '../categories/category.service';
@@ -65,7 +65,6 @@ export class ProductFormComponent implements OnInit {
   readonly brandOptions = signal<SelectOption[]>([]);
   readonly productTypeOptions = PRODUCT_TYPES.map((type) => ({ value: type, label: `inventory.productTypes.${type}` }));
   readonly valuationOptions = VALUATION_METHODS.map((method) => ({ value: method, label: `inventory.valuation.${method}` }));
-  readonly errorTitleKey = errorTitleKey;
 
   readonly form = inject(NonNullableFormBuilder).group({
     name: ['', [Validators.required, Validators.maxLength(200)]],

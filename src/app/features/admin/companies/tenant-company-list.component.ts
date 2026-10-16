@@ -11,7 +11,7 @@ import { ErrorStateComponent } from '../../../shared/components/error-state/erro
 import { PageHeaderAction, PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
 import { ServerTable } from '../../../shared/table/server-table';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+
 import { TenantCompany } from '../admin.models';
 import { TenantCompanyService } from './tenant-company.service';
 import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
@@ -46,7 +46,6 @@ export class TenantCompanyListComponent implements OnInit {
   private readonly router = inject(Router);
 
   readonly table = new ServerTable<TenantCompany>((query) => this.api.list(query));
-  readonly errorTitleKey = errorTitleKey;
 
   readonly headerActions: PageHeaderAction[] = [
     {

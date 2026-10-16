@@ -14,7 +14,7 @@ import { FieldErrorComponent } from '../../../shared/components/field-error/fiel
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
 import { FormLayoutComponent } from '../../../shared/components/form-layout/form-layout.component';
 import { injectFormContext } from '../../../shared/forms/form-context';
-import { errorTitleKey, handleSaveError } from '../../../shared/utils/server-errors';
+import { handleSaveError } from '../../../shared/utils/server-errors';
 import { ACCOUNT_TYPES, Account, AccountPayload, AccountType } from '../accounting.models';
 import { AccountService } from './account.service';
 
@@ -55,7 +55,6 @@ export class AccountFormComponent implements OnInit {
   readonly formErrors = signal<string[]>([]);
   readonly accounts = signal<Account[]>([]);
   readonly record = signal<Account | null>(null);
-  readonly errorTitleKey = errorTitleKey;
   readonly typeOptions = ACCOUNT_TYPES.map((type) => ({ value: type, label: `accounting.accountTypes.${type}` }));
 
   readonly form = inject(NonNullableFormBuilder).group({

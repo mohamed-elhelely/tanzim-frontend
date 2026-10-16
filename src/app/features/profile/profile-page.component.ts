@@ -14,7 +14,7 @@ import { FieldErrorComponent } from '../../shared/components/field-error/field-e
 import { ImagePickerComponent } from '../../shared/components/image-picker/image-picker.component';
 import { LoadingStateComponent } from '../../shared/components/loading-state/loading-state.component';
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
-import { errorTitleKey, handleSaveError } from '../../shared/utils/server-errors';
+import { handleSaveError } from '../../shared/utils/server-errors';
 import { MeProfile, ProfileService } from './profile.service';
 import { SignedInDevicesComponent } from './signed-in-devices.component';
 
@@ -61,7 +61,6 @@ export class ProfilePageComponent implements OnInit {
   readonly changingPassword = signal(false);
   readonly formErrors = signal<string[]>([]);
   readonly passwordErrors = signal<string[]>([]);
-  readonly errorTitleKey = errorTitleKey;
   readonly email = computed(() => this.access.current()?.user.email ?? '');
   readonly pictureUrl = signal<string | null>(null);
   /** undefined = unchanged, null = remove, File = upload. */

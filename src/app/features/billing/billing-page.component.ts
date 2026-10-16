@@ -11,7 +11,7 @@ import { LoadingStateComponent } from '../../shared/components/loading-state/loa
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 import { StatusBadgeComponent } from '../../shared/components/status-badge/status-badge.component';
 import { TimeAgoPipe } from '../../shared/pipes/time-ago.pipe';
-import { errorTitleKey } from '../../shared/utils/server-errors';
+
 import { CurrentSubscription, InvoiceStatus, PlatformInvoice, SubscriptionStatus } from './billing.models';
 import { RowActionComponent, RowActionsComponent } from '../../shared/table/row-actions.component';
 import { BillingService } from './billing.service';
@@ -67,7 +67,6 @@ export class BillingPageComponent implements OnInit {
   readonly invoicesError = signal<AppError | null>(null);
   /** The invoice shown in the details dialog. */
   readonly selected = signal<PlatformInvoice | null>(null);
-  readonly errorTitleKey = errorTitleKey;
 
   ngOnInit(): void {
     this.api.currentSubscription().subscribe({

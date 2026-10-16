@@ -13,7 +13,7 @@ import { FieldErrorComponent } from '../../../shared/components/field-error/fiel
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
 import { FormLayoutComponent } from '../../../shared/components/form-layout/form-layout.component';
 import { injectFormContext } from '../../../shared/forms/form-context';
-import { errorTitleKey, handleSaveError } from '../../../shared/utils/server-errors';
+import { handleSaveError } from '../../../shared/utils/server-errors';
 import { SelectOption } from '../../company/company.models';
 import { BinPayload, Zone } from '../inventory.models';
 import { trimZeros } from '../variants/variant-options';
@@ -52,7 +52,6 @@ export class BinFormComponent implements OnInit {
   readonly saving = signal(false);
   readonly loadError = signal<AppError | null>(null);
   readonly formErrors = signal<string[]>([]);
-  readonly errorTitleKey = errorTitleKey;
   private readonly zones = signal<Zone[]>([]);
   /** "Main warehouse › Zone A": zone names repeat across warehouses (full list, since the dropdown has no warehouse). */
   readonly zoneOptions = computed<SelectOption[]>(() =>

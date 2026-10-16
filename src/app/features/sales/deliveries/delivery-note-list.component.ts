@@ -15,7 +15,7 @@ import { ChoiceFilterComponent } from '../../../shared/table/choice-filter.compo
 import { DateRangeFilterComponent } from '../../../shared/table/date-range-filter.component';
 import { FilterErrorsComponent } from '../../../shared/table/filter-errors.component';
 import { ServerTable, splitFilter } from '../../../shared/table/server-table';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+
 import { DELIVERY_STATUSES, DELIVERY_STATUS_SEVERITY, DeliveryNoteListItem, DeliveryStatus } from '../sales.models';
 import { DeliveryNoteService } from './delivery-note.service';
 import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
@@ -69,7 +69,6 @@ export class DeliveryNoteListComponent implements OnInit {
       },
     },
   );
-  readonly errorTitleKey = errorTitleKey;
   readonly statusOptions = DELIVERY_STATUSES.map((status) => ({ value: status, label: `sales.deliveryStatuses.${status}` }));
 
   ngOnInit(): void {

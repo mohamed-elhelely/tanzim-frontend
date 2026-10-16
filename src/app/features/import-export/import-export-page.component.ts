@@ -14,7 +14,7 @@ import { ErrorStateComponent } from '../../shared/components/error-state/error-s
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 import { StatusBadgeComponent } from '../../shared/components/status-badge/status-badge.component';
 import { ServerTable } from '../../shared/table/server-table';
-import { errorTitleKey } from '../../shared/utils/server-errors';
+
 import { saveFile } from '../../shared/utils/save-file';
 import { ImportExportActionsComponent } from './import-export-actions.component';
 import { DATA_RESOURCES, DataResource, DataTask, TaskStatus, taskModelName } from './import-export.models';
@@ -92,7 +92,6 @@ export class ImportExportPageComponent implements OnInit {
     },
   );
   readonly typeOptions = (['import', 'export'] as const).map((type) => ({ value: type, label: `importExport.taskTypes.${type}` }));
-  readonly errorTitleKey = errorTitleKey;
   readonly modelName = taskModelName;
 
   ngOnInit(): void {

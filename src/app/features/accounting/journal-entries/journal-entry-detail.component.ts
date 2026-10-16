@@ -15,7 +15,7 @@ import { ErrorStateComponent } from '../../../shared/components/error-state/erro
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
 import { PageHeaderAction, PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+
 import { JournalEntry } from '../accounting.models';
 import { JournalEntryService } from './journal-entry.service';
 import { RecordHistoryComponent } from '../../company/system-logs/record-history.component';
@@ -60,7 +60,6 @@ export class JournalEntryDetailComponent implements OnInit {
   readonly saving = signal(false);
   reverseDate = '';
   reverseDescription = '';
-  readonly errorTitleKey = errorTitleKey;
 
   readonly actions = computed<PageHeaderAction[]>(() => {
     const entry = this.entry();

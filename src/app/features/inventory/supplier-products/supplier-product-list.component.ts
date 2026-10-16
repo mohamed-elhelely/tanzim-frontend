@@ -14,7 +14,7 @@ import { PageHeaderAction, PageHeaderComponent } from '../../../shared/component
 import { ImportExportActionsComponent } from '../../import-export/import-export-actions.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
 import { ServerTable } from '../../../shared/table/server-table';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+
 import { SupplierProduct } from '../inventory.models';
 import { SupplierProductService } from './supplier-product.service';
 import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
@@ -48,7 +48,6 @@ export class SupplierProductListComponent implements OnInit {
   private readonly confirm = inject(ConfirmService);
 
   readonly table = new ServerTable<SupplierProduct>((query) => this.api.list(query));
-  readonly errorTitleKey = errorTitleKey;
 
   readonly headerActions: PageHeaderAction[] = [
     {

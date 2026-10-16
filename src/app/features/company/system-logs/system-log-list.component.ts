@@ -23,7 +23,7 @@ import { StatusBadgeComponent } from '../../../shared/components/status-badge/st
 import { UserNamePipe } from '../../../shared/pipes/user-name.pipe';
 import { ServerTable, splitFilter } from '../../../shared/table/server-table';
 import { saveFile } from '../../../shared/utils/save-file';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+
 import { SelectOption } from '../company.models';
 import { TenantCompanyService } from '../../admin/companies/tenant-company.service';
 import { CompanyUserService } from '../users/company-user.service';
@@ -158,7 +158,6 @@ export class SystemLogListComponent implements OnInit {
       },
     },
   );
-  readonly errorTitleKey = errorTitleKey;
 
   private readonly resourceLabelKeys = auditResourceLabels(NAV_ITEMS);
   private readonly actionKeys = AUDIT_ACTIONS.map((action) => [action, `systemLogs.actions.${action}`] as const);

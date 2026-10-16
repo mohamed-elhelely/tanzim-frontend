@@ -19,7 +19,7 @@ import { ChoiceFilterComponent } from '../../../shared/table/choice-filter.compo
 import { DateRangeFilterComponent } from '../../../shared/table/date-range-filter.component';
 import { FilterErrorsComponent } from '../../../shared/table/filter-errors.component';
 import { ServerTable, splitFilter } from '../../../shared/table/server-table';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+
 import {
   ORDER_PRIORITIES,
   ORDER_STATUS_SEVERITY,
@@ -92,7 +92,6 @@ export class SalesOrderListComponent implements OnInit {
   readonly canBulk = computed(() => this.access.can('change_salesorder'));
   /** The ticked rows the bulk action applies to (drafts only). */
   readonly selectedDrafts = computed(() => this.table.selection().filter((row) => row.status === 'draft'));
-  readonly errorTitleKey = errorTitleKey;
   readonly priorityOptions = ORDER_PRIORITIES.map((priority) => ({ value: priority, label: `sales.priorities.${priority}` }));
   readonly statusOptions = SALES_ORDER_STATUSES.map((status) => ({ value: status, label: `sales.orderStatuses.${status}` }));
 

@@ -1,7 +1,7 @@
 <app-form-layout [title]="isEdit ? 'company.departments.edit' : 'company.departments.new'" (back)="goBack()">
 
   @if (loadError(); as err) {
-    <app-error-state [title]="errorTitleKey(err)" [showRetry]="false"></app-error-state>
+    <app-error-state [error]="err" [showRetry]="false"></app-error-state>
   } @else if (loading()) {
     <app-loading-state></app-loading-state>
   } @else {

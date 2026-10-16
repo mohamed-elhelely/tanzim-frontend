@@ -17,7 +17,7 @@ import { FieldErrorComponent } from '../../../../shared/components/field-error/f
 import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
 import { StatusBadgeComponent } from '../../../../shared/components/status-badge/status-badge.component';
 import { ServerTable } from '../../../../shared/table/server-table';
-import { errorTitleKey, handleSaveError } from '../../../../shared/utils/server-errors';
+import { handleSaveError } from '../../../../shared/utils/server-errors';
 import { TenantCompanyService } from '../../companies/tenant-company.service';
 import { MONEY, PAYMENT_SEVERITY, PlatformPayment, Severity } from '../platform-billing.models';
 import { PlatformPaymentService } from '../platform-billing.service';
@@ -72,7 +72,6 @@ export class PaymentListComponent implements OnInit {
       },
     },
   );
-  readonly errorTitleKey = errorTitleKey;
   /** Keyed by string: table rows are untyped in the template. */
   readonly severity: Record<string, Severity> = PAYMENT_SEVERITY;
   readonly companyOptions = signal<{ value: number; label: string }[]>([]);

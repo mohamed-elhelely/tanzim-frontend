@@ -4,7 +4,7 @@ import { ButtonModule } from 'primeng/button';
 import { AccessService } from '../../../core/auth/access.service';
 import { AppError } from '../../../core/errors/app-error';
 import { LanguageService } from '../../../core/services/language.service';
-import { errorTitleKey } from '../../utils/server-errors';
+
 import { ErrorStateComponent } from '../error-state/error-state.component';
 import { LoadingStateComponent } from '../loading-state/loading-state.component';
 
@@ -35,7 +35,6 @@ export class PrintLayoutComponent {
 
   readonly company = computed(() => this.access.current()?.company ?? null);
   readonly accent = computed(() => this.company()?.primary_color || '#4f46e5');
-  readonly errorTitleKey = errorTitleKey;
 
   print(): void {
     window.print();

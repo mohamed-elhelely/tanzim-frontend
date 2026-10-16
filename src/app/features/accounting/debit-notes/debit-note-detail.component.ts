@@ -10,7 +10,7 @@ import { LoadingStateComponent } from '../../../shared/components/loading-state/
 import { PageHeaderAction, PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { ReasonDialogComponent } from '../../../shared/components/reason-dialog/reason-dialog.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+
 import { DEBIT_NOTE_SEVERITY, DebitNote } from '../accounting.models';
 import { DebitNoteService } from './debit-note.service';
 import { RecordHistoryComponent } from '../../company/system-logs/record-history.component';
@@ -43,7 +43,6 @@ export class DebitNoteDetailComponent implements OnInit {
   readonly note = signal<DebitNote | null>(null);
   readonly loadError = signal<AppError | null>(null);
   readonly cancelDialogOpen = signal(false);
-  readonly errorTitleKey = errorTitleKey;
   readonly statusSeverity = DEBIT_NOTE_SEVERITY;
 
   readonly actions = computed<PageHeaderAction[]>(() => {

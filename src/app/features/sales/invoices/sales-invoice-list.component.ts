@@ -18,7 +18,7 @@ import { ChoiceFilterComponent } from '../../../shared/table/choice-filter.compo
 import { DateRangeFilterComponent } from '../../../shared/table/date-range-filter.component';
 import { FilterErrorsComponent } from '../../../shared/table/filter-errors.component';
 import { ServerTable, splitFilter } from '../../../shared/table/server-table';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+
 import {
   INVOICE_STATUSES,
   INVOICE_STATUS_SEVERITY,
@@ -92,7 +92,6 @@ export class SalesInvoiceListComponent implements OnInit {
   readonly canBulk = computed(() => this.access.can('change_salesinvoice'));
   /** The ticked rows the bulk action applies to (drafts only). */
   readonly selectedDrafts = computed(() => this.table.selection().filter((row) => row.status === 'draft'));
-  readonly errorTitleKey = errorTitleKey;
   readonly daysOverdue = daysOverdue;
   readonly statusOptions = INVOICE_STATUSES.map((status) => ({ value: status, label: `sales.invoiceStatuses.${status}` }));
   readonly paymentOptions = PAYMENT_STATUSES.map((status) => ({ value: status, label: `sales.paymentStatuses.${status}` }));

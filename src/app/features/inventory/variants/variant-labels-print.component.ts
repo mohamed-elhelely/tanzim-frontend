@@ -11,7 +11,7 @@ import { BarcodeComponent } from '../../../shared/components/barcode/barcode.com
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
 import { canEncodeCode128 } from '../../../shared/utils/code128';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+
 import { ProductVariant } from '../inventory.models';
 import { ProductVariantService } from './product-variant.service';
 
@@ -42,7 +42,6 @@ export class VariantLabelsPrintComponent implements OnInit {
   readonly error = signal<AppError | null>(null);
   readonly copies = signal(1);
   readonly showPrice = signal(true);
-  readonly errorTitleKey = errorTitleKey;
 
   /** Each variant `copies` times, in order. */
   readonly labels = computed(() => (this.variants() ?? []).flatMap((variant) => Array<ProductVariant>(this.copies()).fill(variant)));

@@ -112,7 +112,7 @@
   </div>
 
   @if (error(); as err) {
-    <app-error-state [title]="errorTitleKey(err)" [message]="err.message" [showRetry]="false"></app-error-state>
+    <app-error-state [error]="err" [message]="err.message" [showRetry]="false"></app-error-state>
   } @else if (result(); as report) {
     @if (summaryValues().length) {
       <dl class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">

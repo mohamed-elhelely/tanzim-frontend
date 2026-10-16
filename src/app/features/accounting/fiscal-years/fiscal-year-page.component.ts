@@ -13,7 +13,7 @@ import { ErrorStateComponent } from '../../../shared/components/error-state/erro
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
 import { PageHeaderAction, PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+
 import { FiscalPeriod, FiscalYear } from '../accounting.models';
 import { FiscalYearService } from './fiscal-year.service';
 
@@ -52,7 +52,6 @@ export class FiscalYearPageComponent implements OnInit {
   readonly saving = signal(false);
   readonly dialogError = signal<string | null>(null);
   newYear = { name: '', start_date: '', end_date: '' };
-  readonly errorTitleKey = errorTitleKey;
 
   readonly headerActions: PageHeaderAction[] = [
     { label: 'accounting.years.new', icon: 'pi pi-plus', onClick: () => this.openNew() },

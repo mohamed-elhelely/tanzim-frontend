@@ -3,7 +3,7 @@
 <section class="mb-6 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-800 dark:bg-gray-900">
   <h2 class="mb-4 text-base font-semibold text-gray-900 dark:text-white">{{ 'billing.subscription' | translate }}</h2>
   @if (subscriptionError(); as err) {
-    <app-error-state [title]="errorTitleKey(err)" [showRetry]="false"></app-error-state>
+    <app-error-state [error]="err" [showRetry]="false"></app-error-state>
   } @else if (subscription() === undefined) {
     <app-loading-state></app-loading-state>
   } @else if (subscription(); as sub) {
@@ -56,7 +56,7 @@
     {{ 'billing.invoices' | translate }}
   </h2>
   @if (invoicesError(); as err) {
-    <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403" (retry)="loadInvoices()"></app-error-state>
+    <app-error-state [error]="err" [showRetry]="err.status !== 403" (retry)="loadInvoices()"></app-error-state>
   } @else {
     <div class="overflow-x-auto">
       <p-table [value]="invoices()" [loading]="invoicesLoading()" [paginator]="invoices().length > 10" [rows]="10" dataKey="id" size="small">

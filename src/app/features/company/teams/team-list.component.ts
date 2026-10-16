@@ -15,7 +15,7 @@ import { ImportExportActionsComponent } from '../../import-export/import-export-
 import { LocalizedNamePipe } from '../../../shared/pipes/localized-name.pipe';
 import { userName } from '../../../shared/pipes/user-name.pipe';
 import { ServerTable } from '../../../shared/table/server-table';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+
 import { FormDialogService } from '../../../shared/forms/form-dialog.service';
 import { Team } from '../company.models';
 import { TeamFormComponent } from './team-form.component';
@@ -53,7 +53,6 @@ export class TeamListComponent implements OnInit {
   readonly lang = inject(LanguageService).currentLang;
 
   readonly table = new ServerTable<Team>((query) => this.api.list(query));
-  readonly errorTitleKey = errorTitleKey;
 
   /** Buttons follow the user's permissions; the backend refuses the rest with 403. */
   readonly canAdd = computed(() => this.access.can('add_team'));

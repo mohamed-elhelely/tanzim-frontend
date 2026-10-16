@@ -1,6 +1,6 @@
 @if (loadError(); as err) {
   <app-page-header title="admin.billing.invoices.title" [showBack]="true" backLabel="common.backToList" (back)="goBack()"></app-page-header>
-  <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403 && err.status !== 404" (retry)="load()"></app-error-state>
+  <app-error-state [error]="err" [showRetry]="err.status !== 403 && err.status !== 404" (retry)="load()"></app-error-state>
 } @else if (invoice(); as invoice) {
   <app-page-header
     [title]="invoice.invoice_number"

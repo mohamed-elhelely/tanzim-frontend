@@ -21,7 +21,7 @@ import { LoadingStateComponent } from '../../../../shared/components/loading-sta
 import { PageHeaderAction, PageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
 import { ReasonDialogComponent } from '../../../../shared/components/reason-dialog/reason-dialog.component';
 import { StatusBadgeComponent } from '../../../../shared/components/status-badge/status-badge.component';
-import { errorTitleKey, handleSaveError } from '../../../../shared/utils/server-errors';
+import { handleSaveError } from '../../../../shared/utils/server-errors';
 import { InvoiceItem } from '../../../billing/billing.models';
 import { AdminInvoice, BillingModule, INVOICE_SEVERITY, MONEY, WHOLE } from '../platform-billing.models';
 import { RowActionComponent, RowActionsComponent } from '../../../../shared/table/row-actions.component';
@@ -70,7 +70,6 @@ export class InvoiceDetailComponent implements OnInit {
 
   readonly invoice = signal<AdminInvoice | null>(null);
   readonly loadError = signal<AppError | null>(null);
-  readonly errorTitleKey = errorTitleKey;
   readonly severity = INVOICE_SEVERITY;
   readonly moduleOptions = signal<{ value: number; label: string }[]>([]);
 

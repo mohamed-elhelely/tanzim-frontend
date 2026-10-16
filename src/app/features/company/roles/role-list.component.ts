@@ -15,7 +15,7 @@ import { PageHeaderAction, PageHeaderComponent } from '../../../shared/component
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
 import { localizedName } from '../../../shared/pipes/localized-name.pipe';
 import { ServerTable } from '../../../shared/table/server-table';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+
 import { Role } from '../company.models';
 import { RoleService } from './role.service';
 import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
@@ -49,7 +49,6 @@ export class RoleListComponent implements OnInit {
   private readonly lang = inject(LanguageService).currentLang;
 
   readonly table = new ServerTable<Role>((query) => this.api.list(query));
-  readonly errorTitleKey = errorTitleKey;
 
   /** Buttons follow the user's permissions; the backend refuses the rest with 403. */
   readonly canAdd = computed(() => this.access.can('add_role'));

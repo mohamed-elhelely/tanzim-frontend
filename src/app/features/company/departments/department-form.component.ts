@@ -13,7 +13,7 @@ import { LoadingStateComponent } from '../../../shared/components/loading-state/
 import { FormLayoutComponent } from '../../../shared/components/form-layout/form-layout.component';
 import { injectFormContext } from '../../../shared/forms/form-context';
 import { localizedName } from '../../../shared/pipes/localized-name.pipe';
-import { errorTitleKey, handleSaveError } from '../../../shared/utils/server-errors';
+import { handleSaveError } from '../../../shared/utils/server-errors';
 import { DepartmentPayload, NamedRef, SelectOption } from '../company.models';
 import { CompanyUserService } from '../users/company-user.service';
 import { DepartmentService } from './department.service';
@@ -56,7 +56,6 @@ export class DepartmentFormComponent implements OnInit {
       .filter((d) => d.id !== this.id)
       .map((d) => ({ value: d.id, label: localizedName(d, this.lang()) })),
   );
-  readonly errorTitleKey = errorTitleKey;
 
   readonly form = inject(NonNullableFormBuilder).group({
     name_en: ['', [Validators.required, Validators.maxLength(100)]],

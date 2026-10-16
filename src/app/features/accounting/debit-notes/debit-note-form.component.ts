@@ -13,7 +13,7 @@ import { ErrorStateComponent } from '../../../shared/components/error-state/erro
 import { FieldErrorComponent } from '../../../shared/components/field-error/field-error.component';
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
-import { errorTitleKey, handleSaveError } from '../../../shared/utils/server-errors';
+import { handleSaveError } from '../../../shared/utils/server-errors';
 import { InventoryRef } from '../../inventory/inventory.models';
 import { SupplierInvoiceRef, SupplierInvoiceService } from '../../inventory/supplier-invoices/supplier-invoice.service';
 import { SupplierService } from '../../inventory/suppliers/supplier.service';
@@ -72,7 +72,6 @@ export class DebitNoteFormComponent implements OnInit {
   readonly invoices = signal<SupplierInvoiceRef[]>([]);
   /** The chosen supplier's returns. */
   readonly returns = signal<SupplierReturnListItem[]>([]);
-  readonly errorTitleKey = errorTitleKey;
 
   readonly form = inject(NonNullableFormBuilder).group({
     supplier: [null as number | null, Validators.required],

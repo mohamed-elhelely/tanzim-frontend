@@ -13,7 +13,7 @@ import { EmptyStateComponent } from '../../../shared/components/empty-state/empt
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
 import { PageHeaderAction, PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+
 import { FormDialogService } from '../../../shared/forms/form-dialog.service';
 import { ACCOUNT_TYPES, ACCOUNT_TYPE_SEVERITY, Account, AccountType } from '../accounting.models';
 import { AccountFormComponent } from './account-form.component';
@@ -80,7 +80,6 @@ export class AccountListComponent implements OnInit {
   /** What the filter fields show; copied into `search`/`type` only when the user applies. */
   searchDraft = '';
   typeDraft: AccountType | null = null;
-  readonly errorTitleKey = errorTitleKey;
   readonly typeOptions = ACCOUNT_TYPES.map((type) => ({ value: type, label: `accounting.accountTypes.${type}` }));
 
   /** Filtering keeps the tree order; while filtering, matches are listed without indentation. */

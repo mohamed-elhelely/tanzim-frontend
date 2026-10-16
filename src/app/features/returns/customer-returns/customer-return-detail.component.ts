@@ -16,7 +16,7 @@ import { LoadingStateComponent } from '../../../shared/components/loading-state/
 import { PageHeaderAction, PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { ReasonDialogComponent } from '../../../shared/components/reason-dialog/reason-dialog.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+
 import {
   CONDITIONS,
   CUSTOMER_RETURN_SEVERITY,
@@ -93,7 +93,6 @@ export class CustomerReturnDetailComponent implements OnInit {
   receiveRows: ReceiveRow[] = [];
   inspectRows: InspectRow[] = [];
   refundAmount = '';
-  readonly errorTitleKey = errorTitleKey;
   readonly statusSeverity = CUSTOMER_RETURN_SEVERITY;
   readonly conditionOptions = CONDITIONS.map((condition) => ({ value: condition, label: `returns.conditions.${condition}` }));
   readonly dispositionOptions = DISPOSITIONS.map((disposition) => ({ value: disposition, label: `returns.dispositions.${disposition}` }));

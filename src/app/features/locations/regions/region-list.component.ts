@@ -13,7 +13,7 @@ import { PageHeaderAction, PageHeaderComponent } from '../../../shared/component
 import { ImportExportActionsComponent } from '../../import-export/import-export-actions.component';
 import { LocalizedNamePipe } from '../../../shared/pipes/localized-name.pipe';
 import { ServerTable } from '../../../shared/table/server-table';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+
 import { FormDialogService } from '../../../shared/forms/form-dialog.service';
 import { Region } from '../locations.models';
 import { RegionFormComponent } from './region-form.component';
@@ -50,7 +50,6 @@ export class RegionListComponent implements OnInit {
   readonly lang = inject(LanguageService).currentLang;
 
   readonly table = new ServerTable<Region>((query) => this.api.list(query));
-  readonly errorTitleKey = errorTitleKey;
 
   readonly headerActions: PageHeaderAction[] = [
     {

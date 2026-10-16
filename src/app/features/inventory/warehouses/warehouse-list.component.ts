@@ -15,7 +15,7 @@ import { ImportExportActionsComponent } from '../../import-export/import-export-
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
 import { LocalizedNamePipe } from '../../../shared/pipes/localized-name.pipe';
 import { ServerTable } from '../../../shared/table/server-table';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+
 import { Warehouse } from '../inventory.models';
 import { WarehouseService } from './warehouse.service';
 import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
@@ -49,7 +49,6 @@ export class WarehouseListComponent implements OnInit {
   private readonly confirm = inject(ConfirmService);
 
   readonly table = new ServerTable<Warehouse>((query) => this.api.list(query));
-  readonly errorTitleKey = errorTitleKey;
   readonly lang = inject(LanguageService).currentLang;
 
   readonly headerActions: PageHeaderAction[] = [

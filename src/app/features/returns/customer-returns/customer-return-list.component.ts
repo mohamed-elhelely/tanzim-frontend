@@ -16,7 +16,7 @@ import { ChoiceFilterComponent } from '../../../shared/table/choice-filter.compo
 import { DateRangeFilterComponent } from '../../../shared/table/date-range-filter.component';
 import { FilterErrorsComponent } from '../../../shared/table/filter-errors.component';
 import { ServerTable, splitFilter } from '../../../shared/table/server-table';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+
 import {
   CUSTOMER_RETURN_SEVERITY,
   CUSTOMER_RETURN_STATUSES,
@@ -81,7 +81,6 @@ export class CustomerReturnListComponent implements OnInit {
       },
     },
   );
-  readonly errorTitleKey = errorTitleKey;
   readonly statusOptions = CUSTOMER_RETURN_STATUSES.map((status) => ({ value: status, label: `returns.customerStatuses.${status}` }));
   readonly reasonOptions = RETURN_REASONS.map((reason) => ({ value: reason, label: `returns.reasons.${reason}` }));
 

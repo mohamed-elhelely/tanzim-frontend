@@ -14,7 +14,7 @@ import { FieldErrorComponent } from '../../../shared/components/field-error/fiel
 import { ImagePickerComponent } from '../../../shared/components/image-picker/image-picker.component';
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
-import { errorTitleKey, handleSaveError } from '../../../shared/utils/server-errors';
+import { handleSaveError } from '../../../shared/utils/server-errors';
 import { CompanyProfile } from '../company.models';
 import { CompanyProfileService } from './company-profile.service';
 
@@ -50,7 +50,6 @@ export class CompanyProfileComponent implements OnInit {
   readonly loadError = signal<AppError | null>(null);
   readonly saving = signal(false);
   readonly formErrors = signal<string[]>([]);
-  readonly errorTitleKey = errorTitleKey;
   readonly company = signal<CompanyProfile | null>(null);
   /** The logo the preview shows: the saved one, or the one just picked. */
   readonly logoPreview = computed(() => {

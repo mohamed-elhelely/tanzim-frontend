@@ -15,7 +15,7 @@ import { PageHeaderAction, PageHeaderComponent } from '../../../shared/component
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
 import { localizedName } from '../../../shared/pipes/localized-name.pipe';
 import { ServerTable } from '../../../shared/table/server-table';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+
 import { FormDialogService } from '../../../shared/forms/form-dialog.service';
 import { Permission } from '../company.models';
 import { PermissionFormComponent } from './permission-form.component';
@@ -51,7 +51,6 @@ export class PermissionListComponent implements OnInit {
   private readonly lang = inject(LanguageService).currentLang;
 
   readonly table = new ServerTable<Permission>((query) => this.api.list(query));
-  readonly errorTitleKey = errorTitleKey;
   /** Catalog permissions can't be changed or deleted (the backend answers 403). */
   readonly isSystem = (row: Permission) => isSystemCodename(row.codename);
 

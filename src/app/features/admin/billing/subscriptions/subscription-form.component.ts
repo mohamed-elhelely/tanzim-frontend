@@ -16,7 +16,7 @@ import { FieldErrorComponent } from '../../../../shared/components/field-error/f
 import { FormLayoutComponent } from '../../../../shared/components/form-layout/form-layout.component';
 import { LoadingStateComponent } from '../../../../shared/components/loading-state/loading-state.component';
 import { injectFormContext } from '../../../../shared/forms/form-context';
-import { errorTitleKey, handleSaveError } from '../../../../shared/utils/server-errors';
+import { handleSaveError } from '../../../../shared/utils/server-errors';
 import { SubscriptionStatus } from '../../../billing/billing.models';
 import { TenantCompanyService } from '../../companies/tenant-company.service';
 import { BillingModule, MODULE_EDITABLE_STATUSES, SUBSCRIPTION_STATUSES, Subscription, SubscriptionPayload, WHOLE } from '../platform-billing.models';
@@ -69,7 +69,6 @@ export class SubscriptionFormComponent implements OnInit {
   readonly saving = signal(false);
   readonly loadError = signal<AppError | null>(null);
   readonly formErrors = signal<string[]>([]);
-  readonly errorTitleKey = errorTitleKey;
   readonly companyOptions = signal<{ value: number; label: string }[]>([]);
   readonly planOptions = signal<{ value: number; label: string }[]>([]);
   readonly statusOptions = SUBSCRIPTION_STATUSES.map((status) => ({ value: status, label: `billing.subscriptionStatus.${status}` }));

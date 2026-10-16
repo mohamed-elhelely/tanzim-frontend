@@ -15,7 +15,7 @@ import { ImportExportActionsComponent } from '../../import-export/import-export-
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
 import { LocalizedNamePipe } from '../../../shared/pipes/localized-name.pipe';
 import { ServerTable } from '../../../shared/table/server-table';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+
 import { Location } from '../locations.models';
 import { LocationService } from './location.service';
 import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
@@ -51,7 +51,6 @@ export class SiteListComponent implements OnInit {
   readonly lang = inject(LanguageService).currentLang;
 
   readonly table = new ServerTable<Location>((query) => this.api.list(query));
-  readonly errorTitleKey = errorTitleKey;
 
   readonly headerActions: PageHeaderAction[] = [
     {

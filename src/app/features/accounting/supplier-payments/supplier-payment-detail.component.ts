@@ -11,7 +11,7 @@ import { LoadingStateComponent } from '../../../shared/components/loading-state/
 import { PageHeaderAction, PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { ReasonDialogComponent } from '../../../shared/components/reason-dialog/reason-dialog.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+
 import { SupplierPayment } from '../accounting.models';
 import { SupplierPaymentService } from './supplier-payment.service';
 import { RecordHistoryComponent } from '../../company/system-logs/record-history.component';
@@ -44,7 +44,6 @@ export class SupplierPaymentDetailComponent implements OnInit {
   readonly payment = signal<SupplierPayment | null>(null);
   readonly loadError = signal<AppError | null>(null);
   readonly voidDialogOpen = signal(false);
-  readonly errorTitleKey = errorTitleKey;
 
   readonly actions = computed<PageHeaderAction[]>(() =>
     this.payment()?.status === 'completed'
