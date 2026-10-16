@@ -32,12 +32,13 @@ export class SelectComponent extends FormControlBase<unknown> {
   readonly filterBy = input<string>();
   /** An × that clears the value. */
   readonly showClear = input(false);
-  readonly emptyMessage = input<string>();
+  /** Empty means the library's own "no results" text. */
+  readonly emptyMessage = input('');
   /** `optionLabel` holds translation keys. */
   readonly translateLabels = input(false);
   readonly group = input(false);
   readonly optionGroupLabel = input<string>();
-  readonly optionGroupChildren = input<string>();
+  readonly optionGroupChildren = input('items');
   /** The user may also type a value that is not in the list. */
   readonly editable = input(false);
 

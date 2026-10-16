@@ -1,0 +1,58 @@
+<h1 class="mb-6 text-2xl font-bold">Buttons <span class="text-base font-normal text-gray-500">app-button</span></h1>
+
+<app-showcase-section heading="Basic" note="A label (already translated), an optional icon, and (clicked)." [code]="code.basic">
+  <app-button label="Save" icon="pi pi-check" (clicked)="clicks.set(clicks() + 1)"></app-button>
+  <app-button label="Add" icon="pi pi-plus"></app-button>
+  <app-button label="No icon"></app-button>
+  <span class="self-center text-sm text-gray-500">clicked {{ clicks() }}×</span>
+</app-showcase-section>
+
+<app-showcase-section heading="Severity × variant" note="severity: primary (default) … contrast · variant: solid (default), outlined, text." [code]="code.variant">
+  <div class="grid w-full gap-3" style="grid-template-columns: 6rem repeat(3, max-content)">
+    <span></span>
+    @for (variant of variants; track variant) {
+      <span class="text-xs font-semibold uppercase text-gray-500">{{ variant }}</span>
+    }
+    @for (severity of severities; track severity) {
+      <span class="self-center text-sm">{{ severity }}</span>
+      @for (variant of variants; track variant) {
+        <app-button [label]="severity" [severity]="severity" [variant]="variant"></app-button>
+      }
+    }
+  </div>
+</app-showcase-section>
+
+<app-showcase-section heading="Sizes">
+  <app-button label="Small" size="small"></app-button>
+  <app-button label="Normal"></app-button>
+  <app-button label="Large" size="large"></app-button>
+</app-showcase-section>
+
+<app-showcase-section heading="States" note="type is 'button' unless 'submit'; loading shows a spinner and blocks clicks." [code]="code.states">
+  <app-button label="Save" icon="pi pi-check" [loading]="saving()" (clicked)="save()"></app-button>
+  <app-button label="Loading" [loading]="true"></app-button>
+  <app-button label="Disabled" [disabled]="true"></app-button>
+  <app-button label="Disabled outlined" variant="outlined" [disabled]="true"></app-button>
+</app-showcase-section>
+
+<app-showcase-section heading="Icon only" note="Always give icon-only buttons an ariaLabel." [code]="code.icon">
+  <app-button icon="pi pi-pencil" variant="text" severity="secondary" [rounded]="true" ariaLabel="Edit"></app-button>
+  <app-button icon="pi pi-trash" variant="text" severity="danger" [rounded]="true" ariaLabel="Delete"></app-button>
+  <app-button icon="pi pi-times" variant="outlined" severity="secondary" [rounded]="true" ariaLabel="Close"></app-button>
+  <app-button icon="pi pi-plus" [rounded]="true" ariaLabel="Add"></app-button>
+</app-showcase-section>
+
+<app-showcase-section heading="Width" note="auto (default) · always: fills the row · mobile: fills the row below sm, natural above (form actions)." [code]="code.width">
+  <div class="flex w-full flex-col gap-3">
+    <app-button label="always" width="always"></app-button>
+    <div class="flex flex-col gap-2 sm:flex-row">
+      <app-button label="mobile (cancel)" width="mobile" severity="secondary" variant="outlined"></app-button>
+      <app-button label="mobile (save)" width="mobile" class="sm:ms-auto"></app-button>
+    </div>
+  </div>
+</app-showcase-section>
+
+<app-showcase-section heading="Right-to-left" note="flipIconInRtl mirrors direction icons in Arabic. Switch the language above." [code]="code.rtl">
+  <app-button icon="pi pi-arrow-left" [flipIconInRtl]="true" variant="text" severity="secondary" [rounded]="true" ariaLabel="Back"></app-button>
+  <app-button label="Next" icon="pi pi-arrow-right" [flipIconInRtl]="true"></app-button>
+</app-showcase-section>

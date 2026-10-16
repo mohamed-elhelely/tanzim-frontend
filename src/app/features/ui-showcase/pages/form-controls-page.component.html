@@ -1,0 +1,27 @@
+<h1 class="mb-6 text-2xl font-bold">
+  Toggles &amp; passwords <span class="text-base font-normal text-gray-500">app-toggle · app-password</span>
+</h1>
+
+<app-showcase-section heading="Toggle" note="A boolean form value. Pair it with a label for the inputId." [code]="code.toggle">
+  <div class="flex items-center gap-3">
+    <app-toggle inputId="active" [formControl]="active"></app-toggle>
+    <label for="active" class="text-sm font-medium">Active</label>
+    <span class="text-xs text-gray-500" dir="ltr">value: {{ active.value | json }}</span>
+  </div>
+  <div class="flex items-center gap-3">
+    <app-toggle inputId="locked" [formControl]="locked"></app-toggle>
+    <label for="locked" class="text-sm font-medium">Disabled through the form</label>
+  </div>
+</app-showcase-section>
+
+<app-showcase-section
+  heading="Password"
+  note="Show/hide button, no strength meter. autocomplete: current-password (sign in) or new-password (choosing one)."
+  [code]="code.password"
+>
+  <div class="flex w-72 flex-col gap-1">
+    <label for="password" class="text-sm font-medium">Password</label>
+    <app-password inputId="password" [formControl]="password" autocomplete="new-password" placeholder="At least 8 characters"></app-password>
+    <span class="text-xs text-gray-500" dir="ltr">length: {{ password.value?.length ?? 0 }}</span>
+  </div>
+</app-showcase-section>

@@ -1,0 +1,35 @@
+<h1 class="mb-6 text-2xl font-bold">Dialogs <span class="text-base font-normal text-gray-500">app-dialog</span></h1>
+
+<app-showcase-section
+  heading="Basic"
+  note="[(visible)] opens and closes it; width never exceeds the screen; dismissable closes on an outside click; (shown) fires once open."
+  [code]="code.basic"
+>
+  <app-button label="Open" (clicked)="basic.set(true)"></app-button>
+  <span class="self-center text-sm text-gray-500">shown {{ shown() }}×</span>
+  <app-dialog [(visible)]="basic" header="Rename brand" width="28rem" [dismissable]="true" (shown)="shown.set(shown() + 1)">
+    <p class="text-sm">Any content goes here. Click outside or the × to close.</p>
+  </app-dialog>
+</app-showcase-section>
+
+<app-showcase-section heading="With a footer" note="ng-template appDialogFooter: the actions row. Without it there is no footer space." [code]="code.footer">
+  <app-button label="Open with footer" (clicked)="withFooter.set(true)"></app-button>
+  <app-dialog [(visible)]="withFooter" header="Delete this brand?" width="28rem">
+    <p class="text-sm">Products keep their history; the brand disappears from pickers.</p>
+    <ng-template appDialogFooter>
+      <app-button label="Cancel" severity="secondary" variant="outlined" (clicked)="withFooter.set(false)"></app-button>
+      <app-button label="Delete" severity="danger" icon="pi pi-trash" (clicked)="withFooter.set(false)"></app-button>
+    </ng-template>
+  </app-dialog>
+</app-showcase-section>
+
+<app-showcase-section heading="Wide, and at the top" note="width for large content; position top for search-like dialogs.">
+  <app-button label="Open wide" variant="outlined" (clicked)="wide.set(true)"></app-button>
+  <app-button label="Open at top" variant="outlined" (clicked)="top.set(true)"></app-button>
+  <app-dialog [(visible)]="wide" header="Wide (56rem)" width="56rem" [dismissable]="true">
+    <p class="text-sm">On a phone it still fits the screen.</p>
+  </app-dialog>
+  <app-dialog [(visible)]="top" header="At the top" position="top" width="36rem" [dismissable]="true">
+    <p class="text-sm">Used by the command palette.</p>
+  </app-dialog>
+</app-showcase-section>

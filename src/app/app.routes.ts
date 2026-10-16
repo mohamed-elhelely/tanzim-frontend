@@ -2,7 +2,17 @@ import { Routes } from '@angular/router';
 import { authGuard, companyMemberGuard, guestGuard, permissionGuard, platformAdminGuard } from './core/auth/auth.guard';
 import { ShellComponent } from './layout/shell/shell.component';
 
+/**
+ * /ui: the shared/ui component gallery, development builds only (no sign-in, no backend). Production builds set
+ * ngDevMode to false at build time, so the whole module is dropped from the bundle, not just left unrouted.
+ */
+const DEV_ROUTES: Routes =
+  typeof ngDevMode === 'undefined' || ngDevMode
+    ? [{ path: 'ui', loadChildren: () => import('./features/ui-showcase/ui-showcase.routes').then((m) => m.UI_SHOWCASE_ROUTES) }]
+    : [];
+
 export const routes: Routes = [
+  ...DEV_ROUTES,
   {
     path: 'auth',
     children: [
