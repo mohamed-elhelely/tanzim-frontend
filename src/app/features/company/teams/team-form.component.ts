@@ -14,7 +14,7 @@ import { LoadingStateComponent } from '../../../shared/components/loading-state/
 import { FormLayoutComponent } from '../../../shared/components/form-layout/form-layout.component';
 import { injectFormContext } from '../../../shared/forms/form-context';
 import { localizedName } from '../../../shared/pipes/localized-name.pipe';
-import { errorTitleKey, handleSaveError } from '../../../shared/utils/server-errors';
+import { handleSaveError } from '../../../shared/utils/server-errors';
 import { LocationService } from '../../locations/sites/location.service';
 import { NamedRef, SelectOption, TeamPayload } from '../company.models';
 import { DepartmentService } from '../departments/department.service';
@@ -68,7 +68,6 @@ export class TeamFormComponent implements OnInit {
   readonly locationOptions = computed<SelectOption[]>(() =>
     this.locations().map((l) => ({ value: l.id, label: localizedName(l, this.lang()) })),
   );
-  readonly errorTitleKey = errorTitleKey;
 
   readonly form = inject(NonNullableFormBuilder).group({
     department: [null as number | null, [Validators.required]],

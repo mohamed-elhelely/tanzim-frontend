@@ -1,4 +1,4 @@
-import { DatePipe, DecimalPipe } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -16,7 +16,7 @@ import { LoadingStateComponent } from '../../../shared/components/loading-state/
 import { PageHeaderAction, PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { ReasonDialogComponent } from '../../../shared/components/reason-dialog/reason-dialog.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+
 import { DeliveryNoteService } from '../deliveries/delivery-note.service';
 import { SalesInvoiceService } from '../invoices/sales-invoice.service';
 import {
@@ -32,6 +32,7 @@ import {
 } from '../sales.models';
 import { SalesOrderService } from './sales-order.service';
 import { RecordHistoryComponent } from '../../company/system-logs/record-history.component';
+import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
 
 /** Which workflow actions the backend allows from each status (sales/services.py). */
 const CAN_CANCEL: SalesOrderStatus[] = ['draft', 'confirmed', 'on_hold'];
@@ -54,7 +55,7 @@ interface ShipRow {
   selector: 'app-sales-order-detail',
   imports: [
     RecordHistoryComponent,
-    DatePipe,
+    AppDatePipe,
     DecimalPipe,
     FormsModule,
     RouterLink,
@@ -95,7 +96,6 @@ export class SalesOrderDetailComponent implements OnInit {
   shipRows: ShipRow[] = [];
   carrier = '';
   trackingNumber = '';
-  readonly errorTitleKey = errorTitleKey;
   readonly statusSeverity = ORDER_STATUS_SEVERITY;
   readonly prioritySeverity = PRIORITY_SEVERITY;
   readonly deliverySeverity = DELIVERY_STATUS_SEVERITY;

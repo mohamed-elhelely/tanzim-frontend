@@ -14,7 +14,7 @@ import { PageHeaderAction, PageHeaderComponent } from '../../../shared/component
 import { ImportExportActionsComponent } from '../../import-export/import-export-actions.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
 import { ServerTable } from '../../../shared/table/server-table';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+
 import { Supplier } from '../inventory.models';
 import { SupplierService } from './supplier.service';
 import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
@@ -51,7 +51,6 @@ export class SupplierListComponent implements OnInit {
   readonly canStatement = computed(() => this.access.can('view_accountingreport'));
 
   readonly table = new ServerTable<Supplier>((query) => this.api.list(query));
-  readonly errorTitleKey = errorTitleKey;
 
   readonly headerActions: PageHeaderAction[] = [
     {

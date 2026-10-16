@@ -1,4 +1,4 @@
-import { DatePipe, DecimalPipe } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -11,17 +11,18 @@ import { LoadingStateComponent } from '../../../shared/components/loading-state/
 import { PageHeaderAction, PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { ReasonDialogComponent } from '../../../shared/components/reason-dialog/reason-dialog.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+
 import { SupplierPayment } from '../accounting.models';
 import { SupplierPaymentService } from './supplier-payment.service';
 import { RecordHistoryComponent } from '../../company/system-logs/record-history.component';
+import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
 
 /** One supplier payment with its allocations. Completed payments can be voided (with a reason). */
 @Component({
   selector: 'app-supplier-payment-detail',
   imports: [
     RecordHistoryComponent,
-    DatePipe,
+    AppDatePipe,
     DecimalPipe,
     TranslatePipe,
     CardModule,
@@ -44,7 +45,6 @@ export class SupplierPaymentDetailComponent implements OnInit {
   readonly payment = signal<SupplierPayment | null>(null);
   readonly loadError = signal<AppError | null>(null);
   readonly voidDialogOpen = signal(false);
-  readonly errorTitleKey = errorTitleKey;
 
   readonly actions = computed<PageHeaderAction[]>(() =>
     this.payment()?.status === 'completed'

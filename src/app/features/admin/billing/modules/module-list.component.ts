@@ -10,7 +10,7 @@ import { ErrorStateComponent } from '../../../../shared/components/error-state/e
 import { PageHeaderAction, PageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
 import { StatusBadgeComponent } from '../../../../shared/components/status-badge/status-badge.component';
 import { FormDialogService } from '../../../../shared/forms/form-dialog.service';
-import { errorTitleKey } from '../../../../shared/utils/server-errors';
+
 import { BillingModule } from '../platform-billing.models';
 import { BillingModuleService } from '../platform-billing.service';
 import { RowActionComponent, RowActionsComponent } from '../../../../shared/table/row-actions.component';
@@ -31,7 +31,6 @@ export class ModuleListComponent implements OnInit {
   readonly modules = signal<BillingModule[]>([]);
   readonly loading = signal(true);
   readonly error = signal<AppError | null>(null);
-  readonly errorTitleKey = errorTitleKey;
   readonly headerActions: PageHeaderAction[] = [{ label: 'admin.billing.modules.new', icon: 'pi pi-plus', onClick: () => this.openForm() }];
 
   ngOnInit(): void {

@@ -15,7 +15,7 @@ import { FieldErrorComponent } from '../../../shared/components/field-error/fiel
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { localizedName } from '../../../shared/pipes/localized-name.pipe';
-import { errorTitleKey, handleSaveError } from '../../../shared/utils/server-errors';
+import { handleSaveError } from '../../../shared/utils/server-errors';
 import { NamedRef, RolePayload, SelectOption } from '../company.models';
 import { PermissionGroupService } from '../permission-groups/permission-group.service';
 import { PermissionPickerComponent } from '../permissions/permission-picker.component';
@@ -58,7 +58,6 @@ export class RoleFormComponent implements OnInit {
   readonly groupOptions = computed<SelectOption[]>(() =>
     this.groups().map((g) => ({ value: g.id, label: localizedName(g, this.lang()) })),
   );
-  readonly errorTitleKey = errorTitleKey;
 
   readonly form = inject(NonNullableFormBuilder).group({
     name_en: ['', [Validators.required, Validators.maxLength(100)]],

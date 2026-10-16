@@ -12,7 +12,7 @@ import { ErrorStateComponent } from '../../../shared/components/error-state/erro
 import { PageHeaderAction, PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
 import { ServerTable } from '../../../shared/table/server-table';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+
 import { JournalEntry, JournalStatus } from '../accounting.models';
 import { JournalEntryService } from './journal-entry.service';
 import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
@@ -74,7 +74,6 @@ export class JournalEntryListComponent implements OnInit {
       },
     },
   );
-  readonly errorTitleKey = errorTitleKey;
   readonly statusOptions = (['draft', 'posted'] as const).map((status) => ({ value: status, label: `accounting.entryStatuses.${status}` }));
   readonly originOptions = (['manual', 'automatic'] as const).map((origin) => ({ value: origin, label: `accounting.origins.${origin}` }));
 

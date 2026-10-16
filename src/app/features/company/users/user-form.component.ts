@@ -17,7 +17,7 @@ import { FieldErrorComponent } from '../../../shared/components/field-error/fiel
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { localizedName } from '../../../shared/pipes/localized-name.pipe';
-import { errorTitleKey, handleSaveError } from '../../../shared/utils/server-errors';
+import { handleSaveError } from '../../../shared/utils/server-errors';
 import { CompanyUserPayload, NamedRef, SelectOption } from '../company.models';
 import { DepartmentService } from '../departments/department.service';
 import { RoleService } from '../roles/role.service';
@@ -75,7 +75,6 @@ export class UserFormComponent implements OnInit {
   readonly roleOptions = computed<SelectOption[]>(() => this.toOptions(this.roles()));
   readonly departmentOptions = computed<SelectOption[]>(() => this.toOptions(this.departments()));
   readonly teamOptions = computed<SelectOption[]>(() => this.toOptions(this.teams()));
-  readonly errorTitleKey = errorTitleKey;
 
   readonly form = inject(NonNullableFormBuilder).group({
     email: ['', [Validators.required, Validators.email, Validators.maxLength(254)]],

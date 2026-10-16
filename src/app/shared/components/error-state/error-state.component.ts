@@ -1,8 +1,13 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { TranslatePipe } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
+import { AppError } from '../../../core/errors/app-error';
+import { errorTitleKey } from '../../utils/server-errors';
 
-/** Full-width error panel for a screen that failed to load (use errorTitleKey() for the title). */
+/**
+ * Full-width error panel for a screen that failed to load. Pass the `error` and the title follows its status
+ * (not found, no access, or a general error); `title` is for panels without an HTTP error.
+ */
 @Component({
   selector: 'app-error-state',
   imports: [TranslatePipe, ButtonModule],
@@ -10,8 +15,13 @@ import { ButtonModule } from 'primeng/button';
   templateUrl: './error-state.component.html',
 })
 export class ErrorStateComponent {
+  @Input() error?: AppError | null;
   @Input() title = 'common.error';
   @Input() message?: string;
   @Input() showRetry = true;
   @Output() retry = new EventEmitter<void>();
+
+  get heading(): string {
+    return this.error ? errorTitleKey(this.error) : this.title;
+  }
 }

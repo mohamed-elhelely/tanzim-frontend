@@ -13,7 +13,7 @@ import { ChoiceFilterComponent } from '../../../shared/table/choice-filter.compo
 import { DateRangeFilterComponent } from '../../../shared/table/date-range-filter.component';
 import { FilterErrorsComponent } from '../../../shared/table/filter-errors.component';
 import { ServerTable, splitFilter } from '../../../shared/table/server-table';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+
 import { InvoicePayment, PAYMENT_METHODS, PAYMENT_RECORD_SEVERITY, PaymentMethod, PaymentRecordStatus } from '../sales.models';
 import { InvoicePaymentService } from './invoice-payment.service';
 import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
@@ -65,7 +65,6 @@ export class PaymentListComponent implements OnInit {
       },
     },
   );
-  readonly errorTitleKey = errorTitleKey;
   readonly methodOptions = PAYMENT_METHODS.map((method) => ({ value: method, label: `sales.paymentMethods.${method}` }));
 
   ngOnInit(): void {

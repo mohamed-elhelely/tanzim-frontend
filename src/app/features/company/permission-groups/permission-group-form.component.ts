@@ -12,7 +12,7 @@ import { ErrorStateComponent } from '../../../shared/components/error-state/erro
 import { FieldErrorComponent } from '../../../shared/components/field-error/field-error.component';
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
-import { errorTitleKey, handleSaveError } from '../../../shared/utils/server-errors';
+import { handleSaveError } from '../../../shared/utils/server-errors';
 import { PermissionGroupPayload } from '../company.models';
 import { PermissionPickerComponent } from '../permissions/permission-picker.component';
 import { PermissionGroupService } from './permission-group.service';
@@ -49,7 +49,6 @@ export class PermissionGroupFormComponent implements OnInit {
   /** System groups (Full Access, Read Only…) are shown read-only: the backend refuses changes with 403. */
   readonly isCore = signal(false);
   readonly formErrors = signal<string[]>([]);
-  readonly errorTitleKey = errorTitleKey;
 
   readonly form = inject(NonNullableFormBuilder).group({
     name_en: ['', [Validators.required, Validators.maxLength(100)]],

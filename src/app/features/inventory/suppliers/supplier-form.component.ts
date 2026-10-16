@@ -14,7 +14,7 @@ import { ErrorStateComponent } from '../../../shared/components/error-state/erro
 import { FieldErrorComponent } from '../../../shared/components/field-error/field-error.component';
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
-import { errorTitleKey, handleSaveError } from '../../../shared/utils/server-errors';
+import { handleSaveError } from '../../../shared/utils/server-errors';
 import { SUPPLIER_TYPES, SupplierPayload, SupplierType } from '../inventory.models';
 import { SupplierService } from './supplier.service';
 
@@ -49,7 +49,6 @@ export class SupplierFormComponent implements OnInit {
   readonly saving = signal(false);
   readonly loadError = signal<AppError | null>(null);
   readonly formErrors = signal<string[]>([]);
-  readonly errorTitleKey = errorTitleKey;
   /** Labels are translation keys; the template translates them. */
   readonly typeOptions = SUPPLIER_TYPES.map((type) => ({ value: type, label: `inventory.supplierTypes.${type}` }));
 

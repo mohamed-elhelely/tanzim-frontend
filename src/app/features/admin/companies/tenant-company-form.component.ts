@@ -14,7 +14,7 @@ import { ErrorStateComponent } from '../../../shared/components/error-state/erro
 import { FieldErrorComponent } from '../../../shared/components/field-error/field-error.component';
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
-import { errorTitleKey, handleSaveError } from '../../../shared/utils/server-errors';
+import { handleSaveError } from '../../../shared/utils/server-errors';
 import { TenantCompanyPayload } from '../admin.models';
 import { TenantCompanyService } from './tenant-company.service';
 
@@ -64,7 +64,6 @@ export class TenantCompanyFormComponent implements OnInit {
     const saved = this.savedTimezone();
     return saved && !names.includes(saved) ? [saved, ...names] : names;
   });
-  readonly errorTitleKey = errorTitleKey;
 
   readonly form = inject(NonNullableFormBuilder).group({
     name: ['', [Validators.required, Validators.maxLength(255)]],

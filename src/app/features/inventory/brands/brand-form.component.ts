@@ -12,7 +12,7 @@ import { FieldErrorComponent } from '../../../shared/components/field-error/fiel
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
 import { FormLayoutComponent } from '../../../shared/components/form-layout/form-layout.component';
 import { injectFormContext } from '../../../shared/forms/form-context';
-import { errorTitleKey, handleSaveError } from '../../../shared/utils/server-errors';
+import { handleSaveError } from '../../../shared/utils/server-errors';
 import { BrandPayload } from '../inventory.models';
 import { BrandService } from './brand.service';
 
@@ -46,7 +46,6 @@ export class BrandFormComponent implements OnInit {
   readonly saving = signal(false);
   readonly loadError = signal<AppError | null>(null);
   readonly formErrors = signal<string[]>([]);
-  readonly errorTitleKey = errorTitleKey;
 
   readonly form = inject(NonNullableFormBuilder).group({
     name: ['', [Validators.required, Validators.maxLength(200)]],

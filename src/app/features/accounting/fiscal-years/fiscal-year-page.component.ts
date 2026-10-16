@@ -1,4 +1,3 @@
-import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -13,9 +12,10 @@ import { ErrorStateComponent } from '../../../shared/components/error-state/erro
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
 import { PageHeaderAction, PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+
 import { FiscalPeriod, FiscalYear } from '../accounting.models';
 import { FiscalYearService } from './fiscal-year.service';
+import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
 
 /**
  * Fiscal years and their monthly periods on one page. Closing a period stops posting into it; closing the year
@@ -25,7 +25,7 @@ import { FiscalYearService } from './fiscal-year.service';
 @Component({
   selector: 'app-fiscal-year-page',
   imports: [
-    DatePipe,
+    AppDatePipe,
     FormsModule,
     TranslatePipe,
     ButtonModule,
@@ -52,7 +52,6 @@ export class FiscalYearPageComponent implements OnInit {
   readonly saving = signal(false);
   readonly dialogError = signal<string | null>(null);
   newYear = { name: '', start_date: '', end_date: '' };
-  readonly errorTitleKey = errorTitleKey;
 
   readonly headerActions: PageHeaderAction[] = [
     { label: 'accounting.years.new', icon: 'pi pi-plus', onClick: () => this.openNew() },

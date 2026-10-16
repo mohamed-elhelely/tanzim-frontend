@@ -1,6 +1,6 @@
 @if (loadError(); as err) {
   <app-page-header title="sales.invoices.title" [showBack]="true" backLabel="common.backToList" (back)="goBack()"></app-page-header>
-  <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403 && err.status !== 404" (retry)="load()"></app-error-state>
+  <app-error-state [error]="err" [showRetry]="err.status !== 403 && err.status !== 404" (retry)="load()"></app-error-state>
 } @else if (invoice(); as invoice) {
   <app-page-header
     [title]="invoice.invoice_number"
@@ -91,7 +91,7 @@
         </div>
         <div>
           <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.paidAt' | translate }}</dt>
-          <dd class="mt-0.5" dir="ltr">{{ invoice.paid_at ? (invoice.paid_at | date: 'yyyy-MM-dd HH:mm') : '—' }}</dd>
+          <dd class="mt-0.5" dir="ltr">{{ invoice.paid_at | appDate }}</dd>
         </div>
         <div class="col-span-2">
           <dt class="text-xs text-gray-500 dark:text-gray-400">{{ 'sales.fields.notes' | translate }}</dt>

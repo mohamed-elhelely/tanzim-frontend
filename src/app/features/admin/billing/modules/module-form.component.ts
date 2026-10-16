@@ -12,7 +12,7 @@ import { FieldErrorComponent } from '../../../../shared/components/field-error/f
 import { FormLayoutComponent } from '../../../../shared/components/form-layout/form-layout.component';
 import { LoadingStateComponent } from '../../../../shared/components/loading-state/loading-state.component';
 import { injectFormContext } from '../../../../shared/forms/form-context';
-import { errorTitleKey, handleSaveError } from '../../../../shared/utils/server-errors';
+import { handleSaveError } from '../../../../shared/utils/server-errors';
 import { BillingModulePayload, MONEY } from '../platform-billing.models';
 import { BillingModuleService } from '../platform-billing.service';
 
@@ -49,7 +49,6 @@ export class ModuleFormComponent implements OnInit {
   readonly saving = signal(false);
   readonly loadError = signal<AppError | null>(null);
   readonly formErrors = signal<string[]>([]);
-  readonly errorTitleKey = errorTitleKey;
 
   readonly form = inject(NonNullableFormBuilder).group({
     name: ['', [Validators.required, Validators.maxLength(100)]],

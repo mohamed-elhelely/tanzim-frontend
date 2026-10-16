@@ -14,7 +14,7 @@ import { ErrorStateComponent } from '../../../shared/components/error-state/erro
 import { FieldErrorComponent } from '../../../shared/components/field-error/field-error.component';
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
-import { errorTitleKey, handleSaveError } from '../../../shared/utils/server-errors';
+import { handleSaveError } from '../../../shared/utils/server-errors';
 import { SelectOption } from '../../company/company.models';
 import { InventoryRef, SupplierProductPayload, VariantRef } from '../inventory.models';
 import { SupplierService } from '../suppliers/supplier.service';
@@ -66,7 +66,6 @@ export class SupplierProductFormComponent implements OnInit {
   readonly formErrors = signal<string[]>([]);
   readonly supplierOptions = signal<SelectOption[]>([]);
   readonly variantOptions = signal<SelectOption[]>([]);
-  readonly errorTitleKey = errorTitleKey;
 
   readonly form = inject(NonNullableFormBuilder).group({
     supplier: [null as number | null, [Validators.required]],

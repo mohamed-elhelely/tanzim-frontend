@@ -1,4 +1,4 @@
-import { DatePipe, DecimalPipe } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -15,10 +15,11 @@ import { ErrorStateComponent } from '../../../shared/components/error-state/erro
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
 import { PageHeaderAction, PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+
 import { JournalEntry } from '../accounting.models';
 import { JournalEntryService } from './journal-entry.service';
 import { RecordHistoryComponent } from '../../company/system-logs/record-history.component';
+import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
 
 /**
  * One journal entry. Drafts can be edited, posted or deleted; posted entries are final and can only be reversed
@@ -28,7 +29,7 @@ import { RecordHistoryComponent } from '../../company/system-logs/record-history
   selector: 'app-journal-entry-detail',
   imports: [
     RecordHistoryComponent,
-    DatePipe,
+    AppDatePipe,
     DecimalPipe,
     FormsModule,
     RouterLink,
@@ -60,7 +61,6 @@ export class JournalEntryDetailComponent implements OnInit {
   readonly saving = signal(false);
   reverseDate = '';
   reverseDescription = '';
-  readonly errorTitleKey = errorTitleKey;
 
   readonly actions = computed<PageHeaderAction[]>(() => {
     const entry = this.entry();

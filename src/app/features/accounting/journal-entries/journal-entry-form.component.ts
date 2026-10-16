@@ -15,7 +15,7 @@ import { ErrorStateComponent } from '../../../shared/components/error-state/erro
 import { FieldErrorComponent } from '../../../shared/components/field-error/field-error.component';
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
-import { errorTitleKey, handleSaveError } from '../../../shared/utils/server-errors';
+import { handleSaveError } from '../../../shared/utils/server-errors';
 import { AccountService } from '../accounts/account.service';
 import { Account, JournalEntry, JournalEntryPayload } from '../accounting.models';
 import { JournalEntryService } from './journal-entry.service';
@@ -88,7 +88,6 @@ export class JournalEntryFormComponent implements OnInit {
   readonly submitted = signal(false);
   /** Only active posting (non-group) accounts can take lines. */
   readonly accountOptions = signal<{ value: number; label: string }[]>([]);
-  readonly errorTitleKey = errorTitleKey;
 
   readonly form = this.fb.group({
     date: [today(), Validators.required],

@@ -15,7 +15,7 @@ import { LoadingStateComponent } from '../../../shared/components/loading-state/
 import { FormLayoutComponent } from '../../../shared/components/form-layout/form-layout.component';
 import { injectFormContext } from '../../../shared/forms/form-context';
 import { localizedName } from '../../../shared/pipes/localized-name.pipe';
-import { errorTitleKey, handleSaveError } from '../../../shared/utils/server-errors';
+import { handleSaveError } from '../../../shared/utils/server-errors';
 import { NamedRef, PermissionGroupOption, PermissionPayload, PermissionType, SelectOption } from '../company.models';
 import { PermissionGroupService } from '../permission-groups/permission-group.service';
 import { PermissionService } from './permission.service';
@@ -62,7 +62,6 @@ export class PermissionFormComponent implements OnInit {
     { value: 'OBJECT', label: 'OBJECT' },
     { value: 'FEATURE', label: 'FEATURE' },
   ];
-  readonly errorTitleKey = errorTitleKey;
 
   readonly form = inject(NonNullableFormBuilder).group({
     codename: ['', [Validators.required, Validators.maxLength(100)]],

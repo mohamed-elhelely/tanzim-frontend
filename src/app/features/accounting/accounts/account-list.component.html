@@ -1,7 +1,7 @@
 <app-page-header title="accounting.accounts.title" [actions]="headerActions"></app-page-header>
 
 @if (error(); as err) {
-  <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403" (retry)="load()"></app-error-state>
+  <app-error-state [error]="err" [showRetry]="err.status !== 403" (retry)="load()"></app-error-state>
 } @else {
   <div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
     <div class="flex flex-col gap-3 border-b border-gray-100 p-4 sm:flex-row sm:items-center dark:border-gray-800">

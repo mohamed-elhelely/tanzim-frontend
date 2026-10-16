@@ -56,6 +56,10 @@ the dev build uses relative `/api/` through the proxy and `ws://localhost:8000/w
   badge, open thread, typing, read markers, reconnect catch-up). One `ChatThread` per opened chat holds its
   messages, members and idempotent sends (`client_id`). The drawer UI in `features/chat/` loads with
   `@defer (when chat.drawerOpen())` in the shell; keep it out of the initial bundle.
+- **Dropdown cache**: `CrudApi.dropdown()` reads through `core/api/OptionsCache` (5-minute TTL); every successful
+  POST/PUT/PATCH/DELETE through `BaseApiService` drops the lists of the resource it wrote to (prefix match on the
+  path), plus `ALSO_CHANGES` for related lists; other tabs hear it over a BroadcastChannel. Never cache dropdowns by hand.
+  Guide: [docs/guides/global-services.md](docs/guides/global-services.md).
 - **Lists**: `readonly table = new ServerTable((q) => this.api.list(q))` handles paging, sorting, debounced search
   and stale requests. Non-paginated endpoints (`company-user/`, `admin/company/`) use `api.all()` + client paging.
 - **Forms**: reactive (`NonNullableFormBuilder`), create = POST, edit = PATCH with the full body, cleared pickers
@@ -65,6 +69,8 @@ the dev build uses relative `/api/` through the proxy and `ws://localhost:8000/w
 
 - Components: `.ts` + `.html` (`templateUrl`), `ChangeDetectionStrategy.OnPush`, selectors `app-<name>`,
   `inject()` for dependencies. Models per area in `<area>.models.ts`.
+- Error panels: `<app-error-state [error]="err">` (title follows the status). Dates: `{{ x | appDate }}`
+  (`'date'`, `'seconds'`; empty shows "—"). Export names: `datedFileName(base, ext)`.
 - Every visible string is a key in both `src/assets/i18n/en.json` and `ar.json`. Use logical Tailwind classes only
   (`ps-/pe-/ms-/me-/start-/end-/text-start/text-end`, arrows `rtl:rotate-180`); never left/right variants.
 - Comments explain why (backend quirks point to the backend-requests doc), not what.

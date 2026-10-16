@@ -13,7 +13,7 @@ import { FieldErrorComponent } from '../../../shared/components/field-error/fiel
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
 import { FormLayoutComponent } from '../../../shared/components/form-layout/form-layout.component';
 import { injectFormContext } from '../../../shared/forms/form-context';
-import { errorTitleKey, handleSaveError } from '../../../shared/utils/server-errors';
+import { handleSaveError } from '../../../shared/utils/server-errors';
 import { SelectOption } from '../../company/company.models';
 import { CodedRef, ZonePayload } from '../inventory.models';
 import { WarehouseService } from '../warehouses/warehouse.service';
@@ -51,7 +51,6 @@ export class ZoneFormComponent implements OnInit {
   readonly saving = signal(false);
   readonly loadError = signal<AppError | null>(null);
   readonly formErrors = signal<string[]>([]);
-  readonly errorTitleKey = errorTitleKey;
   private readonly warehouses = signal<CodedRef[]>([]);
   /** "Main warehouse (WH-01)": codes tell same-named warehouses apart. */
   readonly warehouseOptions = computed<SelectOption[]>(() =>

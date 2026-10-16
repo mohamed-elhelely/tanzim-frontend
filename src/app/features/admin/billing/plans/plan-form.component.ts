@@ -15,7 +15,7 @@ import { FieldErrorComponent } from '../../../../shared/components/field-error/f
 import { FormLayoutComponent } from '../../../../shared/components/form-layout/form-layout.component';
 import { LoadingStateComponent } from '../../../../shared/components/loading-state/loading-state.component';
 import { injectFormContext } from '../../../../shared/forms/form-context';
-import { errorTitleKey, handleSaveError } from '../../../../shared/utils/server-errors';
+import { handleSaveError } from '../../../../shared/utils/server-errors';
 import { BILLING_PERIODS, BillingPeriod, MONEY, PlanPayload, WHOLE } from '../platform-billing.models';
 import { BillingModuleService, PlanService } from '../platform-billing.service';
 
@@ -52,7 +52,6 @@ export class PlanFormComponent implements OnInit {
   readonly saving = signal(false);
   readonly loadError = signal<AppError | null>(null);
   readonly formErrors = signal<string[]>([]);
-  readonly errorTitleKey = errorTitleKey;
   readonly periodOptions = BILLING_PERIODS.map((period) => ({ value: period, label: `admin.billing.periods.${period}` }));
 
   readonly form = inject(NonNullableFormBuilder).group({

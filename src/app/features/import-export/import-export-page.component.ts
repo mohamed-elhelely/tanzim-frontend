@@ -1,4 +1,3 @@
-import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -14,12 +13,13 @@ import { ErrorStateComponent } from '../../shared/components/error-state/error-s
 import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 import { StatusBadgeComponent } from '../../shared/components/status-badge/status-badge.component';
 import { ServerTable } from '../../shared/table/server-table';
-import { errorTitleKey } from '../../shared/utils/server-errors';
+
 import { saveFile } from '../../shared/utils/save-file';
 import { ImportExportActionsComponent } from './import-export-actions.component';
 import { DATA_RESOURCES, DataResource, DataTask, TaskStatus, taskModelName } from './import-export.models';
 import { RowActionComponent, RowActionsComponent } from '../../shared/table/row-actions.component';
 import { ImportExportService } from './import-export.service';
+import { AppDatePipe } from '../../shared/pipes/app-date.pipe';
 
 type Severity = 'success' | 'secondary' | 'info' | 'warn' | 'danger';
 
@@ -40,7 +40,7 @@ const TASK_SEVERITY: Record<TaskStatus, Severity> = {
   imports: [
     RowActionsComponent,
     RowActionComponent,
-    DatePipe,
+    AppDatePipe,
     FormsModule,
     TranslatePipe,
     ButtonModule,
@@ -92,7 +92,6 @@ export class ImportExportPageComponent implements OnInit {
     },
   );
   readonly typeOptions = (['import', 'export'] as const).map((type) => ({ value: type, label: `importExport.taskTypes.${type}` }));
-  readonly errorTitleKey = errorTitleKey;
   readonly modelName = taskModelName;
 
   ngOnInit(): void {

@@ -15,7 +15,7 @@ import { ErrorStateComponent } from '../../../shared/components/error-state/erro
 import { FieldErrorComponent } from '../../../shared/components/field-error/field-error.component';
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
-import { errorTitleKey, handleSaveError } from '../../../shared/utils/server-errors';
+import { handleSaveError } from '../../../shared/utils/server-errors';
 import { CodedRef } from '../../inventory/inventory.models';
 import { ProductVariantService } from '../../inventory/variants/product-variant.service';
 import { ItemOption, toItemOption } from '../../inventory/variants/variant-options';
@@ -100,7 +100,6 @@ export class CustomerReturnFormComponent implements OnInit {
   readonly orders = signal<SalesOrderListItem[]>([]);
   readonly orderRows = signal<OrderRow[]>([]);
   freeRows: FreeRow[] = [{ variant: null, quantity: '1', defect: '' }];
-  readonly errorTitleKey = errorTitleKey;
   readonly reasonOptions = RETURN_REASONS.map((reason) => ({ value: reason, label: `returns.reasons.${reason}` }));
   readonly refundOptions = REFUND_METHODS.map((method) => ({ value: method, label: `returns.refundMethods.${method}` }));
 

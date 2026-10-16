@@ -17,7 +17,7 @@ import { FieldErrorComponent } from '../../../shared/components/field-error/fiel
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { Named, localizedName } from '../../../shared/pipes/localized-name.pipe';
-import { errorTitleKey, handleSaveError } from '../../../shared/utils/server-errors';
+import { handleSaveError } from '../../../shared/utils/server-errors';
 import { NamedRef, SelectOption } from '../../company/company.models';
 import { CityService } from '../cities/city.service';
 import { CountryService } from '../countries/country.service';
@@ -66,7 +66,6 @@ export class SiteFormComponent implements OnInit {
   readonly saving = signal(false);
   readonly loadError = signal<AppError | null>(null);
   readonly formErrors = signal<string[]>([]);
-  readonly errorTitleKey = errorTitleKey;
   /** Labels are translation keys; the template translates them. */
   readonly typeOptions = LOCATION_TYPES.map((type) => ({ value: type, label: `locations.types.${type}` }));
 

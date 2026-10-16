@@ -75,7 +75,7 @@
       </div>
     </div>
     @if (tasks.error(); as err) {
-      <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403" (retry)="tasks.load()"></app-error-state>
+      <app-error-state [error]="err" [showRetry]="err.status !== 403" (retry)="tasks.load()"></app-error-state>
     } @else {
       <div class="overflow-x-auto">
         <p-table
@@ -108,7 +108,7 @@
           </ng-template>
           <ng-template pTemplate="body" let-task>
             <tr>
-              <td class="whitespace-nowrap" dir="ltr">{{ task.created_at | date: 'yyyy-MM-dd HH:mm' }}</td>
+              <td class="whitespace-nowrap" dir="ltr">{{ task.created_at | appDate }}</td>
               <td>{{ 'importExport.taskTypes.' + task.task_type | translate }}</td>
               <td class="font-mono text-xs" dir="ltr">{{ modelName(task.resource) }}</td>
               <td>

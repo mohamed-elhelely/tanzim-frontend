@@ -13,7 +13,7 @@ import { ErrorStateComponent } from '../../../shared/components/error-state/erro
 import { PageHeaderAction, PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
 import { ServerTable } from '../../../shared/table/server-table';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+
 import { PermissionGroup } from '../company.models';
 import { PermissionGroupService } from './permission-group.service';
 import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
@@ -46,7 +46,6 @@ export class PermissionGroupListComponent implements OnInit {
   private readonly access = inject(AccessService);
 
   readonly table = new ServerTable<PermissionGroup>((query) => this.api.list(query));
-  readonly errorTitleKey = errorTitleKey;
 
   /** Buttons follow the user's permissions; the backend refuses the rest with 403. */
   readonly canAdd = computed(() => this.access.can('add_permissiongroup'));

@@ -1,7 +1,7 @@
 <app-page-header title="returns.customer.new" [showBack]="true" backLabel="common.backToList" (back)="goBack()"></app-page-header>
 
 @if (loadError(); as err) {
-  <app-error-state [title]="errorTitleKey(err)" [showRetry]="false"></app-error-state>
+  <app-error-state [error]="err" [showRetry]="false"></app-error-state>
 } @else if (loading()) {
   <app-loading-state></app-loading-state>
 } @else {

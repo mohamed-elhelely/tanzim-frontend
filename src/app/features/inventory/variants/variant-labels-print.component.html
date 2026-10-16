@@ -21,7 +21,7 @@
 
   @if (error(); as err) {
     <div class="mx-auto max-w-4xl px-4">
-      <app-error-state [title]="errorTitleKey(err)" [showRetry]="false"></app-error-state>
+      <app-error-state [error]="err" [showRetry]="false"></app-error-state>
     </div>
   } @else if (variants(); as variants) {
     @if (!variants.length) {

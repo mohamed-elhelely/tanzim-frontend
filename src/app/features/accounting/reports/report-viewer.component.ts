@@ -14,7 +14,7 @@ import { EmptyStateComponent } from '../../../shared/components/empty-state/empt
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
-import { saveFile } from '../../../shared/utils/save-file';
+import { datedFileName, saveFile } from '../../../shared/utils/save-file';
 import { InventoryRef } from '../../inventory/inventory.models';
 import { SupplierService } from '../../inventory/suppliers/supplier.service';
 import { CustomerService } from '../../sales/customers/customer.service';
@@ -168,7 +168,7 @@ export class ReportViewerComponent implements OnInit {
     this.api.exportXlsx(this.type(), this.query()).subscribe({
       next: (blob) => {
         this.exporting.set(false);
-        saveFile(blob, `${this.type()}_${new Date().toISOString().slice(0, 10)}.xlsx`);
+        saveFile(blob, datedFileName(this.type(), 'xlsx'));
       },
       error: (error: AppError) => {
         this.exporting.set(false);

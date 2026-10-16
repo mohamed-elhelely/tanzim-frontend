@@ -17,7 +17,7 @@ import { LoadingStateComponent } from '../../../shared/components/loading-state/
 import { PageHeaderAction, PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { ReasonDialogComponent } from '../../../shared/components/reason-dialog/reason-dialog.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+
 import { DELIVERY_STATUS_SEVERITY, DeliveryNote, SHIPPING_METHODS, ShippingMethod } from '../sales.models';
 import { DeliveryNoteService } from './delivery-note.service';
 import { RecordHistoryComponent } from '../../company/system-logs/record-history.component';
@@ -63,7 +63,6 @@ export class DeliveryNoteDetailComponent implements OnInit {
   readonly failDialogOpen = signal(false);
   readonly saving = signal(false);
   form = { shipping_method: 'standard' as ShippingMethod, carrier: '', tracking_number: '', notes: '' };
-  readonly errorTitleKey = errorTitleKey;
   readonly statusSeverity = DELIVERY_STATUS_SEVERITY;
   readonly methodOptions = SHIPPING_METHODS.map((method) => ({ value: method, label: `sales.shippingMethods.${method}` }));
 

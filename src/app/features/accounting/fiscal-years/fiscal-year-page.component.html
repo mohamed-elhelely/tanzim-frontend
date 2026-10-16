@@ -1,7 +1,7 @@
 <app-page-header title="accounting.years.title" subtitle="accounting.years.subtitle" [actions]="headerActions"></app-page-header>
 
 @if (error(); as err) {
-  <app-error-state [title]="errorTitleKey(err)" [showRetry]="err.status !== 403" (retry)="load()"></app-error-state>
+  <app-error-state [error]="err" [showRetry]="err.status !== 403" (retry)="load()"></app-error-state>
 } @else if (loading()) {
   <app-loading-state></app-loading-state>
 } @else {
@@ -20,7 +20,7 @@
             <p class="text-sm text-gray-500 dark:text-gray-400" dir="ltr">{{ year.start_date }} → {{ year.end_date }}</p>
             @if (year.closed_at) {
               <p class="text-xs text-gray-500 dark:text-gray-400">
-                {{ 'accounting.fields.closedAt' | translate }} <span dir="ltr">{{ year.closed_at | date: 'yyyy-MM-dd HH:mm' }}</span>
+                {{ 'accounting.fields.closedAt' | translate }} <span dir="ltr">{{ year.closed_at | appDate }}</span>
               </p>
             }
           </div>

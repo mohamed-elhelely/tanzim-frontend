@@ -15,7 +15,7 @@ import { ErrorStateComponent } from '../../../shared/components/error-state/erro
 import { PageHeaderAction, PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
 import { LocalizedNamePipe } from '../../../shared/pipes/localized-name.pipe';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+
 import { CompanyUser } from '../company.models';
 import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { CompanyUserService } from './company-user.service';
@@ -51,7 +51,6 @@ export class UserListComponent implements OnInit {
   readonly users = signal<CompanyUser[]>([]);
   readonly loading = signal(false);
   readonly error = signal<AppError | null>(null);
-  readonly errorTitleKey = errorTitleKey;
   readonly searchFields = ['user.first_name', 'user.last_name', 'user.email'];
   /** What the search box shows, and the term the table is currently filtered by. */
   readonly searchDraft = signal('');

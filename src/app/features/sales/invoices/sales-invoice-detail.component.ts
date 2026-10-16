@@ -1,4 +1,4 @@
-import { DatePipe, DecimalPipe } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -17,7 +17,7 @@ import { LoadingStateComponent } from '../../../shared/components/loading-state/
 import { PageHeaderAction, PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { ReasonDialogComponent } from '../../../shared/components/reason-dialog/reason-dialog.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+
 import { InvoicePaymentService } from '../payments/invoice-payment.service';
 import {
   INVOICE_STATUS_SEVERITY,
@@ -32,6 +32,7 @@ import {
 } from '../sales.models';
 import { SalesInvoiceService } from './sales-invoice.service';
 import { RecordHistoryComponent } from '../../company/system-logs/record-history.component';
+import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
 
 const PAYABLE: SalesInvoiceStatus[] = ['issued', 'overdue'];
 const CANCELLABLE: SalesInvoiceStatus[] = ['draft', 'issued', 'overdue'];
@@ -51,7 +52,7 @@ function today(): string {
   selector: 'app-sales-invoice-detail',
   imports: [
     RecordHistoryComponent,
-    DatePipe,
+    AppDatePipe,
     DecimalPipe,
     FormsModule,
     RouterLink,
@@ -89,7 +90,6 @@ export class SalesInvoiceDetailComponent implements OnInit {
   readonly dialogError = signal<string | null>(null);
   details = { due_date: '', reference: '', payment_terms: '', notes: '' };
   payment = { amount: '', payment_method: 'bank_transfer' as PaymentMethod, payment_date: today(), reference: '', notes: '' };
-  readonly errorTitleKey = errorTitleKey;
   readonly daysOverdue = daysOverdue;
   readonly statusSeverity = INVOICE_STATUS_SEVERITY;
   readonly paymentStatusSeverity = PAYMENT_STATUS_SEVERITY;

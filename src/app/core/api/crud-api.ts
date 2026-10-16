@@ -63,8 +63,11 @@ export abstract class CrudApi<T, TPayload, TCreated = T> extends BaseApiService 
     );
   }
 
+  /** The short list for pickers, cached up to 5 minutes and dropped on any write to this resource (OptionsCache). */
   dropdown<D>(filters: Record<string, string | number> = {}): Observable<D[]> {
-    return this.get<D[]>(this.path, { params: { ...filters, dropdown: 'true' } }).pipe(map((response) => response.data ?? []));
+    return this.optionsCache.get(this.path, filters, () =>
+      this.get<D[]>(this.path, { params: { ...filters, dropdown: 'true' } }).pipe(map((response) => response.data ?? [])),
+    );
   }
 
   retrieve(id: number): Observable<T> {

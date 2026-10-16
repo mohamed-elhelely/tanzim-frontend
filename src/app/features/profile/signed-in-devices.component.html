@@ -44,9 +44,9 @@
                 <span dir="ltr">{{ session.ip_address }}</span> ·
               }
               {{ 'profile.sessions.lastUsed' | translate }}
-              <span dir="ltr">{{ session.last_used_at | date: 'yyyy-MM-dd HH:mm' }}</span>
+              <span dir="ltr">{{ session.last_used_at | appDate }}</span>
               · {{ 'profile.sessions.signedIn' | translate }}
-              <span dir="ltr">{{ session.created_at | date: 'yyyy-MM-dd' }}</span>
+              <span dir="ltr">{{ session.created_at | appDate: 'date' }}</span>
             </p>
           </div>
           @if (!session.current) {

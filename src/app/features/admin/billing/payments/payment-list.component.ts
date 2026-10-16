@@ -1,4 +1,4 @@
-import { DatePipe, DecimalPipe } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -17,12 +17,13 @@ import { FieldErrorComponent } from '../../../../shared/components/field-error/f
 import { PageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
 import { StatusBadgeComponent } from '../../../../shared/components/status-badge/status-badge.component';
 import { ServerTable } from '../../../../shared/table/server-table';
-import { errorTitleKey, handleSaveError } from '../../../../shared/utils/server-errors';
+import { handleSaveError } from '../../../../shared/utils/server-errors';
 import { TenantCompanyService } from '../../companies/tenant-company.service';
 import { MONEY, PAYMENT_SEVERITY, PlatformPayment, Severity } from '../platform-billing.models';
 import { PlatformPaymentService } from '../platform-billing.service';
 import { RowActionComponent, RowActionsComponent } from '../../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../../shared/table/saved-views.component';
+import { AppDatePipe } from '../../../../shared/pipes/app-date.pipe';
 
 /** /admin/payments: payments of every company on platform invoices; completed ones can be refunded. */
 @Component({
@@ -31,7 +32,7 @@ import { SavedViewsComponent } from '../../../../shared/table/saved-views.compon
     RowActionsComponent,
     RowActionComponent,
     SavedViewsComponent,
-    DatePipe,
+    AppDatePipe,
     DecimalPipe,
     FormsModule,
     ReactiveFormsModule,
@@ -72,7 +73,6 @@ export class PaymentListComponent implements OnInit {
       },
     },
   );
-  readonly errorTitleKey = errorTitleKey;
   /** Keyed by string: table rows are untyped in the template. */
   readonly severity: Record<string, Severity> = PAYMENT_SEVERITY;
   readonly companyOptions = signal<{ value: number; label: string }[]>([]);

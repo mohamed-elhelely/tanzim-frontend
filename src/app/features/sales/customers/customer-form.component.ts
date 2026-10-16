@@ -15,7 +15,7 @@ import { ErrorStateComponent } from '../../../shared/components/error-state/erro
 import { FieldErrorComponent } from '../../../shared/components/field-error/field-error.component';
 import { LoadingStateComponent } from '../../../shared/components/loading-state/loading-state.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
-import { errorTitleKey, handleSaveError } from '../../../shared/utils/server-errors';
+import { handleSaveError } from '../../../shared/utils/server-errors';
 import { AddressFieldsComponent, addressGroup, patchAddress, toAddress } from '../address-fields/address-fields.component';
 import { CUSTOMER_TYPES, Customer, CustomerPayload, CustomerType } from '../sales.models';
 import { CustomerService } from './customer.service';
@@ -56,7 +56,6 @@ export class CustomerFormComponent implements OnInit {
   readonly formErrors = signal<string[]>([]);
   /** The saved record on edit: number, credit used and open orders are shown read-only. */
   readonly record = signal<Customer | null>(null);
-  readonly errorTitleKey = errorTitleKey;
   readonly typeOptions = CUSTOMER_TYPES.map((type) => ({ value: type, label: `sales.customerTypes.${type}` }));
 
   readonly form = this.fb.group({

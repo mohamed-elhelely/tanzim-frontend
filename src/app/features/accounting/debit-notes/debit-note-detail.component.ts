@@ -1,4 +1,4 @@
-import { DatePipe, DecimalPipe } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -10,17 +10,18 @@ import { LoadingStateComponent } from '../../../shared/components/loading-state/
 import { PageHeaderAction, PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { ReasonDialogComponent } from '../../../shared/components/reason-dialog/reason-dialog.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+
 import { DEBIT_NOTE_SEVERITY, DebitNote } from '../accounting.models';
 import { DebitNoteService } from './debit-note.service';
 import { RecordHistoryComponent } from '../../company/system-logs/record-history.component';
+import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
 
 /** One debit note. Drafts: edit, issue (posts it), delete. Issued: cancel with a reason. */
 @Component({
   selector: 'app-debit-note-detail',
   imports: [
     RecordHistoryComponent,
-    DatePipe,
+    AppDatePipe,
     DecimalPipe,
     RouterLink,
     TranslatePipe,
@@ -43,7 +44,6 @@ export class DebitNoteDetailComponent implements OnInit {
   readonly note = signal<DebitNote | null>(null);
   readonly loadError = signal<AppError | null>(null);
   readonly cancelDialogOpen = signal(false);
-  readonly errorTitleKey = errorTitleKey;
   readonly statusSeverity = DEBIT_NOTE_SEVERITY;
 
   readonly actions = computed<PageHeaderAction[]>(() => {

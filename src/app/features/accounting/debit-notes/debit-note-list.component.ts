@@ -13,7 +13,7 @@ import { ChoiceFilterComponent } from '../../../shared/table/choice-filter.compo
 import { DateRangeFilterComponent } from '../../../shared/table/date-range-filter.component';
 import { FilterErrorsComponent } from '../../../shared/table/filter-errors.component';
 import { ServerTable, splitFilter } from '../../../shared/table/server-table';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+
 import { DEBIT_NOTE_SEVERITY, DebitNote, DebitNoteStatus } from '../accounting.models';
 import { DebitNoteService } from './debit-note.service';
 import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
@@ -64,7 +64,6 @@ export class DebitNoteListComponent implements OnInit {
       },
     },
   );
-  readonly errorTitleKey = errorTitleKey;
   readonly statusOptions = (['draft', 'issued', 'cancelled'] as const).map((status) => ({ value: status, label: `accounting.noteStatuses.${status}` }));
 
   readonly headerActions: PageHeaderAction[] = [

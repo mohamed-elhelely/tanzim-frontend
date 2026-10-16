@@ -1,4 +1,4 @@
-import { DatePipe, DecimalPipe } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -21,11 +21,12 @@ import { LoadingStateComponent } from '../../../../shared/components/loading-sta
 import { PageHeaderAction, PageHeaderComponent } from '../../../../shared/components/page-header/page-header.component';
 import { ReasonDialogComponent } from '../../../../shared/components/reason-dialog/reason-dialog.component';
 import { StatusBadgeComponent } from '../../../../shared/components/status-badge/status-badge.component';
-import { errorTitleKey, handleSaveError } from '../../../../shared/utils/server-errors';
+import { handleSaveError } from '../../../../shared/utils/server-errors';
 import { InvoiceItem } from '../../../billing/billing.models';
 import { AdminInvoice, BillingModule, INVOICE_SEVERITY, MONEY, WHOLE } from '../platform-billing.models';
 import { RowActionComponent, RowActionsComponent } from '../../../../shared/table/row-actions.component';
 import { AdminInvoiceService, BillingModuleService } from '../platform-billing.service';
+import { AppDatePipe } from '../../../../shared/pipes/app-date.pipe';
 
 /**
  * /admin/invoices/:id: one platform invoice. While it is a draft, staff edit its items and issue it; once issued,
@@ -36,7 +37,7 @@ import { AdminInvoiceService, BillingModuleService } from '../platform-billing.s
   imports: [
     RowActionsComponent,
     RowActionComponent,
-    DatePipe,
+    AppDatePipe,
     DecimalPipe,
     ReactiveFormsModule,
     TranslatePipe,
@@ -70,7 +71,6 @@ export class InvoiceDetailComponent implements OnInit {
 
   readonly invoice = signal<AdminInvoice | null>(null);
   readonly loadError = signal<AppError | null>(null);
-  readonly errorTitleKey = errorTitleKey;
   readonly severity = INVOICE_SEVERITY;
   readonly moduleOptions = signal<{ value: number; label: string }[]>([]);
 

@@ -1,4 +1,4 @@
-import { DatePipe, DecimalPipe } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -16,7 +16,7 @@ import { LoadingStateComponent } from '../../../shared/components/loading-state/
 import { PageHeaderAction, PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { ReasonDialogComponent } from '../../../shared/components/reason-dialog/reason-dialog.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+
 import {
   CONDITIONS,
   CUSTOMER_RETURN_SEVERITY,
@@ -28,6 +28,7 @@ import {
 } from '../returns.models';
 import { CustomerReturnService } from './customer-return.service';
 import { RecordHistoryComponent } from '../../company/system-logs/record-history.component';
+import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
 
 const QUANTITY = /^\d+(\.\d{1,3})?$/;
 const MONEY = /^\d+(\.\d{1,4})?$/;
@@ -58,7 +59,7 @@ interface InspectRow {
   selector: 'app-customer-return-detail',
   imports: [
     RecordHistoryComponent,
-    DatePipe,
+    AppDatePipe,
     DecimalPipe,
     FormsModule,
     RouterLink,
@@ -93,7 +94,6 @@ export class CustomerReturnDetailComponent implements OnInit {
   receiveRows: ReceiveRow[] = [];
   inspectRows: InspectRow[] = [];
   refundAmount = '';
-  readonly errorTitleKey = errorTitleKey;
   readonly statusSeverity = CUSTOMER_RETURN_SEVERITY;
   readonly conditionOptions = CONDITIONS.map((condition) => ({ value: condition, label: `returns.conditions.${condition}` }));
   readonly dispositionOptions = DISPOSITIONS.map((disposition) => ({ value: disposition, label: `returns.dispositions.${disposition}` }));

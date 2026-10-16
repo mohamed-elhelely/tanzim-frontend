@@ -1,4 +1,3 @@
-import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, input, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
@@ -22,8 +21,8 @@ import { PageHeaderAction, PageHeaderComponent } from '../../../shared/component
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
 import { UserNamePipe } from '../../../shared/pipes/user-name.pipe';
 import { ServerTable, splitFilter } from '../../../shared/table/server-table';
-import { saveFile } from '../../../shared/utils/save-file';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+import { datedFileName, saveFile } from '../../../shared/utils/save-file';
+
 import { SelectOption } from '../company.models';
 import { TenantCompanyService } from '../../admin/companies/tenant-company.service';
 import { CompanyUserService } from '../users/company-user.service';
@@ -42,6 +41,7 @@ import {
 import { SystemLogService } from './system-log.service';
 import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
+import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
 
 /**
  * Resources the log records that have no screen of their own (document lines, sign-ins on the user, stock
@@ -86,7 +86,7 @@ function resourceLabels(items: NavItem[]): Map<string, string> {
     RowActionsComponent,
     RowActionComponent,
     SavedViewsComponent,
-    DatePipe,
+    AppDatePipe,
     FormsModule,
     TranslatePipe,
     TableModule,
@@ -158,7 +158,6 @@ export class SystemLogListComponent implements OnInit {
       },
     },
   );
-  readonly errorTitleKey = errorTitleKey;
 
   private readonly resourceLabelKeys = auditResourceLabels(NAV_ITEMS);
   private readonly actionKeys = AUDIT_ACTIONS.map((action) => [action, `systemLogs.actions.${action}`] as const);
@@ -247,7 +246,7 @@ export class SystemLogListComponent implements OnInit {
     this.api.exportXlsx(this.table.appliedQuery()).subscribe({
       next: (blob) => {
         this.exporting.set(false);
-        saveFile(blob, `system-log_${new Date().toISOString().slice(0, 10)}.xlsx`);
+        saveFile(blob, datedFileName('system-log', 'xlsx'));
       },
       error: (error: AppError) => {
         this.exporting.set(false);

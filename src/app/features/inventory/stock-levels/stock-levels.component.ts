@@ -14,8 +14,8 @@ import { EmptyStateComponent } from '../../../shared/components/empty-state/empt
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
 import { PageHeaderComponent } from '../../../shared/components/page-header/page-header.component';
 import { StatusBadgeComponent } from '../../../shared/components/status-badge/status-badge.component';
-import { saveFile } from '../../../shared/utils/save-file';
-import { errorTitleKey } from '../../../shared/utils/server-errors';
+import { datedFileName, saveFile } from '../../../shared/utils/save-file';
+
 import {
   CodedRef,
   StockLevelRow,
@@ -87,7 +87,6 @@ export class StockLevelsComponent implements OnInit {
   readonly searchDraft = signal('');
   private readonly variantNames = signal<ReadonlyMap<number, string>>(new Map());
   private readonly reservations = signal<StockReservation[]>([]);
-  readonly errorTitleKey = errorTitleKey;
 
   readonly rows = computed<StockLevel[]>(() => {
     const names = this.variantNames();
@@ -152,7 +151,7 @@ export class StockLevelsComponent implements OnInit {
     this.api.valuationXlsx(this.query()).subscribe({
       next: (blob) => {
         this.exporting.set(false);
-        saveFile(blob, `stock_${this.asOfDate || new Date().toISOString().slice(0, 10)}.xlsx`);
+        saveFile(blob, datedFileName('stock', 'xlsx', this.asOfDate || new Date()));
       },
       error: (error: AppError) => {
         this.exporting.set(false);
