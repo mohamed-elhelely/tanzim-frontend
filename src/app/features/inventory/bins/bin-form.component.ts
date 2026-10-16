@@ -5,7 +5,6 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
-import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { AppError } from '../../../core/errors/app-error';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
@@ -19,17 +18,18 @@ import { BinPayload, Zone } from '../inventory.models';
 import { trimZeros } from '../variants/variant-options';
 import { ZoneService } from '../zones/zone.service';
 import { BinService } from './bin.service';
+import { ToggleComponent } from '../../../shared/ui';
 
 @Component({
   selector: 'app-bin-form',
   imports: [
+    ToggleComponent,
     ReactiveFormsModule,
     TranslatePipe,
     ButtonModule,
     InputTextModule,
     SelectModule,
     TextareaModule,
-    ToggleSwitchModule,
     FormLayoutComponent,
     LoadingStateComponent,
     ErrorStateComponent,

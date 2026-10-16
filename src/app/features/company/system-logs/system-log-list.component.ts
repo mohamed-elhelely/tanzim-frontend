@@ -7,7 +7,6 @@ import { DrawerModule } from 'primeng/drawer';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
-import { MultiSelectModule } from 'primeng/multiselect';
 import { SelectModule } from 'primeng/select';
 import { TableModule } from 'primeng/table';
 import { AccessService } from '../../../core/auth/access.service';
@@ -42,6 +41,7 @@ import { SystemLogService } from './system-log.service';
 import { RowActionComponent, RowActionsComponent } from '../../../shared/table/row-actions.component';
 import { SavedViewsComponent } from '../../../shared/table/saved-views.component';
 import { AppDatePipe } from '../../../shared/pipes/app-date.pipe';
+import { MultiSelectComponent } from '../../../shared/ui';
 
 /**
  * Resources the log records that have no screen of their own (document lines, sign-ins on the user, stock
@@ -83,6 +83,7 @@ function resourceLabels(items: NavItem[]): Map<string, string> {
 @Component({
   selector: 'app-system-log-list',
   imports: [
+    MultiSelectComponent,
     RowActionsComponent,
     RowActionComponent,
     SavedViewsComponent,
@@ -95,7 +96,6 @@ function resourceLabels(items: NavItem[]): Map<string, string> {
     IconFieldModule,
     InputIconModule,
     InputTextModule,
-    MultiSelectModule,
     SelectModule,
     PageHeaderComponent,
     EmptyStateComponent,

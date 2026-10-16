@@ -5,7 +5,6 @@ import { ButtonModule } from 'primeng/button';
 import { SelectModule } from 'primeng/select';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
-import { MultiSelectModule } from 'primeng/multiselect';
 import { AppError } from '../../../core/errors/app-error';
 import { LanguageService } from '../../../core/services/language.service';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -19,17 +18,18 @@ import { handleSaveError } from '../../../shared/utils/server-errors';
 import { NamedRef, PermissionGroupOption, PermissionPayload, PermissionType, SelectOption } from '../company.models';
 import { PermissionGroupService } from '../permission-groups/permission-group.service';
 import { PermissionService } from './permission.service';
+import { MultiSelectComponent } from '../../../shared/ui';
 
 @Component({
   selector: 'app-permission-form',
   imports: [
+    MultiSelectComponent,
     ReactiveFormsModule,
     TranslatePipe,
     ButtonModule,
     SelectModule,
     InputTextModule,
     TextareaModule,
-    MultiSelectModule,
     FormLayoutComponent,
     LoadingStateComponent,
     ErrorStateComponent,

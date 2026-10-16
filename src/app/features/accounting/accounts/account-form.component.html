@@ -70,11 +70,11 @@
           <app-field-error [control]="form.controls.parent"></app-field-error>
         </div>
         <div class="flex items-center gap-3">
-          <p-toggleswitch inputId="is_group" formControlName="is_group"></p-toggleswitch>
+          <app-toggle inputId="is_group" formControlName="is_group"></app-toggle>
           <label for="is_group" class="text-sm font-medium">{{ 'accounting.fields.isGroup' | translate }}</label>
         </div>
         <div class="flex items-center gap-3">
-          <p-toggleswitch inputId="is_active" formControlName="is_active"></p-toggleswitch>
+          <app-toggle inputId="is_active" formControlName="is_active"></app-toggle>
           <label for="is_active" class="text-sm font-medium">{{ 'accounting.fields.isActive' | translate }}</label>
         </div>
         <small class="-mt-2 text-xs text-gray-500 md:col-span-2 dark:text-gray-400">{{ 'accounting.hints.isGroup' | translate }}</small>

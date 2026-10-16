@@ -40,7 +40,7 @@
           <label for="permission_groups" class="text-sm font-medium">
             {{ 'company.fields.permissionGroups' | translate }}
           </label>
-          <p-multiSelect
+          <app-multi-select
             inputId="permission_groups"
             formControlName="permission_groups"
             [options]="groupOptions()"
@@ -49,9 +49,7 @@
             [filter]="true"
             display="chip"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
-          ></p-multiSelect>
+          ></app-multi-select>
           <app-field-error [control]="form.controls.permission_groups"></app-field-error>
         </div>
 
@@ -63,7 +61,7 @@
         </div>
 
         <div class="flex items-center gap-3">
-          <p-toggleswitch inputId="is_admin" formControlName="is_admin"></p-toggleswitch>
+          <app-toggle inputId="is_admin" formControlName="is_admin"></app-toggle>
           <label for="is_admin" class="text-sm font-medium">{{ 'company.fields.isAdmin' | translate }}</label>
         </div>
       </div>

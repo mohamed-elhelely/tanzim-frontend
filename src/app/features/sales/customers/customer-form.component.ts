@@ -7,7 +7,6 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
-import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { AppError } from '../../../core/errors/app-error';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
@@ -18,11 +17,12 @@ import { handleSaveError } from '../../../shared/utils/server-errors';
 import { AddressFieldsComponent, addressGroup, patchAddress, toAddress } from '../address-fields/address-fields.component';
 import { CUSTOMER_TYPES, Customer, CustomerPayload, CustomerType } from '../sales.models';
 import { CustomerService } from './customer.service';
-import { CardComponent } from '../../../shared/ui';
+import { CardComponent, ToggleComponent } from '../../../shared/ui';
 
 @Component({
   selector: 'app-customer-form',
   imports: [
+    ToggleComponent,
     CardComponent,
     DecimalPipe,
     ReactiveFormsModule,
@@ -31,7 +31,6 @@ import { CardComponent } from '../../../shared/ui';
     InputTextModule,
     SelectModule,
     TextareaModule,
-    ToggleSwitchModule,
     PageHeaderComponent,
     LoadingStateComponent,
     ErrorStateComponent,

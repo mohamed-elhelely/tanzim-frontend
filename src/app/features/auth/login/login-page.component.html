@@ -102,16 +102,12 @@
             <label for="password" class="text-sm font-medium text-gray-700 dark:text-gray-200">
               {{ 'auth.password' | translate }}
             </label>
-            <p-password
+            <app-password
               inputId="password"
               formControlName="password"
-              [feedback]="false"
-              [toggleMask]="true"
-              styleClass="w-full"
-              inputStyleClass="w-full"
               autocomplete="current-password"
               [placeholder]="'auth.passwordPlaceholder' | translate"
-            ></p-password>
+            ></app-password>
             @if (form.controls.password.touched && form.controls.password.invalid) {
               <small class="text-sm text-red-600">{{ 'auth.passwordRequired' | translate }}</small>
             }

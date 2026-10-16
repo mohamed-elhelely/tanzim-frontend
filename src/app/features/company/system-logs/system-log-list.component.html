@@ -46,7 +46,7 @@
           appendTo="body"
         ></p-select>
       }
-      <p-multiselect
+      <app-multi-select
         [(ngModel)]="actions"
         [options]="actionOptions()"
         optionLabel="label"
@@ -56,11 +56,10 @@
         [selectedItemsLabel]="'common.selectedCount' | translate"
         [placeholder]="'systemLogs.fields.action' | translate"
         [ariaLabel]="'systemLogs.fields.action' | translate"
-        styleClass="w-full sm:w-48"
-        appendTo="body"
-      ></p-multiselect>
+        class="sm:w-48"
+      ></app-multi-select>
       @if (!scope()) {
-        <p-multiselect
+        <app-multi-select
           [(ngModel)]="resources"
           [options]="resourceOptions()"
           optionLabel="label"
@@ -71,11 +70,10 @@
           [selectedItemsLabel]="'common.selectedCount' | translate"
           [placeholder]="'systemLogs.fields.resource' | translate"
           [ariaLabel]="'systemLogs.fields.resource' | translate"
-          styleClass="w-full sm:w-52"
-          appendTo="body"
-        ></p-multiselect>
+          class="sm:w-52"
+        ></app-multi-select>
       }
-      <p-multiselect
+      <app-multi-select
         [(ngModel)]="sources"
         [options]="sourceOptions()"
         optionLabel="label"
@@ -85,9 +83,8 @@
         [selectedItemsLabel]="'common.selectedCount' | translate"
         [placeholder]="'systemLogs.fields.source' | translate"
         [ariaLabel]="'systemLogs.fields.source' | translate"
-        styleClass="w-full sm:w-44"
-        appendTo="body"
-      ></p-multiselect>
+        class="sm:w-44"
+      ></app-multi-select>
       <label class="flex items-center gap-2 text-sm">
         <span class="text-gray-500 dark:text-gray-400">{{ 'systemLogs.fields.from' | translate }}</span>
         <input pInputText type="date" [(ngModel)]="dateFrom" class="w-full sm:w-40" />

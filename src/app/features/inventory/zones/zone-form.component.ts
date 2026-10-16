@@ -5,7 +5,6 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
-import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { AppError } from '../../../core/errors/app-error';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
@@ -18,17 +17,18 @@ import { SelectOption } from '../../company/company.models';
 import { CodedRef, ZonePayload } from '../inventory.models';
 import { WarehouseService } from '../warehouses/warehouse.service';
 import { ZoneService } from './zone.service';
+import { ToggleComponent } from '../../../shared/ui';
 
 @Component({
   selector: 'app-zone-form',
   imports: [
+    ToggleComponent,
     ReactiveFormsModule,
     TranslatePipe,
     ButtonModule,
     InputTextModule,
     SelectModule,
     TextareaModule,
-    ToggleSwitchModule,
     FormLayoutComponent,
     LoadingStateComponent,
     ErrorStateComponent,

@@ -52,7 +52,7 @@
             <app-status-badge [value]="('importExport.stats.errors' | translate) + ': ' + stats.errors" [severity]="stats.errors ? 'danger' : 'secondary'"></app-status-badge>
             <app-status-badge [value]="('importExport.stats.skipped' | translate) + ': ' + stats.skipped" severity="secondary"></app-status-badge>
             <label class="ms-auto flex items-center gap-2 text-sm">
-              <p-toggleswitch [(ngModel)]="onlyProblems" inputId="onlyProblems"></p-toggleswitch>
+              <app-toggle [(ngModel)]="onlyProblems" inputId="onlyProblems"></app-toggle>
               {{ 'importExport.failed.onlyProblems' | translate }}
             </label>
           </div>

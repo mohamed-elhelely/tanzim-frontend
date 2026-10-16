@@ -116,15 +116,15 @@
           <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'inventory.sections.tracking' | translate }}</h3>
           <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
             <div class="flex items-center gap-3">
-              <p-toggleswitch inputId="is_batch_tracked" formControlName="is_batch_tracked"></p-toggleswitch>
+              <app-toggle inputId="is_batch_tracked" formControlName="is_batch_tracked"></app-toggle>
               <label for="is_batch_tracked" class="text-sm font-medium">{{ 'inventory.fields.batchTracked' | translate }}</label>
             </div>
             <div class="flex items-center gap-3">
-              <p-toggleswitch inputId="is_serial_tracked" formControlName="is_serial_tracked"></p-toggleswitch>
+              <app-toggle inputId="is_serial_tracked" formControlName="is_serial_tracked"></app-toggle>
               <label for="is_serial_tracked" class="text-sm font-medium">{{ 'inventory.fields.serialTracked' | translate }}</label>
             </div>
             <div class="flex items-center gap-3">
-              <p-toggleswitch inputId="has_expiry" formControlName="has_expiry"></p-toggleswitch>
+              <app-toggle inputId="has_expiry" formControlName="has_expiry"></app-toggle>
               <label for="has_expiry" class="text-sm font-medium">{{ 'inventory.fields.hasExpiry' | translate }}</label>
             </div>
           </div>
@@ -142,15 +142,15 @@
           <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-200">{{ 'inventory.sections.availability' | translate }}</h3>
           <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
             <div class="flex items-center gap-3">
-              <p-toggleswitch inputId="is_active" formControlName="is_active"></p-toggleswitch>
+              <app-toggle inputId="is_active" formControlName="is_active"></app-toggle>
               <label for="is_active" class="text-sm font-medium">{{ 'inventory.fields.isActive' | translate }}</label>
             </div>
             <div class="flex items-center gap-3">
-              <p-toggleswitch inputId="is_purchasable" formControlName="is_purchasable"></p-toggleswitch>
+              <app-toggle inputId="is_purchasable" formControlName="is_purchasable"></app-toggle>
               <label for="is_purchasable" class="text-sm font-medium">{{ 'inventory.fields.purchasable' | translate }}</label>
             </div>
             <div class="flex items-center gap-3">
-              <p-toggleswitch inputId="is_sellable" formControlName="is_sellable"></p-toggleswitch>
+              <app-toggle inputId="is_sellable" formControlName="is_sellable"></app-toggle>
               <label for="is_sellable" class="text-sm font-medium">{{ 'inventory.fields.sellable' | translate }}</label>
             </div>
           </div>

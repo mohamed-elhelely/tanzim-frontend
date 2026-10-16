@@ -6,7 +6,6 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
-import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { AppError } from '../../../core/errors/app-error';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ErrorStateComponent } from '../../../shared/components/error-state/error-state.component';
@@ -26,11 +25,12 @@ import {
   ValuationMethod,
 } from '../inventory.models';
 import { ProductService } from './product.service';
-import { CardComponent } from '../../../shared/ui';
+import { CardComponent, ToggleComponent } from '../../../shared/ui';
 
 @Component({
   selector: 'app-product-form',
   imports: [
+    ToggleComponent,
     CardComponent,
     ReactiveFormsModule,
     TranslatePipe,
@@ -38,7 +38,6 @@ import { CardComponent } from '../../../shared/ui';
     InputTextModule,
     SelectModule,
     TextareaModule,
-    ToggleSwitchModule,
     PageHeaderComponent,
     LoadingStateComponent,
     ErrorStateComponent,

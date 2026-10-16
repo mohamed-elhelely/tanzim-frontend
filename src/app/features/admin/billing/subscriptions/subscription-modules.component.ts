@@ -2,11 +2,11 @@ import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject, input, linkedSignal, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
-import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { AccessService } from '../../../../core/auth/access.service';
 import { ConfirmService } from '../../../../core/services/confirm.service';
 import { BillingModule, MODULE_EDITABLE_STATUSES, Subscription } from '../platform-billing.models';
 import { BillingModuleService, SubscriptionService } from '../platform-billing.service';
+import { ToggleComponent } from '../../../../shared/ui';
 
 /**
  * Switches a subscription's feature modules on (add_module) and off (remove_module, after a confirm), with the
@@ -15,7 +15,7 @@ import { BillingModuleService, SubscriptionService } from '../platform-billing.s
  */
 @Component({
   selector: 'app-subscription-modules',
-  imports: [DecimalPipe, FormsModule, TranslatePipe, ToggleSwitchModule],
+  imports: [ToggleComponent, DecimalPipe, FormsModule, TranslatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './subscription-modules.component.html',
 })

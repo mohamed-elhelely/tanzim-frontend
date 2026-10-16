@@ -33,15 +33,11 @@
         @if (!isEdit) {
           <div class="flex flex-col gap-1">
             <label for="password" class="text-sm font-medium">{{ 'company.fields.password' | translate }} *</label>
-            <p-password
+            <app-password
               inputId="password"
               formControlName="password"
-              [feedback]="false"
-              [toggleMask]="true"
               autocomplete="new-password"
-              styleClass="w-full"
-              inputStyleClass="w-full"
-            ></p-password>
+            ></app-password>
             <app-field-error [control]="form.controls.password"></app-field-error>
           </div>
         }
@@ -124,17 +120,17 @@
 
       <div class="flex flex-col gap-3 sm:flex-row sm:gap-8">
         <div class="flex items-center gap-3">
-          <p-toggleswitch inputId="is_company_admin" formControlName="is_company_admin"></p-toggleswitch>
+          <app-toggle inputId="is_company_admin" formControlName="is_company_admin"></app-toggle>
           <label for="is_company_admin" class="text-sm font-medium">{{ 'company.fields.companyAdmin' | translate }}</label>
         </div>
         <div class="flex items-center gap-3">
-          <p-toggleswitch inputId="is_department_manager" formControlName="is_department_manager"></p-toggleswitch>
+          <app-toggle inputId="is_department_manager" formControlName="is_department_manager"></app-toggle>
           <label for="is_department_manager" class="text-sm font-medium">
             {{ 'company.fields.departmentManager' | translate }}
           </label>
         </div>
         <div class="flex items-center gap-3">
-          <p-toggleswitch inputId="is_team_lead" formControlName="is_team_lead"></p-toggleswitch>
+          <app-toggle inputId="is_team_lead" formControlName="is_team_lead"></app-toggle>
           <label for="is_team_lead" class="text-sm font-medium">{{ 'company.fields.teamLead' | translate }}</label>
         </div>
       </div>

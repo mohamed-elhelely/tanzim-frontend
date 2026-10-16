@@ -6,7 +6,6 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
-import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { AppError } from '../../../core/errors/app-error';
 import { LanguageService } from '../../../core/services/language.service';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -21,11 +20,12 @@ import { CompanyUserService } from '../../company/users/company-user.service';
 import { LocationService } from '../../locations/sites/location.service';
 import { WAREHOUSE_TYPES, WarehousePayload, WarehouseType } from '../inventory.models';
 import { WarehouseService } from './warehouse.service';
-import { CardComponent } from '../../../shared/ui';
+import { CardComponent, ToggleComponent } from '../../../shared/ui';
 
 @Component({
   selector: 'app-warehouse-form',
   imports: [
+    ToggleComponent,
     CardComponent,
     ReactiveFormsModule,
     TranslatePipe,
@@ -33,7 +33,6 @@ import { CardComponent } from '../../../shared/ui';
     InputTextModule,
     SelectModule,
     TextareaModule,
-    ToggleSwitchModule,
     PageHeaderComponent,
     LoadingStateComponent,
     ErrorStateComponent,

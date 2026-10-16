@@ -116,41 +116,29 @@
 
         <div class="flex flex-col gap-1">
           <label for="current_password" class="text-sm font-medium">{{ 'profile.fields.currentPassword' | translate }} *</label>
-          <p-password
+          <app-password
             inputId="current_password"
             formControlName="current_password"
-            [feedback]="false"
-            [toggleMask]="true"
-            styleClass="w-full"
-            inputStyleClass="w-full"
             autocomplete="current-password"
-          ></p-password>
+          ></app-password>
           <app-field-error [control]="passwordForm.controls.current_password"></app-field-error>
         </div>
         <div class="flex flex-col gap-1">
           <label for="new_password" class="text-sm font-medium">{{ 'profile.fields.newPassword' | translate }} *</label>
-          <p-password
+          <app-password
             inputId="new_password"
             formControlName="new_password"
-            [feedback]="false"
-            [toggleMask]="true"
-            styleClass="w-full"
-            inputStyleClass="w-full"
             autocomplete="new-password"
-          ></p-password>
+          ></app-password>
           <app-field-error [control]="passwordForm.controls.new_password"></app-field-error>
         </div>
         <div class="flex flex-col gap-1">
           <label for="confirm_password" class="text-sm font-medium">{{ 'profile.fields.confirmPassword' | translate }} *</label>
-          <p-password
+          <app-password
             inputId="confirm_password"
             formControlName="confirm_password"
-            [feedback]="false"
-            [toggleMask]="true"
-            styleClass="w-full"
-            inputStyleClass="w-full"
             autocomplete="new-password"
-          ></p-password>
+          ></app-password>
           <app-field-error [control]="passwordForm.controls.confirm_password"></app-field-error>
           @if (passwordForm.hasError('mismatch') && passwordForm.controls.confirm_password.touched) {
             <small class="text-sm text-red-600 dark:text-red-400">{{ 'profile.passwordMismatch' | translate }}</small>

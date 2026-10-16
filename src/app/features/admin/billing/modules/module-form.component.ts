@@ -4,7 +4,6 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
-import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { AppError } from '../../../../core/errors/app-error';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { ErrorStateComponent } from '../../../../shared/components/error-state/error-state.component';
@@ -15,6 +14,7 @@ import { injectFormContext } from '../../../../shared/forms/form-context';
 import { handleSaveError } from '../../../../shared/utils/server-errors';
 import { BillingModulePayload, MONEY } from '../platform-billing.models';
 import { BillingModuleService } from '../platform-billing.service';
+import { ToggleComponent } from '../../../../shared/ui';
 
 /** Module codes are what the app checks (`/me.modules`), e.g. `inventory`: lowercase, digits and underscores. */
 const CODE = /^[a-z][a-z0-9_]*$/;
@@ -23,12 +23,12 @@ const CODE = /^[a-z][a-z0-9_]*$/;
 @Component({
   selector: 'app-module-form',
   imports: [
+    ToggleComponent,
     ReactiveFormsModule,
     TranslatePipe,
     ButtonModule,
     InputTextModule,
     TextareaModule,
-    ToggleSwitchModule,
     FormLayoutComponent,
     LoadingStateComponent,
     ErrorStateComponent,

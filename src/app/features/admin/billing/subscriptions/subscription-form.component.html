@@ -91,7 +91,7 @@
           <app-field-error [control]="form.controls.licensed_users" patternKey="admin.billing.hints.wholeNumber"></app-field-error>
         </div>
         <div class="flex items-center gap-3 md:pt-6">
-          <p-toggleswitch inputId="auto_renew" formControlName="auto_renew"></p-toggleswitch>
+          <app-toggle inputId="auto_renew" formControlName="auto_renew"></app-toggle>
           <label for="auto_renew" class="text-sm font-medium">{{ 'billing.autoRenew' | translate }}</label>
         </div>
       </div>
@@ -99,7 +99,7 @@
       @if (!isEdit && isStaff()) {
         <div class="flex flex-col gap-1">
           <label for="module_ids" class="text-sm font-medium">{{ 'billing.modules' | translate }}</label>
-          <p-multiselect
+          <app-multi-select
             inputId="module_ids"
             formControlName="module_ids"
             [options]="moduleOptions()"
@@ -107,16 +107,14 @@
             optionValue="id"
             display="chip"
             [placeholder]="'common.select' | translate"
-            styleClass="w-full"
-            appendTo="body"
           >
-            <ng-template pTemplate="item" let-module>
+            <ng-template appSelectItem let-module>
               <span class="flex items-center gap-2">
                 <i [class]="'pi ' + (module.icon || 'pi-th-large')" aria-hidden="true"></i>
                 <span>{{ module.name }}</span>
               </span>
             </ng-template>
-          </p-multiselect>
+          </app-multi-select>
           <p class="text-xs text-gray-500 dark:text-gray-400">
             {{ (modulesAllowed() ? 'admin.billing.subscriptions.newModulesHint' : 'admin.billing.subscriptions.newModulesLocked') | translate }}
           </p>

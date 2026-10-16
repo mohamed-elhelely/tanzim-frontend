@@ -3,9 +3,7 @@ import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from 'primeng/button';
-import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { InputTextModule } from 'primeng/inputtext';
-import { MultiSelectModule } from 'primeng/multiselect';
 import { AppError } from '../../../core/errors/app-error';
 import { LanguageService } from '../../../core/services/language.service';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -19,18 +17,18 @@ import { NamedRef, RolePayload, SelectOption } from '../company.models';
 import { PermissionGroupService } from '../permission-groups/permission-group.service';
 import { PermissionPickerComponent } from '../permissions/permission-picker.component';
 import { RoleService } from './role.service';
-import { CardComponent } from '../../../shared/ui';
+import { CardComponent, MultiSelectComponent, ToggleComponent } from '../../../shared/ui';
 
 @Component({
   selector: 'app-role-form',
   imports: [
+    MultiSelectComponent,
+    ToggleComponent,
     CardComponent,
     ReactiveFormsModule,
     TranslatePipe,
     ButtonModule,
-    ToggleSwitchModule,
     InputTextModule,
-    MultiSelectModule,
     PageHeaderComponent,
     LoadingStateComponent,
     ErrorStateComponent,
