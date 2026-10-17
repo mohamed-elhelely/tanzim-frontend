@@ -114,6 +114,43 @@ describe('NotificationCenterService', () => {
     expect(center.unread()).toBe(3);
   });
 
+  describe('chat messages (counted on the chat button, not the bell)', () => {
+    const chatMessage = (id: number, extra: Partial<AppNotification> = {}) =>
+      note(id, { data: { kind: 'chat', event: 'message', conversation_id: 12 }, ...extra });
+
+    it('keeps them out of the list and marks the unread ones read, then recounts', () => {
+      const center = TestBed.inject(NotificationCenterService);
+      TestBed.tick();
+      center.start();
+      httpMock
+        .expectOne('/api/notifications/my-notifications/')
+        .flush(envelope([chatMessage(9), note(2), chatMessage(8, { is_read: true }), note(1, { is_read: true })]));
+      httpMock.expectOne('/api/notifications/unread-count/').flush(envelope({ unread_count: 2 }));
+      expect(center.items().map((n) => n.id)).toEqual([2, 1]);
+      httpMock.expectOne('/api/notifications/mark-read/9/').flush(envelope({ status: 'success' }));
+      httpMock.expectOne('/api/notifications/unread-count/').flush(envelope({ unread_count: 1 }));
+      expect(center.unread()).toBe(1);
+    });
+
+    it('a pushed chat message is not listed or counted, is marked read, and still goes out for the sound', () => {
+      const center = start();
+      const passed: AppNotification[] = [];
+      center.incoming$.subscribe((n) => passed.push(n));
+      FakeSocket.last?.receive({ type: 'new_notification', notification: chatMessage(7) });
+      expect(center.items().map((n) => n.id)).toEqual([2, 1]);
+      expect(center.unread()).toBe(1);
+      httpMock.expectOne('/api/notifications/mark-read/7/').flush(envelope({ status: 'success' }));
+      expect(passed.map((n) => n.id)).toEqual([7]);
+    });
+
+    it('other chat bells (added to a group, role changed) stay in the bell', () => {
+      const center = start();
+      FakeSocket.last?.receive({ type: 'new_notification', notification: note(6, { data: { kind: 'chat', event: 'added', conversation_id: 12 } }) });
+      expect(center.items()[0].id).toBe(6);
+      expect(center.unread()).toBe(2);
+    });
+  });
+
   it('ignores a frame without a type', () => {
     const center = start();
     expect(() => FakeSocket.last?.receive({ unexpected: true })).not.toThrow();
