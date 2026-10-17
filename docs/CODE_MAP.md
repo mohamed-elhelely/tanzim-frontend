@@ -152,6 +152,7 @@ Things to know:
 | `layout/nav/nav-items.ts` | The menu: label, icon, link, `module`, `roles`, children | 🔒 the single place to add a menu entry |
 | `layout/nav/nav-list.component` | Renders the menu, filters it, expands the active group | 🧠 §3 |
 | `shared/table/server-table.ts` | State for server-paged tables | 🆕 🧠 cancels stale requests; steps back a page after deleting the last row |
+| `shared/ui/table/table.component`, `sortable-header.component` | `app-table` and `th[appSortable]` | A header click cycles ascending → descending → no sort (no `ordering` sent; local rows as given) |
 | `shared/utils/server-errors.ts` | `applyServerErrors`, `handleSaveError`, `errorTitleKey` | 🆕 🧠 flattens nested backend errors to dotted keys (`user.email`) |
 | `shared/utils/save-file.ts` | Saves a downloaded Blob under a file name | Used by the Excel export |
 | `shared/components/field-error` | Message under an input (required, email, length, pattern, `greaterThan`, `max`, server) | Not OnPush on purpose (reacts to `touched`) |
