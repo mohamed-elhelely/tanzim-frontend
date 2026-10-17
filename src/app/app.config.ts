@@ -10,6 +10,7 @@ import { routes } from './app.routes';
 import { GlobalErrorHandler } from './core/errors/global-error-handler';
 import { apiHeadersInterceptor } from './core/interceptors/api-headers.interceptor';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
+import { duplicateWriteInterceptor } from './core/interceptors/duplicate-write.interceptor';
 import { errorInterceptor } from './core/interceptors/error.interceptor';
 import { loadingInterceptor } from './core/interceptors/loading.interceptor';
 import { TanzimPreset } from './core/theme/tanzim-preset';
@@ -18,7 +19,10 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([apiHeadersInterceptor, authInterceptor, loadingInterceptor, errorInterceptor])),
+    // A repeated write still waiting for its response is dropped first, before it counts anywhere.
+    provideHttpClient(
+      withInterceptors([duplicateWriteInterceptor, apiHeadersInterceptor, authInterceptor, loadingInterceptor, errorInterceptor]),
+    ),
     // No provideAnimations(): nothing uses @angular/animations (PrimeNG 21 animates with CSS). Its renderer only
     // removes an element at the next change detection, and PrimeNG removes a drawer's mask outside Angular, so the
     // mask stayed on screen after closing a drawer by clicking outside it and swallowed every later click.

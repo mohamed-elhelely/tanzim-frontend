@@ -59,7 +59,7 @@ flowchart TD
 sequenceDiagram
     participant C as Component
     participant S as Resource service (CrudApi)
-    participant H as api-headers → auth → loading → error interceptors
+    participant H as duplicate-write → api-headers → auth → loading → error interceptors
     participant B as Backend
 
     C->>S: list({ page, pageSize, search, ordering })
@@ -129,6 +129,7 @@ Things to know:
 | `auth/auth.guard.ts` | `authGuard`, `guestGuard`, `platformAdminGuard`, `companyMemberGuard`, `permissionGuard` | 🔒 `permissionGuard` reads `route.data.permission` |
 | `errors/app-error.ts` | `AppError` + `toAppError()` | The only error shape in the app |
 | `errors/global-error-handler.ts` | Toast for uncaught non-HTTP errors | |
+| `interceptors/duplicate-write.interceptor.ts` | Drops a write identical (method, URL, body) to one still waiting for its response | double-click Save; the repeat completes empty |
 | `interceptors/api-headers.interceptor.ts` | `ngrok-skip-browser-warning` for ngrok hosts | ⚠️ ngrok free tier, not a backend bug |
 | `interceptors/auth.interceptor.ts` | Bearer token, refresh on 401 | 🧠 see §2 |
 | `interceptors/loading.interceptor.ts` | Counts requests for the loading bar | |

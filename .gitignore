@@ -45,3 +45,12 @@ Thumbs.db
 /test-results/
 /playwright-report/
 /blob-report/
+
+# Promo and presentation media (not part of the app)
+/tanzim-promo/
+/docs/business-presentation/video/*.mp4
+/docs/business-presentation/video/*.mp3
+
+# Python bytecode
+__pycache__/
+*.pyc
