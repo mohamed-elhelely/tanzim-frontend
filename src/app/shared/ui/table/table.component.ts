@@ -88,14 +88,14 @@ export class TableComponent<T = unknown> {
 
   // ----- sorting (th[appSortable]) -----
 
-  /** A sortable header was clicked: ascending, then descending, then ascending again. */
+  /** A sortable header was clicked: ascending, then descending, then no sort (the server's or the given order). */
   toggleSort(field: string): void {
-    const current = this.sort();
-    const next: TableSort = { field, order: current?.field === field && current.order === 1 ? -1 : 1 };
+    const current = this.sortOf(field);
+    const next: TableSort | null = current === 1 ? { field, order: -1 } : current === -1 ? null : { field, order: 1 };
     this.sort.set(next);
     const server = this.server();
     if (server) {
-      server.onLazyLoad({ first: 0, rows: server.pageSize(), sortField: next.field, sortOrder: next.order });
+      server.onLazyLoad({ first: 0, rows: server.pageSize(), sortField: next?.field, sortOrder: next?.order });
     } else {
       this.localFirst.set(0);
     }

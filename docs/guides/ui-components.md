@@ -213,7 +213,7 @@
 
 | الحاجة | بتعمل إيه |
 |---|---|
-| `th[appSortable]="field"` | ضغطة (أو Enter/Space) ترتّب تصاعدي ثم تنازلي، والأيقونة و `aria-sort` بيوضحوا الاتجاه. مع ServerTable الترتيب بيروح للسيرفر (`ordering`) ويرجع لأول صفحة |
+| `th[appSortable]="field"` | ضغطة (أو Enter/Space) ترتّب تصاعدي ثم تنازلي، والثالثة بتشيل الترتيب (ترتيب السيرفر أو الصفوف زي ما هي)، والأيقونة و `aria-sort` بيوضحوا الاتجاه. مع ServerTable الترتيب بيروح للسيرفر (`ordering`) ويرجع لأول صفحة |
 | `app-table-select-all` / `app-table-row-select` | التحديد بيتحفظ في `table.selection()` بتاع الـ ServerTable (ونفس الـ `dataKey`) |
 | `[paginate]`, `[pageSize]`, `[pageSizes]` | للصفوف اللي في الذاكرة. `[pageSizes]="[]"` يخفي اختيار عدد الصفوف |
 | `sortField` / `[sortOrder]` | الترتيب اللي يبدأ بيه |

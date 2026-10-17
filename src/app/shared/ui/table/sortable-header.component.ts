@@ -3,7 +3,7 @@ import { TableComponent } from './table.component';
 
 /**
  * A sortable column header inside `app-table`: `<th appSortable="name">Name</th>`. A click sorts by the field
- * (ascending, then descending); the icon and `aria-sort` show the current direction.
+ * (ascending, then descending, then no sort); the icon and `aria-sort` show the current direction.
  */
 @Component({
   // It has to be the <th> itself (a wrapper element inside <tr> would break the table), hence an attribute selector.

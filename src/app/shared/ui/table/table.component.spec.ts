@@ -109,7 +109,7 @@ describe('TableComponent', () => {
       expect(el.querySelector('.p-paginator')).not.toBeNull();
     });
 
-    it('sorts on the server: ascending, then descending, from the first page', () => {
+    it('sorts on the server: ascending, then descending, then back to the server order, from the first page', () => {
       const fixture = render();
       const header = fixture.nativeElement.querySelector('th[appsortable]') as HTMLElement;
       header.click();
@@ -120,6 +120,10 @@ describe('TableComponent', () => {
       fixture.detectChanges();
       expect(fixture.componentInstance.queries.at(-1)?.ordering).toBe('-name');
       expect(header.getAttribute('aria-sort')).toBe('descending');
+      header.click();
+      fixture.detectChanges();
+      expect(fixture.componentInstance.queries.at(-1)).toEqual(jasmine.objectContaining({ page: 1, ordering: undefined }));
+      expect(header.getAttribute('aria-sort')).toBe('none');
     });
 
     it('selects rows into the ServerTable, and all of the page from the header', () => {
@@ -148,7 +152,7 @@ describe('TableComponent', () => {
       expect(names(render().nativeElement)).toEqual(['Anchor', 'Clamp', 'Bolt']);
     });
 
-    it('sorts by a clicked column, then reverses it', () => {
+    it('sorts by a clicked column, then reverses it, then shows the rows as given', () => {
       const fixture = render();
       const nameHeader = fixture.nativeElement.querySelector('th[appsortable="name"]') as HTMLElement;
       nameHeader.click();
@@ -157,6 +161,10 @@ describe('TableComponent', () => {
       nameHeader.click();
       fixture.detectChanges();
       expect(names(fixture.nativeElement)).toEqual(['Clamp', 'Bolt', 'Anchor']);
+      nameHeader.click();
+      fixture.detectChanges();
+      expect(names(fixture.nativeElement)).toEqual(['Bolt', 'Anchor', 'Clamp']);
+      expect(nameHeader.getAttribute('aria-sort')).toBe('none');
     });
 
     it('filters by the text in the given fields, and shows the empty template', () => {
