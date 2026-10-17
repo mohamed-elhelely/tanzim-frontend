@@ -6,7 +6,7 @@ import { ChatEvent } from '../chat/chat.models';
 import { BaseApiService } from '../api/base-api.service';
 import { AuthService } from '../auth/auth.service';
 import { TokenStorageService } from '../auth/token-storage.service';
-import { AppNotification, SocketMessage, accountChange } from './notification.model';
+import { AppNotification, SocketMessage, accountChange, isChatMessage } from './notification.model';
 
 /** 4001: the access token was refused (expired or rotated) → refresh once, then reconnect. 4003: wrong user, final. */
 const TOKEN_REFUSED = 4001;
@@ -77,13 +77,18 @@ export class NotificationCenterService extends BaseApiService {
 
   refresh(): void {
     this.get<AppNotification[]>('notifications/my-notifications/').subscribe({
-      next: (response) => this.itemsState.set(response.data ?? []),
+      next: (response) => {
+        const all = response.data ?? [];
+        this.itemsState.set(all.filter((item) => !isChatMessage(item)));
+        // Unread chat-message bells still count in the server's number: mark them read, then count again.
+        const unreadChat = all.filter((item) => isChatMessage(item) && !item.is_read);
+        if (unreadChat.length) {
+          this.markChatMessagesRead(unreadChat, () => this.loadUnread());
+        }
+      },
       error: () => undefined,
     });
-    this.get<{ unread_count: number }>('notifications/unread-count/').subscribe({
-      next: (response) => this.unreadState.set(response.data?.unread_count ?? 0),
-      error: () => undefined,
-    });
+    this.loadUnread();
   }
 
   markRead(notification: AppNotification): void {
@@ -121,6 +126,25 @@ export class NotificationCenterService extends BaseApiService {
     if (this.socket?.readyState === SOCKET_OPEN) {
       this.socket.send(JSON.stringify(frame));
     }
+  }
+
+  private loadUnread(): void {
+    this.get<{ unread_count: number }>('notifications/unread-count/').subscribe({
+      next: (response) => this.unreadState.set(response.data?.unread_count ?? 0),
+      error: () => undefined,
+    });
+  }
+
+  /**
+   * Chat messages are counted on the chat button (from the chats' read markers), so their bells are marked read
+   * on the server to keep them out of the bell's count. The backend cannot leave them out for us yet
+   * (BACKEND_REQUESTS_ROADMAP 18).
+   */
+  private markChatMessagesRead(items: AppNotification[], then?: () => void): void {
+    forkJoin(items.map((item) => this.post<unknown>(`notifications/mark-read/${item.id}/`))).subscribe({
+      next: () => then?.(),
+      error: () => undefined,
+    });
   }
 
   private applyRead(ids: number[]): void {
@@ -181,6 +205,14 @@ export class NotificationCenterService extends BaseApiService {
       case 'new_notification':
       case 'broadcast_notification': {
         const notification = (message as { notification: AppNotification }).notification;
+        if (isChatMessage(notification)) {
+          // Counted on the chat button, not here; still passed on for the chat sound and toast.
+          if (!notification.is_read) {
+            this.markChatMessagesRead([notification]);
+          }
+          this.incoming.next(notification);
+          break;
+        }
         // A collapsed chat bell comes back with the same id: replacing an item that was already unread keeps the count.
         const alreadyUnread = this.itemsState().some((i) => i.id === notification.id && !i.is_read);
         this.itemsState.update((items) => [notification, ...items.filter((i) => i.id !== notification.id)]);

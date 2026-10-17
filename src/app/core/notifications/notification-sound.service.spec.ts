@@ -71,6 +71,12 @@ describe('NotificationSoundService', () => {
     expect(FakeAudioContext.last?.notes).toBe(4);
   });
 
+  it('has its own three-note sound for chat messages', async () => {
+    const sound = await unlocked();
+    sound.play('chat');
+    expect(FakeAudioContext.last?.notes).toBe(3);
+  });
+
   it('can be muted, and remembers it', async () => {
     const sound = await unlocked();
     sound.toggle();

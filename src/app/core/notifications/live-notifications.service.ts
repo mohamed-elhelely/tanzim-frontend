@@ -8,7 +8,7 @@ import { chatConversationId } from '../chat/chat.models';
 import { ChatStore } from '../chat/chat.store';
 import { LanguageService } from '../services/language.service';
 import { NotificationService, NotificationSeverity } from '../services/notification.service';
-import { AppNotification, NotificationType, accountChange, notificationText } from './notification.model';
+import { AppNotification, NotificationType, accountChange, isChatMessage, notificationText } from './notification.model';
 import { NotificationCenterService } from './notification-center.service';
 import { NotificationSoundService } from './notification-sound.service';
 
@@ -64,7 +64,7 @@ export class LiveNotificationsService {
     const change = accountChange(notification);
     const { title, message } = notificationText(notification, this.language.currentLang());
     const important = !!change || notification.notif_type === 'warning' || notification.notif_type === 'error';
-    this.sound.play(important ? 'alert' : 'normal');
+    this.sound.play(isChatMessage(notification) ? 'chat' : important ? 'alert' : 'normal');
     if (!change) {
       this.toast.notify(SEVERITY[notification.notif_type] ?? 'info', title, message);
       return;

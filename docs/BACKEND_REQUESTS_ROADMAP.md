@@ -148,6 +148,15 @@ You are working on the backend of Tanzim, a bilingual (English/Arabic) multi-ten
     active company who hold both permissions, excluding me, as `[{id, name}]` (`id` = login user id, as
     `POST conversations/direct/` expects; `search` on first/last name, case-insensitive; unpaginated or optional
     paging like `conversations/`). Same chat gate as the other chat endpoints. Document it in API_REFERENCE_CHAT.md.
+
+18. Notifications: leave chat messages out of the bell. Chat messages now count only on the chat button (its badge
+    comes from the chats' read markers, `GET /api/chat/v1/unread/`). The bell must not list or count bells with
+    `data.kind = "chat"` and `data.event = "message"`; bells for being added to a group or a role change stay.
+    Today the frontend hides them from `my-notifications/` and marks each one read (`mark-read/{id}/`) so
+    `unread-count/` and the socket's `connection_established.unread_notification` stop counting them: one extra
+    request per chat message, and a moment where the count is one too high. Please either stop creating bells for
+    chat messages (the chat socket event already reaches the user), or exclude them from `my-notifications/`,
+    `unread-count/` and `unread_notification`. Tell us which, so we can drop the workaround.
 ```
 
 ## Fixed

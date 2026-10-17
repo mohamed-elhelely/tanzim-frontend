@@ -43,6 +43,14 @@ export interface AccountChangeData {
   audit_log_id: number;
 }
 
+/**
+ * A bell for a new chat message (`data.kind: "chat"`, `event: "message"`). Chat messages are counted on the chat
+ * button, not the bell; other chat bells (added to a group, role changed) stay in the bell.
+ */
+export function isChatMessage(notification: AppNotification): boolean {
+  return notification.data?.['kind'] === 'chat' && notification.data?.['event'] === 'message';
+}
+
 export function accountChange(notification: AppNotification): AccountChangeData | null {
   return notification.data?.['event'] === 'account_change' ? (notification.data as unknown as AccountChangeData) : null;
 }

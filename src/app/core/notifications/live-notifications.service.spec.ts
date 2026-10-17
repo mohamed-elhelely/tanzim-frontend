@@ -76,9 +76,16 @@ describe('LiveNotificationsService', () => {
     incoming.next(note(1, { data: { kind: 'chat', conversation_id: 12 } }));
     expect(play).not.toHaveBeenCalled();
     expect(toast.notify).not.toHaveBeenCalled();
-    incoming.next(note(2, { title: 'Sara Ali', message: 'hi', data: { kind: 'chat', conversation_id: 13 } }));
-    expect(play).toHaveBeenCalledWith('normal');
+    incoming.next(note(2, { title: 'Sara Ali', message: 'hi', data: { kind: 'chat', event: 'message', conversation_id: 13 } }));
     expect(toast.notify).toHaveBeenCalledWith('info', 'Sara Ali', 'hi');
+  });
+
+  it('rings the chat sound for chat messages, the usual one for other chat bells', () => {
+    incoming.next(note(1, { data: { kind: 'chat', event: 'message', conversation_id: 13 } }));
+    expect(play).toHaveBeenCalledWith('chat');
+    play.calls.reset();
+    incoming.next(note(2, { data: { kind: 'chat', event: 'added', conversation_id: 13 } }));
+    expect(play).toHaveBeenCalledWith('normal');
   });
 
   it('fetches /me once after a burst of access changes, and stays when the page is still allowed', fakeAsync(() => {

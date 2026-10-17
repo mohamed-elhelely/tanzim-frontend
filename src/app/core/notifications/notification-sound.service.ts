@@ -4,10 +4,13 @@ const STORAGE_KEY = 'tanzim.notificationSound';
 /** A burst (several notifications from one save) rings once. */
 const QUIET_AFTER_MS = 1500;
 
-/** `normal` for operational notifications; `alert` for changes to the user's own access, warnings and errors. */
-export type NotificationTone = 'normal' | 'alert';
+/**
+ * `normal` for operational notifications; `alert` for changes to the user's own access, warnings and errors;
+ * `chat` for a new chat message, so it is told apart from the bell without looking.
+ */
+export type NotificationTone = 'normal' | 'alert' | 'chat';
 
-/** Two short notes per tone: [frequency in Hz, start offset in seconds]. */
+/** Short notes per tone: [frequency in Hz, start offset in seconds]. */
 const NOTES: Record<NotificationTone, [number, number][]> = {
   normal: [
     [880, 0],
@@ -16,6 +19,12 @@ const NOTES: Record<NotificationTone, [number, number][]> = {
   alert: [
     [660, 0],
     [660, 0.18],
+  ],
+  // A quick rising "pop-pop-pop" (C, E, G), lighter than the bell's chime.
+  chat: [
+    [1047, 0],
+    [1319, 0.07],
+    [1568, 0.14],
   ],
 };
 
